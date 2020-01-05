@@ -100,6 +100,9 @@ public Context load() {
 
 initialized被volatile修饰，这就意味着，当initialized=true时，loadContext()方法是一定执行完成的。
 
+
+------
+
 >**版权声明**：本作品采用<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">[CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/)进行许可，转载请注明出处。 
 >
 >**作者**： YaoQi.

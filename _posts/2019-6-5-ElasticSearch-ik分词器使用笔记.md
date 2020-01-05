@@ -7,7 +7,7 @@ categories: [ElasticSearch]
 
 摘要：记录ElasticSearch使用IK分词器的一些技巧，以及IK的常见模式。
 
------
+------
 
 match查询会将查询词分词，然后对分词的结果进行term查询。
 
@@ -269,7 +269,7 @@ GET mail_test3/_search
 
 ```
 
-
+------
 
 >**版权声明**：本作品采用<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">[CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/)进行许可，转载请注明出处。 
 >

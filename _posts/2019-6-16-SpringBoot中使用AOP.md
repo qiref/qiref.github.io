@@ -6,6 +6,7 @@ categories: [Java]
 ---
 
 摘要：Spring中如何使用注解实现面向切面编程，以及如何使用自定义注解。
+
 ------
 
 ## 场景
@@ -179,6 +180,8 @@ public void getUser() {
     System.out.println("getUser() has been called");
 }
 ```
+
+------
 
 >**版权声明**：本作品采用<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">[CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/)进行许可，转载请注明出处。 
 >
