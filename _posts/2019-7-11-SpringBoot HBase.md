@@ -5,6 +5,8 @@ date:   2019-06-20 00:18:23 +0700
 categories: [SpringBoot,HBase]
 ---
 
+摘要:记录自己写的一个基于SpringBoot操作HBase的组件，支持kerberos认证方式访问，本文相当于API文档。
+
 ## HBase 组件接口文档
 
 源码地址：<https://github.com/YaoQi17/HBase-Component>

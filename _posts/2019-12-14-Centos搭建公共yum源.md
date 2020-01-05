@@ -1,11 +1,12 @@
 ---
 layout: post
-title:  "centos搭建公共yum源"
+title:  "Centos搭建公共yum源"
 date:   2020-01-04 00:18:23 +0700
 categories: [linux]
 ---
 
-本文内容：将中缀表达式转化为后缀表达式。
+摘要：记录在Centos7中如何挂载ISO镜像作yum源，并借助http服务作公共yum源。
+
 ------
 
 部署yum私服
@@ -62,13 +63,17 @@ scp -r /etc/yum.repos.d/  hadoop-02:/etc/
 ```
 检查是否正成功安装yum 源
 
-```sh
+``` sh
 yum clean all
 yum makecache
 yum list
-``
+```
+如果能看到软件列表则说明安装成功。
 
->**版权声明**：本作品采用<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">[CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/)进行许可，转载请注明出处。
+
+------
+
+>*版权声明**：本作品采用<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">[CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/)进行许可，转载请注明出处。
 >
 >**作者**： YaoQi.
 >

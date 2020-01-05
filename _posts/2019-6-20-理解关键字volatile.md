@@ -5,7 +5,11 @@ date:   2019-06-20 00:18:23 +0700
 categories: [Java]
 ---
 
-## 先看代码
+摘要：从代码出发，理解关键词volatile。
+
+------
+
+## 示例代码
 
 ``` java
 public class Test {
