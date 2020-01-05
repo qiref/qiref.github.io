@@ -1,37 +1,20 @@
-dbyll
-=====
+# Blog of Darren
 
-Open source stylish, minimalistic theme for jekyll.  
-Demo: http://dbtek.github.io/dbyll/
+<a href="https://sourcerer.io/darren987469"><img src="https://img.shields.io/badge/Ruby-221%20commits-orange.svg" alt=""></a>
 
-## New
-- Dbyll for Ghost is now available. Get it [here](https://github.com/dbtek/dbyll-ghost) now.
-- :new: Check out [Paper](https://github.com/dbtek/paper), new Material Design Jekyll theme.
+### Current Projects
 
-### Features
-- Responsive layout.
-- Supports tags and categories.
-- Social profile and bio of author.
-- Bootstrap based.
-- Glyphicon and Font-Awesome Icons.
-- Pagination.
-- Syntax highlighting with pygments.
-- Disqus comments.
-- :new: Custom sidebar background image.
+* [Todo App](https://github.com/darren987469/todos) - Cooperate tasks with members! (use actioncable websocket)
+* [Membership System](https://github.com/darren987469/membership-system) - Membership system for E-commerce.
+* [acts_as_resource](https://github.com/darren987469/acts_as_resource) - A gem handle user's resource management
+* [oh-my-postgres](https://github.com/darren987469/oh-my-postgres) - A study for postgres json feature
+* [jenkins-ci](https://github.com/darren987469/jenkins-ci) - Integrate CI with Jenkins
 
+### Development
 
-### Download
-* [Download dbyll](https://github.com/dbtek/dbyll/archive/master.zip)
+```sh
+bundle install
+bundle exec jekyll serve
+```
 
-### Install
-- You need to have [ruby](https://www.ruby-lang.org/en/documentation/installation/) installed in your system.
-- Install bundler which helps in specifying and installing dependencies of any Ruby project. ```gem install bundler```
-- Go to the root of the repo and run this - ```bundle install```
-- Then - ```bundle exec jekyll serve```
-
-### Screenshots
-![dbyll-screenshot](assets/media/dbyll-ss.png)
-
-### License
-- [MIT](http://opensource.org/licenses/MIT)
-
+Go to http://127.0.0.1:4000
