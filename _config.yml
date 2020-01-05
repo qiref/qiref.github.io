@@ -1,6 +1,6 @@
 # visit https://github.com/mojombo/jekyll/wiki/Configuration for more settings
 
-paginate: 10 # pagination based on number of posts
+paginate: 20 # pagination based on number of posts
 paginate_path: "page:num"
 exclude:
   - Gemfile
@@ -8,26 +8,26 @@ exclude:
   - README.md
 highlighter: rouge
 markdown: kramdown
-disqus: darren987469
-google_analytics: darren987469
-title: darren987469
+#disqus: darren987469
+#google_analytics: darren987469
+title: yaoqi17.github.io
 
 defaults:
   -
     scope:
       path: "" # empty string for all files
     values:
-      title: darren987469
+      title: yaoqi17.github.io
 
 description: Stylish Jekyll Theme
 author:
-  name: darren987469
-  email: darren987469@gmail.com
-  github: darren987469
+  name: YaoQi
+  email: 168412217.mail@gmail.com
+  github: yaoqi17.github.io
   twitter:
   pinterest:
-  linkedin: darren987469
-  bio:
+  #linkedin: darren987469
+  bio: Stary foolish.
   email_md5:
 
 rss_path: feed.xml
