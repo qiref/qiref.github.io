@@ -8,10 +8,11 @@ exclude:
   - README.md
 highlighter: rouge
 markdown: kramdown
-#disqus: darren987469
+disqus: yaoqi17
 #google_analytics: darren987469
 title: yaoqi17.github.io
-
+layout: default
+comments: true
 defaults:
   -
     scope:
