@@ -131,6 +131,11 @@ article.home h3 a,
 article.home h4 a {
 	color: #f2756a;
 }
+
+article.home h2 a｛
+	font-size: 25px;
+｝
+
 article.home h1 a:hover,
 article.home h2 a:hover,
 article.home h3 a:hover,
