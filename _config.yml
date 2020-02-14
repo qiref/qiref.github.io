@@ -1,49 +1,37 @@
-# visit https://github.com/mojombo/jekyll/wiki/Configuration for more settings
+title: minima-reboot
+author: GitHub User
+email: your-email@domain.com
+description: >
+  This is a demo page for minima-reboot, a bootstrap-based rewrite of Jekyll's
+  default minima theme. It is simple, lightweight, and responsive.
+  You can use it with your GitHub Pages site by adding the line
+  "theme: aterenin/minima-reboot" to _config.yml.
 
-paginate: 20 # pagination based on number of posts
-paginate_path: "page:num"
+plugins:
+  - jekyll-seo-tag
+  - jekyll-paginate
+  - jekyll-feed
+  - jekyll-redirect-from
+
+minima_reboot:
+  date_format: "%b %-d, %Y"
+  date_format_short: "%b %-d"
+
+header_pages:
+- about.md
+- posts.md
+- github.md
+
+footer_icons:
+- username: aterenin/minima-reboot/
+  url: https://github.com/aterenin/minima-reboot/
+  icon: icon-github.svg
+
+paginate: 5
+
+markdown: kramdown
+
 exclude:
   - Gemfile
   - Gemfile.lock
-  - README.md
-highlighter: rouge
-markdown: kramdown
-disqus: yaoqi17
-#google_analytics: darren987469
-title: yaoqi17.github.io
-layout: default
-comments: true
-defaults:
-  -
-    scope:
-      path: "" # empty string for all files
-    values:
-      title: yaoqi17.github.io
-
-description: Stylish Jekyll Theme
-author:
-  name: YaoQi
-  email: 168412217.mail@gmail.com
-  github: yaoqi17
-  #twitter:
-  #pinterest:
-  #linkedin: darren987469
-  bio: Stary foolish.
-  email_md5:
-
-rss_path: feed.xml
-categories_path: categories
-# tags_path: tags
-enableTags: false
-contributions_path: contributions
-about_path: about
-date_format: '%Y/%m/%d'
-
-# set it as url of an image
-# sidebar_background_image: https://www.dropbox.com/s/g9h23zrycedxtk5/sky.png?raw=1
-
-BASE_PATH:
-
-permalink: /:title/
-plugins:
-  - jekyll-paginate
+  - minima-reboot.gemspec
