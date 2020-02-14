@@ -34,6 +34,7 @@ author:
 rss_path: feed.xml
 categories_path: categories
 # tags_path: tags
+enableTags: false
 contributions_path: contributions
 about_path: about
 date_format: '%Y/%m/%d'
