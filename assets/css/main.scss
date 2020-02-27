@@ -42,12 +42,12 @@ html {
 /*滚动条的设置*/
 
     ::-webkit-scrollbar-thumb {
-        background-color:#f7f7f7;
+        background-color:#563d7c;
         background-clip:padding-box;
         min-height:28px;
-        -webkit-border-radius: 2em;
-        -moz-border-radius: 2em;
-        border-radius:2em;
+        -webkit-border-radius: 2px;
+        -moz-border-radius: 2px;
+        border-radius:2px;
     }
 /*滚动条移上去的背景
 
