@@ -72,9 +72,3 @@ yum list
 
 
 ------
-
->*版权声明**：本作品采用<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">[CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/)进行许可，转载请注明出处。
->
->**作者**： YaoQi.
->
->**时间**： 2020-01-04 00:18:23.
