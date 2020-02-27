@@ -1,123 +1,238 @@
-# minima-reboot
+# Jekyll Theme Chirpy
 
-[![Gem Version](https://badge.fury.io/rb/minima-reboot.svg)](https://badge.fury.io/rb/minima-reboot)
+[![Build Status](https://github.com/cotes2020/jekyll-theme-chirpy/workflows/build/badge.svg?event=push)](https://github.com/cotes2020/jekyll-theme-chirpy/actions?query=event%3Apush)
+[![GitHub license](https://img.shields.io/github/license/cotes2020/jekyll-theme-chirpy.svg)](https://github.com/cotes2020/jekyll-theme-chirpy/blob/master/LICENSE)
+[![996.icu](https://img.shields.io/badge/link-996.icu-%23FF4D5B.svg)](https://996.icu)
 
-Minima Reboot is a responsive [Bootstrap](https://getbootstrap.com/) port of Jekyll's default theme, [Minima](https://github.com/jekyll/minima). It tries to be style-light, following Bootstrap as much as possible. It uses `bootstrap.css` only, and does not load `bootstrap.js`.
+Language: English | [简体中文](docs/README_zh-CN.md)
+
+A minimal, portfolio, sidebar, bootstrap Jekyll theme with responsive web design and focuses on text exhibition. It will help you easily record, manage and share your knowledge and experience. 
+
+You will get the following features:
+
+* Auto Dark Mode
+* Posts' Last Modified Date
+* Table of Contents
+* Automatically Recommend Related Posts
+* Syntax highlighting
+* Two Level Categories
+* Search
+* Atom Feeds
+* Disqus Comments
+* Google Analytics
+* GA Pageviews (Advanced)
+* SEO Tag
+* Performance Optimization
+
+[**Live Demo** »](https://chirpy.cotes.info)
+
+![devices-mockup](https://raw.githubusercontent.com/cotes2020/jekyll-theme-chirpy/master/assets/img/sample/devices-mockup.png)
+
+## Table of Contents
+
+* [Installing](#installing)
+* [Usage](#usage)
+* [Contributing](#contributing)
+* [Credits](#credits)
+* [Support](#support)
+* [License](#license)
 
 
-[Theme preview](https://aterenin.github.io/minima-reboot/)
+## Installing
 
-![minima theme preview](https://raw.githubusercontent.com/aterenin/minima-reboot/master/screenshot.png)
+### Prerequisites
 
-## Installation
+Follow the [Jekyll Docs](https://jekyllrb.com/docs/installation/) to complete the installtion of basic environment (`Ruby `, `RubyGems` and `Bundler`). In order to use the script tools to save time, we also need to install [Python](https://www.python.org/downloads/)(version 3.5 or abover) and [ruamel.yaml](https://pypi.org/project/ruamel.yaml/).
 
-Add this line to your site's `_config.yml`
+In addition, if your machine is running Debian or macOS, make sure the [GNU coreutils](https://www.gnu.org/software/coreutils/) is installed. Otherwise, get it by:
 
-```yaml
-remote_theme: aterenin/minima-reboot
+* Debian
+
+```console
+$ sudo apt-get install coreutils
 ```
 
-Jekyll will automatically download and enable the theme, provided it is up to date.
+* macOS
 
-Alternatively, Minima Reboot is a [gem-based theme](https://jekyllrb.com/docs/themes/) and can be installed from [rubygems.org](https://rubygems.org/gems/minima-reboot).
+```console
+$ brew install coreutils
+```
 
 
-## Files
+### Jekyll Plugins
 
-Minima Reboot is written in the same way as Minima, using Jekyll's standard directories.
-These are described below, together with differences and new features.
+[Fork **Chirpy** from GitHub](https://github.com/cotes2020/jekyll-theme-chirpy/fork), then clone your forked repo to local:
 
-### Layouts
+```console
+$ git clone git@github.com:USER/jekyll-theme-chirpy.git
+```
 
-The following files are part of the `_layouts` directory.
+replace the `USER` above to your GitHub username.
 
-  - `default.html`, `page.html`, `post.html` &mdash; standard layout files exactly as in Minima.
-  - `home.html` &mdash; a home page layout, which supports Jekyll's [pagination](https://jekyllrb.com/docs/pagination/). This can be enabled by setting `paginate` in `_config.yml`.
-  - `allposts.html` &mdash; this is a layout which displays a full list of posts by year.
+The first time you run or build the project on your machine, perform the installation of Jekyll plugins. Go to the root of repo and run:
 
-### Includes
+```terminal
+$ bundle install
+```
 
-The following files are part of the `_includes` directory.
-
-  - `disqus_comments.html`, `footer.html`, `google-analytics.html`, `head.html`, `header.html`, `icon-github` &mdash; standard includes exactly as in [Minima](https://github.com/jekyll/minima).
-  - `head-includes.html` &mdash; an empty text file where the user may add additional lines that will be inserted into `<head>`. If you want to customize Minima Reboot and need to include additional style sheets, add them here.
-
-### Sass
-
-The following files are part of the `_sass` directory.
-
-  - `minima-reboot.scss` &mdash; loads the required style sheets.
-  - `minima-reboot/_layout.scss` &mdash; contains a few layout tweaks on top of Bootstrap's Reboot style, as well as an inline SVG for the RSS icon, and the responsive navigation menu, for which Minima Reboot uses its own implementation in `header.html` and this file to avoid loading JavaScript.
-  - `minima-reboot/_syntax-highlighting.scss` &mdash; defines the colors used by Jekyll's syntax highlighting.
-
-### Assets
-
-Contains the `main.scss` file which loads the style files by importing `minima-reboot.scss`.
+`bundle` will automatically install all the dependent Jekyll Plugins that listed in the `Gemfile`.
 
 
 ## Usage
 
-Minima Reboot can be customized just like Minima.
-To override the style files, add whatever SCSS you like to `main.scss` in your site's source.
-This can also be used to override any other file as necessary.
 
-### Loading Scripts
+### Directory Structure
 
-To load an additional script, for example when using [KaTeX](https://github.com/khan/katex/) to typeset mathematical equations on a page, just add the `<script>` to `_includes/head-includes.html` and they will be added to `<head>`.
+The main files and related brief introductions are listed below.
 
-### Change default date format
-
-The date format can be modified in Minima Reboot as follows in `_config.yml`.
-
-```yaml
-minima_reboot:
-  date_format: "%b %-d, %Y"
-  date_format_short: "%b %-d"
+```sh
+jekyll-theme-chirpy/
+├── _data
+├── _includes      
+├── _layouts
+├── _posts          # posts stay here
+├── _scripts
+├── .travis.yml     # remove it
+├── .github         # remove this, too
+├── assets      
+├── tabs
+│   └── about.md    # the ABOUT page
+├── .gitignore
+├── 404.html
+├── Gemfile
+├── LICENSE
+├── README.md
+├── _config.yml     # configuration file
+├── tools           # script tools
+├── docs
+├── feed.xml
+├── index.html
+├── robots.txt
+└── sitemap.xml
 ```
 
-The format is specified exactly as in [Liquid templates](https://shopify.github.io/liquid/filters/date/).
 
-### Adding new links to footer
+As mentioned above, some files or directories should be removed from your repo:
 
-New links with icons, such as the GitHub link in the preview, can be added to the footer as follows.
+- .travis.yml
+- .github
 
-```yaml
-footer_icons:
-  - username: aterenin/minima-reboot/
-    url: https://github.com/aterenin/minima-reboot/
-    icon: icon-github.svg
+
+### Customization
+
+Basically, go to `_config.yml` and customize the variables as needed, some of them are typical options:
+
+* Avatar
+    
+    `avatar` defines the source image location. The sample image is `/assets/img/sample/avatar.jpg`. It should be replaced by your own one. Notice that a huge image file will increase the load time of your site, so keep your avatar size as samll as possible(may be *<https://tinypng.com/>* will help).
+
+* TimeZone
+
+    To ensure that the posts' release date matches the city you live in, please modify the field `timezone` correctly. A list of all available values can be found on [TimezoneConverter](http://www.timezoneconverter.com/cgi-bin/findzone/findzone) or [Wikipedia](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones).
+
+
+###  Run Locally
+
+You may want to preview the site before publishing, so just run the script tool:
+
+```terminal
+$ bash tools/run.sh
 ```
 
-The `username` and `url` parameters are mandatory, the `icon` parameter is optional.
-This functionality supersedes Minima's `github_username` and `twitter_username`.
+Open a modern brower and visit at <http://localhost:4000>.
 
-### Adding inline styles and scripts
+Few days later, you may find that the file modification(e.g. edits to a post) does not refresh in real time by using `run.sh`. Don't worry, the advanced option `-r` (or `--realtime`) will solve this problem, but it requires [**fswatch**](http://emcrisostomo.github.io/fswatch/) to be installed on your machine. Type `-h` for more information.
 
-The front matter `head_inline` allows styles and scripts to be inlined to `<head>`.
-For example, consider adding the following to `posts.md`.
+###  Deploying to GitHub Pages
 
-```yaml
-head_inline: "<style>td:first-child { width: 7rem; }</style>"
+Before the deployment begins, ensure the `url` in file `_config.yml` has been set to `https://<username>.github.io`(or the custom domain, if you have. e.g. `https://yourdomain.com`). What's more, if you prefer to the [Project site](https://help.github.com/en/github/working-with-github-pages/about-github-pages#types-of-github-pages-sites), change `baseurl` of file `_config.yml` to your project name, starting with a slash. e.g. `/project`.
+
+#### Option 1: Built by GitHub Pages
+
+By deploying the site in this way, you're allowed to push the source code directly to the remote.
+
+> **Note**: If you want to use any third-party Jekyll plugins that not in [this list](https://pages.github.com/versions/), stop reading the current approach and go to [*Option 2: Build locally*](#option-2-build-locally).
+
+**1**. Rename the repository to:
+
+|Site Type | Repo's Name|
+|:---|:---|
+|User or Organization | `<username>.github.io`|
+|Project| any one except `<username>.github.io`, let's say `project`|
+
+**2**. Commit the changes of the repo first, then run the initialization script:
+
+```terminal
+$ bash tools/init.sh
 ```
 
-This will manually set the width of the date column in `posts.md`.
+>**Note**: The *Recent Update* requires the posts' latest git-log date, so make sure the changes in `_posts` have been committed before running this command.
 
-### Disqus Comments and Google Analytics
+it will automatically generates the *Latest Modified Date* and *Categories / Tags* page for the posts.
 
-These are enabled exactly as in Minima.
+**3**. Push the changes to `origin/master` then go to GitHub website and enable GitHub Pages service for the repo.
+
+**4**. Check it out:
+
+|Site Type | Site URL |
+|:---|:---|
+|User or Organization | `https://<username>.github.io/`|
+|Project| `https://<username>.github.io/project/`|
 
 
-### Compression
+#### Option 2: Build Locally
 
-This theme uses HTML compression provided by [jekyll-compress-html](https://github.com/penibelst/jekyll-compress-html).
-To disable this, override `default.html`, and remove the lines
+For security reasons, GitHub Pages runs on `safe` mode, which means the third-party Jekyll plugins or custom scripts won't work. If you want to use any another plugins that not in the [whitelist](https://pages.github.com/versions/), **you have to generate the site locally rather than on GitHub Pages**.
+
+**1**. Browse to GitHub website, create a brand new repo named: 
+
+|Site Type | Repo's Name|
+|:---|:---|
+|User or Organization | `<username>.github.io`|
+|Project| any one except `<username>.github.io`, let's say `project`|
+
+and clone it.
+
+**2**. In the root of the source project, build your site by:
+
+```console
+$ bash tools/build.sh -d /path/to/local/project/
 ```
----
-layout: compress
----
-```
-from the file's front matter.
+
+The generated static files will be placed in the root of `/path/to/local/project`. Commit and push the changes to the `master` branch on GitHub.
+
+**3**. Go to GitHub website and enable Pages service for the new repository.
+
+**4**. Visit at:
+
+|Site Type | Site URL |
+|:---|:---|
+|User or Organization | `https://<username>.github.io/`|
+|Project| `https://<username>.github.io/project/`|
+
+and enjoy!
+
+### Documentation
+
+For more details and the better reading experience, please check out the [tutorial in demo site](https://chirpy.cotes.info/categories/tutorial/). In the meanwhile, a copy of the tutorial is also available on the [Wiki](https://github.com/cotes2020/jekyll-theme-chirpy/wiki).
+
+## Contributing
+
+The old saying: "Tow heads are better than one. Five heads are better than two." So, welcome to report bugs, improve code quality or submit a new feature. For more information, see [contributing guidelines](.github/CONTRIBUTING.md).
+
+
+## Credits
+
+This theme is mainly built with [Jekyll](https://jekyllrb.com/) ecosystem, [Bootstrap](https://getbootstrap.com/), [Font Awesome](https://fontawesome.com/) and some other wonderful tools(their copyright information can be found in the relevant files).
+
+:tada:Thanks to all the volunteers who contributed to this project, their GitHub IDs are on [this list](https://github.com/cotes2020/jekyll-theme-chirpy/graphs/contributors). Also, I won't forget those guys who submitted the issues or unmerged PR because they reported bugs, shared ideas or inspired me to write more readable documentation.
+
+
+## Support
+
+If you enjoy this theme or find it helpful, please consider becoming my sponsor, I'd really appreciate it! Click the button <kbd>:heart:Sponsor</kbd> at the top of the [Home Page](https://github.com/cotes2020/jekyll-theme-chirpy) and choose a link that suits you to donate. This will encourage me and help me maintain this project.
+
 
 ## License
 
-The theme is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
+This work is published under [MIT](https://github.com/cotes2020/jekyll-theme-chirpy/blob/master/LICENSE) License.
