@@ -22,6 +22,17 @@ html {
   overflow-y: scroll;
 }
 
+/* 设置滚动条的样式 */
+::-webkit-scrollbar {
+  width:12px;
+  background-color: aqua;
+}
+
+/* 滚动槽 */
+::-webkit-scrollbar-track {
+  border-radius:10px;
+}
+
 body {
   line-height: 1.75rem;
   background: var(--main-wrapper-bg, #fafafa);
