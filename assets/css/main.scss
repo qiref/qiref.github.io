@@ -22,16 +22,38 @@ html {
   overflow-y: scroll;
 }
 
-/* 设置滚动条的样式 */
-::-webkit-scrollbar {
-  width:12px;
-  background-color: aqua;
-}
+/*滚动条的宽度*/
 
-/* 滚动槽 */
-::-webkit-scrollbar-track {
-  border-radius:10px;
-}
+    ::-webkit-scrollbar {
+        width:9px;
+        height:9px;
+    }
+
+/*外层轨道。可以用display:none让其不显示，也可以添加背景图片，颜色改变显示效果*/
+
+    ::-webkit-scrollbar-track {
+        width: 6px;
+        background-color:#0d1b20;
+        -webkit-border-radius: 2em;
+        -moz-border-radius: 2em;
+        border-radius:2em;
+    }
+
+/*滚动条的设置*/
+
+    ::-webkit-scrollbar-thumb {
+        background-color:#606d71;
+        background-clip:padding-box;
+        min-height:28px;
+        -webkit-border-radius: 2em;
+        -moz-border-radius: 2em;
+        border-radius:2em;
+    }
+/*滚动条移上去的背景*/
+
+    ::-webkit-scrollbar-thumb:hover {
+         background-color:#fff;
+    }
 
 body {
   line-height: 1.75rem;
