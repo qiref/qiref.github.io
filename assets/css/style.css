@@ -756,6 +756,7 @@ hr {
     font-family:  Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
     font-weight: normal !important;
     font-size: 13px;
+    margin-right: 10px;
 }
 
 .content a {
