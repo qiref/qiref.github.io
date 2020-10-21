@@ -44,7 +44,7 @@ public class Test {
 
 执行结果：线程update会一直执行，线程read不会执行，执行情况一直如此。
 
-![执行结果](https://raw.githubusercontent.com/YaoQi17/YaoQi17.github.io/master/static/img/_posts/Understanding_of_volatile_1.png)
+![执行结果]({{ "/assets/img/sample//Understanding_of_volatile_1.png" | relative_url }})
 
 ## volatile关键词如何保证可见性
 
@@ -52,7 +52,7 @@ public class Test {
 
 缓存的效率是比主存的速度快的，加入缓存的目的是为了提高访问速度，但是加入缓存后也出现了数据一致性的问题，尤其是在多线程的环境下。
 
-![执行结果](https://raw.githubusercontent.com/YaoQi17/YaoQi17.github.io/master/static/img/_posts/Understanding_of_volatile_2.png)
+![执行结果]({{ "/assets/img/sample//Understanding_of_volatile_2.png" | relative_url }})
 
 程序处理a++的具体流程：
 1、读取主存中的 a 到CPU Cache中。
