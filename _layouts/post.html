@@ -1,135 +1,66 @@
 ---
-layout: default
-# The posts' layout
-# v2.0
-# https://github.com/cotes2020/jekyll-theme-chirpy
-# © 2017-2019 Cotes Chung
-# MIT Licensed
 ---
 
-<div class="row">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta content="width=device-width, initial-scale=1" name="viewport" />
+    <meta content="Knowledge Continuum" property="og:site_name"/>
+    <meta content="A non-linear thread of important ideas weaved together to explore and understand the fabric of knowledge." property="og:description">
+    <meta content="{{ site.url }}/about/" property="article:author">
 
-  <div id="post-wrapper" class="col-12 col-lg-11 col-xl-8">
+    {%- if page.title -%}
+    <meta content="{{ page.title }}" property="og:title">
+    <meta content="article" property="og:type">
+    <meta content="{{ site.url }}{{ page.url }}" property="og:url">
+    {%- else -%}
+    <meta content="website" property="og:type">
+    <meta content="{{ site.url }}{{ page.url }}" property="og:url">
+    {%- endif -%}
 
-    <div class="post pl-1 pr-1 pl-sm-2 pr-sm-2 pl-md-4 pr-md-4">
+    <title>{{site.title}}</title>
 
-      <h1 data-toc-skip>{{ page.title }}</h1>
+    <link rel="canonical" href="{{site.url}}{{page.url}}"/>
+    <link rel="apple-touch-icon" href="{{site.profile_pic}}">
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css"/>
 
-      <div class="post-meta text-muted d-flex flex-column">
-        <!-- Published Date and Categoreis -->
-        <div>
-          <span class="timeago" data-toggle="tooltip" data-placement="bottom"
-           title="{{ page.date | date: site.data.date_format.tooltip }}">
-            {{ page.date | date: site.data.date_format.post }}
-            <i class="unloaded">{{ page.date | date_to_xmlschema }}</i>
-          </span>
-          {% if page.categories.size > 0 %}on{% endif %}
-          {% for category in page.categories %}
-            <a href='{{ site.baseurl }}/categories/{{ category | replace: ' ', '-' | downcase | url_encode }}/'>{{ category }}</a>
-            {%- unless forloop.last -%}, {%- endunless -%}
-          {% endfor %}
+    <link rel="icon" href="{{site.favicon}}" type="image/png" sizes="16x16"/>
+    <link href="/assets/css/style.css" rel="stylesheet" media="all" class="default"/>
+
+    <!--[if IE]>
+        <link href="/assets/css/ie-target.css" rel="stylesheet" type="text/css"/>
+    <![endif]-->
+    <!--<link href="/assets/css/prism.css" rel="stylesheet" />-->
+    <link rel="alternate" type="application/rss+xml" href="{{ site.url }}/feed.xml">
+</head>
+
+<body>
+    <div class="container">                    
+        <div class = "box">
+            {%- include header.html -%}
+            {%- include feed.html -%}
+
+            {%- if page.content-type == "notes" 
+                or page.content-type == "post" 
+                or page.content-type == "eg" -%}
+            <main>
+                <h1>{{page.title}}</h1>
+                {%- include content.html -%}
+                {%- include backlinks.html -%}
+                {%- include related.html -%}
+            </main>
+            {%- endif -%}
+            {%- include comments.html -%}
+            {%- include footer.html -%}
         </div>
-
-        <!-- page views -->
-        {% if site.google_analytics.pv %}
-        <div>
-          <span id="pv" class="pageviews"><i class="fas fa-spinner fa-spin fa-fw"></i></span> views
-        </div>
-        {% endif %}
-
-      </div> <!-- .post-meta -->
-
-      <div class="post-content">
-        {% if page.image %}
-        <img src="{{ page.image }}">
-        {% endif %}
-        <!-- Add lozad class into image tags. see: <https://github.com/ApoorvSaxena/lozad.js#usage> -->
-        {% if content contains '<img src=' %}
-          {% capture loading %}
-           {{ "/assets/img/commons/loading.png" | relative_url }}
-          {% endcapture %}
-          {% assign replacement = '<img class="lozad" src=' | append: loading | append: ' data-src=' %}
-          {{ content | replace: '<img src=', replacement }}
-        {% else %}
-          {{ content }}
-        {% endif %}
-      </div>
-
-      <div class="post-tail-wrapper text-muted">
-
-        <!-- lastmod -->
-        {% if page.seo.date_modified > page.date %}
-        <div>
-          Updated
-          <span class="timeago lastmod"
-            data-toggle="tooltip" data-placement="top"
-             title="{{ page.seo.date_modified | date: site.data.date_format.tooltip }}">
-            {{ page.seo.date_modified | date: site.data.date_format.post }}
-            <i class="unloaded">{{ page.seo.date_modified | date_to_xmlschema}}</i>
-          </span>
-        </div>
-        {% endif %}
-
-        <!-- Tags -->
-        {% if page.tags.size > 0 %}
-        <div class="pt-3">
-          {% for tag in page.tags %}
-          <a href="{{ site.baseurl }}/tags/{{ tag | replace: ' ', '-' | downcase | url_encode }}/"
-            class="post-tag no-text-decoration" >
-            {{- tag -}}
-          </a>
-          {% endfor %}
-          </div>
-        {% endif %}
-
-        <div class="post-tail-bottom
-          d-flex justify-content-between align-items-center pt-5 pb-2">
-
-          {% if site.data.right.license %}
-          <div class="license-wrapper">
-            <span class="license-text ml-1 mr-1">
-              {{ site.data.right.license.prompt }}
-              <a href="{{ site.data.right.license.link }}">
-                {{ site.data.right.license.name }}
-                {% for icon in site.data.right.license.icons %}
-                <i class="{{ icon }}"></i>
-                {% endfor %}
-              </a>
-            </span>
-          </div>
-          {% endif %}
-
-          {% include post-sharing.html %}
-
-        </div><!-- .post-tail-bottom -->
-
-      </div><!-- div.post-tail -->
-
-    </div> <!-- .post -->
-
-  </div> <!-- #post-wrapper -->
-
-  {% include panel.html %}
-
-</div> <!-- .row -->
-
-<div class="row">
-  <div id="post-extend-wrapper" class="col-12 col-lg-11 col-xl-8">
-
-    <div class="pl-1 pr-1 pl-sm-2 pr-sm-2 pl-md-4 pr-md-4">
-
-      {% include post-nav.html %}
-
-      {% if site.disqus.comments and page.comments %}
-        {% include disqus.html %}
-      {% endif %}
-
-      {% include related-posts.html %}
-
-    </div> <!-- .pl-1 pr-1 -->
-
-  </div> <!-- #post-extend-wrapper -->
-
-</div> <!-- .row -->
-
-{% include lozad.html %}
+        <button class="scroll-to-top" id="scroll-to-top"><i class="fa fa-chevron-up"></i></button>
+    </div>
+    <script type="text/javascript" async src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+    <script>
+        document.getElementById("scroll-to-top").addEventListener("click", function() {
+            window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
+        });
+    </script>
+    {%- include contextmenu.html -%}
+</body>
+</html>
