@@ -1,10 +1,10 @@
-title: Simply Jekyll
-name: John Doe
+title: Less is more.
+name: YaoQi
 user_description: Programmer (Interested in Philosophy and Math)
 notes_url: "https://yaoqi17.github.io/"
 profile_pic: /assets/img/profile.png
 favicon: /assets/img/favicon.png
-copyright_name: John Doe
+copyright_name: yaoqi17.github.io/
 baseurl: "/" # the subpath of your site, e.g. /blog
 url: "https://yaoqi17.github.io/" # the base hostname & protocol for your site, e.g. http://example.com
 encoding: utf-8
@@ -33,7 +33,9 @@ collections:
       permalink: /notes/:title
 
 disqus:
-  shortname: raghuveerdotnet
+  comments: true  # boolean type, the global switch for posts comments.
+  shortname: 'https-yaoqi17-github-io-1'    # Fill with your Disqus shortname. › https://help.disqus.com/en/articles/1717111-what-s-a-shortname
+
 
 defaults:
   - scope:
