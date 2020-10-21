@@ -217,8 +217,9 @@ But let's throw in a <b>tag</b>.
 </pre>
 
 ```javascript
-  var s = "JavaScript syntax highlighting";
+    var s = "JavaScript syntax highlighting";
   alert(s);
+    fuck
 ```
  
 ```python
