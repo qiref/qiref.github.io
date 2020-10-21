@@ -2,7 +2,9 @@
 layout: post
 title:  "Centos搭建公共yum源"
 date:   2020-01-04 00:18:23 +0700
-categories: [linux]
+categories: [Linux]
+tags:   Linux  Centos 
+comments: true
 ---
 
 摘要：记录在Centos7中如何挂载ISO镜像作yum源，并借助http服务作公共yum源。

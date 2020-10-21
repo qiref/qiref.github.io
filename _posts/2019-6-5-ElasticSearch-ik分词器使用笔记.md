@@ -3,6 +3,8 @@ layout: post
 title:  "ElasticSearch-ik分词器使用笔记"
 date:   2019-6-5 00:18:23 +0700
 categories: [ElasticSearch]
+tags:  ElasticSearch
+comments: true
 ---
 
 摘要：记录ElasticSearch使用IK分词器的一些技巧，以及IK的常见模式。
@@ -15,7 +17,7 @@ match查询会将查询词分词，然后对分词的结果进行term查询。
 
 新建索引，并指定分词策略：
 
-``` json
+```
 PUT mail_test3
 {
   "settings": {
@@ -73,7 +75,7 @@ analyzer 指的是在建索引时的分词策略，search_analyzer 指的是在�
 
 ik_smart分词策略：
 
-``` json
+```
 GET mail_test3/_analyze
 {
   "analyzer": "ik_smart",
@@ -83,7 +85,7 @@ GET mail_test3/_analyze
 
 结果：
 
-``` json
+```
 {
   "tokens": [
     {
@@ -136,7 +138,7 @@ GET mail_test3/_analyze
 
  ik_max_word分词策略：
 
-``` json
+```
 GET mail_test1/_analyze
 {
   "analyzer": "ik_max_word",
@@ -254,7 +256,7 @@ ik_max_word分词器的分词结果更多，分词的粒度更细，但是ik_sma
 
 这里的operator设置为or和and的差别较大，可以测试进行比较：
 
-``` json
+```
 GET mail_test3/_search
 {
   "query": {

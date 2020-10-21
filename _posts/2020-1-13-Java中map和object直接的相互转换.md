@@ -3,6 +3,8 @@ layout: post
 title:  "Java中map和object的相互转换"
 date:   2020-01-13 11:18:23 +0700
 categories: [Java]
+tags:   Java  
+comments: true
 ---
 
 摘要：记录Java中map和object相互转换的方法，并有代码示例。

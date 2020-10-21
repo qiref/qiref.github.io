@@ -3,6 +3,8 @@ layout: post
 title:  "spark学习笔记-RDD基础算子"
 date:   2019-07-27 00:18:23 +0700
 categories: [spark]
+tags:   Spark
+comments: true
 ---
 
 摘要：学习spark过程中的笔记，记录spark中的基础算子，以及RDD的基本概念。

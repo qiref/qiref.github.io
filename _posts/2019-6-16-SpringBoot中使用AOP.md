@@ -3,6 +3,8 @@ layout: post
 title:  "SpringBoot中使用AOP"
 date:   2019-06-16 00:18:23 +0700
 categories: [Java]
+tags:  Java
+comments: true
 ---
 
 摘要：Spring中如何使用注解实现面向切面编程，以及如何使用自定义注解。
