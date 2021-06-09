@@ -1,12 +1,12 @@
 title: Less is more.
-name: YaoQi
+name: ArchieYao
 user_description: Programmer (Interested in Philosophy and Math)
-notes_url: "https://yaoqi17.github.io/"
+notes_url: "https://archieyao.github.io/"
 profile_pic: /assets/img/profile.png
 favicon: /assets/img/favicon.png
-copyright_name: yaoqi17.github.io/
+copyright_name: archieyao.github.io/
 baseurl: "/" # the subpath of your site, e.g. /blog
-url: "https://yaoqi17.github.io/" # the base hostname & protocol for your site, e.g. http://example.com
+url: "https://archieyao.github.io/" # the base hostname & protocol for your site, e.g. http://example.com
 encoding: utf-8
 
 # Build settings
@@ -34,7 +34,7 @@ collections:
 
 disqus:
   comments: true  # boolean type, the global switch for posts comments.
-  shortname: 'https-yaoqi17-github-io-1'    # Fill with your Disqus shortname. › https://help.disqus.com/en/articles/1717111-what-s-a-shortname
+  shortname: 'archieyao-github-io'    # Fill with your Disqus shortname. › https://help.disqus.com/en/articles/1717111-what-s-a-shortname
 
 
 defaults:
