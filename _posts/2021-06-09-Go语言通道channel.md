@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Go语言通道channel"
-date:   2021-06-07 21:18:23 +0700
+date:   2021-06-09 21:18:23 +0700
 categories: [Go]
 tags:   Go
 comments: true
