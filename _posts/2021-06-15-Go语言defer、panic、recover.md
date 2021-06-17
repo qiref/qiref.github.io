@@ -27,7 +27,7 @@ func DeferDemo() {
 
 运行以上代码每次都是第二个println先输出，然后才是defer关键字修饰的println输出。
 
-如果有多个defer，输出顺序又回如何？
+如果有多个defer，输出顺序又会如何？
 
 ``` go
 func MultiDeferDemo() {
@@ -43,7 +43,7 @@ func MultiDeferDemo() {
 // defer  0
 ```
 
-每次最先输出的都是循环的最后一次println，可以得出：多个defer，运行顺序遵循LIFO规则。
+每次最先输出的都是循环的最后一个println，可以得出：多个defer，运行顺序遵循LIFO规则。
 
 defer的值传递问题。
 
