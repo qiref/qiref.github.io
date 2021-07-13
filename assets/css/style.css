@@ -142,9 +142,10 @@ code {
     word-wrap: break-word !important;       
     padding: 2px 2px  2px 2px;
     vertical-align:middle;
-    padding: 2px 2px 2px 2px;
+    padding: 0px 4px 0px 4px;
     border: 1px solid #e9e9e9;
     border-radius: 4px;
+    background: #f7f7f7;
 }
 
 .regular-sans code {
