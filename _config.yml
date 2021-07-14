@@ -36,8 +36,8 @@ comments: true
 
 # Gitalk settings
 comment_gitalk_clientId: c1c0a0d0a6757f360ba9
-comment_gitalk_clientSecret: 38451d013f0f609b44e9f0f835f047720efae666
-comment_gitalk_repo: archieyao.github.io
+comment_gitalk_clientSecret: 029e259d1670eb63283fbe755e58592f35975fc8
+comment_gitalk_repo: GithubPages-comment
 github_username: ArchieYao
 
 #disqus:
