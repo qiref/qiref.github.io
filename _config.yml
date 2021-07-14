@@ -14,7 +14,7 @@ theme: null
 plugins:
   - jekyll-feed 
   - jekyll-sitemap 
-
+  - jemoji
 markdown: kramdown
 
 kramdown:
