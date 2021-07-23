@@ -24,6 +24,16 @@ Kubernetes 集群中的 Pod 主要有两种用法：
 
 总结来说，pod就是逻辑上的主机。
 
+## pod常用命令
+
+``` shell
+kubectl describe po cluster-admin-0 -n default # 获取指定namespaces下的pod详情，可以看出container信息
+kubectl get pods --all-namespaces # 获取所有namespaces下的pod
+kubectl get pods -n default # -n 获取指定namaspaces下的pod
+kubectl get pod podname -nkube-system -oyaml # 获取pod的详情，-oyaml 以yaml格式输出，也可以 -ojson
+kubectl exec -it taskcenter-0 -c loglistener -noceanus /bin/bash # 进入某个pod下的cotainer
+kubectl logs tke-log-agent-2687c -c loglistener # 获取某个pod下cotainer的log，也可以加 -f 参数，类似于 tail -f
+```
 
 参考：
 
