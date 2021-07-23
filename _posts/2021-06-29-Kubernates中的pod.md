@@ -24,6 +24,14 @@ Kubernetes 集群中的 Pod 主要有两种用法：
 
 总结来说，pod就是逻辑上的主机。
 
+## pod生命周期
+
+* Pending：表示pod已经被同意创建，正在等待kube-scheduler选择合适的节点创建，一般是在准备镜像；
+* Running：表示pod中所有的容器已经被创建，并且至少有一个容器正在运行或者是正在启动或者是正在重启；
+* Succeeded：表示所有容器已经成功终止，并且不会再启动；
+* Failed：表示pod中所有容器都是非0（不正常）状态退出；
+* Unknown：表示无法读取Pod状态，通常是kube-controller-manager无法与Pod通信。
+
 ## pod常用命令
 
 ``` shell
