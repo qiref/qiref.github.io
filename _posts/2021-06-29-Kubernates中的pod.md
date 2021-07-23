@@ -32,7 +32,7 @@ Kubernetes 集群中的 Pod 主要有两种用法：
 * Failed：表示pod中所有容器都是非0（不正常）状态退出；
 * Unknown：表示无法读取Pod状态，通常是kube-controller-manager无法与Pod通信。
 
-## 创建pod流程
+### 创建pod流程
 
 1. 客户端提交Pod的配置信息（可以是yaml文件定义好的信息）到kube-apiserver；
 2. Apiserver收到指令后，通知给controller-manager创建一个资源对象；
@@ -40,6 +40,12 @@ Kubernetes 集群中的 Pod 主要有两种用法：
 4. Kube-scheduler检测到pod信息会开始调度预选，会先过滤掉不符合Pod资源配置要求的节点，然后开始调度调优，主要是挑选出更适合运行pod的节点，然后将pod的资源配置单发送到node节点上的kubelet组件上。
 5. Kubelet根据scheduler发来的资源配置单运行pod，运行成功后，将pod的运行信息返回给scheduler，scheduler将返回的pod运行状况的信息存储到etcd数据中心。
 
+### 删除pod流程
+
+1. pod从service的endpoint列表中被移除；
+2. 如果该pod定义了一个停止前的钩子，其会在pod内部被调用，停止钩子一般定义了如何优雅的结束进程；
+3. 进程被发送TERM信号（kill -14）；
+4. 当超过优雅退出的时间后，Pod中的所有进程都会被发送SIGKILL信号（kill -9）。
 
 ## pod常用命令
 
