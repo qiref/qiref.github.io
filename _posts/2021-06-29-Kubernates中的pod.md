@@ -58,6 +58,14 @@ kubectl exec -it taskcenter-0 -c loglistener -noceanus /bin/bash # 进入某个p
 kubectl logs tke-log-agent-2687c -c loglistener # 获取某个pod下cotainer的log，也可以加 -f 参数，类似于 tail -f
 ```
 
+## 创建pod的方式
+
+pod本身不具备故障重启以及副本等功能，一般使用其他的资源创建pod。
+
+* ReplicaSet 替代 ReplicationController，可以始终保持所需数量的pod副本正在运行，ReplicaSet具备更强的selector expression。
+* DaemonSet可以确保每个节点都运行一个pod实例，而ReplicaSet 和 ReplicationController 会将pod随机安排到集群节点。
+* Job可以创建批处理任务，可以在Job中运行一个或多个pod，周期性运行或在某个时间运行的Job可以通过CronJob实现。
+
 参考：
 
 <https://kubernetes.io/zh/docs/concepts/workloads/pods/>

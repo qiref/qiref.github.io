@@ -158,6 +158,10 @@ Successfully rebased and updated refs/heads/master.
 
 
 
+如果后续推送到远程，需要 ``` git push origin --force xxx ``` ，强制覆盖远程代码。
+
+
+
 ## 同步master代码
 
 开发时，从master上checkout一个dev分支，开发一段时间后，master上的代码有更新，这时从master上拉取更新。
