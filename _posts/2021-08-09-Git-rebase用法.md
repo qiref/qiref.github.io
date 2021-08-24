@@ -175,9 +175,14 @@ git rebase --abort
 
 在rebase的过程中，也许会出现冲突(conflict)，在这种情况，Git会停止rebase并会让你去解决冲突；
 
+``` shell
+git add conflict file
+git rebase --continue
+```
+
 在解决完冲突后，用```git-add```去更新这些内容的索引(index)， 然后，你无需执行 git-commit,只要执行: ``` git rebase --continue ```这样git会继续应用(apply)余下的补丁。
 
-在任何时候，你可以用``` git rebase --abor```t来终止rebase的行动，并且"mywork" 分支会回到rebase开始前的状态。
+在任何时候，你可以用``` git rebase --abort```来终止rebase的行动，并且"mywork" 分支会回到rebase开始前的状态。
 
 git merge 与 git rebase 的最终效果是一致的，但git merge会产生合并记录，使用git rebase 会让分支看起来没有合并一样。
 
