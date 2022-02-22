@@ -22,6 +22,8 @@ cd flink-1.14.3
 ./bin/start-cluster.sh
 ```
 
+运行成功后，可以在 IP:8081 访问 Flink-UI
+
 ## Flink Word Count job
 
 source 是多段文本，类型： DataSource<String> ，经过 flatMap，切分为每个单词，然后转换为：(val,n) 的数据，然后根据 val 分组统计，得出 sum(n) 的值。
@@ -41,7 +43,8 @@ public static void main(String[] args) throws Exception {
         );
 
         // 通过Flink内置转换函数进行计算
-        AggregateOperator<Tuple2<String, Integer>> sum = text.flatMap(new FlatMapFunction<String, Tuple2<String, Integer>>() {
+        AggregateOperator<Tuple2<String, Integer>> sum = text.flatMap(new 
+		FlatMapFunction<String, Tuple2<String, Integer>>() {
             @Override
             public void flatMap(String value, Collector<Tuple2<String, Integer>> collector) throws Exception {
                 String[] split = value.split("\\W+");
@@ -56,7 +59,7 @@ public static void main(String[] args) throws Exception {
         // 打印结果
         sum.print();
     }
-	```
+```
 
 Job 可以直接运行，也可以提交到 Flink 集群中运行。
 
