@@ -98,7 +98,7 @@ executionEnvironment.enableCheckpointing(10);
 
 ## Checkpoint 流程
 
-<img src="/assets/img/checkpoint-flow.png" width="70%">
+<img src="/assets/img/checkpoint-flow.png" width="90%">
 
 Chekcpoint 是由 jobmanager 中的 CheckpointCoordinator 发起的，CheckpointCoordinator 是一个类，Flink 中具体描述如下：
 
@@ -120,9 +120,11 @@ CheckpointCoordinator 会调度task 进行 checkpoint，并接收来自 tasks �
 
 在 Flink 的 stream 中，每一次的 Checkpoint 被 barrier 分割：
 
-<img src="/assets/img/stream_barriers.svg" width="80%">
+<img src="/assets/img/stream_barriers.svg" width="70%">
+
 
 当算子接收到不止一个 steam 时，barrier 到达算子的顺序会不一致，此时，算子会停止处理新的数据，等到剩余的 barrier 到达算子后，才开始进行 Checkpoint，这就是 `Barrier Alignment` 。
+
 
 <img src="/assets/img/stream_aligning.svg" width="90%">
 
