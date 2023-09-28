@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en-zh">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title> Go语言接口 | Hugo Prose</title>
+    
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/combine/npm/@xiee/utils/css/article.min.css,npm/@xiee/utils/css/heading-anchor.min.css">
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/fonts.css" />
+    <link rel="stylesheet" href="/css/custom.css" />
+    <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Go语言接口"/>
+<meta name="twitter:description" content="摘要：Go支持接口，接口是方法特征的命名集合。
+go语言接口 go语言中有接口的概念，接口是方法特征的命名集合。它把所有的具有共性的方法定义在一起，任何其他类型只要实现了这些方法就是实现了这个接口。
+注意，实现了这些方法就算实现了这个接口。
+定义接口 // 定义geometry接口 type geometry interface { area() float64 peri() float64 } 接口的定义也比较简单。定义和实现规则如下：
+/* 定义接口 */ type interface_name interface { method_name1 [return_type] method_name2 [return_type] method_name3 [return_type] ... method_namen [return_type] } /* 定义结构体 */ type struct_name struct { /* variables */ } /* 实现接口方法 */ func (struct_name_variable struct_name) method_name1() [return_type] { /* 方法实现 */ } ... func (struct_name_variable struct_name) method_namen() [return_type] { /* 方法实现*/ } 实现接口 Go语言中接口的实现都是隐式的，默认实现了接口的所有方法就隐式地实现了接口。"/>
+
+
+  </head>
+
+  <body>
+
+    <nav class="menu">
+    <ul>
+      <li class="left">
+        <a href="/"><span>Hugo Prose</span></a>
+      </li>
+      
+      <li id="menu-search">
+        <a href="/#">Search</a>
+      </li>
+      
+      <li>
+        <a href="/index.xml">Subscribe</a>
+      </li>
+      
+    </ul>
+    </nav>
+
+
+<div class="container single">
+<main>
+
+<div class="article-meta">
+<h1><span class="title">Go语言接口</span></h1>
+
+<h3 class="date">2021-06-05</h3>
+<p class="terms">
+  
+  
+  
+  
+  Tags: <a href="/tags/go">Go</a> 
+  
+  
+</p>
+</div>
+
+<div class="article">
+<p>摘要：Go支持接口，接口是方法特征的命名集合。</p>
+<hr>
+<h1 id="go语言接口">go语言接口</h1>
+<p>go语言中有接口的概念，接口是方法特征的命名集合。它把所有的具有共性的方法定义在一起，任何其他类型只要实现了这些方法就是实现了这个接口。</p>
+<p>注意，实现了这些方法就算实现了这个接口。</p>
+<h2 id="定义接口">定义接口</h2>
+<pre><code class="language-go">// 定义geometry接口
+type geometry interface {
+	area() float64
+	peri() float64
+}
+</code></pre>
+<p>接口的定义也比较简单。定义和实现规则如下：</p>
+<pre><code class="language-go">/* 定义接口 */
+type interface_name interface {
+   method_name1 [return_type]
+   method_name2 [return_type]
+   method_name3 [return_type]
+   ...
+   method_namen [return_type]
+}
+
+/* 定义结构体 */
+type struct_name struct {
+   /* variables */
+}
+
+/* 实现接口方法 */
+func (struct_name_variable struct_name) method_name1() [return_type] {
+   /* 方法实现 */
+}
+...
+func (struct_name_variable struct_name) method_namen() [return_type] {
+   /* 方法实现*/
+}
+</code></pre>
+<h2 id="实现接口">实现接口</h2>
+<p>Go语言中接口的实现都是隐式的，默认实现了接口的所有方法就隐式地实现了接口。</p>
+<p>假如现已定义上文中的geometry接口，现在要实现该接口。</p>
+<pre><code class="language-go">// 定义rect结构体
+type rect struct {
+	width, height float64
+}
+
+// rect 实现geometry接口，实现接口的方式与定义方法类似
+func (r rect) area() float64 {
+	return r.width * r.height
+}
+
+// rect 实现geometry接口，只有实现了接口的所有方法才算实现接口
+func (r rect) peri() float64 {
+	return r.height*2 + r.width*2
+}
+</code></pre>
+<p>注意：只有实现了接口的所有方法才算实现接口。</p>
+<p>调用方式：</p>
+<pre><code class="language-go">var geo1 geometry = rect{height: 1, width: 3}
+fmt.Println(&quot;geo1.area()&quot;, geo1.area())
+fmt.Println(&quot;geo1.peri()&quot;, geo1.peri())
+</code></pre>
+<p>接口也可以作为函数参数，传参传入具体的实现。</p>
+<pre><code class="language-go">// 定义调用接口方法的函数
+func measure(g geometry) {
+	fmt.Println(g.peri())
+	fmt.Println(g.area())
+}
+
+// --- main()
+rect1 := rect{height: 3, width: 2}
+measure(rect1)
+</code></pre>
+<h2 id="接口类型">接口类型</h2>
+<p>接口也是Go语言中的一种类型，这种类型可以出现在变量的定义、函数的入参、函数的返回值中。</p>
+<pre><code class="language-go">// define Print
+func Print(i interface{}) {
+	fmt.Println(i)
+}
+
+v1 := 22
+v2 := &quot;ss&quot;
+v3 := make([]string, 1)
+v3 = append(v3, &quot;333&quot;)
+
+Print(v1)
+Print(v2)
+Print(v3)
+
+// 结果
+// 22
+// ss
+// [ 333]
+</code></pre>
+<p>Print()函数中，参数为interface{}类型，但并不是任意类型，在调用函数时，将参数转换成了interface{}类型，这里是类型转换。</p>
+<h2 id="接口和指针">接口和指针</h2>
+<p>看以下两个例子：</p>
+<ol>
+<li>通过结构体实现接口</li>
+</ol>
+<pre><code class="language-go">// 定义rect结构体
+type rect struct {
+	width, height float64
+}
+
+// rect 实现geometry接口，实现接口的方式与定义方法类似
+func (r rect) area() float64 {
+	return r.width * r.height
+}
+
+// rect 实现geometry接口，只有实现了接口的所有方法才算实现接口
+func (r rect) peri() float64 {
+	return r.height*2 + r.width*2
+}
+</code></pre>
+<ol start="2">
+<li>通过结构体指针实现接口</li>
+</ol>
+<pre><code class="language-go">// 定义rect结构体
+type rect struct {
+	width, height float64
+}
+
+// rect 实现geometry接口，实现接口的方式与定义方法类似
+func (r *rect) area() float64 {
+	return r.width * r.height
+}
+
+// rect 实现geometry接口，只有实现了接口的所有方法才算实现接口
+func (r *rect) peri() float64 {
+	return r.height*2 + r.width*2
+}
+</code></pre>
+<p>在Go语言中，结构体实现接口有两种方式，通过结构体实现、通过结构体指针实现。但两种方式不能同时存在，这两种实现方式也会导致接口的调用有些差别。</p>
+<pre><code class="language-go">var geo1 geometry = rect{height: 1, width: 3} // 使用结构体初始化变量
+var geo1 geometry = &amp;rect{height: 1, width: 3} // 使用结构体指针初始化变量
+</code></pre>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>结构体实现接口</th>
+<th>结构体指针实现接口</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>结构体指针初始化变量</td>
+<td>通过</td>
+<td>通过</td>
+</tr>
+<tr>
+<td>结构体初始化变量</td>
+<td>通过</td>
+<td>不通过</td>
+</tr>
+</tbody>
+</table>
+<p>当使用结构体实现接口时，无论初始化变量是结构体还是结构体指针，都可以编译通过；当使用结构体指针实现接口时，初始化变量为结构体时无法编译通过。</p>
+<p>为什么使用结构体指针实现接口时，初始化变量为结构体时无法编译通过？</p>
+<p>原因是在函数调用阶段，Go语言在传递参数时都是值传递。无论初始变量是rect{}还是&amp;rect{}，在调用方法时都会发生值拷贝。</p>
+<ul>
+<li>对于&amp;rect{}来说，方法调用阶段会拷贝一个新的&amp;rect{}指针，新的指针与原来的指针都指向同一个结构体，所以编译器可以隐式地解引用（dereference），获取到原始的结构体。</li>
+<li><strong>对于rect{}来说，方法调用阶段会拷贝一个新的结构体，这是一个全新的rect{}，但因为方法的参数是*rect，编译器不会无中生有创建一个新的指针，就算创建新的指针，也不会指向原始的结构体。</strong></li>
+</ul>
+<p>当我们使用指针实现接口时，只有指针类型的变量才会实现该接口；当我们使用结构体实现接口时，指针类型和结构体类型都会实现该接口。当然这并不意味着我们应该一律使用结构体实现接口，这个问题在实际工程中也没那么重要。</p>
+<h2 id="再谈接口类型">再谈接口类型</h2>
+<p>了解了接口参数的隐式转换后，再看上文提到的，接口不是任何一种类型，看以下示例：</p>
+<pre><code class="language-go">type TestStruct struct{}
+
+func NilOrNot(v interface{}) bool {
+	return v == nil
+}
+
+func main() {
+	var s *TestStruct
+	fmt.Println(s == nil)      //  true
+	fmt.Println(NilOrNot(s))   //  false
+}
+</code></pre>
+<p>调用<code>NilOrNot</code>函数时，发生了隐式类型转换，除了向方法传入参数之外，变量的赋值也会触发隐式类型转换，在转换过程中，<code>*TestStruct</code>类型会转换为<code>interface{}</code>类型，转换后的变量不仅包含转换前的变量，还包含变量的类型信息，所以转换后的变量与 nil 不相等。</p>
+
+</div>
+</main>
+
+<section class="appendix">
+
+
+
+
+
+<div>
+  <div class="side side-left"><h3>重复使用</h3></div>
+  Text and figures are licensed under <a href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution CC BY 4.0</a>. The source code is licensed under MIT. The full source is available at <a href="https://github.com/yihui/hugo-prose">https://github.com/yihui/hugo-prose</a>.
+</div>
+
+
+
+<div>
+  <div class="side side-left"><h3>欢迎修订</h3></div>
+  
+  
+  
+    
+    
+  
+  如果您发现本文里含有任何错误（包括错别字和标点符号），欢迎<a href="https://github.com/yihui/hugo-prose/edit/master/exampleSite/content/post/2021-06-05-Go%e8%af%ad%e8%a8%80%e6%8e%a5%e5%8f%a3.md" id="edit-link">在本站的 GitHub 项目里提交修订意见。</a>
+</div>
+
+
+
+
+</section>
+
+
+
+<nav class="post-nav">
+  <span class="nav-next">&larr; <a href="/post/2021/06/05/go%E8%AF%AD%E8%A8%80%E6%8C%87%E9%92%88/" title=下一篇&#32;(旧)>Go语言指针</a></span>
+  &hercon;
+  <span class="nav-prev"><a href="/post/2021/06/09/go%E8%AF%AD%E8%A8%80%E9%80%9A%E9%81%93channel/" title=上一篇&#32;(新)>Go语言通道channel</a> &rarr;</span>
+</nav>
+
+
+
+
+
+</div>
+
+
+  <footer>
+  
+
+
+
+
+
+
+<script src="https://cdn.jsdelivr.net/combine/npm/@xiee/utils/js/number-sections.min.js,npm/@xiee/utils/js/toc.min.js,npm/@xiee/utils/js/toc-highlight.min.js,npm/@xiee/utils/js/sidenotes.min.js,npm/@xiee/utils/js/right-quote.min.js,npm/@xiee/utils/js/center-img.min.js,npm/@xiee/utils/js/fix-pandoc.min.js,npm/@xiee/utils/js/heading-anchor.min.js" defer></script>
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rstudio/markdown/inst/resources/prism-xcode.css">
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-core.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/autoloader/prism-autoloader.min.js" defer></script>
+
+
+  <div class="footer">
+  
+  <ul class="copyright">
+    <li>© <a href="https://en.wikipedia.org/wiki/Seneca_the_Younger">Lucius Annaeus Seneca</a> 4 BC &ndash; AD 65</li>
+  </ul>
+  
+  <ul>
+    
+    <li>
+      <a href="/404.html">Contact</a>
+    </li>
+    
+    <li class="optional">
+      <a href="/categories/">Categories</a>
+    </li>
+    
+    <li class="optional">
+      <a href="/tags/">Tags</a>
+    </li>
+    
+    <li id="menu-edit">
+      <a href="#">Suggest an edit</a>
+    </li>
+    
+    <li>
+      <a href="#">Back to top</a>
+    </li>
+    
+  </ul>
+  </div>
+  
+  </footer>
+  <script src="/js/features.js" defer></script>
+  </body>
+</html>
+

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>SpringBoot on Hugo Prose</title>
+    <link>/tags/springboot/</link>
+    <description>Recent content in SpringBoot on Hugo Prose</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-zh</language>
+    <lastBuildDate>Thu, 11 Jul 2019 00:18:23 +0000</lastBuildDate><atom:link href="/tags/springboot/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>SpringBoot HBase</title>
+      <link>/post/2019/07/11/springboot-hbase/</link>
+      <pubDate>Thu, 11 Jul 2019 00:18:23 +0000</pubDate>
+      
+      <guid>/post/2019/07/11/springboot-hbase/</guid>
+      <description>摘要:记录自己写的一个基于SpringBoot操作HBase的组件，支持kerberos认证方式访问，本文相当于API文档。
+HBase 组件接口文档 源码地址：https://github.com/YaoQi17/HBase-Component
+使用说明 基本概念
+table: 表
+columnFamily:列族，一个表下可以有多个列族，但是不建议设置多个列族，HBase建议设计长窄型的表而不是短宽型。
+qualifier:列，一个列族下可以有多列，一个表中的列可以是不对齐的，但是这样效率不高，同一张表中的列最好是相同的。
+cell:一列数据下的一个单元格，一个列下可以有多个单元格，根据版本号区分，默认每次读取最新版本的数据，cell下的存储是数据本身。
+row: 行，多列数据组成一行，一行中有多个qualifier。
+rowKey: 行健，用于唯一标识一行数据，一行下有多列，行健的设计直接关系到查询的效率。
+HBase配置 以下配置为最基础配置，缺一不可。
+HBase: conf: quorum: 192.168.80.234:2181,192.168.80.235:2181,192.168.80.241:2181 znodeParent: /hbase-unsecure #如果有更多配置，写在config下，例如： #config: # key: value # key: value 如果需要更多配置，需要在config中配置，以key-value的形式书写。
+参数说明 quorum是HBase中zookeeper的配置，znodeParent是HBase配置在zookeeper中的路径。
+简单示例 引入组件jar包：
+&amp;lt;dependency&amp;gt; &amp;lt;groupId&amp;gt;com.semptian.hbase.component&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;hbase-component&amp;lt;/artifactId&amp;gt; &amp;lt;version&amp;gt;1.0.1-SNAPSHOT&amp;lt;/version&amp;gt; &amp;lt;/dependency&amp;gt; 在需要的地方注入HBaseOperations接口，该接口的实现类是HBaseTemplate，通过这个类来操作HBase。
+@Autowired private HBaseOperations hBaseDao; 查询一条数据，通过rowKey查询：
+public void testQueryTable() { Result result = hBaseDao.queryByTableNameAndRowKey( &amp;quot;LBS&amp;quot;, 9223372036854775803L); System.out.println(result.isEmpty()); result.listCells().forEach(cell -&amp;gt; { System.out.println( &amp;quot;row:&amp;quot; + Bytes.toLong(CellUtil.cloneRow(cell)) + &amp;quot;,family:&amp;quot;+ Bytes.toString(CellUtil.cloneFamily(cell)) + &amp;quot;, qualifier: &amp;quot; + Bytes.</description>
+    </item>
+    
+  </channel>
+</rss>

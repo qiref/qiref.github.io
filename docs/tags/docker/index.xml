@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Docker on Hugo Prose</title>
+    <link>/tags/docker/</link>
+    <description>Recent content in Docker on Hugo Prose</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-zh</language>
+    <lastBuildDate>Wed, 23 Jun 2021 10:18:23 +0000</lastBuildDate><atom:link href="/tags/docker/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Docker构建Go工程镜像</title>
+      <link>/post/2021/06/23/docker%E6%9E%84%E5%BB%BAgo%E5%B7%A5%E7%A8%8B%E9%95%9C%E5%83%8F/</link>
+      <pubDate>Wed, 23 Jun 2021 10:18:23 +0000</pubDate>
+      
+      <guid>/post/2021/06/23/docker%E6%9E%84%E5%BB%BAgo%E5%B7%A5%E7%A8%8B%E9%95%9C%E5%83%8F/</guid>
+      <description>摘要：Docker构建Go工程镜像。
+工程 工程是一个比较简单的Http server的demo，现在将这个工程构建为docker镜像。
+import ( &amp;quot;fmt&amp;quot; &amp;quot;log&amp;quot; &amp;quot;net/http&amp;quot; ) func Init() { log.Println(&amp;quot;start server&amp;quot;) http.HandleFunc(&amp;quot;/hello_world&amp;quot;, HelloWorld) http.Handle(&amp;quot;/test_handle&amp;quot;, &amp;amp;TestHandleStruct{content: &amp;quot;test handle&amp;quot;}) if err := http.ListenAndServe(&amp;quot;:8080&amp;quot;, nil); err != nil { log.Println(&amp;quot;start server on 8080&amp;quot;) } log.Fatal(&amp;quot;start server failed.&amp;quot;) } func main() { // 启动HTTP服务 server.Init() } 构建 需要在工程根目录下新建一个Dockerfile
+内容如下：
+# 拉取Go语言的版本 FROM golang:1.16 # 在容器内设置工作目录 WORKDIR /app # 把文件复制到当前工作目录 COPY . . FROM alpine:latest as prod # 设置GOPROXY的环境变量 ENV GOPROXY=&amp;quot;https://goproxy.cn&amp;quot; # 编译项目 #RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o .</description>
+    </item>
+    
+    <item>
+      <title>Docker入门</title>
+      <link>/post/2021/06/21/docker%E5%85%A5%E9%97%A8/</link>
+      <pubDate>Mon, 21 Jun 2021 10:18:23 +0000</pubDate>
+      
+      <guid>/post/2021/06/21/docker%E5%85%A5%E9%97%A8/</guid>
+      <description>摘要：Docker简单使用。
+Docker 是一个开源的应用容器引擎，基于 Go 语言开发，并遵从 Apache2.0 协议开源。 Docker 可以让开发者打包他们的应用以及依赖包到一个轻量级、可移植的容器中，然后发布到任何流行的 Linux 机器上，也可以实现虚拟化。 容器是完全使用沙箱机制，相互之间不会有任何接口（类似 iPhone 的 app）,更重要的是容器性能开销极低。
+Docker下载地址：https://www.docker.com/get-started
+安装完成后，才可以执行docker的相关命令。
+$ docker system info Client: Context: default Debug Mode: false Plugins: buildx: Build with BuildKit (Docker Inc., v0.5.1-docker) compose: Docker Compose (Docker Inc., 2.0.0-beta.3) scan: Docker Scan (Docker Inc., v0.8.0) Server: Containers: 0 Running: 0 Paused: 0 Stopped: 0 Images: 0 Server Version: 20.10.7 Storage Driver: overlay2 Backing Filesystem: extfs Supports d_type: true Native Overlay Diff: true userxattr: false Logging Driver: json-file Cgroup Driver: cgroupfs Cgroup Version: 1 Plugins: Volume: local Network: bridge host ipvlan macvlan null overlay Log: awslogs fluentd gcplogs gelf journald json-file local logentries splunk syslog Swarm: inactive Runtimes: runc io.</description>
+    </item>
+    
+  </channel>
+</rss>

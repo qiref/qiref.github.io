@@ -1,0 +1,24 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Hugo Prose</title>
+    <link>/</link>
+    <description>Recent content on Hugo Prose</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-zh</language>
+    <lastBuildDate>Wed, 09 Aug 2023 10:39:17 +0800</lastBuildDate>
+    <atom:link href="/" rel="self" type="application/rss+xml" />
+
+    
+      <item>
+        <title>Posts</title>
+        <link>/post/</link>
+        <pubDate>Wed, 09 Aug 2023 10:39:17 +0800</pubDate>
+        
+        <guid>/post/</guid>
+        <description>
+          
+        </description>
+      </item>
+    
+  </channel>
+</rss>

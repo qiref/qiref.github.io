@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Tags on Hugo Prose</title>
+    <link>/tags/</link>
+    <description>Recent content in Tags on Hugo Prose</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-zh</language>
+    <lastBuildDate>Wed, 09 Aug 2023 10:39:17 +0800</lastBuildDate><atom:link href="/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Algorithm</title>
+      <link>/tags/algorithm/</link>
+      <pubDate>Wed, 09 Aug 2023 10:39:17 +0800</pubDate>
+      
+      <guid>/tags/algorithm/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Paper</title>
+      <link>/tags/paper/</link>
+      <pubDate>Wed, 09 Aug 2023 10:39:17 +0800</pubDate>
+      
+      <guid>/tags/paper/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Java</title>
+      <link>/tags/java/</link>
+      <pubDate>Mon, 26 Jun 2023 21:55:00 +0800</pubDate>
+      
+      <guid>/tags/java/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>JVM</title>
+      <link>/tags/jvm/</link>
+      <pubDate>Mon, 26 Jun 2023 21:55:00 +0800</pubDate>
+      
+      <guid>/tags/jvm/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Go</title>
+      <link>/tags/go/</link>
+      <pubDate>Fri, 28 Apr 2023 15:57:51 +0800</pubDate>
+      
+      <guid>/tags/go/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Flink</title>
+      <link>/tags/flink/</link>
+      <pubDate>Tue, 28 Mar 2023 20:31:01 +0800</pubDate>
+      
+      <guid>/tags/flink/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>arthas</title>
+      <link>/tags/arthas/</link>
+      <pubDate>Wed, 22 Mar 2023 21:29:21 +0800</pubDate>
+      
+      <guid>/tags/arthas/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>ProtoBuf</title>
+      <link>/tags/protobuf/</link>
+      <pubDate>Tue, 11 Jan 2022 00:18:23 +0000</pubDate>
+      
+      <guid>/tags/protobuf/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Log4j</title>
+      <link>/tags/log4j/</link>
+      <pubDate>Wed, 25 Aug 2021 00:18:23 +0000</pubDate>
+      
+      <guid>/tags/log4j/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Git</title>
+      <link>/tags/git/</link>
+      <pubDate>Mon, 09 Aug 2021 00:18:23 +0000</pubDate>
+      
+      <guid>/tags/git/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Kubernates</title>
+      <link>/tags/kubernates/</link>
+      <pubDate>Tue, 29 Jun 2021 10:18:23 +0000</pubDate>
+      
+      <guid>/tags/kubernates/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Docker</title>
+      <link>/tags/docker/</link>
+      <pubDate>Wed, 23 Jun 2021 10:18:23 +0000</pubDate>
+      
+      <guid>/tags/docker/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>MySQL</title>
+      <link>/tags/mysql/</link>
+      <pubDate>Wed, 21 Oct 2020 11:18:23 +0000</pubDate>
+      
+      <guid>/tags/mysql/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Linux</title>
+      <link>/tags/linux/</link>
+      <pubDate>Sat, 14 Dec 2019 00:18:23 +0000</pubDate>
+      
+      <guid>/tags/linux/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Spark</title>
+      <link>/tags/spark/</link>
+      <pubDate>Sat, 27 Jul 2019 00:18:23 +0000</pubDate>
+      
+      <guid>/tags/spark/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>DesignPatterns</title>
+      <link>/tags/designpatterns/</link>
+      <pubDate>Thu, 11 Jul 2019 00:18:23 +0000</pubDate>
+      
+      <guid>/tags/designpatterns/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>HBase</title>
+      <link>/tags/hbase/</link>
+      <pubDate>Thu, 11 Jul 2019 00:18:23 +0000</pubDate>
+      
+      <guid>/tags/hbase/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>SpringBoot</title>
+      <link>/tags/springboot/</link>
+      <pubDate>Thu, 11 Jul 2019 00:18:23 +0000</pubDate>
+      
+      <guid>/tags/springboot/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

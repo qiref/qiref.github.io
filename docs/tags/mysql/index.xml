@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>MySQL on Hugo Prose</title>
+    <link>/tags/mysql/</link>
+    <description>Recent content in MySQL on Hugo Prose</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-zh</language>
+    <lastBuildDate>Wed, 21 Oct 2020 11:18:23 +0000</lastBuildDate><atom:link href="/tags/mysql/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>MySQL执行计划</title>
+      <link>/post/2020/10/21/mysql%E6%89%A7%E8%A1%8C%E8%AE%A1%E5%88%92/</link>
+      <pubDate>Wed, 21 Oct 2020 11:18:23 +0000</pubDate>
+      
+      <guid>/post/2020/10/21/mysql%E6%89%A7%E8%A1%8C%E8%AE%A1%E5%88%92/</guid>
+      <description>什么是SQL执行计划 EXPLAIN命令是查看查询优化器如何决定执行查询的主要的方法，学会解释EXPLAIN将帮助我们了解SQL优化器是如何工作的。执行计划可以告诉我们SQL如何使用索引，连接查询的执行顺序，查询的数据行数。 要使用EXPLAIN,只需要在查询的SELECT关键字之前增加EXPLAIN这个词。
+执行计划参数说明 id 是一位数字，表示select语句的顺序。 id值相同时，执行顺序从上到下。id值不同时，id值大的先执行。
+select_type 这一列显示了对应行是简单还是复杂的select，如果是simple意味着查询不包括子查询和UNION。
+select type 说明 SIMPLE 不包含子查询和union操作 PRIMARY 查询中包含任何子查询，那么最外层的查询则被标记为PRIMARY SUBQUERY select中的子查询 DEPENDENT SUBQUERY 依赖外部结果的子查询 partitions 对于分区表，显示查询的分区id，对于非分区表，显示为NULL。
+type select type 值 说明 性能 值 含义 高 system 这是const联接类型的一个特例，当查询的表只有一行时使用。 const 表中有且只有一个匹配的行时使用，如对主键或是唯一索引的查询，这是效率最高的联接方式。 eq_ref 唯一索引或主键索引查找，对于每个索引，表中只有一条记录与之匹配。 ref 非唯一索引，查找，返回某个单独值的所有行。 ref_or_null 类似于ref类型的查询，但是附加了对null值列的查询。 index_merge 该联接类型表示使用了索引合并优化方法。 range 索引范围扫描，常见于betwteen、&amp;gt;、&amp;lt;这样的查询条件。 index FULL INDEX SCAN 全索引扫描，跟ALL的区别是这里遍历的是索引树。 低 ALL	FULL TABLE SCAN 全表扫描，这是效率最差的联接方式。 possible keys 指出MySQL能使用哪些索引来优化查询，查询所涉及的列上的索引都会被列出，但不一定会被使用。
+key 查询优化器优化查询实际所使用的索引，如果没有可用的索引，则显示为NULL，如查询使用了覆盖索引，则该索引仅出现在列中。
+key_len 表示索引字段的最大可能长度，key_len的长度由字段定义而来，并非数据的实际长度。
+ref 表示哪些列或者常量被用于查找索引列上的值。
+rows 表示MySQL通过哪些列或者常量被用于查找索引列山的值，rows值的大小是个统计抽样结果，并不十分准确。
+filtered 表示返回结果的行数占需读取行数的百分比，Filter列的值越大越好。</description>
+    </item>
+    
+  </channel>
+</rss>

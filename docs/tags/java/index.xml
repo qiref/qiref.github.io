@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Java on Hugo Prose</title>
+    <link>/tags/java/</link>
+    <description>Recent content in Java on Hugo Prose</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-zh</language>
+    <lastBuildDate>Mon, 26 Jun 2023 21:55:00 +0800</lastBuildDate><atom:link href="/tags/java/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Java进程分析工具</title>
+      <link>/post/2023/06/26/java%E8%BF%9B%E7%A8%8B%E5%88%86%E6%9E%90%E5%B7%A5%E5%85%B7/</link>
+      <pubDate>Mon, 26 Jun 2023 21:55:00 +0800</pubDate>
+      
+      <guid>/post/2023/06/26/java%E8%BF%9B%E7%A8%8B%E5%88%86%E6%9E%90%E5%B7%A5%E5%85%B7/</guid>
+      <description>JVM 内存区域 如果要为新生代分配 256m 的内存（NewSize 与 MaxNewSize 设为一致），参数应该这样来写：-Xmn256m;
+还可以通过 -XX:NewRatio=&amp;lt;int&amp;gt; 来设置老年代与新生代内存的比值。比如以下参数就是设置老年代与新生代内存的比值为 1。也就是说老年代和新生代所占比值为 1：1，新生代占整个堆栈的 1/2。
+-XX:NewRatio=1 JDK 1.8 ，方法区（HotSpot 的永久代）被彻底移除了，取而代之是元空间 Metaspace，元空间使用的是本地内存。
+Metaspace 的初始容量并不是 -XX:MetaspaceSize 设置，无论 -XX:MetaspaceSize 配置什么值，对于 64 位 JVM 来说，Metaspace 的初始容量都是 21807104（约 20.8m）。可以参考 Oracle 官方文档 :
+Specify a higher value for the option MetaspaceSize to avoid early garbage collections induced for class metadata. The amount of class metadata allocated for an application is application-dependent and general guidelines do not exist for the selection of MetaspaceSize.</description>
+    </item>
+    
+    <item>
+      <title>Java双亲委派</title>
+      <link>/post/2023/03/24/java%E5%8F%8C%E4%BA%B2%E5%A7%94%E6%B4%BE/</link>
+      <pubDate>Fri, 24 Mar 2023 15:46:27 +0800</pubDate>
+      
+      <guid>/post/2023/03/24/java%E5%8F%8C%E4%BA%B2%E5%A7%94%E6%B4%BE/</guid>
+      <description>类加载器 Java语言系统中支持以下4种类加载器：
+Bootstrap ClassLoader 启动类加载器，主要负责加载Java核心类库，%JRE_HOME%\lib下的rt.jar、resources.jar、charsets.jar和class等； Extension ClassLoader 标准扩展类加载器，主要负责加载目录%JRE_HOME%\lib\ext目录下的jar包和class文件； Application ClassLoader 应用类加载器，主要负责加载当前应用的classpath下的所有类； User ClassLoader 用户自定义类加载器，用户自定义的类加载器,可加载指定路径的class文件； 双亲委派 类加载器采用了双亲委派模式，其工作原理是，如果一个类加载器收到了类加载请求，它并不会自己先去加载，而是把这个请求委托给父类的加载器去执行，如果父类加载器还存在其父类加载器，则进一步向上委托，依次递归，请求最终将到达顶层的启动类加载器，如果父类加载器可以完成类加载任务，就成功返回，倘若父类加载器无法完成此加载任务，子加载器才会尝试自己去加载，这就是双亲委派模式。
+双亲委派模式的好处是什么？
+Java 类随着它的类加载器一起具备了一种带有优先级的层次关系，通过这种层次关系可以避免类的重复加载，当父类加载器已经加载过一次时，没有必要子类再去加载一次。 考虑到安全因素，Java 核心 Api 类不会被随意替换，核心类永远是被上层的类加载器加载。如果我们自己定义了一个 java.lang.String 类，它会优先委派给 BootStrapClassLoader 去加载，加载完了就直接返回了。 如果我们定义了一个 java.lang.ExtString，能被加载吗？答案也是不能的，因为 java.lang 包是有权限控制的，自定义了这个包，会报一个错如下：
+java.lang.SecurityException: Prohibited package name: java.lang 源码分析 protected Class&amp;lt;?&amp;gt; loadClass(String name, boolean resolve) throws ClassNotFoundException { synchronized (getClassLoadingLock(name)) { // 首先，检查这个类是否已经被加载了，最终实现是一个 native 本地实现 Class&amp;lt;?&amp;gt; c = findLoadedClass(name); // 如果还没有被加载，则开始加载 if (c == null) { long t0 = System.nanoTime(); try { // 首先如果父加载器不为空，则使用父类加载器加载。Launcher 类里提到的 parent 就在这里使用的。 if (parent !</description>
+    </item>
+    
+    <item>
+      <title>SpringBoot中使用AOP</title>
+      <link>/post/2019/06/16/springboot%E4%B8%AD%E4%BD%BF%E7%94%A8aop/</link>
+      <pubDate>Sun, 16 Jun 2019 00:18:23 +0000</pubDate>
+      
+      <guid>/post/2019/06/16/springboot%E4%B8%AD%E4%BD%BF%E7%94%A8aop/</guid>
+      <description>摘要：Spring中如何使用注解实现面向切面编程，以及如何使用自定义注解。
+场景 比如用户登录，每个请求发起之前都会判断用户是否登录，如果每个请求都去判断一次，那就重复地做了很多事情，只要是有重复的地方，就有优化的空间。现在就把重复的地方抽取出来，暂且称之为 &amp;quot; 拦截器 &amp;ldquo;，然后每次请求之前就先经过&amp;rdquo; 拦截器 &amp;ldquo;，这个编程的思想就可以称之为面向切面编程。AOP(Aspect Oriented Program)
+最典型的应用就是事务管理和权限验证，还有日志统计，下文中的案例就是接口执行时间的统计。
+spring中使用AOP（基于注解） 不得不说注解是个很巧妙的设计，使用很少量的信息描述数据，这类数据称之为元数据，描述数据的数据。关于注解的理解，这里有个传送门：http://www.importnew.com/10294.html
+下面的案例是在springBoot中进行的，直观地感受一下如何使用注解完成AOP。
+@Service public class UserService { public void getUser() { //To do something System.out.println(&amp;quot;getUser() has been called&amp;quot;); try { Thread.sleep(1000); } catch (InterruptedException e) { e.printStackTrace(); } } } 切面是这样定义的：
+@Component @Aspect public class LoggerAspect { /** * getUser()执行之前执行 */ @Before(&amp;quot;execution(* com.springboot.demo.service.UserService.getUser(..))&amp;quot;) public void callBefore() { System.out.println(&amp;quot;before call method&amp;quot;); System.out.println(&amp;quot;begin........................&amp;quot;); } /** * getUser()执行之后执行 */ @After(&amp;quot;execution(* com.springboot.demo.service.UserService.getUser(..))&amp;quot;) public void callAfter() { System.</description>
+    </item>
+    
+  </channel>
+</rss>

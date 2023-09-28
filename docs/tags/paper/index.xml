@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Paper on Hugo Prose</title>
+    <link>/tags/paper/</link>
+    <description>Recent content in Paper on Hugo Prose</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-zh</language>
+    <lastBuildDate>Wed, 09 Aug 2023 10:39:17 +0800</lastBuildDate><atom:link href="/tags/paper/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>DBLog 阅读笔记</title>
+      <link>/post/2023/08/09/dblog-%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/</link>
+      <pubDate>Wed, 09 Aug 2023 10:39:17 +0800</pubDate>
+      
+      <guid>/post/2023/08/09/dblog-%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/</guid>
+      <description>介绍 算法流程 参考 https://arxiv.org/pdf/2010.12597.pdf</description>
+    </item>
+    
+    <item>
+      <title>The Dataflow Model 阅读笔记</title>
+      <link>/post/2023/05/16/the-dataflow-model-%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/</link>
+      <pubDate>Tue, 16 May 2023 15:26:10 +0800</pubDate>
+      
+      <guid>/post/2023/05/16/the-dataflow-model-%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/</guid>
+      <description>Dataflow 计算模型 Dataflow 的核心计算模型非常简单，它只有两个概念，一个叫做 ParDo，就是并行处理的意思；另一个叫做 GroupByKey，也就是按照 Key 进行分组。
+ParDo ParDo 用来进行通用的并行化处理。每个输入元素（这个元素本身有可能是一个有限的集合）都会使用一个 UDF 进行处理（在Dataflow中叫做DoFn），输出是0或多个输出元素。这个例子是把键的前缀进行展开，然后把值复制到展开后的键构成新的键值对并输出。
+GroupByKey GroupByKey 用来按 Key 把元素重新分组。
+ParDo 操作因为是对每个输入的元素进行处理，因此很自然地就可以适用于无边界的数据。而 GroupByKey 操作，在把数据发送到下游进行汇总前，需要收集到指定的键对应的所有数据。如果输入源是无边界的，那么我们不知道何时才能收集到所有的数据。所以通常的解决方案是对数据使用窗口操作。
+窗口 时间语义 窗口通常基于时间，时间对于窗口来说是必不可少的，在流式计算中，有 processing-time 和 event-time 两种时间语义，具体参考： 时间语义
+窗口分类 固定窗口（Fixed Window）固定区间（互不重叠）的窗口，可以基于时间，也可以基于数量；将事件分配到不同区间的窗口中，在通过窗口边界后，窗口内的所有事件会发送给计算函数进行计算；
+滑动窗口（Sliding Window）固定区间但可以重叠的窗口，需要指定窗口区间以及滑动步长，区间重叠意味着同一个事件会分配到不同窗口参与计算。 窗口区间决定何时触发计算，滑动步长决定何时创建一个新的窗口；
+会话窗口（Session Window）会话窗口通常基于用户的会话，通过定义会话的超时时间，将事件分割到不同的会话中； 例如，有个客服聊天系统，如果用户超过 30 分钟没有互动，则认为一次会话结束，当客户下次进入，就是一个新的会话了。
+窗口分配与合并 Dataflow 模型里，需要的不只是 GroupByKey，实际在统计数据的时候，往往需要的是 GroupByKeyAndWindow。统计一个不考虑任何时间窗口的数据，往往是没有意义的； Dataflow 模型提出：
+从模型简化的角度上，把所有的窗口策略都当做非对齐窗口，而底层实现来负责把对齐窗口作为一个特例进行优化。 窗口操作可以被分隔为两个互相相关的操作： set&amp;lt;Window&amp;gt; AssignWindows(T datum) 即窗口分配操作。这个操作把元素分配到 0 或多个窗口中去。 set&amp;lt;window&amp;gt; MergeWindows(Set&amp;lt;Window&amp;gt; windows) 即窗口合并操作，这个操作在汇总时合并窗口。 而在实际的逻辑实现层面，Dataflow 最重要的两个函数，也就是 AssignWindows 函数和 MergeWindows 函数。 窗口分配 每一个原始的事件，在业务处理函数之前，其实都是（key, value, event_time）这样一个三元组。而 AssignWindows 要做的，就是把这个三元组，根据我们的处理逻辑，变成（key, value, event_time, window）这样的四元组。</description>
+    </item>
+    
+    <item>
+      <title>Chandy-Lamport 算法笔记</title>
+      <link>/post/2023/05/08/chandy-lamport-%E7%AE%97%E6%B3%95%E7%AC%94%E8%AE%B0/</link>
+      <pubDate>Mon, 08 May 2023 22:38:42 +0800</pubDate>
+      
+      <guid>/post/2023/05/08/chandy-lamport-%E7%AE%97%E6%B3%95%E7%AC%94%E8%AE%B0/</guid>
+      <description>前言 Global Snapshot（Global State）：全局快照，分布式系统在 Failure Recovery 的时候非常有用，也是广泛应用在分布式系统，更多是分布式计算系统中的一种容错处理理论基础。
+在 Chandy-Lamport 算法中，为了定义分布式系统的 Global Snapshot，先将分布式系统简化成有限个进程和进程之间的 channel 组成，也就是一个有向图 （GAG）：节点是进程，边是 channel。因为是分布式系统，也就是说，这些进程是运行在不同的物理机器上的。那么一个分布式系统的 Global Snapshot 就是有进程的状态和 channel 中的 message 组成，这个也是分布式快照算法需要记录的。因此，Chandy-Lamport 算法解决了分布式系统在 Failure Recovery 时，可以从 Global Snapshot 中恢复的问题；
+算法过程 前提条件及定义 process（Pn）：分布式系统中的进程，用 P1，P2，P3 表示； channel：分布式系统中，Pn 与 Pm 通信的管道，C12 表示从 P1 到 P2 的 channel，反之，C32 表示从 P3 到 P2的 channel； message：分布式系统中，Pn 与 Pm 之间发送的业务消息；M23 表示从 P2 到 P3 的 message； marker：在 Chandy-Lamport 算法中，Pn 与 Pm 之间发送的标记消息，不同于业务的 message，marker 是由 Chandy-Lamport 算法定义，用于帮助实现快照算法； snapshot/state：都表示快照，同时包括进程本身的状态和 message；下文中统一全局快照叫 snapshot，process 本地快照叫 state； Chandy-Lamport 算法有一些前提条件：</description>
+    </item>
+    
+  </channel>
+</rss>
