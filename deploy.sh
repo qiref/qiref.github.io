@@ -31,10 +31,10 @@ echo deploy start
 echo "current dir is :" $CURRENT_DIR
 $(cd $CURRENT_DIR)
 hugo -d docs
-git status
+# git status
 git add .
 git commit -m "[blog] $COMMIT_MSG"
-git status
+# git status
 
 if [[ $PUSH -eq 1 ]]
  then

@@ -1,27 +1,77 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Algorithm on Hugo Prose</title>
-    <link>/tags/algorithm/</link>
-    <description>Recent content in Algorithm on Hugo Prose</description>
+    <title>Algorithm on 大道至简</title>
+    <link>https://qiref.github.io/tags/algorithm/</link>
+    <description>Recent content in Algorithm on 大道至简</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en-zh</language>
-    <lastBuildDate>Wed, 09 Aug 2023 10:39:17 +0800</lastBuildDate><atom:link href="/tags/algorithm/index.xml" rel="self" type="application/rss+xml" />
+    <language>cn-zh</language>
+    <lastBuildDate>Tue, 05 Dec 2023 11:03:22 +0800</lastBuildDate><atom:link href="https://qiref.github.io/tags/algorithm/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>B&#43;树</title>
+      <link>https://qiref.github.io/post/2023/12/05/b-%E6%A0%91/</link>
+      <pubDate>Tue, 05 Dec 2023 11:03:22 +0800</pubDate>
+      
+      <guid>https://qiref.github.io/post/2023/12/05/b-%E6%A0%91/</guid>
+      <description>B树引入 B树（英语：B-tree），是一种在计算机科学自平衡的树，能够保持数据有序。这种数据结构能够让查找数据、顺序访问、插入数据及删除的动作，都在对数时间内完成。B树，概括来说是一个一般化的二叉搜索树（binary search tree）一个节点可以拥有2个以上的子节点。与自平衡二叉查找树不同，B树适用于读写相对大的数据块的存储系统，例如磁盘。B树减少定位记录时所经历的中间过程，从而加快访问速度。B树这种数据结构可以用来描述外部存储。这种数据结构常被应用在数据库和文件系统的实现上。
+wiki 上是这么描述 B 树的, 重点在于 B 树被用作存储系统的实现上, 基于二叉搜索树天然的有序性, 实现 logn 级别的查询; 既然是用作存储系统的实现, 那么可以来推导一下, 为什么B 树会用作存储系统的实现?
+想要实现 logn 级别的查询, binary search tree skiip list 都可以实现, Why B 树?
+二叉搜索树 1
+二叉搜索树天然有序, 也能达到 logn 级别的查询性能, 但是二叉搜索树, 有个很严重的问题, 如果插入的数据本身是有序的, 那二叉搜索树就会退化为链表, 要解决这个问题, 可以用 AVL Tree (Balanced binary search tree) 和 Red-Black Tree.
+AVL 树 AVL Tree (Balanced binary search tree) 在二叉搜索树的基础上, 增加了自平衡的机制, 解决二叉搜索树退化为链表的问题, 但是自平衡也会带来新的问题(平衡条件必须满足所有节点的左右子树高度差不超过1), 插入时可能会触发多次的自平衡, 从而会影响数据插入的效率, 那有没有办法解决频繁的自平衡的问题呢?
+红黑树 Red-Black Tree 就能做到, 红黑树通过制定一系列的规则:</description>
+    </item>
+    
+    <item>
+      <title>Log Structured Merge Tree</title>
+      <link>https://qiref.github.io/post/2023/10/13/log-structured-merge-tree/</link>
+      <pubDate>Fri, 13 Oct 2023 11:46:21 +0800</pubDate>
+      
+      <guid>https://qiref.github.io/post/2023/10/13/log-structured-merge-tree/</guid>
+      <description>基本概念 Log Structured Merge Tree, 其本质上是一种存储数据的方式,通常用于各种存储系统的底层数据结构,通过尽可能减少磁盘随机IO来提升写入性能, 适用于写多读少的场景.
+随机写和顺序写 对于一个存储系统而言, 不可避免地需要写入文件到磁盘, 对于常规的写来说, 每来一条数据写一次文件, 数据可能是 add update delete, 需要频繁操作文件, 每一次写都是一次随机 IO; 为了提高写入速度, LSM Tree 并不是每一次写操作都把文件写到磁盘, 而是将数据在内存中更新，当内存中的数据达到一定的阈值时，才将这部分数据真正刷新到磁盘文件中. 以这种方式尽可能让每次磁盘 IO 都是顺序写;
+思路 基于减少磁盘的随机 IO 来提升整体存储系统的写入性能这一背景, 很自然可以推导出用批量写入的方式, 要想批量写入, 就需要在内存维护最近写入的数据, 达到阈值之后生成一个文件写入到磁盘, 但是这样又会存在新的问题:
+如果某一条数据已经写入到磁盘文件, 后续又有更新, 怎么处理呢? 内存中维护的临时数据, 如果还未来得及写入磁盘, 服务挂了, 重新启动时, 历史写入的数据如何恢复? 每次内存中数据达到阈值,写一个整个文件到磁盘,那么最终会生成大量的文件, 如何解决? 解决问题1, 为了优化这种更新的写入, 可以采用数据版本的做法, 或者给数据增加标志, 然后定期合并, 当然, 这也是以空间换时间, 相同的数据存储了多次, 以提升写入性能; 与此同时, 在数据读取时,由于写入的逻辑改变, 一条数据可能会存在于多个文件中, 因此在读取时, 需要返回最新的数据, 在读取到多条数据时,需要对多条数据进行合取最新;
+解决问题2, 在业界比较标准的做法是 WAL, WAL 的基本原理是在执行数据修改操作之前，先将这些操作记录在日志（log）文件中, 以确保在发生故障或崩溃时，可以借助日志进行恢复并保持数据的一致性;
+解决问题3, 为了避免大量文件, 可以对文件进行定期合并, 当数据还在内存中时, 可以借助跳表或者 B+Tree 等数据结构保证内存中数据的顺序性, 在写文件时, 由于数据是有序的, 在文件合并时,很自然可以借助归并排序保证合并之后的数据的有序性, 而有序性又能天然提高查询效率.</description>
+    </item>
+    
+    <item>
+      <title>Skip Lists 阅读笔记</title>
+      <link>https://qiref.github.io/post/2023/10/01/skip-lists-%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/</link>
+      <pubDate>Sun, 01 Oct 2023 22:05:38 +0800</pubDate>
+      
+      <guid>https://qiref.github.io/post/2023/10/01/skip-lists-%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/</guid>
+      <description>算法介绍 《Skip Lists: A Probabilistic Alternative to Balanced Trees》 论文标题翻译就是 跳表: 平衡树的概率性替代方案; 跳表是一种可以用来代替平衡树的数据结构。跳表使用概率平衡而不是严格强制的平衡，因此跳跃列表中的插入和删除算法比平衡树的等效算法要简单得多并且速度明显更快。
+从论文的标题和介绍, 基本上就能知道跳表是一种怎么样的数据结构, 为了解决平衡树实现的复杂性, 提供一种概率性平衡的数据结构,作为平衡树的平替数据结构, 查询和插入时间复杂度是 O(log n).
+算法流程 基本原理 节点结构：跳表由多个层级组成，每个层级都是一个有序链表。每个节点包含一个值和多个指向下一层级节点的指针。
+层级索引：跳表的最底层是一个普通的有序链表，每个节点都连接到下一个节点。而在更高的层级，节点以一定的概率连接到更远的节点，形成了一种“跳跃”的效果。这些连接被称为“跳跃指针”，它们允许我们在查找时可以快速地跳过一些节点。
+查找操作：从跳表的顶层开始，我们沿着每个层级向右移动，直到找到目标值或找到一个大于目标值的节点。然后我们进入下一层级继续查找，直到最底层。这种方式可以在平均情况下实现快速的查找，时间复杂度为 O(log n)。
+插入和删除操作：在插入新节点时，我们首先执行查找操作，找到合适的插入位置。然后我们在每个层级上插入新节点，并根据一定的概率决定是否要为该节点添加跳跃指针。删除操作类似，我们首先找到要删除的节点，然后将其从每个层级中移除。
+查询 level 表示跳表的层级, 而 forward[i] 是每一个层级的链表.
+Search(list, searchKey) x := list→header // 从跳表的顶层开始,遍历到第一层 for i := list→level downto 1 do while x→forward[i]→key &amp;lt; searchKey do x := x→forward[i] // x→key &amp;lt; searchKey ≤ x→forward[1]→key // 最终的结果从跳表最底层获取 x := x→forward[1] if x→key = searchKey then return x→value else return failure 写入 由跳表的定义得出, 跳表的上一层级相当于下一层级的索引, 如果需要构建多级的索引, 首先需要解决: 当前node是否应该索引到上一层级?</description>
+    </item>
+    
     <item>
       <title>DBLog 阅读笔记</title>
-      <link>/post/2023/08/09/dblog-%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/</link>
+      <link>https://qiref.github.io/post/2023/08/09/dblog-%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/</link>
       <pubDate>Wed, 09 Aug 2023 10:39:17 +0800</pubDate>
       
-      <guid>/post/2023/08/09/dblog-%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/</guid>
-      <description>介绍 算法流程 参考 https://arxiv.org/pdf/2010.12597.pdf</description>
+      <guid>https://qiref.github.io/post/2023/08/09/dblog-%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/</guid>
+      <description>介绍 论文原名: DBLog: A Watermark Based Change-Data-Capture Framework , 基于 Watermark 的 Change-Data-Capture(数据库实时捕获已提交的变更记录) 框架, 本质上是解决数据库同步(全量+增量)的框架, Watermark 是框架使用的一种手段, 在源表中创建表,生成唯一 uuid 并更新表数据, 在源表中就会生成一条变更记录,记作 Watermark 的变更记录, 通过 High Watermark 和 Low Watermark 将变更记录分割, 保证 select chunk 数据包含了增量的变更记录.
+框架整体架构如下:
+框架特点:
+按顺序处理捕获到的 changelog; 转储可以随时进行，跨所有表，针对一个特定的表或者针对一个表的具体主键; 以块(chunk)的形式获取转储，日志与转储事件交错。通过这种方式，changelog 可以与转储处理一起进行。如果进程终止，它可以在最后一个完成的块之后恢复，而不需要从头开始。这还允许在需要时对转储进行调整和暂停; 不会获取表级锁，这可以防止影响源数据库上的写流量; 支持任何类型的输出，因此，输出可以是流、数据存储甚或是 API; 设计充分考虑了高可用性。因此，下游的消费者可以放心，只要源端发生变化，它们就可以收到变化事件。 注意, 本文并非详细介绍 DBLog 框架本身, 而是分析其框架背后的设计思路.
+算法流程 chunk 划分 对于源表数据, 全量数据使用分块读取, 基于 primary key 顺序排序, 将全量数据划分为 N 个 chunk;
+watermark 基于 chunk 划分, 然后 chunk 数据全量写入下游之后, 再将源表的变更记录 changelog 增量同步到下游, 整体思路就是这样, 但是划分 chunk 有个问题需要解决, 就是先同步到下游的数据不一定的最终的数据, 例如上图 chunk1 中的数据在同步到下游之后可能会删除, 那chunk1 的数据写到下游之后, 下游就会出现脏数据; 如何解决 chunk 和 changelog 之间不会相互覆盖的问题?</description>
     </item>
     
     <item>
       <title>The Dataflow Model 阅读笔记</title>
-      <link>/post/2023/05/16/the-dataflow-model-%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/</link>
+      <link>https://qiref.github.io/post/2023/05/16/the-dataflow-model-%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/</link>
       <pubDate>Tue, 16 May 2023 15:26:10 +0800</pubDate>
       
-      <guid>/post/2023/05/16/the-dataflow-model-%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/</guid>
+      <guid>https://qiref.github.io/post/2023/05/16/the-dataflow-model-%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/</guid>
       <description>Dataflow 计算模型 Dataflow 的核心计算模型非常简单，它只有两个概念，一个叫做 ParDo，就是并行处理的意思；另一个叫做 GroupByKey，也就是按照 Key 进行分组。
 ParDo ParDo 用来进行通用的并行化处理。每个输入元素（这个元素本身有可能是一个有限的集合）都会使用一个 UDF 进行处理（在Dataflow中叫做DoFn），输出是0或多个输出元素。这个例子是把键的前缀进行展开，然后把值复制到展开后的键构成新的键值对并输出。
 GroupByKey GroupByKey 用来按 Key 把元素重新分组。
@@ -36,10 +86,10 @@ ParDo 操作因为是对每个输入的元素进行处理，因此很自然地�
     
     <item>
       <title>堆和堆排序</title>
-      <link>/post/2023/05/12/%E5%A0%86%E5%92%8C%E5%A0%86%E6%8E%92%E5%BA%8F/</link>
+      <link>https://qiref.github.io/post/2023/05/12/%E5%A0%86%E5%92%8C%E5%A0%86%E6%8E%92%E5%BA%8F/</link>
       <pubDate>Fri, 12 May 2023 17:01:04 +0800</pubDate>
       
-      <guid>/post/2023/05/12/%E5%A0%86%E5%92%8C%E5%A0%86%E6%8E%92%E5%BA%8F/</guid>
+      <guid>https://qiref.github.io/post/2023/05/12/%E5%A0%86%E5%92%8C%E5%A0%86%E6%8E%92%E5%BA%8F/</guid>
       <description>堆 堆的本质是树，用数组表示的完全二叉树；
 定义 一棵深度为k且有 2^k - 1 个结点的二叉树称为满二叉树。
 根据二叉树的性质2, 满二叉树每一层的结点个数都达到了最大值, 即满二叉树的第i层上有 2^(i-1) 个结点 (i≥1) 。
@@ -54,10 +104,10 @@ ParDo 操作因为是对每个输入的元素进行处理，因此很自然地�
     
     <item>
       <title>Chandy-Lamport 算法笔记</title>
-      <link>/post/2023/05/08/chandy-lamport-%E7%AE%97%E6%B3%95%E7%AC%94%E8%AE%B0/</link>
+      <link>https://qiref.github.io/post/2023/05/08/chandy-lamport-%E7%AE%97%E6%B3%95%E7%AC%94%E8%AE%B0/</link>
       <pubDate>Mon, 08 May 2023 22:38:42 +0800</pubDate>
       
-      <guid>/post/2023/05/08/chandy-lamport-%E7%AE%97%E6%B3%95%E7%AC%94%E8%AE%B0/</guid>
+      <guid>https://qiref.github.io/post/2023/05/08/chandy-lamport-%E7%AE%97%E6%B3%95%E7%AC%94%E8%AE%B0/</guid>
       <description>前言 Global Snapshot（Global State）：全局快照，分布式系统在 Failure Recovery 的时候非常有用，也是广泛应用在分布式系统，更多是分布式计算系统中的一种容错处理理论基础。
 在 Chandy-Lamport 算法中，为了定义分布式系统的 Global Snapshot，先将分布式系统简化成有限个进程和进程之间的 channel 组成，也就是一个有向图 （GAG）：节点是进程，边是 channel。因为是分布式系统，也就是说，这些进程是运行在不同的物理机器上的。那么一个分布式系统的 Global Snapshot 就是有进程的状态和 channel 中的 message 组成，这个也是分布式快照算法需要记录的。因此，Chandy-Lamport 算法解决了分布式系统在 Failure Recovery 时，可以从 Global Snapshot 中恢复的问题；
 算法过程 前提条件及定义 process（Pn）：分布式系统中的进程，用 P1，P2，P3 表示； channel：分布式系统中，Pn 与 Pm 通信的管道，C12 表示从 P1 到 P2 的 channel，反之，C32 表示从 P3 到 P2的 channel； message：分布式系统中，Pn 与 Pm 之间发送的业务消息；M23 表示从 P2 到 P3 的 message； marker：在 Chandy-Lamport 算法中，Pn 与 Pm 之间发送的标记消息，不同于业务的 message，marker 是由 Chandy-Lamport 算法定义，用于帮助实现快照算法； snapshot/state：都表示快照，同时包括进程本身的状态和 message；下文中统一全局快照叫 snapshot，process 本地快照叫 state； Chandy-Lamport 算法有一些前提条件：</description>
@@ -65,10 +115,10 @@ ParDo 操作因为是对每个输入的元素进行处理，因此很自然地�
     
     <item>
       <title>Go语言实现 bitmap</title>
-      <link>/post/2023/04/28/go%E8%AF%AD%E8%A8%80%E5%AE%9E%E7%8E%B0-bitmap/</link>
+      <link>https://qiref.github.io/post/2023/04/28/go%E8%AF%AD%E8%A8%80%E5%AE%9E%E7%8E%B0-bitmap/</link>
       <pubDate>Fri, 28 Apr 2023 11:24:38 +0800</pubDate>
       
-      <guid>/post/2023/04/28/go%E8%AF%AD%E8%A8%80%E5%AE%9E%E7%8E%B0-bitmap/</guid>
+      <guid>https://qiref.github.io/post/2023/04/28/go%E8%AF%AD%E8%A8%80%E5%AE%9E%E7%8E%B0-bitmap/</guid>
       <description>算法说明 Bitmap算法是一种基于位运算的数据结构，用于解决大规模数据的快速查找和统计问题。其基本原理是将一个大数据集合映射到一个二进制向量中，其中每个元素对应于数据集合中的一个元素，向量中的每一位表示该元素是否存在于集合中。
 具体来说，Bitmap算法通过使用一个位图（bitmap）来表示一个数据集合，其中每个元素对应一个位。如果某个元素在数据集合中出现，则将其对应的位设置为1，否则将其对应的位设置为0。通过这种方式，可以快速地进行集合操作，如并集、交集和差集等。
 Bitmap算法的主要优点在于其空间效率高，可以用较小的空间存储大规模数据集合。另外，Bitmap算法的时间复杂度也非常低，可以快速地进行集合操作。
@@ -82,10 +132,10 @@ Bitmap算法的主要优点在于其空间效率高，可以用较小的空间�
     
     <item>
       <title>Go语言实现 LRU</title>
-      <link>/post/2023/04/27/go%E8%AF%AD%E8%A8%80%E5%AE%9E%E7%8E%B0-lru/</link>
+      <link>https://qiref.github.io/post/2023/04/27/go%E8%AF%AD%E8%A8%80%E5%AE%9E%E7%8E%B0-lru/</link>
       <pubDate>Thu, 27 Apr 2023 21:43:12 +0800</pubDate>
       
-      <guid>/post/2023/04/27/go%E8%AF%AD%E8%A8%80%E5%AE%9E%E7%8E%B0-lru/</guid>
+      <guid>https://qiref.github.io/post/2023/04/27/go%E8%AF%AD%E8%A8%80%E5%AE%9E%E7%8E%B0-lru/</guid>
       <description>LRU（Least Recently Used）算法，即最近最少使用算法;其基本思想是，如果一个数据最近被访问过，那么它在未来被访问的概率也会很高；反之，如果一个数据很久都没有被访问过，那么它在未来被访问的概率就相对较低。因此，LRU算法选择淘汰最近最少使用的数据，即选择最长时间没有被访问过的数据进行淘汰。
 具体来说，LRU算法通常使用一个双向链表和一个哈希表来实现。双向链表中的节点按照最近访问时间的顺序排列，最近访问的节点排在链表头部，最久未访问的节点排在链表尾部。哈希表中存储每个节点的地址，以便快速查找和删除。
 当需要访问一个数据时，LRU算法首先在哈希表中查找该数据，如果存在，则将对应的节点移动到链表头部；如果不存在，则将该数据添加到链表头部，并在哈希表中创建对应的节点。
@@ -96,10 +146,10 @@ package lru import ( &amp;quot;container/list&amp;quot; &amp;quot;errors&amp;quo
     
     <item>
       <title>ProtoBuf数据协议</title>
-      <link>/post/2022/01/11/protobuf%E6%95%B0%E6%8D%AE%E5%8D%8F%E8%AE%AE/</link>
+      <link>https://qiref.github.io/post/2022/01/11/protobuf%E6%95%B0%E6%8D%AE%E5%8D%8F%E8%AE%AE/</link>
       <pubDate>Tue, 11 Jan 2022 00:18:23 +0000</pubDate>
       
-      <guid>/post/2022/01/11/protobuf%E6%95%B0%E6%8D%AE%E5%8D%8F%E8%AE%AE/</guid>
+      <guid>https://qiref.github.io/post/2022/01/11/protobuf%E6%95%B0%E6%8D%AE%E5%8D%8F%E8%AE%AE/</guid>
       <description>摘要：ProtoBuf(Protocol Buffers)是一种跨平台、语言无关、可扩展的序列化结构数据的方法，可用于网络数据交换及数据存储。
 Protocol Buffers介绍 不同于 XML 、JSON 这种文本格式数据，Protocol Buffers 是一种二进制格式数据。在Protocol Buffers 诞生之初，就被赋予两个特点：
 向前兼容，很容易引入新字段，应对字段的频繁变更 数据格式具备描述性，并且支持多语言处理 传输效率高 基于以上这些特性，Protocol Buffers 被广泛应用于各种 RPC 框架中，并且是 Google 的数据通用语言。
@@ -110,10 +160,10 @@ Example:
     
     <item>
       <title>逆波兰表达式算法</title>
-      <link>/post/2019/09/04/%E9%80%86%E6%B3%A2%E5%85%B0%E8%A1%A8%E8%BE%BE%E5%BC%8F%E7%AE%97%E6%B3%95/</link>
+      <link>https://qiref.github.io/post/2019/09/04/%E9%80%86%E6%B3%A2%E5%85%B0%E8%A1%A8%E8%BE%BE%E5%BC%8F%E7%AE%97%E6%B3%95/</link>
       <pubDate>Wed, 04 Sep 2019 00:18:23 +0000</pubDate>
       
-      <guid>/post/2019/09/04/%E9%80%86%E6%B3%A2%E5%85%B0%E8%A1%A8%E8%BE%BE%E5%BC%8F%E7%AE%97%E6%B3%95/</guid>
+      <guid>https://qiref.github.io/post/2019/09/04/%E9%80%86%E6%B3%A2%E5%85%B0%E8%A1%A8%E8%BE%BE%E5%BC%8F%E7%AE%97%E6%B3%95/</guid>
       <description>摘要：将中缀表达式转化为后缀表达式，以及计算后缀表达式的算法。
 import org.slf4j.Logger; import org.slf4j.LoggerFactory; import java.util.HashSet; import java.util.Scanner; import java.util.Stack; /** * @author YaoQi * Date: 2019/1/5 15:45 * Modified: * Description: 中缀表达式转后缀表达式 */ public class InfixToSuffixHandler { private static final Logger logger = LoggerFactory.getLogger(InfixToSuffixHandler.class); private static HashSet&amp;lt;Character&amp;gt; opStr = new HashSet&amp;lt;&amp;gt;(); static { logger.info(&amp;quot;Initialization operator&amp;quot;); opStr.add(&#39;+&#39;); opStr.add(&#39;-&#39;); opStr.add(&#39;*&#39;); opStr.add(&#39;/&#39;); logger.info(&amp;quot;Initialization finished&amp;quot;); } /** * 判断字符是否为操作符 * * @param c 字符 * @return */ private static boolean isOpStr(char c) { return opStr.</description>
     </item>

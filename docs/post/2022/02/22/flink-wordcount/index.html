@@ -1,25 +1,25 @@
 <!DOCTYPE html>
-<html lang="en-zh">
+<html lang="cn-zh">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <title> Flink WordCount | Hugo Prose</title>
+    <title> Flink WordCount | 大道至简</title>
     
     
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/combine/npm/@xiee/utils/css/article.min.css,npm/@xiee/utils/css/heading-anchor.min.css">
     <link rel="stylesheet" href="/css/style.css" />
     <link rel="stylesheet" href="/css/fonts.css" />
     <link rel="stylesheet" href="/css/custom.css" />
-    <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="Flink WordCount"/>
-<meta name="twitter:description" content="摘要：Flink 从零开始，下载集群并运行 WordCount Job。 完整代码地址： https://github.com/ArchieYao/flink-learning/tree/main/hello-world
-Flink 本地模式集群安装 运行Flink，需提前安装好 Java 8 或者 Java 11。
-wget https://dlcdn.apache.org/flink/flink-1.14.3/flink-1.14.3-bin-scala_2.12.tgz tar -zxvf flink-1.14.3-bin-scala_2.12.tgz cd flink-1.14.3 ./bin/start-cluster.sh 运行成功后，可以在 IP:8081 访问 Flink-UI
-Flink Word Count job source 是多段文本，类型： DataSource ，经过 flatMap，切分为每个单词，然后转换为：(val,n) 的数据，然后根据 val 分组统计，得出 sum(n) 的值。
-public static void main(String[] args) throws Exception { // 创建Flink任务运行环境 final ExecutionEnvironment executionEnvironment = ExecutionEnvironment.getExecutionEnvironment(); // 创建DataSet，数据是一行一行文本 DataSource&lt;String&gt; text = executionEnvironment.fromElements( &quot;Licensed to the Apache Software Foundation (ASF) under one&quot;, &quot;or more contributor license agreements."/>
+    
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-PGMJFXZJRT"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
 
-
+  gtag('config', 'G-PGMJFXZJRT');
+</script>
   </head>
 
   <body>
@@ -27,15 +27,19 @@ public static void main(String[] args) throws Exception { // 创建Flink任务�
     <nav class="menu">
     <ul>
       <li class="left">
-        <a href="/"><span>Hugo Prose</span></a>
+        <a href="/"><span>大道至简</span></a>
+      </li>
+      
+      <li>
+        <a href="/post/">Posts</a>
+      </li>
+      
+      <li>
+        <a href="/tags/">Tags</a>
       </li>
       
       <li id="menu-search">
         <a href="/#">Search</a>
-      </li>
-      
-      <li>
-        <a href="/index.xml">Subscribe</a>
       </li>
       
     </ul>
@@ -143,7 +147,7 @@ cd flink-1.14.3
 
 <div>
   <div class="side side-left"><h3>重复使用</h3></div>
-  Text and figures are licensed under <a href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution CC BY 4.0</a>. The source code is licensed under MIT. The full source is available at <a href="https://github.com/yihui/hugo-prose">https://github.com/yihui/hugo-prose</a>.
+  Text and figures are licensed under <a href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution CC BY 4.0</a>. The source code is licensed under MIT. The full source is available at <a href="https://github.com/qiref/qiref.github.io">https://github.com/qiref/qiref.github.io</a>.
 </div>
 
 
@@ -156,7 +160,7 @@ cd flink-1.14.3
     
     
   
-  如果您发现本文里含有任何错误（包括错别字和标点符号），欢迎<a href="https://github.com/yihui/hugo-prose/edit/master/exampleSite/content/post/2022-02-22-Flink-WordCount.md" id="edit-link">在本站的 GitHub 项目里提交修订意见。</a>
+  如果您发现本文里含有任何错误（包括错别字和标点符号），欢迎<a href="https://github.com/qiref/qiref.github.io/tree/master/content/post/2022-02-22-Flink-WordCount.md" id="edit-link">在本站的 GitHub 项目里提交修订意见。</a>
 </div>
 
 
@@ -173,9 +177,14 @@ cd flink-1.14.3
 </nav>
 
 
-
-
-
+<script src="https://utteranc.es/client.js"
+        repo="chicbyte/chicbyte.github.io"
+        issue-term="pathname"
+        label="Comment"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script>
 </div>
 
 
@@ -187,6 +196,17 @@ cd flink-1.14.3
 <script async src="//mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML"></script>
 
 
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-PGMJFXZJRT"></script>
+<script>
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.dataLayer = window.dataLayer || [];
+	function gtag(){dataLayer.push(arguments);}
+	gtag('js', new Date());
+	gtag('config', 'G-PGMJFXZJRT', { 'anonymize_ip': false });
+}
+</script>
 
 
 
@@ -201,18 +221,10 @@ cd flink-1.14.3
 
   <div class="footer">
   
-  <ul class="copyright">
-    <li>© <a href="https://en.wikipedia.org/wiki/Seneca_the_Younger">Lucius Annaeus Seneca</a> 4 BC &ndash; AD 65</li>
-  </ul>
-  
   <ul>
     
-    <li>
-      <a href="/404.html">Contact</a>
-    </li>
-    
     <li class="optional">
-      <a href="/categories/">Categories</a>
+      <a href="/post/">Posts</a>
     </li>
     
     <li class="optional">

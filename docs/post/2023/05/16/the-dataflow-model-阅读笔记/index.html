@@ -1,30 +1,25 @@
 <!DOCTYPE html>
-<html lang="en-zh">
+<html lang="cn-zh">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <title> The Dataflow Model 阅读笔记 | Hugo Prose</title>
+    <title> The Dataflow Model 阅读笔记 | 大道至简</title>
     
     
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/combine/npm/@xiee/utils/css/article.min.css,npm/@xiee/utils/css/heading-anchor.min.css">
     <link rel="stylesheet" href="/css/style.css" />
     <link rel="stylesheet" href="/css/fonts.css" />
     <link rel="stylesheet" href="/css/custom.css" />
-    <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="The Dataflow Model 阅读笔记"/>
-<meta name="twitter:description" content="Dataflow 计算模型 Dataflow 的核心计算模型非常简单，它只有两个概念，一个叫做 ParDo，就是并行处理的意思；另一个叫做 GroupByKey，也就是按照 Key 进行分组。
-ParDo ParDo 用来进行通用的并行化处理。每个输入元素（这个元素本身有可能是一个有限的集合）都会使用一个 UDF 进行处理（在Dataflow中叫做DoFn），输出是0或多个输出元素。这个例子是把键的前缀进行展开，然后把值复制到展开后的键构成新的键值对并输出。
-GroupByKey GroupByKey 用来按 Key 把元素重新分组。
-ParDo 操作因为是对每个输入的元素进行处理，因此很自然地就可以适用于无边界的数据。而 GroupByKey 操作，在把数据发送到下游进行汇总前，需要收集到指定的键对应的所有数据。如果输入源是无边界的，那么我们不知道何时才能收集到所有的数据。所以通常的解决方案是对数据使用窗口操作。
-窗口 时间语义 窗口通常基于时间，时间对于窗口来说是必不可少的，在流式计算中，有 processing-time 和 event-time 两种时间语义，具体参考： 时间语义
-窗口分类 固定窗口（Fixed Window）固定区间（互不重叠）的窗口，可以基于时间，也可以基于数量；将事件分配到不同区间的窗口中，在通过窗口边界后，窗口内的所有事件会发送给计算函数进行计算；
-滑动窗口（Sliding Window）固定区间但可以重叠的窗口，需要指定窗口区间以及滑动步长，区间重叠意味着同一个事件会分配到不同窗口参与计算。 窗口区间决定何时触发计算，滑动步长决定何时创建一个新的窗口；
-会话窗口（Session Window）会话窗口通常基于用户的会话，通过定义会话的超时时间，将事件分割到不同的会话中； 例如，有个客服聊天系统，如果用户超过 30 分钟没有互动，则认为一次会话结束，当客户下次进入，就是一个新的会话了。
-窗口分配与合并 Dataflow 模型里，需要的不只是 GroupByKey，实际在统计数据的时候，往往需要的是 GroupByKeyAndWindow。统计一个不考虑任何时间窗口的数据，往往是没有意义的； Dataflow 模型提出：
-从模型简化的角度上，把所有的窗口策略都当做非对齐窗口，而底层实现来负责把对齐窗口作为一个特例进行优化。 窗口操作可以被分隔为两个互相相关的操作： set&lt;Window&gt; AssignWindows(T datum) 即窗口分配操作。这个操作把元素分配到 0 或多个窗口中去。 set&lt;window&gt; MergeWindows(Set&lt;Window&gt; windows) 即窗口合并操作，这个操作在汇总时合并窗口。 而在实际的逻辑实现层面，Dataflow 最重要的两个函数，也就是 AssignWindows 函数和 MergeWindows 函数。 窗口分配 每一个原始的事件，在业务处理函数之前，其实都是（key, value, event_time）这样一个三元组。而 AssignWindows 要做的，就是把这个三元组，根据我们的处理逻辑，变成（key, value, event_time, window）这样的四元组。"/>
+    
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-PGMJFXZJRT"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
 
-
+  gtag('config', 'G-PGMJFXZJRT');
+</script>
   </head>
 
   <body>
@@ -32,15 +27,19 @@ ParDo 操作因为是对每个输入的元素进行处理，因此很自然地�
     <nav class="menu">
     <ul>
       <li class="left">
-        <a href="/"><span>Hugo Prose</span></a>
+        <a href="/"><span>大道至简</span></a>
+      </li>
+      
+      <li>
+        <a href="/post/">Posts</a>
+      </li>
+      
+      <li>
+        <a href="/tags/">Tags</a>
       </li>
       
       <li id="menu-search">
         <a href="/#">Search</a>
-      </li>
-      
-      <li>
-        <a href="/index.xml">Subscribe</a>
       </li>
       
     </ul>
@@ -135,9 +134,11 @@ Dataflow 模型提出：</p>
 </li>
 </ul>
 <h2 id="参考">参考</h2>
-<p><a href="https://static.googleusercontent.com/media/research.google.com/zh-CN//pubs/archive/43864.pdf">https://static.googleusercontent.com/media/research.google.com/zh-CN//pubs/archive/43864.pdf</a></p>
-<p><a href="https://zhuanlan.zhihu.com/p/59876058#:~:text=%E3%80%90%E8%AE%BA%E6%96%87%E3%80%91Dataflow,%E6%A8%A1%E5%9E%8B%EF%BC%9A%E4%B8%80%E7%A7%8D%E8%83%BD%E5%B9%B3%E8%A1%A1%E5%87%86%E7%A1%AE%E6%80%A7%E3%80%81%E5%BB%B6%E8%BF%9F%E3%80%81%E6%88%90%E6%9C%AC%E7%9A%84%E5%A4%A7%E8%A7%84%E6%A8%A1%E3%80%81%E6%97%A0%E9%99%90%E3%80%81%E4%B9%B1%E5%BA%8F%E7%9A%84%E6%95%B0%E6%8D%AE%E5%A4%84%E7%90%86%E7%9A%84%E5%AE%9E%E8%B7%B5%E6%96%B9%E6%B3%95">【论文】Dataflow 模型：一种能平衡准确性、延迟、成本的大规模、无限、乱序的数据处理的实践方法</a></p>
-<p><a href="https://developer.aliyun.com/article/64911">https://developer.aliyun.com/article/64911</a></p>
+<ul>
+<li><a href="https://static.googleusercontent.com/media/research.google.com/zh-CN//pubs/archive/43864.pdf">43864.pdf</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/59876058#:~:text=%E3%80%90%E8%AE%BA%E6%96%87%E3%80%91Dataflow,%E6%A8%A1%E5%9E%8B%EF%BC%9A%E4%B8%80%E7%A7%8D%E8%83%BD%E5%B9%B3%E8%A1%A1%E5%87%86%E7%A1%AE%E6%80%A7%E3%80%81%E5%BB%B6%E8%BF%9F%E3%80%81%E6%88%90%E6%9C%AC%E7%9A%84%E5%A4%A7%E8%A7%84%E6%A8%A1%E3%80%81%E6%97%A0%E9%99%90%E3%80%81%E4%B9%B1%E5%BA%8F%E7%9A%84%E6%95%B0%E6%8D%AE%E5%A4%84%E7%90%86%E7%9A%84%E5%AE%9E%E8%B7%B5%E6%96%B9%E6%B3%95">论文-Dataflow 模型</a></li>
+<li><a href="https://developer.aliyun.com/article/64911">https://developer.aliyun.com/article/64911</a></li>
+</ul>
 
 </div>
 </main>
@@ -150,7 +151,7 @@ Dataflow 模型提出：</p>
 
 <div>
   <div class="side side-left"><h3>重复使用</h3></div>
-  Text and figures are licensed under <a href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution CC BY 4.0</a>. The source code is licensed under MIT. The full source is available at <a href="https://github.com/yihui/hugo-prose">https://github.com/yihui/hugo-prose</a>.
+  Text and figures are licensed under <a href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution CC BY 4.0</a>. The source code is licensed under MIT. The full source is available at <a href="https://github.com/qiref/qiref.github.io">https://github.com/qiref/qiref.github.io</a>.
 </div>
 
 
@@ -163,7 +164,7 @@ Dataflow 模型提出：</p>
     
     
   
-  如果您发现本文里含有任何错误（包括错别字和标点符号），欢迎<a href="https://github.com/yihui/hugo-prose/edit/master/exampleSite/content/post/2023-05-16-The%20Dataflow%20Model%20%e9%98%85%e8%af%bb%e7%ac%94%e8%ae%b0.md" id="edit-link">在本站的 GitHub 项目里提交修订意见。</a>
+  如果您发现本文里含有任何错误（包括错别字和标点符号），欢迎<a href="https://github.com/qiref/qiref.github.io/tree/master/content/post/2023-05-16-The%20Dataflow%20Model%20%e9%98%85%e8%af%bb%e7%ac%94%e8%ae%b0.md" id="edit-link">在本站的 GitHub 项目里提交修订意见。</a>
 </div>
 
 
@@ -180,9 +181,14 @@ Dataflow 模型提出：</p>
 </nav>
 
 
-
-
-
+<script src="https://utteranc.es/client.js"
+        repo="chicbyte/chicbyte.github.io"
+        issue-term="pathname"
+        label="Comment"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script>
 </div>
 
 
@@ -191,6 +197,17 @@ Dataflow 模型提出：</p>
 
 
 
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-PGMJFXZJRT"></script>
+<script>
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.dataLayer = window.dataLayer || [];
+	function gtag(){dataLayer.push(arguments);}
+	gtag('js', new Date());
+	gtag('config', 'G-PGMJFXZJRT', { 'anonymize_ip': false });
+}
+</script>
 
 
 
@@ -201,18 +218,10 @@ Dataflow 模型提出：</p>
 
   <div class="footer">
   
-  <ul class="copyright">
-    <li>© <a href="https://en.wikipedia.org/wiki/Seneca_the_Younger">Lucius Annaeus Seneca</a> 4 BC &ndash; AD 65</li>
-  </ul>
-  
   <ul>
     
-    <li>
-      <a href="/404.html">Contact</a>
-    </li>
-    
     <li class="optional">
-      <a href="/categories/">Categories</a>
+      <a href="/post/">Posts</a>
     </li>
     
     <li class="optional">

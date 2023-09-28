@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>DBLog on 大道至简</title>
+    <link>https://qiref.github.io/tags/dblog/</link>
+    <description>Recent content in DBLog on 大道至简</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>cn-zh</language>
+    <lastBuildDate>Wed, 09 Aug 2023 10:39:17 +0800</lastBuildDate><atom:link href="https://qiref.github.io/tags/dblog/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>DBLog 阅读笔记</title>
+      <link>https://qiref.github.io/post/2023/08/09/dblog-%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/</link>
+      <pubDate>Wed, 09 Aug 2023 10:39:17 +0800</pubDate>
+      
+      <guid>https://qiref.github.io/post/2023/08/09/dblog-%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/</guid>
+      <description>介绍 论文原名: DBLog: A Watermark Based Change-Data-Capture Framework , 基于 Watermark 的 Change-Data-Capture(数据库实时捕获已提交的变更记录) 框架, 本质上是解决数据库同步(全量+增量)的框架, Watermark 是框架使用的一种手段, 在源表中创建表,生成唯一 uuid 并更新表数据, 在源表中就会生成一条变更记录,记作 Watermark 的变更记录, 通过 High Watermark 和 Low Watermark 将变更记录分割, 保证 select chunk 数据包含了增量的变更记录.
+框架整体架构如下:
+框架特点:
+按顺序处理捕获到的 changelog; 转储可以随时进行，跨所有表，针对一个特定的表或者针对一个表的具体主键; 以块(chunk)的形式获取转储，日志与转储事件交错。通过这种方式，changelog 可以与转储处理一起进行。如果进程终止，它可以在最后一个完成的块之后恢复，而不需要从头开始。这还允许在需要时对转储进行调整和暂停; 不会获取表级锁，这可以防止影响源数据库上的写流量; 支持任何类型的输出，因此，输出可以是流、数据存储甚或是 API; 设计充分考虑了高可用性。因此，下游的消费者可以放心，只要源端发生变化，它们就可以收到变化事件。 注意, 本文并非详细介绍 DBLog 框架本身, 而是分析其框架背后的设计思路.
+算法流程 chunk 划分 对于源表数据, 全量数据使用分块读取, 基于 primary key 顺序排序, 将全量数据划分为 N 个 chunk;
+watermark 基于 chunk 划分, 然后 chunk 数据全量写入下游之后, 再将源表的变更记录 changelog 增量同步到下游, 整体思路就是这样, 但是划分 chunk 有个问题需要解决, 就是先同步到下游的数据不一定的最终的数据, 例如上图 chunk1 中的数据在同步到下游之后可能会删除, 那chunk1 的数据写到下游之后, 下游就会出现脏数据; 如何解决 chunk 和 changelog 之间不会相互覆盖的问题?</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,15 +1,16 @@
-baseurl: "/"
-languageCode: "en-zh"
+baseurl: "https://qiref.github.io/"
+languageCode: "cn-zh"
 # defaultContentLanguage: "en"
 defaultContentLanguage: "zh"
-title: "Hugo Prose"
+title: "大道至简"
 theme: "hugo-prose"
-googleAnalytics: ""
+googleAnalytics: "G-PGMJFXZJRT"
 disqusShortname: ""
 ignoreFiles: ["\\.Rmd$", "\\.Rmarkdown$", "_cache$"]
-footnotereturnlinkcontents: "↩"
-paginate: 2
 
+footnotereturnlinkcontents: "↩"
+paginate: 10
+enableEmoji: true
 permalinks:
   post: "/post/:year/:month/:day/:slug/"
 
@@ -19,17 +20,28 @@ outputs:
 # some menu items were added via the `menu` option in YAML in posts
 menu:
   header:
+    - name: Posts
+      url: "post/"
+      weight: 2
+      pre: ""
+    - name: Tags
+      url: "tags/"
+      weight: 3
+      pre: ""
     - name: Search
       url: "#"
       identifier: menu-search
-    - name: Subscribe
-      url: "index.xml"
+    # - name: Search
+    #   url: "#"
+    #   identifier: menu-search
+    # - name: Subscribe
+    #   url: "index.xml"
   footer:
-    - name: Contact
-      url: "404.html"
-      weight: 1
-    - name: Categories
-      url: "categories/"
+    # - name: Contact
+    #   url: "404.html"
+    #   weight: 1
+    - name: Posts
+      url: "post/"
       weight: 2
       pre: "optional"
     - name: Tags
@@ -44,21 +56,21 @@ menu:
       url: "#"
 
 params:
-  homePosts: 6
+  homePosts: 10
   mainSections: ["post", "work"]
-  editLink: "https://github.com/yihui/hugo-prose/edit/master/exampleSite/content/"
+  editLink: "https://github.com/qiref/qiref.github.io/tree/master/content/"
   authorDelimiter: " / "
   stickyMenu: false
   description: >
     A website built through Hugo and blogdown with the hugo-prose theme.
-  footer: >
-    &copy; [Lucius Annaeus Seneca](https://en.wikipedia.org/wiki/Seneca_the_Younger)
-    4 BC -- AD 65
+  # footer: >
+  #   &copy; [Lucius Annaeus Seneca](https://en.wikipedia.org/wiki/Seneca_the_Younger)
+  #   4 BC -- AD 65
   license: >
     Text and figures are licensed under [Creative Commons Attribution CC BY
     4.0](https://creativecommons.org/licenses/by/4.0/). The source code is
     licensed under MIT. The full source is available at
-    https://github.com/yihui/hugo-prose.
+    https://github.com/qiref/qiref.github.io.
 
 markup:
   highlight:
@@ -66,3 +78,8 @@ markup:
   goldmark:
     renderer:
       unsafe: true
+
+sitemap:
+  changeFreq: "daily"
+  filename: sitemap.xml
+  priority: -1

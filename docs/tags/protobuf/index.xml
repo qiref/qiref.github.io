@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>ProtoBuf on Hugo Prose</title>
-    <link>/tags/protobuf/</link>
-    <description>Recent content in ProtoBuf on Hugo Prose</description>
+    <title>ProtoBuf on 大道至简</title>
+    <link>https://qiref.github.io/tags/protobuf/</link>
+    <description>Recent content in ProtoBuf on 大道至简</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en-zh</language>
-    <lastBuildDate>Tue, 11 Jan 2022 00:18:23 +0000</lastBuildDate><atom:link href="/tags/protobuf/index.xml" rel="self" type="application/rss+xml" />
+    <language>cn-zh</language>
+    <lastBuildDate>Tue, 11 Jan 2022 00:18:23 +0000</lastBuildDate><atom:link href="https://qiref.github.io/tags/protobuf/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>ProtoBuf数据协议</title>
-      <link>/post/2022/01/11/protobuf%E6%95%B0%E6%8D%AE%E5%8D%8F%E8%AE%AE/</link>
+      <link>https://qiref.github.io/post/2022/01/11/protobuf%E6%95%B0%E6%8D%AE%E5%8D%8F%E8%AE%AE/</link>
       <pubDate>Tue, 11 Jan 2022 00:18:23 +0000</pubDate>
       
-      <guid>/post/2022/01/11/protobuf%E6%95%B0%E6%8D%AE%E5%8D%8F%E8%AE%AE/</guid>
+      <guid>https://qiref.github.io/post/2022/01/11/protobuf%E6%95%B0%E6%8D%AE%E5%8D%8F%E8%AE%AE/</guid>
       <description>摘要：ProtoBuf(Protocol Buffers)是一种跨平台、语言无关、可扩展的序列化结构数据的方法，可用于网络数据交换及数据存储。
 Protocol Buffers介绍 不同于 XML 、JSON 这种文本格式数据，Protocol Buffers 是一种二进制格式数据。在Protocol Buffers 诞生之初，就被赋予两个特点：
 向前兼容，很容易引入新字段，应对字段的频繁变更 数据格式具备描述性，并且支持多语言处理 传输效率高 基于以上这些特性，Protocol Buffers 被广泛应用于各种 RPC 框架中，并且是 Google 的数据通用语言。

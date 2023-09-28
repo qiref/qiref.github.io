@@ -1,27 +1,25 @@
 <!DOCTYPE html>
-<html lang="en-zh">
+<html lang="cn-zh">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <title> Flink反压 | Hugo Prose</title>
+    <title> Flink反压 | 大道至简</title>
     
     
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/combine/npm/@xiee/utils/css/article.min.css,npm/@xiee/utils/css/heading-anchor.min.css">
     <link rel="stylesheet" href="/css/style.css" />
     <link rel="stylesheet" href="/css/fonts.css" />
     <link rel="stylesheet" href="/css/custom.css" />
-    <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="Flink反压"/>
-<meta name="twitter:description" content="什么是反压 如果你看到一个 Task 发生 反压警告（例如： High），意味着它生产数据的速率比下游 Task 消费数据的速率要快。 在工作流中数据记录是从上游向下游流动的（例如：从 Source 到 Sink）。反压沿着相反的方向传播，沿着数据流向上游传播。
-以一个简单的 Source -&gt; Sink Job 为例。如果看到 Source 发生了警告，意味着 Sink 消费数据的速率比 Source 生产数据的速率要慢。 Sink 正在向上游的 Source 算子产生反压。
-Task（SubTask）的每个并行实例都可以用三个一组的指标评价：
-backPressureTimeMsPerSecond，subtask 被反压的时间 idleTimeMsPerSecond，subtask 等待某类处理的时间 busyTimeMsPerSecond，subtask 实际工作时间 在任何时间点，这三个指标相加都约等于1000ms。 指标值说明：
-OK: 0 &lt;= 比例 &lt;= 0.10 LOW: 0.10 &lt; 比例 &lt;= 0.5 HIGH: 0.5 &lt; 比例 &lt;= 1 反压问题定位 可以看各个operator的metrics的指标，比如：buffers.outPoolUsage、buffers.inPoolUsage、buffers.inputFloatingBuffersUsage、buffers.inputExclusiveBuffersUsage；
-接收端共用一个LocalBufferPool，接收端每个Channel在初始化阶段都会分配固定数量的Buffer(Exclusive Buffer)。如果某一时刻接收端接受到的数量太多，Exclusive Buffer就会耗尽，此时就会向BufferPool申请剩余的Floating Buffer（除了Exclusive Buffer，其他的都是Floating Buffer,备用Buffer）；inPoolUsage = floatingBuffersUsage &#43; exclusiveBuffersUsage
-若 inPoolUsage 低，而 outPoolUsage 低，则说明完全没有背压现象。 若 inPoolUsage 低，而 outPoolUsage 高，则说明处于临时状态，可能是背压刚开始，也可能是刚结束，需要再观察。 若 inPoolUsage 高，而 outPoolUsage 低，那么通常情况下这个算子就是背压的根源了。 若 inPoolUsage 高，而 outPoolUsage 高，则说明这个算子是被其他下游算子反压而来的，并不是元凶。 在反压定位过程中，建议关闭 Operator Chaining 优化，这样所有的算子可以单独拆分出来，不会相互干扰："/>
+    
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-PGMJFXZJRT"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
 
-
+  gtag('config', 'G-PGMJFXZJRT');
+</script>
   </head>
 
   <body>
@@ -29,15 +27,19 @@ OK: 0 &lt;= 比例 &lt;= 0.10 LOW: 0.10 &lt; 比例 &lt;= 0.5 HIGH: 0.5 &lt; 比
     <nav class="menu">
     <ul>
       <li class="left">
-        <a href="/"><span>Hugo Prose</span></a>
+        <a href="/"><span>大道至简</span></a>
+      </li>
+      
+      <li>
+        <a href="/post/">Posts</a>
+      </li>
+      
+      <li>
+        <a href="/tags/">Tags</a>
       </li>
       
       <li id="menu-search">
         <a href="/#">Search</a>
-      </li>
-      
-      <li>
-        <a href="/index.xml">Subscribe</a>
       </li>
       
     </ul>
@@ -104,7 +106,7 @@ OK: 0 &lt;= 比例 &lt;= 0.10 LOW: 0.10 &lt; 比例 &lt;= 0.5 HIGH: 0.5 &lt; 比
 
 <div>
   <div class="side side-left"><h3>重复使用</h3></div>
-  Text and figures are licensed under <a href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution CC BY 4.0</a>. The source code is licensed under MIT. The full source is available at <a href="https://github.com/yihui/hugo-prose">https://github.com/yihui/hugo-prose</a>.
+  Text and figures are licensed under <a href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution CC BY 4.0</a>. The source code is licensed under MIT. The full source is available at <a href="https://github.com/qiref/qiref.github.io">https://github.com/qiref/qiref.github.io</a>.
 </div>
 
 
@@ -117,7 +119,7 @@ OK: 0 &lt;= 比例 &lt;= 0.10 LOW: 0.10 &lt; 比例 &lt;= 0.5 HIGH: 0.5 &lt; 比
     
     
   
-  如果您发现本文里含有任何错误（包括错别字和标点符号），欢迎<a href="https://github.com/yihui/hugo-prose/edit/master/exampleSite/content/post/2023-03-23-Flink%e5%8f%8d%e5%8e%8b.md" id="edit-link">在本站的 GitHub 项目里提交修订意见。</a>
+  如果您发现本文里含有任何错误（包括错别字和标点符号），欢迎<a href="https://github.com/qiref/qiref.github.io/tree/master/content/post/2023-03-23-Flink%e5%8f%8d%e5%8e%8b.md" id="edit-link">在本站的 GitHub 项目里提交修订意见。</a>
 </div>
 
 
@@ -134,9 +136,14 @@ OK: 0 &lt;= 比例 &lt;= 0.10 LOW: 0.10 &lt; 比例 &lt;= 0.5 HIGH: 0.5 &lt; 比
 </nav>
 
 
-
-
-
+<script src="https://utteranc.es/client.js"
+        repo="chicbyte/chicbyte.github.io"
+        issue-term="pathname"
+        label="Comment"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script>
 </div>
 
 
@@ -145,6 +152,17 @@ OK: 0 &lt;= 比例 &lt;= 0.10 LOW: 0.10 &lt; 比例 &lt;= 0.5 HIGH: 0.5 &lt; 比
 
 
 
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-PGMJFXZJRT"></script>
+<script>
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.dataLayer = window.dataLayer || [];
+	function gtag(){dataLayer.push(arguments);}
+	gtag('js', new Date());
+	gtag('config', 'G-PGMJFXZJRT', { 'anonymize_ip': false });
+}
+</script>
 
 
 
@@ -159,18 +177,10 @@ OK: 0 &lt;= 比例 &lt;= 0.10 LOW: 0.10 &lt; 比例 &lt;= 0.5 HIGH: 0.5 &lt; 比
 
   <div class="footer">
   
-  <ul class="copyright">
-    <li>© <a href="https://en.wikipedia.org/wiki/Seneca_the_Younger">Lucius Annaeus Seneca</a> 4 BC &ndash; AD 65</li>
-  </ul>
-  
   <ul>
     
-    <li>
-      <a href="/404.html">Contact</a>
-    </li>
-    
     <li class="optional">
-      <a href="/categories/">Categories</a>
+      <a href="/post/">Posts</a>
     </li>
     
     <li class="optional">

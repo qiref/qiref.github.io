@@ -1,28 +1,25 @@
 <!DOCTYPE html>
-<html lang="en-zh">
+<html lang="cn-zh">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <title> Flink时间语义 | Hugo Prose</title>
+    <title> Flink时间语义 | 大道至简</title>
     
     
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/combine/npm/@xiee/utils/css/article.min.css,npm/@xiee/utils/css/heading-anchor.min.css">
     <link rel="stylesheet" href="/css/style.css" />
     <link rel="stylesheet" href="/css/fonts.css" />
     <link rel="stylesheet" href="/css/custom.css" />
-    <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="Flink时间语义"/>
-<meta name="twitter:description" content="摘要： 理解流处理中的时间语义，处理时间和事件时间。
-如图，在无界数据中，随着时间推移，数据一直产生，但真实情况中，往往在一段时间内的数据都是不均匀的，往往会出现意外的情况，比如在地铁无信号的情况下，数据虽然产生，但是会有一段时间延迟才会到达消息队列，例如虚线框中的数据。
-处理时间 处理时间就是流计算处理程序的机器本地时间，按照这种时间语义，在流计算的时间窗口中，上述例子中的数据会按这样分布：
-基于本地时间，在第一分钟，流处理程序只收到了 15、18 两个数据，后续数据由于网络原因，在 8:01:00 之后才到达流计算程序，所以后续数据在下一个时间窗口内。
-事件时间 事件时间就是事件的发生时间，这个时间通常会在数据中，按照这种时间语义，在流计算的时间窗口中，上述例子中的数据会按这样分布：
-基于事件时间，在第一分钟，数据应该是：15 18 9 10 ，在第二分钟，数据应该是：11 。
-watermark 由于事件时间的窗口和事件相关，那么如果下一个事件还未到达，流计算程序是否就无限等待呢？
-为了解决这个问题，flink 引入 watermark 的概念，假如定义 watermark 为 T，那么在每一个时间窗口中，T 都会单调递增 T &lt; T1，并且下一个时间窗口中的事件时间必须大于 T1，那么每一个时间窗口的数据就是介于 T-T1。"/>
+    
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-PGMJFXZJRT"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
 
-
+  gtag('config', 'G-PGMJFXZJRT');
+</script>
   </head>
 
   <body>
@@ -30,15 +27,19 @@ watermark 由于事件时间的窗口和事件相关，那么如果下一个事�
     <nav class="menu">
     <ul>
       <li class="left">
-        <a href="/"><span>Hugo Prose</span></a>
+        <a href="/"><span>大道至简</span></a>
+      </li>
+      
+      <li>
+        <a href="/post/">Posts</a>
+      </li>
+      
+      <li>
+        <a href="/tags/">Tags</a>
       </li>
       
       <li id="menu-search">
         <a href="/#">Search</a>
-      </li>
-      
-      <li>
-        <a href="/index.xml">Subscribe</a>
       </li>
       
     </ul>
@@ -91,7 +92,7 @@ watermark 由于事件时间的窗口和事件相关，那么如果下一个事�
 
 <div>
   <div class="side side-left"><h3>重复使用</h3></div>
-  Text and figures are licensed under <a href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution CC BY 4.0</a>. The source code is licensed under MIT. The full source is available at <a href="https://github.com/yihui/hugo-prose">https://github.com/yihui/hugo-prose</a>.
+  Text and figures are licensed under <a href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution CC BY 4.0</a>. The source code is licensed under MIT. The full source is available at <a href="https://github.com/qiref/qiref.github.io">https://github.com/qiref/qiref.github.io</a>.
 </div>
 
 
@@ -104,7 +105,7 @@ watermark 由于事件时间的窗口和事件相关，那么如果下一个事�
     
     
   
-  如果您发现本文里含有任何错误（包括错别字和标点符号），欢迎<a href="https://github.com/yihui/hugo-prose/edit/master/exampleSite/content/post/2022-02-25-Flink-%e6%97%b6%e9%97%b4%e8%af%ad%e4%b9%89.md" id="edit-link">在本站的 GitHub 项目里提交修订意见。</a>
+  如果您发现本文里含有任何错误（包括错别字和标点符号），欢迎<a href="https://github.com/qiref/qiref.github.io/tree/master/content/post/2022-02-25-Flink-%e6%97%b6%e9%97%b4%e8%af%ad%e4%b9%89.md" id="edit-link">在本站的 GitHub 项目里提交修订意见。</a>
 </div>
 
 
@@ -121,9 +122,14 @@ watermark 由于事件时间的窗口和事件相关，那么如果下一个事�
 </nav>
 
 
-
-
-
+<script src="https://utteranc.es/client.js"
+        repo="chicbyte/chicbyte.github.io"
+        issue-term="pathname"
+        label="Comment"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script>
 </div>
 
 
@@ -132,6 +138,17 @@ watermark 由于事件时间的窗口和事件相关，那么如果下一个事�
 
 
 
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-PGMJFXZJRT"></script>
+<script>
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.dataLayer = window.dataLayer || [];
+	function gtag(){dataLayer.push(arguments);}
+	gtag('js', new Date());
+	gtag('config', 'G-PGMJFXZJRT', { 'anonymize_ip': false });
+}
+</script>
 
 
 
@@ -142,18 +159,10 @@ watermark 由于事件时间的窗口和事件相关，那么如果下一个事�
 
   <div class="footer">
   
-  <ul class="copyright">
-    <li>© <a href="https://en.wikipedia.org/wiki/Seneca_the_Younger">Lucius Annaeus Seneca</a> 4 BC &ndash; AD 65</li>
-  </ul>
-  
   <ul>
     
-    <li>
-      <a href="/404.html">Contact</a>
-    </li>
-    
     <li class="optional">
-      <a href="/categories/">Categories</a>
+      <a href="/post/">Posts</a>
     </li>
     
     <li class="optional">

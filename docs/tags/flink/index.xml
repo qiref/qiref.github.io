@@ -1,37 +1,37 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Flink on Hugo Prose</title>
-    <link>/tags/flink/</link>
-    <description>Recent content in Flink on Hugo Prose</description>
+    <title>Flink on 大道至简</title>
+    <link>https://qiref.github.io/tags/flink/</link>
+    <description>Recent content in Flink on 大道至简</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en-zh</language>
-    <lastBuildDate>Tue, 28 Mar 2023 20:31:01 +0800</lastBuildDate><atom:link href="/tags/flink/index.xml" rel="self" type="application/rss+xml" />
+    <language>cn-zh</language>
+    <lastBuildDate>Tue, 28 Mar 2023 20:31:01 +0800</lastBuildDate><atom:link href="https://qiref.github.io/tags/flink/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Flink内存模型</title>
-      <link>/post/2023/03/28/flink%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B/</link>
+      <link>https://qiref.github.io/post/2023/03/28/flink%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B/</link>
       <pubDate>Tue, 28 Mar 2023 20:31:01 +0800</pubDate>
       
-      <guid>/post/2023/03/28/flink%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B/</guid>
+      <guid>https://qiref.github.io/post/2023/03/28/flink%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B/</guid>
       <description>Java 堆外内存 import sun.nio.ch.DirectBuffer; import java.nio.ByteBuffer; import java.util.concurrent.TimeUnit; public class OutHeapMem { public static void main(String[] args) throws Exception { // 分配 1G 直接内存 ByteBuffer byteBuffer = ByteBuffer.allocateDirect(1024 * 1024 * 1024); TimeUnit.SECONDS.sleep(30); System.out.println(&amp;quot;clean start&amp;quot;); // 清除直接内存 ((DirectBuffer) byteBuffer).cleaner().clean(); System.out.println(&amp;quot;clean finished&amp;quot;); TimeUnit.SECONDS.sleep(30); } } # 分配内存 Memory used total max usage heap 21M 165M 3641M 0.59% ps_eden_space 3M 64M 1344M 0.29% ps_survivor_space 0K 10752K 10752K 0.00% ps_old_gen 17M 91M 2731M 0.</description>
     </item>
     
     <item>
       <title>Flink类加载机制</title>
-      <link>/post/2023/03/24/flink%E7%B1%BB%E5%8A%A0%E8%BD%BD%E6%9C%BA%E5%88%B6/</link>
+      <link>https://qiref.github.io/post/2023/03/24/flink%E7%B1%BB%E5%8A%A0%E8%BD%BD%E6%9C%BA%E5%88%B6/</link>
       <pubDate>Fri, 24 Mar 2023 16:13:22 +0800</pubDate>
       
-      <guid>/post/2023/03/24/flink%E7%B1%BB%E5%8A%A0%E8%BD%BD%E6%9C%BA%E5%88%B6/</guid>
+      <guid>https://qiref.github.io/post/2023/03/24/flink%E7%B1%BB%E5%8A%A0%E8%BD%BD%E6%9C%BA%E5%88%B6/</guid>
       <description>flink 类加载配置说明 Flink 作为基于 JVM 的框架，在 flink-conf.yaml 中提供了控制类加载策略的参数 classloader.resolve-order，可选项有 child-first（默认）和 parent-first。
 Key Default Type Description classloader.resolve-order &amp;ldquo;child-first&amp;rdquo; String Defines the class resolution strategy when loading classes from user code, meaning whether to first check the user code jar (&amp;ldquo;child-first&amp;rdquo;) or the application classpath (&amp;ldquo;parent-first&amp;rdquo;). The default settings indicate to load classes first from the user code jar, which means that user code jars can include and load different dependencies than Flink uses (transitively).</description>
     </item>
     
     <item>
       <title>Flink反压</title>
-      <link>/post/2023/03/23/flink%E5%8F%8D%E5%8E%8B/</link>
+      <link>https://qiref.github.io/post/2023/03/23/flink%E5%8F%8D%E5%8E%8B/</link>
       <pubDate>Thu, 23 Mar 2023 16:37:37 +0800</pubDate>
       
-      <guid>/post/2023/03/23/flink%E5%8F%8D%E5%8E%8B/</guid>
+      <guid>https://qiref.github.io/post/2023/03/23/flink%E5%8F%8D%E5%8E%8B/</guid>
       <description>什么是反压 如果你看到一个 Task 发生 反压警告（例如： High），意味着它生产数据的速率比下游 Task 消费数据的速率要快。 在工作流中数据记录是从上游向下游流动的（例如：从 Source 到 Sink）。反压沿着相反的方向传播，沿着数据流向上游传播。
 以一个简单的 Source -&amp;gt; Sink Job 为例。如果看到 Source 发生了警告，意味着 Sink 消费数据的速率比 Source 生产数据的速率要慢。 Sink 正在向上游的 Source 算子产生反压。
 Task（SubTask）的每个并行实例都可以用三个一组的指标评价：
@@ -43,10 +43,10 @@ OK: 0 &amp;lt;= 比例 &amp;lt;= 0.10 LOW: 0.10 &amp;lt; 比例 &amp;lt;= 0.5 HI
     
     <item>
       <title>Flink Append流、Retract流、Upsert流</title>
-      <link>/post/2022/03/13/flink-append%E6%B5%81retract%E6%B5%81upsert%E6%B5%81/</link>
+      <link>https://qiref.github.io/post/2022/03/13/flink-append%E6%B5%81retract%E6%B5%81upsert%E6%B5%81/</link>
       <pubDate>Sun, 13 Mar 2022 11:16:23 +0000</pubDate>
       
-      <guid>/post/2022/03/13/flink-append%E6%B5%81retract%E6%B5%81upsert%E6%B5%81/</guid>
+      <guid>https://qiref.github.io/post/2022/03/13/flink-append%E6%B5%81retract%E6%B5%81upsert%E6%B5%81/</guid>
       <description>摘要： 介绍 Flink 中 Append流、Retract流、Upsert流的含义。
 Append流 Retract流 Upsert流 Append流 在 Append 流中，仅通过 INSERT 操作修改的动态表，可以通过输出插入的行转换为流。
 Retract流 retract 流包含两种类型的 message： add messages 和 retract messages 。
@@ -57,10 +57,10 @@ OPERATOR ENCODE insert add update retract -&amp;gt; add delete retract Upsert流
     
     <item>
       <title>Flink Checkpoint机制</title>
-      <link>/post/2022/03/04/flink-checkpoint%E6%9C%BA%E5%88%B6/</link>
+      <link>https://qiref.github.io/post/2022/03/04/flink-checkpoint%E6%9C%BA%E5%88%B6/</link>
       <pubDate>Fri, 04 Mar 2022 11:16:23 +0000</pubDate>
       
-      <guid>/post/2022/03/04/flink-checkpoint%E6%9C%BA%E5%88%B6/</guid>
+      <guid>https://qiref.github.io/post/2022/03/04/flink-checkpoint%E6%9C%BA%E5%88%B6/</guid>
       <description>摘要： 如果把运行中的 Flink 程序比做一条河流，Checkpoint 就是一个相机，定期地对河流进行拍照，记录河水的状态。本文以自顶向下的视角，从理论到实现，分析 Flink 中的 Checkpoint 机制；
 理论基础 asynchronous barrier snapshotting 算法步骤 算法在 Flink 中的实现 Flink Checkpoint 整体流程 Flink Checkpoint Barrier Alignment Flink Checkpoint 使用 Flink Job 重启策略 Flink Job 开启 Checkpoint 理论基础 asynchronous barrier snapshotting Flink Checkpoint 机制是异步屏障快照（asynchronous barrier snapshotting, ABS）算法的一种实现，而 ABS 算法基于 Chandy-Lamport 的变种，但数据模型是还是基于 Chandy-Lamport；
 在 flink 中，作业算子被抽象为 DAG，节点为 operator，边是每一个 operator 的 stream（channel），与 Chandy-Lamport 的数据模型正好吻合；
@@ -70,10 +70,10 @@ ABS 算法 中 asynchronous 是异步的意思，当算子收齐 barrier 并触�
     
     <item>
       <title>Flink时间语义</title>
-      <link>/post/2022/02/25/flink%E6%97%B6%E9%97%B4%E8%AF%AD%E4%B9%89/</link>
+      <link>https://qiref.github.io/post/2022/02/25/flink%E6%97%B6%E9%97%B4%E8%AF%AD%E4%B9%89/</link>
       <pubDate>Fri, 25 Feb 2022 11:16:23 +0000</pubDate>
       
-      <guid>/post/2022/02/25/flink%E6%97%B6%E9%97%B4%E8%AF%AD%E4%B9%89/</guid>
+      <guid>https://qiref.github.io/post/2022/02/25/flink%E6%97%B6%E9%97%B4%E8%AF%AD%E4%B9%89/</guid>
       <description>摘要： 理解流处理中的时间语义，处理时间和事件时间。
 如图，在无界数据中，随着时间推移，数据一直产生，但真实情况中，往往在一段时间内的数据都是不均匀的，往往会出现意外的情况，比如在地铁无信号的情况下，数据虽然产生，但是会有一段时间延迟才会到达消息队列，例如虚线框中的数据。
 处理时间 处理时间就是流计算处理程序的机器本地时间，按照这种时间语义，在流计算的时间窗口中，上述例子中的数据会按这样分布：
@@ -86,10 +86,10 @@ watermark 由于事件时间的窗口和事件相关，那么如果下一个事�
     
     <item>
       <title>Flink基本架构</title>
-      <link>/post/2022/02/23/flink%E5%9F%BA%E6%9C%AC%E6%9E%B6%E6%9E%84/</link>
+      <link>https://qiref.github.io/post/2022/02/23/flink%E5%9F%BA%E6%9C%AC%E6%9E%B6%E6%9E%84/</link>
       <pubDate>Wed, 23 Feb 2022 11:16:23 +0000</pubDate>
       
-      <guid>/post/2022/02/23/flink%E5%9F%BA%E6%9C%AC%E6%9E%B6%E6%9E%84/</guid>
+      <guid>https://qiref.github.io/post/2022/02/23/flink%E5%9F%BA%E6%9C%AC%E6%9E%B6%E6%9E%84/</guid>
       <description>摘要： 鸟瞰 Flink 架构，分析 Flink 内部组件工作机制。
 Flink 架构图 提交作业流程 Flink 集群模式 JobManager Taskmanager 算子链 Slot task 数据交换策略 Flink 架构图 一个完整的 Flink 集群由一个 Jobmanager 和若干个 Taskmanager 组成，Jobmanager 主要负责调度 task 以及 协调 Checkpoint。Taskmanager 则负责具体的 task 执行，以及数据流的交换。
 可以通过多种方式启动 JobManager 和 TaskManager：直接在机器上作为standalone 集群启动、在容器中启动、或者通过YARN等资源框架管理并启动。TaskManager 连接到 JobManagers，宣布自己可用，并被分配工作。
@@ -105,10 +105,10 @@ Flink job 集群
     
     <item>
       <title>Flink WordCount</title>
-      <link>/post/2022/02/22/flink-wordcount/</link>
+      <link>https://qiref.github.io/post/2022/02/22/flink-wordcount/</link>
       <pubDate>Tue, 22 Feb 2022 18:16:23 +0000</pubDate>
       
-      <guid>/post/2022/02/22/flink-wordcount/</guid>
+      <guid>https://qiref.github.io/post/2022/02/22/flink-wordcount/</guid>
       <description>摘要：Flink 从零开始，下载集群并运行 WordCount Job。 完整代码地址： https://github.com/ArchieYao/flink-learning/tree/main/hello-world
 Flink 本地模式集群安装 运行Flink，需提前安装好 Java 8 或者 Java 11。
 wget https://dlcdn.apache.org/flink/flink-1.14.3/flink-1.14.3-bin-scala_2.12.tgz tar -zxvf flink-1.14.3-bin-scala_2.12.tgz cd flink-1.14.3 ./bin/start-cluster.sh 运行成功后，可以在 IP:8081 访问 Flink-UI

@@ -1,30 +1,25 @@
 <!DOCTYPE html>
-<html lang="en-zh">
+<html lang="cn-zh">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <title> Centos搭建公共yum源 | Hugo Prose</title>
+    <title> Centos搭建公共yum源 | 大道至简</title>
     
     
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/combine/npm/@xiee/utils/css/article.min.css,npm/@xiee/utils/css/heading-anchor.min.css">
     <link rel="stylesheet" href="/css/style.css" />
     <link rel="stylesheet" href="/css/fonts.css" />
     <link rel="stylesheet" href="/css/custom.css" />
-    <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="Centos搭建公共yum源"/>
-<meta name="twitter:description" content="摘要：记录在Centos7中如何挂载ISO镜像作yum源，并借助http服务作公共yum源。
-部署yum私服 上传centos镜像文件到服务器
-mount -t iso9660 -o loop centos-7-x86_64-dvd-1511.iso /mnt/cdrom/ （卸载：umoutn /mnt/cdrom)
-挂载成功！ 将软件链接到http服务发布路径下 确定当前服务器是否安装了httpd服务
-ln -s /mnt/cdrom/ /var/www/html/CentOS7 检查http服务
-systemctl status httpd.service 启动HTTP服务器
-systemctl enable httpd.service systemctl start httpd.service 界面查看
-cd /etc/yum.repos.d/ mkdir bak mv centos-* bak vi CentOS-Base.repo [base] name=CentOS-$releasever - Base baseurl=http://192.168.67.15/CentOS7/ gpgcheck=1 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7 分发到所有服务器
-scp -r /etc/yum.repos.d/ hadoop-01:/etc/ scp -r /etc/yum.repos.d/ hadoop-02:/etc/ 检查是否正成功安装yum 源
-yum clean all yum makecache yum list 如果能看到软件列表则说明安装成功。"/>
+    
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-PGMJFXZJRT"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
 
-
+  gtag('config', 'G-PGMJFXZJRT');
+</script>
   </head>
 
   <body>
@@ -32,15 +27,19 @@ yum clean all yum makecache yum list 如果能看到软件列表则说明安
     <nav class="menu">
     <ul>
       <li class="left">
-        <a href="/"><span>Hugo Prose</span></a>
+        <a href="/"><span>大道至简</span></a>
+      </li>
+      
+      <li>
+        <a href="/post/">Posts</a>
+      </li>
+      
+      <li>
+        <a href="/tags/">Tags</a>
       </li>
       
       <li id="menu-search">
         <a href="/#">Search</a>
-      </li>
-      
-      <li>
-        <a href="/index.xml">Subscribe</a>
       </li>
       
     </ul>
@@ -120,7 +119,7 @@ yum list
 
 <div>
   <div class="side side-left"><h3>重复使用</h3></div>
-  Text and figures are licensed under <a href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution CC BY 4.0</a>. The source code is licensed under MIT. The full source is available at <a href="https://github.com/yihui/hugo-prose">https://github.com/yihui/hugo-prose</a>.
+  Text and figures are licensed under <a href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution CC BY 4.0</a>. The source code is licensed under MIT. The full source is available at <a href="https://github.com/qiref/qiref.github.io">https://github.com/qiref/qiref.github.io</a>.
 </div>
 
 
@@ -133,7 +132,7 @@ yum list
     
     
   
-  如果您发现本文里含有任何错误（包括错别字和标点符号），欢迎<a href="https://github.com/yihui/hugo-prose/edit/master/exampleSite/content/post/2019-12-14-Centos%e6%90%ad%e5%bb%ba%e5%85%ac%e5%85%b1yum%e6%ba%90.md" id="edit-link">在本站的 GitHub 项目里提交修订意见。</a>
+  如果您发现本文里含有任何错误（包括错别字和标点符号），欢迎<a href="https://github.com/qiref/qiref.github.io/tree/master/content/post/2019-12-14-Centos%e6%90%ad%e5%bb%ba%e5%85%ac%e5%85%b1yum%e6%ba%90.md" id="edit-link">在本站的 GitHub 项目里提交修订意见。</a>
 </div>
 
 
@@ -150,9 +149,14 @@ yum list
 </nav>
 
 
-
-
-
+<script src="https://utteranc.es/client.js"
+        repo="chicbyte/chicbyte.github.io"
+        issue-term="pathname"
+        label="Comment"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script>
 </div>
 
 
@@ -164,6 +168,17 @@ yum list
 <script async src="//mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML"></script>
 
 
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-PGMJFXZJRT"></script>
+<script>
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.dataLayer = window.dataLayer || [];
+	function gtag(){dataLayer.push(arguments);}
+	gtag('js', new Date());
+	gtag('config', 'G-PGMJFXZJRT', { 'anonymize_ip': false });
+}
+</script>
 
 
 
@@ -178,18 +193,10 @@ yum list
 
   <div class="footer">
   
-  <ul class="copyright">
-    <li>© <a href="https://en.wikipedia.org/wiki/Seneca_the_Younger">Lucius Annaeus Seneca</a> 4 BC &ndash; AD 65</li>
-  </ul>
-  
   <ul>
     
-    <li>
-      <a href="/404.html">Contact</a>
-    </li>
-    
     <li class="optional">
-      <a href="/categories/">Categories</a>
+      <a href="/post/">Posts</a>
     </li>
     
     <li class="optional">

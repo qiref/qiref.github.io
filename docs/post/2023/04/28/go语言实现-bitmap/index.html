@@ -1,29 +1,25 @@
 <!DOCTYPE html>
-<html lang="en-zh">
+<html lang="cn-zh">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <title> Go语言实现 bitmap | Hugo Prose</title>
+    <title> Go语言实现 bitmap | 大道至简</title>
     
     
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/combine/npm/@xiee/utils/css/article.min.css,npm/@xiee/utils/css/heading-anchor.min.css">
     <link rel="stylesheet" href="/css/style.css" />
     <link rel="stylesheet" href="/css/fonts.css" />
     <link rel="stylesheet" href="/css/custom.css" />
-    <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="Go语言实现 bitmap"/>
-<meta name="twitter:description" content="算法说明 Bitmap算法是一种基于位运算的数据结构，用于解决大规模数据的快速查找和统计问题。其基本原理是将一个大数据集合映射到一个二进制向量中，其中每个元素对应于数据集合中的一个元素，向量中的每一位表示该元素是否存在于集合中。
-具体来说，Bitmap算法通过使用一个位图（bitmap）来表示一个数据集合，其中每个元素对应一个位。如果某个元素在数据集合中出现，则将其对应的位设置为1，否则将其对应的位设置为0。通过这种方式，可以快速地进行集合操作，如并集、交集和差集等。
-Bitmap算法的主要优点在于其空间效率高，可以用较小的空间存储大规模数据集合。另外，Bitmap算法的时间复杂度也非常低，可以快速地进行集合操作。
-如何用数组表示一个 bitmap 以 1byte 为例：8位能表示8个元素， 0-7 号对应了 b[0] 下标， 8-15 号对应了 b[1] 下标，以此类推。
-因此，数组下标 n 跟bitmap元素序号 bitmapIdx 的关系为：n = bitmapIdx &gt;&gt; 3
-值如何映射到 bitmap 数组 当找到了 元素序号 n 在数组中的下标之后，如何给 b[n] 赋值呢？
-1 &lt;&lt; (bitmapIdx &amp; 7) 等同于 1 &lt;&lt; (bitmapIdx % 8)
-(bitmapIdx % 8) 找到在了在数组 b[n] 中的第 m 位，然后 1 &lt;&lt; m 之后，就相当于给数组赋值，把第 m 位 置为1。
-验证 同样以 1byte 为例：借用上述结论，第 24 号元素，对应的数组下标 n 为：n = 24 &gt;&gt; 3 结果为3, b[3]；"/>
+    
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-PGMJFXZJRT"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
 
-
+  gtag('config', 'G-PGMJFXZJRT');
+</script>
   </head>
 
   <body>
@@ -31,15 +27,19 @@ Bitmap算法的主要优点在于其空间效率高，可以用较小的空间�
     <nav class="menu">
     <ul>
       <li class="left">
-        <a href="/"><span>Hugo Prose</span></a>
+        <a href="/"><span>大道至简</span></a>
+      </li>
+      
+      <li>
+        <a href="/post/">Posts</a>
+      </li>
+      
+      <li>
+        <a href="/tags/">Tags</a>
       </li>
       
       <li id="menu-search">
         <a href="/#">Search</a>
-      </li>
-      
-      <li>
-        <a href="/index.xml">Subscribe</a>
       </li>
       
     </ul>
@@ -188,7 +188,7 @@ PASS
 
 <div>
   <div class="side side-left"><h3>重复使用</h3></div>
-  Text and figures are licensed under <a href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution CC BY 4.0</a>. The source code is licensed under MIT. The full source is available at <a href="https://github.com/yihui/hugo-prose">https://github.com/yihui/hugo-prose</a>.
+  Text and figures are licensed under <a href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution CC BY 4.0</a>. The source code is licensed under MIT. The full source is available at <a href="https://github.com/qiref/qiref.github.io">https://github.com/qiref/qiref.github.io</a>.
 </div>
 
 
@@ -201,7 +201,7 @@ PASS
     
     
   
-  如果您发现本文里含有任何错误（包括错别字和标点符号），欢迎<a href="https://github.com/yihui/hugo-prose/edit/master/exampleSite/content/post/2023-04-28-Go%e8%af%ad%e8%a8%80%e5%ae%9e%e7%8e%b0bitmap.md" id="edit-link">在本站的 GitHub 项目里提交修订意见。</a>
+  如果您发现本文里含有任何错误（包括错别字和标点符号），欢迎<a href="https://github.com/qiref/qiref.github.io/tree/master/content/post/2023-04-28-Go%e8%af%ad%e8%a8%80%e5%ae%9e%e7%8e%b0bitmap.md" id="edit-link">在本站的 GitHub 项目里提交修订意见。</a>
 </div>
 
 
@@ -218,9 +218,14 @@ PASS
 </nav>
 
 
-
-
-
+<script src="https://utteranc.es/client.js"
+        repo="chicbyte/chicbyte.github.io"
+        issue-term="pathname"
+        label="Comment"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script>
 </div>
 
 
@@ -229,6 +234,17 @@ PASS
 
 
 
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-PGMJFXZJRT"></script>
+<script>
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.dataLayer = window.dataLayer || [];
+	function gtag(){dataLayer.push(arguments);}
+	gtag('js', new Date());
+	gtag('config', 'G-PGMJFXZJRT', { 'anonymize_ip': false });
+}
+</script>
 
 
 
@@ -243,18 +259,10 @@ PASS
 
   <div class="footer">
   
-  <ul class="copyright">
-    <li>© <a href="https://en.wikipedia.org/wiki/Seneca_the_Younger">Lucius Annaeus Seneca</a> 4 BC &ndash; AD 65</li>
-  </ul>
-  
   <ul>
     
-    <li>
-      <a href="/404.html">Contact</a>
-    </li>
-    
     <li class="optional">
-      <a href="/categories/">Categories</a>
+      <a href="/post/">Posts</a>
     </li>
     
     <li class="optional">

@@ -4,8 +4,8 @@ input,
 select,
 textarea {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
-    font-size: 0.875rem;
-    line-height: 1.875;
+    font-size: 0.9rem;
+    line-height: 1.975;
 }
 
 .title,
@@ -21,6 +21,30 @@ h6 {
 input {
     padding: 0.125em .875em
 }
+
+.single main{
+    padding: 1.5rem;
+}
+/* * {
+    border-radius: 5px;
+} */
+
+footer {
+    border-radius: 0px;
+}
+
+pre {
+    tab-size: 4;
+}
+
+.search input:focus {
+    outline: none;
+    box-shadow: inset 0 0 0 0px;
+}
+
+/* #menu-search a{
+    display: none;
+} */
 
 /* .site-header .header-info {
     display: none;

@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Linux on Hugo Prose</title>
-    <link>/tags/linux/</link>
-    <description>Recent content in Linux on Hugo Prose</description>
+    <title>Linux on 大道至简</title>
+    <link>https://qiref.github.io/tags/linux/</link>
+    <description>Recent content in Linux on 大道至简</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en-zh</language>
-    <lastBuildDate>Sat, 14 Dec 2019 00:18:23 +0000</lastBuildDate><atom:link href="/tags/linux/index.xml" rel="self" type="application/rss+xml" />
+    <language>cn-zh</language>
+    <lastBuildDate>Sat, 14 Dec 2019 00:18:23 +0000</lastBuildDate><atom:link href="https://qiref.github.io/tags/linux/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Centos搭建公共yum源</title>
-      <link>/post/2019/12/14/centos%E6%90%AD%E5%BB%BA%E5%85%AC%E5%85%B1yum%E6%BA%90/</link>
+      <link>https://qiref.github.io/post/2019/12/14/centos%E6%90%AD%E5%BB%BA%E5%85%AC%E5%85%B1yum%E6%BA%90/</link>
       <pubDate>Sat, 14 Dec 2019 00:18:23 +0000</pubDate>
       
-      <guid>/post/2019/12/14/centos%E6%90%AD%E5%BB%BA%E5%85%AC%E5%85%B1yum%E6%BA%90/</guid>
+      <guid>https://qiref.github.io/post/2019/12/14/centos%E6%90%AD%E5%BB%BA%E5%85%AC%E5%85%B1yum%E6%BA%90/</guid>
       <description>摘要：记录在Centos7中如何挂载ISO镜像作yum源，并借助http服务作公共yum源。
 部署yum私服 上传centos镜像文件到服务器
 mount -t iso9660 -o loop centos-7-x86_64-dvd-1511.iso /mnt/cdrom/ （卸载：umoutn /mnt/cdrom)

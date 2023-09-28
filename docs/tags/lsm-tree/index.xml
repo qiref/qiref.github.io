@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>LSM Tree on 大道至简</title>
+    <link>https://qiref.github.io/tags/lsm-tree/</link>
+    <description>Recent content in LSM Tree on 大道至简</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>cn-zh</language>
+    <lastBuildDate>Fri, 13 Oct 2023 11:46:21 +0800</lastBuildDate><atom:link href="https://qiref.github.io/tags/lsm-tree/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Log Structured Merge Tree</title>
+      <link>https://qiref.github.io/post/2023/10/13/log-structured-merge-tree/</link>
+      <pubDate>Fri, 13 Oct 2023 11:46:21 +0800</pubDate>
+      
+      <guid>https://qiref.github.io/post/2023/10/13/log-structured-merge-tree/</guid>
+      <description>基本概念 Log Structured Merge Tree, 其本质上是一种存储数据的方式,通常用于各种存储系统的底层数据结构,通过尽可能减少磁盘随机IO来提升写入性能, 适用于写多读少的场景.
+随机写和顺序写 对于一个存储系统而言, 不可避免地需要写入文件到磁盘, 对于常规的写来说, 每来一条数据写一次文件, 数据可能是 add update delete, 需要频繁操作文件, 每一次写都是一次随机 IO; 为了提高写入速度, LSM Tree 并不是每一次写操作都把文件写到磁盘, 而是将数据在内存中更新，当内存中的数据达到一定的阈值时，才将这部分数据真正刷新到磁盘文件中. 以这种方式尽可能让每次磁盘 IO 都是顺序写;
+思路 基于减少磁盘的随机 IO 来提升整体存储系统的写入性能这一背景, 很自然可以推导出用批量写入的方式, 要想批量写入, 就需要在内存维护最近写入的数据, 达到阈值之后生成一个文件写入到磁盘, 但是这样又会存在新的问题:
+如果某一条数据已经写入到磁盘文件, 后续又有更新, 怎么处理呢? 内存中维护的临时数据, 如果还未来得及写入磁盘, 服务挂了, 重新启动时, 历史写入的数据如何恢复? 每次内存中数据达到阈值,写一个整个文件到磁盘,那么最终会生成大量的文件, 如何解决? 解决问题1, 为了优化这种更新的写入, 可以采用数据版本的做法, 或者给数据增加标志, 然后定期合并, 当然, 这也是以空间换时间, 相同的数据存储了多次, 以提升写入性能; 与此同时, 在数据读取时,由于写入的逻辑改变, 一条数据可能会存在于多个文件中, 因此在读取时, 需要返回最新的数据, 在读取到多条数据时,需要对多条数据进行合取最新;
+解决问题2, 在业界比较标准的做法是 WAL, WAL 的基本原理是在执行数据修改操作之前，先将这些操作记录在日志（log）文件中, 以确保在发生故障或崩溃时，可以借助日志进行恢复并保持数据的一致性;
+解决问题3, 为了避免大量文件, 可以对文件进行定期合并, 当数据还在内存中时, 可以借助跳表或者 B+Tree 等数据结构保证内存中数据的顺序性, 在写文件时, 由于数据是有序的, 在文件合并时,很自然可以借助归并排序保证合并之后的数据的有序性, 而有序性又能天然提高查询效率.</description>
+    </item>
+    
+  </channel>
+</rss>

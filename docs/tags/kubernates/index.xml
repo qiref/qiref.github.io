@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Kubernates on Hugo Prose</title>
-    <link>/tags/kubernates/</link>
-    <description>Recent content in Kubernates on Hugo Prose</description>
+    <title>Kubernates on 大道至简</title>
+    <link>https://qiref.github.io/tags/kubernates/</link>
+    <description>Recent content in Kubernates on 大道至简</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en-zh</language>
-    <lastBuildDate>Tue, 29 Jun 2021 10:18:23 +0000</lastBuildDate><atom:link href="/tags/kubernates/index.xml" rel="self" type="application/rss+xml" />
+    <language>cn-zh</language>
+    <lastBuildDate>Tue, 29 Jun 2021 10:18:23 +0000</lastBuildDate><atom:link href="https://qiref.github.io/tags/kubernates/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Kubernates中的pod</title>
-      <link>/post/2021/06/29/kubernates%E4%B8%AD%E7%9A%84pod/</link>
+      <link>https://qiref.github.io/post/2021/06/29/kubernates%E4%B8%AD%E7%9A%84pod/</link>
       <pubDate>Tue, 29 Jun 2021 10:18:23 +0000</pubDate>
       
-      <guid>/post/2021/06/29/kubernates%E4%B8%AD%E7%9A%84pod/</guid>
+      <guid>https://qiref.github.io/post/2021/06/29/kubernates%E4%B8%AD%E7%9A%84pod/</guid>
       <description>摘要：运行在Kubernates中的容器：pod。由于不能将多个进程聚集在一个单独的容器中，我们需要一种更高级的结构将容器绑定在一起，将它们作为一个单元进行管理，这就是pod诞生的原因。
 pod基本概念 pod是Kubernetes中最重要的概念，pod是Kubernetes中部署的最小单元，一个pod中可以有一个或多个容器，pod有自己独立的私有IP和主机名。
 Kubernetes 集群中的 Pod 主要有两种用法：
@@ -23,10 +23,10 @@ pod生命周期 Pending：表示pod已经被同意创建，正在等待kube-sche
     
     <item>
       <title>Kubernates组件</title>
-      <link>/post/2021/06/21/kubernates%E7%BB%84%E4%BB%B6/</link>
+      <link>https://qiref.github.io/post/2021/06/21/kubernates%E7%BB%84%E4%BB%B6/</link>
       <pubDate>Mon, 21 Jun 2021 10:18:23 +0000</pubDate>
       
-      <guid>/post/2021/06/21/kubernates%E7%BB%84%E4%BB%B6/</guid>
+      <guid>https://qiref.github.io/post/2021/06/21/kubernates%E7%BB%84%E4%BB%B6/</guid>
       <description>摘要：Kubernates基础概念及其组件。
 Kubernetes是一个开源的容器编排引擎，用来对容器化应用进行自动化部署、扩缩容和管理，简称K8s，K8s 这个缩写是因为k和s之间有八个字符。Google 在 2014 年开源了 Kubernetes 项目。
 控制面组件 kube-apiserver apiserver是 Kubernetes 控制面的组件， 该组件公开了 Kubernetes API。

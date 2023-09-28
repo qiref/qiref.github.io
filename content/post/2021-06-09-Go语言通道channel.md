@@ -3,7 +3,7 @@ comments: true
 date: "2021-06-09T21:18:23Z"
 tags: 
   - Go
-title: Go语言通道channel
+title: Go语言channel
 ---
 
 摘要：Go语言中，协程之间通过channel相互通信，可以从一个Go协程将值发送到通道，然后在别的协程中接收。
@@ -117,7 +117,6 @@ func loop(c chan string) {
 }
 
 // main
-
 chanForRange := make(chan string, 3)
 chanForRange <- "l"
 chanForRange <- "m"
@@ -134,7 +133,7 @@ loop(chanForRange)
 
 ```
 
-需要这里遍历需要关闭chanForRange，否则chanForRange会一直等待输入，但后续没有往channel中写入消息，会导致成型陷入死锁。
+这里遍历需要关闭chanForRange，否则chanForRange会一直等待输入，但后续没有往channel中写入消息，会导致成型陷入死锁。
 
 可以看出，在channel关闭后，依然可以遍历channel。
 
@@ -193,3 +192,55 @@ for i := 0; i < 5; i++ {
 ```
 
 select配上default之后，当case条件不满足时，select就不会陷入阻塞。
+
+## 多协程执行任务, 并收集执行结果
+
+``` go
+import (
+	"fmt"
+	"sync"
+	"testing"
+	"time"
+)
+
+func TestMain(t *testing.T) {
+	rstChan := make(chan map[string]int, 5) // 这里必须指定 chan 的容量
+	var wg sync.WaitGroup
+	for i := 0; i < 5; i++ {
+		i := i
+		wg.Add(1)
+		go func() { // 模拟执行任务
+			defer wg.Done()
+			if i%2 == 0 { // 模拟任务执行失败的场景, 会出现不往 rstChan 写入消息的情况
+				m := make(map[string]int)
+				m[fmt.Sprintf("%d", i)] = i
+				time.Sleep(time.Second * 3)
+				rstChan <- m
+			}
+		}()
+	}
+	fmt.Println("wait")
+	wg.Wait()
+	fmt.Println("wait finish")
+
+	size := len(rstChan) // 提前读取 rstChan size, 消费数据 len(rstChan) 会改变
+	for j := 0; j < size; j++ {
+		item := <-rstChan
+		fmt.Println(item)
+	}
+	defer close(rstChan)
+	fmt.Println("done")
+}
+
+// 输出
+=== RUN   TestMain
+wait
+wait finish
+map[2:2]
+map[4:4]
+map[0:0]
+done
+--- PASS: TestMain (3.00s)
+PASS
+ok  	awesome-test/src/main	3.002s
+```
