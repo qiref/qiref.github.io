@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="cn-zh">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title> Wezterm helix config | 大道至简</title>
+    
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/combine/npm/@xiee/utils/css/article.min.css,npm/@xiee/utils/css/heading-anchor.min.css">
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/fonts.css" />
+    <link rel="stylesheet" href="/css/custom.css" />
+    
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-PGMJFXZJRT"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-PGMJFXZJRT');
+</script>
+  </head>
+
+  <body>
+
+    <nav class="menu">
+    <ul>
+      <li class="left">
+        <a href="/"><span>大道至简</span></a>
+      </li>
+      
+      <li>
+        <a href="/post/">Posts</a>
+      </li>
+      
+      <li>
+        <a href="/tags/">Tags</a>
+      </li>
+      
+      <li id="menu-search">
+        <a href="/#">Search</a>
+      </li>
+      
+    </ul>
+    </nav>
+
+
+<div class="container single">
+<main>
+
+<div class="article-meta">
+<h1><span class="title">Wezterm helix config</span></h1>
+
+<h3 class="date">2024-02-20</h3>
+<p class="terms">
+  
+  
+  
+  
+  
+</p>
+</div>
+
+<div class="article">
+<h2 id="wezterm-config">wezterm config</h2>
+<p>文件名称: <code>~/.config/wezterm/wezterm.lua</code></p>
+<pre><code class="language-lua">-- Pull in the wezterm API
+local wezterm = require 'wezterm'
+
+-- This table will hold the configuration.
+-- local config = {}
+
+-- In newer versions of wezterm, use the config_builder which will
+-- help provide clearer error messages
+if wezterm.config_builder then
+  config = wezterm.config_builder()
+end
+
+-- This is where you actually apply your config choices
+
+-- For example, changing the color scheme:
+-- config.color_scheme = 'Nancy (terminal.sexy)'
+-- and finally, return the configuration to wezterm
+
+-- Title
+function basename(s)
+  return string.gsub(s, '(.*[/\\])(.*)', '%2')
+end
+
+wezterm.on('format-tab-title', function(tab, tabs, panes, config, hover, max_width)
+  local pane = tab.active_pane
+
+  local index = &quot;&quot;
+  if #tabs &gt; 1 then
+    index = string.format(&quot;⌘+%d:&quot;, tab.tab_index + 1)
+  end
+
+  local process = basename(pane.foreground_process_name)
+
+  return { {
+    Text = ' ' .. index .. process .. ' '
+  } }
+end)
+
+-- Startup
+wezterm.on('gui-startup', function(cmd)
+  local tab, pane, window = wezterm.mux.spawn_window(cmd or {})
+  window:gui_window():maximize()
+end)
+
+local config = {
+  -- Basic
+  enable_scroll_bar = true,
+
+  -- Window
+  native_macos_fullscreen_mode = true,
+  adjust_window_size_when_changing_font_size = true,
+  -- window_background_opacity = 0.9,
+  -- window_padding = {
+  -- left = 30,
+  -- right = 30,
+  -- top = 5,
+  -- bottom = 5
+  -- },
+
+  -- Font
+  font = wezterm.font('JetBrains Mono', { weight = 'DemiBold' }),
+  font_size = 14,
+  line_height = 1.1,
+
+  -- Tab bar
+  enable_tab_bar = true,
+  hide_tab_bar_if_only_one_tab = false,
+  show_tab_index_in_tab_bar = false,
+  tab_bar_at_bottom = true,
+  tab_max_width = 50,
+  use_fancy_tab_bar = false,
+
+
+  -- Keys
+  disable_default_key_bindings = false,
+  keys = {
+    {
+      key = 'p',
+      mods = 'CMD',
+      action = wezterm.action.SplitPane {
+        direction = 'Down',
+        size = { Percent = 50 },
+      }
+    },
+    {
+      key = 'w',
+      mods = 'CMD',
+      action = wezterm.action.CloseCurrentPane { confirm = false },
+    },
+  },
+
+  color_scheme = 'Horizon Dark (base16)',
+}
+
+return config
+ 
+</code></pre>
+<h2 id="helix-config">helix config</h2>
+<p>文件名称 <code>~/.config/helix/config.toml</code></p>
+<pre><code class="language-toml">theme = &quot;sonokai&quot;
+
+[editor]
+cursorline = true # 高亮当前行 
+true-color = true # 需要加这个配置，theme 才能生效 
+bufferline = &quot;always&quot; # 是否显示顶部 buffer 
+completion-replace = true # 补全自动替换
+
+[editor.cursor-shape] # 各种模式下光标样式
+insert = &quot;bar&quot;
+normal = &quot;block&quot;
+select = &quot;underline&quot;
+
+
+[editor.file-picker]
+hidden = false # 是否忽略隐藏文件 
+
+[editor.lsp]
+display-messages = true # 状态栏展示 LSP 信息
+display-inlay-hints = true
+
+[editor.statusline]
+right = [&quot;diagnostics&quot;, &quot;selections&quot;, &quot;position&quot;, &quot;file-encoding&quot;, &quot;file-line-ending&quot;, &quot;file-type&quot;,&quot;version-control&quot;]
+ 
+</code></pre>
+
+</div>
+</main>
+
+<section class="appendix">
+
+
+
+
+
+<div>
+  <div class="side side-left"><h3>重复使用</h3></div>
+  Text and figures are licensed under <a href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution CC BY 4.0</a>. The source code is licensed under MIT. The full source is available at <a href="https://github.com/qiref/qiref.github.io">https://github.com/qiref/qiref.github.io</a>.
+</div>
+
+
+
+<div>
+  <div class="side side-left"><h3>欢迎修订</h3></div>
+  
+  
+  
+    
+    
+  
+  如果您发现本文里含有任何错误（包括错别字和标点符号），欢迎<a href="https://github.com/qiref/qiref.github.io/tree/master/content/post/2024-02-20-wezterm&#43;helix.md" id="edit-link">在本站的 GitHub 项目里提交修订意见。</a>
+</div>
+
+
+
+
+</section>
+
+
+
+<nav class="post-nav">
+  <span class="nav-next">&larr; <a href="/post/2023/12/05/b-%E6%A0%91/" title=下一篇&#32;(旧)>B&#43;树</a></span>
+  &hercon;
+  <span class="nav-prev"></span>
+</nav>
+
+
+<script src="https://utteranc.es/client.js"
+        repo="qiref/qiref.github.io"
+        issue-term="pathname"
+        label="Comment"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script>
+
+</div>
+
+
+  <footer>
+  
+
+
+<script src="//yihui.org/js/math-code.js"></script>
+<script async src="//mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-PGMJFXZJRT"></script>
+<script>
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.dataLayer = window.dataLayer || [];
+	function gtag(){dataLayer.push(arguments);}
+	gtag('js', new Date());
+	gtag('config', 'G-PGMJFXZJRT', { 'anonymize_ip': false });
+}
+</script>
+
+
+
+<script src="https://cdn.jsdelivr.net/combine/npm/@xiee/utils/js/number-sections.min.js,npm/@xiee/utils/js/toc.min.js,npm/@xiee/utils/js/toc-highlight.min.js,npm/@xiee/utils/js/sidenotes.min.js,npm/@xiee/utils/js/right-quote.min.js,npm/@xiee/utils/js/center-img.min.js,npm/@xiee/utils/js/fix-pandoc.min.js,npm/@xiee/utils/js/heading-anchor.min.js" defer></script>
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rstudio/markdown/inst/resources/prism-xcode.css">
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-core.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/autoloader/prism-autoloader.min.js" defer></script>
+
+
+  <div class="footer">
+  
+  <ul>
+    
+    <li class="optional">
+      <a href="/post/">Posts</a>
+    </li>
+    
+    <li class="optional">
+      <a href="/tags/">Tags</a>
+    </li>
+    
+    <li id="menu-edit">
+      <a href="#">Suggest an edit</a>
+    </li>
+    
+    <li>
+      <a href="#">Back to top</a>
+    </li>
+    
+  </ul>
+  </div>
+  
+  </footer>
+  <script src="/js/features.js" defer></script>
+  </body>
+</html>
+

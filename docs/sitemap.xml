@@ -2,6 +2,18 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
+    <loc>https://qiref.github.io/post/</loc>
+    <lastmod>2024-02-20T11:46:28+08:00</lastmod>
+    <changefreq>daily</changefreq>
+  </url><url>
+    <loc>https://qiref.github.io/post/2024/02/20/wezterm-helix-config/</loc>
+    <lastmod>2024-02-20T11:46:28+08:00</lastmod>
+    <changefreq>daily</changefreq>
+  </url><url>
+    <loc>https://qiref.github.io/</loc>
+    <lastmod>2024-02-20T11:46:28+08:00</lastmod>
+    <changefreq>daily</changefreq>
+  </url><url>
     <loc>https://qiref.github.io/tags/algorithm/</loc>
     <lastmod>2023-12-05T11:03:22+08:00</lastmod>
     <changefreq>daily</changefreq>
@@ -18,15 +30,7 @@
     <lastmod>2023-12-05T11:03:22+08:00</lastmod>
     <changefreq>daily</changefreq>
   </url><url>
-    <loc>https://qiref.github.io/post/</loc>
-    <lastmod>2023-12-05T11:03:22+08:00</lastmod>
-    <changefreq>daily</changefreq>
-  </url><url>
     <loc>https://qiref.github.io/tags/</loc>
-    <lastmod>2023-12-05T11:03:22+08:00</lastmod>
-    <changefreq>daily</changefreq>
-  </url><url>
-    <loc>https://qiref.github.io/</loc>
     <lastmod>2023-12-05T11:03:22+08:00</lastmod>
     <changefreq>daily</changefreq>
   </url><url>

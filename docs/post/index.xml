@@ -6,7 +6,17 @@
     <description>Recent content in Posts on 大道至简</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>cn-zh</language>
-    <lastBuildDate>Tue, 05 Dec 2023 11:03:22 +0800</lastBuildDate><atom:link href="https://qiref.github.io/post/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 20 Feb 2024 11:46:28 +0800</lastBuildDate><atom:link href="https://qiref.github.io/post/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Wezterm helix config</title>
+      <link>https://qiref.github.io/post/2024/02/20/wezterm-helix-config/</link>
+      <pubDate>Tue, 20 Feb 2024 11:46:28 +0800</pubDate>
+      
+      <guid>https://qiref.github.io/post/2024/02/20/wezterm-helix-config/</guid>
+      <description>wezterm config 文件名称: ~/.config/wezterm/wezterm.lua
+-- Pull in the wezterm API local wezterm = require &#39;wezterm&#39; -- This table will hold the configuration. -- local config = {} -- In newer versions of wezterm, use the config_builder which will -- help provide clearer error messages if wezterm.config_builder then config = wezterm.config_builder() end -- This is where you actually apply your config choices -- For example, changing the color scheme: -- config.color_scheme = &#39;Nancy (terminal.</description>
+    </item>
+    
     <item>
       <title>B&#43;树</title>
       <link>https://qiref.github.io/post/2023/12/05/b-%E6%A0%91/</link>
