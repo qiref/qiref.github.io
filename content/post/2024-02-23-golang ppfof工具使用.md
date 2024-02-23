@@ -1,0 +1,136 @@
+---
+title: "Go ppfof工具使用"
+date: 2024-02-23T15:53:46+08:00
+tags:
+  - Go
+  - pprof
+---
+
+## pprof 
+pprof 是用于可视化和分析性能分析数据的工具;
+
+* runtime/pprof：采集程序（非 Server）的运行数据进行分析
+* net/http/pprof：采集 HTTP Server 的运行时数据进行分析
+
+## 启用方式
+
+在`main`函数之前使用启动, `DoProfile(6060)`
+
+```go
+
+import (
+	"net/http"
+	_ "net/http/pprof"
+	"strconv"
+)
+
+type ProfileServer struct {
+}
+
+func (this *ProfileServer) DoProfile(port int) {
+	go func() {
+		err := http.ListenAndServe(":"+strconv.FormatInt(int64(port), 10), nil)
+		if err != nil {
+			log.Errorf("Failed to do profile on port: %d", port)
+		} else {
+			log.Infof("pprof start successfully on port %d", port)
+		}
+	}()
+}
+  
+```
+
+
+## 分析
+
+```shell
+curl 'http://127.0.0.1:6060/debug/pprof/profile' -o profile.20240223
+curl 'http://127.0.0.1:6060/debug/pprof/heap' -o heap.20240223
+curl 'http://127.0.0.1:6060/debug/pprof/block' -o block.20240223
+curl 'http://127.0.0.1:6060/debug/pprof/mutex' -o mutex.20240223
+curl 'http://127.0.0.1:6060/debug/pprof/trace' -o trace.20240223
+  
+```
+
+输出对应的pprof文件之后, 对文件进行分析;
+
+* Flat：函数自身运行耗时
+* Flat%：函数自身耗时比例
+* Sum%：指的就是每一行的flat%与上面所有行的flat%总和
+* Cum：当前函数加上它所有调用栈的运行总耗时
+* Cum%：当前函数加上它所有调用栈的运行总耗时比例
+
+### 使用命令行分析
+
+输入 help 查看帮助命令, 常有 `top` 和 `list`
+
+`top` 找到占用资源最高的函数, `list methodName` 找到源码所在; 
+
+```
+go tool pprof profile.230904
+File: xx_cc
+Type: cpu
+Time: Feb 23, 2024 at 10:53am (CST)
+Duration: 30s, Total samples = 230ms ( 0.77%)
+Entering interactive mode (type "help" for commands, "o" for options)
+(pprof) top 20
+Showing nodes accounting for 300ms, 88.24% of 340ms total
+Showing top 20 nodes out of 212
+      flat  flat%   sum%        cum   cum%
+      70ms 20.59% 20.59%       70ms 20.59%  runtime.step
+      40ms 11.76% 32.35%       40ms 11.76%  runtime/internal/syscall.Syscall6
+      20ms  5.88% 38.24%       20ms  5.88%  runtime.unlock2
+      10ms  2.94% 41.18%       10ms  2.94%  encoding/json.simpleLetterEqualFold
+      10ms  2.94% 44.12%       10ms  2.94%  fmt.(*pp).doPrintf
+      10ms  2.94% 47.06%       10ms  2.94%  net/http.readRequest
+      10ms  2.94% 50.00%       10ms  2.94%  runtime.(*moduledata).textAddr
+      10ms  2.94% 52.94%       10ms  2.94%  runtime.casgstatus
+      10ms  2.94% 55.88%       10ms  2.94%  runtime.elideWrapperCalling
+      10ms  2.94% 58.82%       10ms  2.94%  runtime.epollwait
+      10ms  2.94% 61.76%       10ms  2.94%  runtime.findfunc
+      10ms  2.94% 64.71%       10ms  2.94%  runtime.getStackMap
+      10ms  2.94% 67.65%       30ms  8.82%  runtime.gwrite
+      10ms  2.94% 70.59%       10ms  2.94%  runtime.heapBitsSetType
+      10ms  2.94% 73.53%       10ms  2.94%  runtime.lock2
+      10ms  2.94% 76.47%       20ms  5.88%  runtime.mallocgc
+      10ms  2.94% 79.41%       10ms  2.94%  runtime.memmove
+      10ms  2.94% 82.35%       90ms 26.47%  runtime.pcvalue
+      10ms  2.94% 85.29%       20ms  5.88%  runtime.printlock
+      10ms  2.94% 88.24%       10ms  2.94%  runtime.scanblock
+(pprof) list doPrintf
+Total: 340ms
+ROUTINE ======================== fmt.(*pp).doPrintf in /usr/lib/golang/src/fmt/print.go
+      10ms       10ms (flat, cum)  2.94% of Total
+         .          .   1009:   p.reordered = false
+         .          .   1010:formatLoop:
+         .          .   1011:   for i := 0; i < end; {
+         .          .   1012:           p.goodArgNum = true
+         .          .   1013:           lasti := i
+      10ms       10ms   1014:           for i < end && format[i] != '%' {
+         .          .   1015:                   i++
+         .          .   1016:           }
+         .          .   1017:           if i > lasti {
+         .          .   1018:                   p.buf.writeString(format[lasti:i])
+         .          .   1019:           }
+(pprof)
+```
+
+
+### web 界面查看分析结果
+
+需要先安装 graphviz 
+
+```shell
+brew install graphviz # for macos
+apt install graphviz # for ubuntu
+yum install graphviz # for centos
+```
+
+界面分析更为方便, 还能看 CPU 火焰图, 更容易找到问题所在; 启动web服务查看profile分析结果:
+
+```shell
+go tool pprof -http=127.0.0.1:8001 profile.230904
+  Serving web UI on http://127.0.0.1:8001
+  
+```
+
