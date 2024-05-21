@@ -35,6 +35,8 @@ footer {
 
 pre {
     tab-size: 4;
+    line-height: 1.6;
+    border-radius: 2px;
 }
 
 .search input:focus {

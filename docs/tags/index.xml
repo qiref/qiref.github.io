@@ -6,7 +6,34 @@
     <description>Recent content in Tags on 大道至简</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>cn-zh</language>
-    <lastBuildDate>Fri, 23 Feb 2024 15:53:46 +0800</lastBuildDate><atom:link href="https://qiref.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 15 May 2024 15:53:46 +0800</lastBuildDate><atom:link href="https://qiref.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>CAS</title>
+      <link>https://qiref.github.io/tags/cas/</link>
+      <pubDate>Wed, 15 May 2024 15:53:46 +0800</pubDate>
+      
+      <guid>https://qiref.github.io/tags/cas/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Lock</title>
+      <link>https://qiref.github.io/tags/lock/</link>
+      <pubDate>Wed, 15 May 2024 15:53:46 +0800</pubDate>
+      
+      <guid>https://qiref.github.io/tags/lock/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Mutex</title>
+      <link>https://qiref.github.io/tags/mutex/</link>
+      <pubDate>Wed, 15 May 2024 15:53:46 +0800</pubDate>
+      
+      <guid>https://qiref.github.io/tags/mutex/</guid>
+      <description></description>
+    </item>
+    
     <item>
       <title>Go</title>
       <link>https://qiref.github.io/tags/go/</link>

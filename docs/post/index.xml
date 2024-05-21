@@ -6,7 +6,19 @@
     <description>Recent content in Posts on 大道至简</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>cn-zh</language>
-    <lastBuildDate>Fri, 23 Feb 2024 15:53:46 +0800</lastBuildDate><atom:link href="https://qiref.github.io/post/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 15 May 2024 15:53:46 +0800</lastBuildDate><atom:link href="https://qiref.github.io/post/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>关于锁的总结和思考(一)</title>
+      <link>https://qiref.github.io/post/2024/05/15/%E5%85%B3%E4%BA%8E%E9%94%81%E7%9A%84%E6%80%BB%E7%BB%93%E5%92%8C%E6%80%9D%E8%80%83%E4%B8%80/</link>
+      <pubDate>Wed, 15 May 2024 15:53:46 +0800</pubDate>
+      
+      <guid>https://qiref.github.io/post/2024/05/15/%E5%85%B3%E4%BA%8E%E9%94%81%E7%9A%84%E6%80%BB%E7%BB%93%E5%92%8C%E6%80%9D%E8%80%83%E4%B8%80/</guid>
+      <description>func add (a *int) *int { *a++ // 线程不安全 return a } 这是一段很典型的线程不安全的代码示例, 在并发场景下, a 的结果是不确定的, 大概率会小于 1000, 原因是 a++ 并非原子操作, 会存在同时有两个协程读取到 a 的值是相同的情况, 执行 a++之后再重新回写时, a的值也是相同的, 想要变为线程安全, 就需要在操作临界资源之前加锁;
+Mutex 在操作共享资源之前加锁, 然后操作完临界资源之后释放锁, 保证同时只有一个协程操作临界资源;
+var mu sync.Mutex func addSafe(a *int) *int { mu.Lock() // 加锁 defer mu.Unlock() // 释放锁 *a++ return a } 锁在多线程或多进程环境中实现资源的互斥访问。当一个线程或进程想要访问某个共享资源（如数据结构、文件等）时，它必须首先尝试获取该资源对应的锁。如果锁未被其他线程或进程占用，那么请求的线程或进程将获得锁并继续执行；否则，它将等待，直到锁被释放。
+// If the lock is already in use, the calling goroutine // blocks until the mutex is available.</description>
+    </item>
+    
     <item>
       <title>Go ppfof工具使用</title>
       <link>https://qiref.github.io/post/2024/02/23/go-ppfof%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8/</link>
@@ -16,16 +28,6 @@
       <description>pprof pprof 是用于可视化和分析性能分析数据的工具;
 runtime/pprof：采集程序（非 Server）的运行数据进行分析 net/http/pprof：采集 HTTP Server 的运行时数据进行分析 启用方式 在main函数之前使用启动, DoProfile(6060)
 import ( &amp;quot;net/http&amp;quot; _ &amp;quot;net/http/pprof&amp;quot; &amp;quot;strconv&amp;quot; ) type ProfileServer struct { } func (this *ProfileServer) DoProfile(port int) { go func() { err := http.ListenAndServe(&amp;quot;:&amp;quot;+strconv.FormatInt(int64(port), 10), nil) if err != nil { log.Errorf(&amp;quot;Failed to do profile on port: %d&amp;quot;, port) } else { log.Infof(&amp;quot;pprof start successfully on port %d&amp;quot;, port) } }() } 分析 curl &#39;http://127.0.0.1:6060/debug/pprof/profile&#39; -o profile.20240223 curl &#39;http://127.</description>
-    </item>
-    
-    <item>
-      <title>Wezterm helix config</title>
-      <link>https://qiref.github.io/post/2024/02/20/wezterm-helix-config/</link>
-      <pubDate>Tue, 20 Feb 2024 11:46:28 +0800</pubDate>
-      
-      <guid>https://qiref.github.io/post/2024/02/20/wezterm-helix-config/</guid>
-      <description>wezterm config 文件名称: ~/.config/wezterm/wezterm.lua
--- Pull in the wezterm API local wezterm = require &#39;wezterm&#39; -- This table will hold the configuration. -- local config = {} -- In newer versions of wezterm, use the config_builder which will -- help provide clearer error messages if wezterm.config_builder then config = wezterm.config_builder() end -- This is where you actually apply your config choices -- For example, changing the color scheme: -- config.color_scheme = &#39;Nancy (terminal.</description>
     </item>
     
     <item>
