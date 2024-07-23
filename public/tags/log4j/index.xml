@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Log4j on 大道至简</title>
+    <link>http://localhost:1313/tags/log4j/</link>
+    <description>Recent content in Log4j on 大道至简</description>
+    <generator>Hugo</generator>
+    <language>cn-zh</language>
+    <lastBuildDate>Wed, 25 Aug 2021 00:18:23 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/log4j/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Log4j2按照时间和日志大小滚动</title>
+      <link>http://localhost:1313/post/2021/08/25/log4j2%E6%8C%89%E7%85%A7%E6%97%B6%E9%97%B4%E5%92%8C%E6%97%A5%E5%BF%97%E5%A4%A7%E5%B0%8F%E6%BB%9A%E5%8A%A8/</link>
+      <pubDate>Wed, 25 Aug 2021 00:18:23 +0000</pubDate>
+      <guid>http://localhost:1313/post/2021/08/25/log4j2%E6%8C%89%E7%85%A7%E6%97%B6%E9%97%B4%E5%92%8C%E6%97%A5%E5%BF%97%E5%A4%A7%E5%B0%8F%E6%BB%9A%E5%8A%A8/</guid>
+      <description>摘要：Log4j2 按照时间和日志大小滚动。&#xA;Log4j2按照时间和日志大小滚 status = error name = PropertiesConfig #Make sure to change log file path as per your need property.filename = C:\\logs\\debug.log filters = threshold filter.threshold.type = ThresholdFilter filter.threshold.level = debug appenders = rolling appender.rolling.type = RollingFile appender.rolling.name = RollingFile appender.rolling.fileName = ${filename} appender.rolling.filePattern = debug-backup-%d{MM-dd-yy-HH-mm-ss}-%i.log.gz appender.rolling.layout.type = PatternLayout appender.rolling.layout.pattern = %d{yyyy-MM-dd HH:mm:ss} %-5p %c{1}:%L - %m%n appender.rolling.policies.type = Policies appender.rolling.policies.time.type = TimeBasedTriggeringPolicy appender.rolling.policies.time.interval = 1 appender.rolling.policies.time.modulate = true appender.</description>
+    </item>
+  </channel>
+</rss>

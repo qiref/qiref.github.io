@@ -61,6 +61,7 @@ params:
   editLink: "https://github.com/qiref/qiref.github.io/tree/master/content/"
   authorDelimiter: " / "
   stickyMenu: false
+  disable_highlight: true
   description: >
     A website built through Hugo and blogdown with the hugo-prose theme.
   # footer: >
@@ -75,6 +76,7 @@ params:
 markup:
   highlight:
     codeFences: false
+    style: catppuccin-latte
   goldmark:
     renderer:
       unsafe: true

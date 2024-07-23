@@ -138,7 +138,7 @@ func func2(i int) {
 //func2() was called. i is : 0
 //func2() was called. i is : 1
 </code></pre>
-<p>每个goroutine的运行并不规则，每个协程在并发执行。🤔</p>
+<p>每个goroutine的运行并不规则，每个协程在并发执行。&#x1f914;</p>
 <p>从实现上，每一个goroutine都会加入队列中，然后这组协程由调度器通过各种调度策略进行调度。然后会开启多个线程去调度协程工作队列，
 调度器最多可以创建 10000 个线程，但是其中大多数的线程都不会执行用户代码，大部分都进行调度工作，最多只会有 GOMAXPROCS 个活跃线程能够正常运行。在默认情况下，运行时会将 GOMAXPROCS 设置成当前机器的核数，我们也可以在程序中使用 runtime.GOMAXPROCS 来改变最大的活跃线程数。</p>
 <pre><code class="language-go">func main() {
@@ -220,16 +220,25 @@ func say(s string) {
 
 
 
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-PGMJFXZJRT"></script>
-<script>
-var doNotTrack = false;
-if (!doNotTrack) {
-	window.dataLayer = window.dataLayer || [];
-	function gtag(){dataLayer.push(arguments);}
-	gtag('js', new Date());
-	gtag('config', 'G-PGMJFXZJRT', { 'anonymize_ip': false });
-}
-</script>
+  
+    
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-PGMJFXZJRT"></script>
+      <script>
+        var doNotTrack = false;
+        if ( false ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-PGMJFXZJRT');
+        }
+      </script>
+    
+  
+
 
 
 

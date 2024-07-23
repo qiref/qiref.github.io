@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="cn-zh">
+  <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title> Docker入门 | 大道至简</title>
+    
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@xiee/utils/css/article.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@xiee/utils/css/heading-anchor.min.css">
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/fonts.css" />
+    <link rel="stylesheet" href="/css/custom.css" />
+    
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-PGMJFXZJRT"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-PGMJFXZJRT');
+</script>
+  </head>
+
+  <body>
+
+    <nav class="menu">
+    <ul>
+      <li class="left">
+        <a href="/"><span>大道至简</span></a>
+      </li>
+      
+      <li>
+        <a href="/post/">Posts</a>
+      </li>
+      
+      <li>
+        <a href="/tags/">Tags</a>
+      </li>
+      
+      <li id="menu-search">
+        <a href="/#">Search</a>
+      </li>
+      
+    </ul>
+    </nav>
+
+
+<div class="container single">
+<main>
+
+<div class="article-meta">
+<h1><span class="title">Docker入门</span></h1>
+
+<h3 class="date">2021-06-21</h3>
+<p class="terms">
+  
+  
+  
+  
+  Tags: <a href="/tags/docker">Docker</a> 
+  
+  
+</p>
+</div>
+
+<div class="article">
+<p>摘要：Docker简单使用。</p>
+<hr>
+<p>Docker 是一个开源的应用容器引擎，基于 Go 语言开发，并遵从 Apache2.0 协议开源。
+Docker 可以让开发者打包他们的应用以及依赖包到一个轻量级、可移植的容器中，然后发布到任何流行的 Linux 机器上，也可以实现虚拟化。
+容器是完全使用沙箱机制，相互之间不会有任何接口（类似 iPhone 的 app）,更重要的是容器性能开销极低。</p>
+<p>Docker下载地址：<a href="https://www.docker.com/get-started">https://www.docker.com/get-started</a></p>
+<p>安装完成后，才可以执行docker的相关命令。</p>
+<pre><code class="language-shell">$ docker system info
+
+Client:
+ Context:    default
+ Debug Mode: false
+ Plugins:
+  buildx: Build with BuildKit (Docker Inc., v0.5.1-docker)
+  compose: Docker Compose (Docker Inc., 2.0.0-beta.3)
+  scan: Docker Scan (Docker Inc., v0.8.0)
+
+Server:
+ Containers: 0
+  Running: 0
+  Paused: 0
+  Stopped: 0
+ Images: 0
+ Server Version: 20.10.7
+ Storage Driver: overlay2
+  Backing Filesystem: extfs
+  Supports d_type: true
+  Native Overlay Diff: true
+  userxattr: false
+ Logging Driver: json-file
+ Cgroup Driver: cgroupfs
+ Cgroup Version: 1
+ Plugins:
+  Volume: local
+  Network: bridge host ipvlan macvlan null overlay
+  Log: awslogs fluentd gcplogs gelf journald json-file local logentries splunk syslog
+ Swarm: inactive
+ Runtimes: runc io.containerd.runc.v2 io.containerd.runtime.v1.linux
+ Default Runtime: runc
+ Init Binary: docker-init
+ containerd version: d71fcd7d8303cbf684402823e425e9dd2e99285d
+ runc version: b9ee9c6314599f1b4a7f497e1f1f856fe433d3b7
+ init version: de40ad0
+ Security Options:
+  seccomp
+   Profile: default
+ Kernel Version: 5.10.25-linuxkit
+ Operating System: Docker Desktop
+ OSType: linux
+ Architecture: x86_64
+ CPUs: 6
+ Total Memory: 1.941GiB
+ Name: docker-desktop
+ ID: TA2L:IL5R:BGA2:7NS2:RE5C:LOZ6:7RHP:275V:F5OQ:KAJP:QHWN:VOQU
+ Docker Root Dir: /var/lib/docker
+ Debug Mode: false
+ HTTP Proxy: http.docker.internal:3128
+ HTTPS Proxy: http.docker.internal:3128
+ Registry: https://index.docker.io/v1/
+ Labels:
+ Experimental: false
+ Insecure Registries:
+  127.0.0.0/8
+ Live Restore Enabled: false
+</code></pre>
+<p>mac上停止docker服务：</p>
+<pre><code>⇒  launchctl list |grep docker
+-	0	com.docker.helper
+11963	0	application.com.docker.docker.10740542.10740926
+
+⇒  launchctl stop application.com.docker.docker.10740542.10740926
+</code></pre>
+<h2 id="运行hello-world容器">运行hello world容器</h2>
+<pre><code class="language-shell">$ docker run busybox echo &quot;hello world&quot;
+
+Unable to find image 'busybox:latest' locally
+latest: Pulling from library/busybox
+b71f96345d44: Pull complete
+Digest: sha256:930490f97e5b921535c153e0e7110d251134cc4b72bbb8133c6a5065cc68580d
+Status: Downloaded newer image for busybox:
+</code></pre>
+<p><code>docker run busybox echo &quot;hello world&quot;</code> 这行命令启动了一个叫busybox的容器，并且执行了<code>echo &quot;hello world&quot;</code>。</p>
+<p>然后docker先在本地查询busybox，发现没有找到，然后就从远程拉取镜像，拉取完成后启动镜像。</p>
+<pre><code class="language-shell">⇒  docker image ls
+REPOSITORY   TAG       IMAGE ID       CREATED       SIZE
+busybox      latest    69593048aa3a   13 days ago   1.24MB
+</code></pre>
+<p>可以发现本地多了一个busybox的镜像。</p>
+<h2 id="镜像">镜像</h2>
+<p><code>docker image ls</code> 可以列出本地的所有镜像，然后具体看看镜像信息。</p>
+<pre><code>REPOSITORY   TAG       IMAGE ID       CREATED       SIZE
+busybox      latest    69593048aa3a   13 days ago   1.24MB
+</code></pre>
+<p>各个选项说明:</p>
+<ul>
+<li>REPOSITORY：表示镜像的仓库源</li>
+<li>TAG：镜像的标签</li>
+<li>IMAGE ID：镜像ID</li>
+<li>CREATED：镜像创建时间</li>
+<li>SIZE：镜像大小
+同一仓库源可以有多个TAG，代表这个仓库源的不同个版本，如 ubuntu 仓库源里，有 15.10、14.04 等多个不同的版本，我们使用 REPOSITORY:TAG 来定义不同的镜像。</li>
+</ul>
+<p>当镜像没有显式指定TAG时，Docker会默认指定为latest。例如上述的镜像。</p>
+<p>如果想run指定版本的镜像：</p>
+<pre><code>docker run &lt;image&gt;:&lt;tag&gt;
+</code></pre>
+<h3 id="镜像常用命令">镜像常用命令</h3>
+<pre><code class="language-shell">$  docker images # 镜像列表 等价于 docker image ls
+$  docker search httpd # 查找镜像
+$  docker pull httpd # 拉取镜像
+$  docker push httpd # 向镜像仓库推送镜像
+$  docker run httpd # 运行镜像
+$  docker rmi httpd # 删除镜像
+$  docker tag 860c279d2fec runoob/centos:dev
+   #执行这条命令不会得到新镜像，只会给之前的镜像加一个TAG：
+   #REPOSITORY   TAG       IMAGE ID       CREATED       SIZE
+   #busybox      latest    69593048aa3a   13 days ago   1.24MB
+   #busybox      v1.0      69593048aa3a   13 days ago   1.24MB
+   
+$  docker commit -m=&quot;has update&quot; -a=&quot;Archie&quot; ac68f5f16776 busybox:v2 # 更新镜像，需要借助container
+   # -m: 提交的描述信息；
+   # -a: 指定镜像作者
+   # ac68f5f16776：容器 ID
+   # busybox:v2：指定要创建的目标镜像名以及TAG
+   
+$  docker build -t go_http_server_demo .
+   # 构建镜像，前提是当前目录下有Dockerfile，-t go_http_server_demo 指定image的名称，. 基于当前目录构建。
+</code></pre>
+<h2 id="容器">容器</h2>
+<p>如果把镜像比作calss的话，那容器就是这个class的实例对象。</p>
+<pre><code class="language-shell">⇒  docker  run --name busybox -it busybox
+/ # ls
+bin   dev   etc   home  proc  root  sys   tmp   usr   var
+/ # exit
+</code></pre>
+<p><code>docker  run</code> 命令从指定镜像运行容器，-i: 交互式操作；-t: 终端。要退出终端，直接输入 exit；&ndash;name busybox 指定容器的名称。</p>
+<pre><code class="language-shell">docker run --name go_http_server_demo -p 8080:8080 -d go_http_server_demo
+</code></pre>
+<p>&ndash;name 可以指定container的名称；-p 8080:8080 会将本地的端口8080映射到容器的8080端口； -d 表示这个容器会进入后台运行； 最后指定了镜像的名称。</p>
+<p><code>docker ps -a</code> 查看运行的所有容器。</p>
+<pre><code class="language-shell">⇒  docker ps -a
+CONTAINER ID   IMAGE     COMMAND                CREATED              STATUS                          PORTS     NAMES
+33e3123ff520   busybox   &quot;sh&quot;                   17 seconds ago       Exited (0) 2 seconds ago                  busybox
+</code></pre>
+<p>如果指定&ndash;name，下次再执行run时，会出现如下错误：</p>
+<pre><code>docker: Error response from daemon: Conflict. The container name &quot;/busybox&quot; is already in use by container &quot;33e3123ff520985d12eed46e31051bf2b393fe45fa0e353d5ffa16ab835e940c&quot;. You have to remove (or rename) that container to be able to reuse that name.
+</code></pre>
+<p>因为已经指定过这个name，并且这个容器已经启动过，如果还想启动这个容器，那只需要再启动这个容器即可，无需执行run。</p>
+<h3 id="容器常用命令">容器常用命令</h3>
+<pre><code class="language-shell">$  docker  run --name busybox -it busybox # 从镜像中启动一个容器
+$  docker ps -a # 列出所有容器。包括已经停止的
+$  docker ps # 列出正在运行的容器
+$  docker stop &lt;容器 ID&gt; # 停止一个容器
+$  docker start &lt;容器 ID&gt; # 启动一个已停止的容器
+$  docker restart &lt;容器 ID&gt; # 重启容器
+$  docker attach f59fcdac1cc0 # 进入容器，退出时会导致容器的退出
+$  docker exec -it 33e3123ff520 sh # 进入容器，退出时不会导致容器的退出,sh 为run容器时指定的COMMAND
+$  docker container rm -f 33e3123ff520 # 删除容器
+</code></pre>
+<hr>
+
+</div>
+</main>
+
+<section class="appendix">
+
+
+
+
+
+<div>
+  <div class="side side-left"><h3>重复使用</h3></div>
+  Text and figures are licensed under <a href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution CC BY 4.0</a>. The source code is licensed under MIT. The full source is available at <a href="https://github.com/qiref/qiref.github.io">https://github.com/qiref/qiref.github.io</a>.
+</div>
+
+
+
+<div>
+  <div class="side side-left"><h3>欢迎修订</h3></div>
+  
+  
+  
+    
+    
+  
+  如果您发现本文里含有任何错误（包括错别字和标点符号），欢迎<a href="https://github.com/qiref/qiref.github.io/tree/master/content/post/2021-06-21-Docker%e5%85%a5%e9%97%a8.md" id="edit-link">在本站的 GitHub 项目里提交修订意见。</a>
+</div>
+
+
+
+
+</section>
+
+
+
+<nav class="post-nav">
+  <span class="nav-next">&larr; <a href="/post/2021/06/21/kubernates%E7%BB%84%E4%BB%B6/" title=下一篇&#32;(旧)>Kubernates组件</a></span>
+  &hercon;
+  <span class="nav-prev"><a href="/post/2021/06/23/docker%E6%9E%84%E5%BB%BAgo%E5%B7%A5%E7%A8%8B%E9%95%9C%E5%83%8F/" title=上一篇&#32;(新)>Docker构建Go工程镜像</a> &rarr;</span>
+</nav>
+
+
+<script src="https://utteranc.es/client.js"
+        repo="qiref/qiref.github.io"
+        issue-term="pathname"
+        label="Comment"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script>
+
+</div>
+
+
+  <footer>
+  
+
+
+<script src="//yihui.org/js/math-code.js"></script>
+<script async src="//mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+
+
+
+  
+    
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-PGMJFXZJRT"></script>
+      <script>
+        var doNotTrack = false;
+        if ( false ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-PGMJFXZJRT');
+        }
+      </script>
+    
+  
+
+
+
+
+<script src="https://cdn.jsdelivr.net/combine/npm/@xiee/utils/js/number-sections.min.js,npm/@xiee/utils/js/toc.min.js,npm/@xiee/utils/js/toc-highlight.min.js,npm/@xiee/utils/js/sidenotes.min.js,npm/@xiee/utils/js/right-quote.min.js,npm/@xiee/utils/js/center-img.min.js,npm/@xiee/utils/js/fix-pandoc.min.js,npm/@xiee/utils/js/heading-anchor.min.js" defer></script>
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rstudio/markdown/inst/resources/prism-xcode.css">
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-core.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/autoloader/prism-autoloader.min.js" defer></script>
+
+
+  <div class="footer">
+  
+  <ul>
+    
+    <li class="optional">
+      <a href="/post/">Posts</a>
+    </li>
+    
+    <li class="optional">
+      <a href="/tags/">Tags</a>
+    </li>
+    
+    <li id="menu-edit">
+      <a href="#">Suggest an edit</a>
+    </li>
+    
+    <li>
+      <a href="#">Back to top</a>
+    </li>
+    
+  </ul>
+  </div>
+  
+  </footer>
+  <script src="/js/features.js" defer></script>
+  </body>
+</html>
+

@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="cn-zh">
+  <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title> Go语言cobra | 大道至简</title>
+    
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@xiee/utils/css/article.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@xiee/utils/css/heading-anchor.min.css">
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/fonts.css" />
+    <link rel="stylesheet" href="/css/custom.css" />
+    
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-PGMJFXZJRT"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-PGMJFXZJRT');
+</script>
+  </head>
+
+  <body>
+
+    <nav class="menu">
+    <ul>
+      <li class="left">
+        <a href="/"><span>大道至简</span></a>
+      </li>
+      
+      <li>
+        <a href="/post/">Posts</a>
+      </li>
+      
+      <li>
+        <a href="/tags/">Tags</a>
+      </li>
+      
+      <li id="menu-search">
+        <a href="/#">Search</a>
+      </li>
+      
+    </ul>
+    </nav>
+
+
+<div class="container single">
+<main>
+
+<div class="article-meta">
+<h1><span class="title">Go语言cobra</span></h1>
+
+<h3 class="date">2022-02-19</h3>
+<p class="terms">
+  
+  
+  
+  
+  Tags: <a href="/tags/go">Go</a> 
+  
+  
+</p>
+</div>
+
+<div class="article">
+<p>摘要：Go语言 cobra 框架使用说明，文中代码地址： <a href="https://github.com/ArchieYao/clid">https://github.com/ArchieYao/clid</a></p>
+<h2 id="cobra-简介">cobra 简介</h2>
+<p>cobra是 Go 语言的一个命令行程序库，可以用来编写命令行程序。同时，它也提供了一个脚手架， 用于生成基于 cobra 的应用程序框架。非常多知名的开源项目使用了 cobra 库构建命令行，如Kubernetes、Hugo、etcd等。</p>
+<h2 id="安装-cobra">安装 cobra</h2>
+<p>cobra 是由大名鼎鼎的 spf13（golang 开发者） 开发的，GitHub 地址：<a href="https://github.com/spf13/cobra">https://github.com/spf13/cobra</a></p>
+<pre><code class="language-go">// 安装
+go get -u github.com/spf13/cobra
+</code></pre>
+<pre><code class="language-shell"># 检查是否安装成功
+cobra -h
+Cobra is a CLI library for Go that empowers applications.
+This application is a tool to generate the needed files
+to quickly create a Cobra application.
+
+Usage:
+  cobra [command]
+
+Available Commands:
+  add         Add a command to a Cobra Application
+  completion  Generate the autocompletion script for the specified shell
+  help        Help about any command
+  init        Initialize a Cobra Application
+
+Flags:
+  -a, --author string    author name for copyright attribution (default &quot;YOUR NAME&quot;)
+      --config string    config file (default is $HOME/.cobra.yaml)
+  -h, --help             help for cobra
+  -l, --license string   name of license for the project
+      --viper            use Viper for configuration
+
+Use &quot;cobra [command] --help&quot; for more information about a command.
+</code></pre>
+<h2 id="创建-cobra-工程">创建 cobra 工程</h2>
+<pre><code class="language-shell"># 创建 Go 工程
+mkdir clid
+cd clid
+go mod init clid
+
+# 创建 cobra 工程
+cobra init
+# 可以得到如下工程目录
+D:\WORKSPACE\GOLANG\TRAINNING\CLID
+│   go.mod
+│   go.sum
+│   LICENSE
+│   main.go
+│
+└───cmd
+        root.go
+
+# 正常情况下，这个工程可以正常编译并且运行
+go build -o ./bin/clid
+</code></pre>
+<h2 id="增加自定义命令">增加自定义命令</h2>
+<pre><code class="language-shell">cobra add version
+
+tree /f
+D:.
+│   go.mod
+│   go.sum
+│   LICENSE
+│   main.go
+│
+└───cmd
+        root.go
+        version.go
+
+# 在 `cmd` 目录下新生成一个 `version.go` 的文件
+</code></pre>
+<p>从新生成的文件可以看出，核心方法就2个：</p>
+<pre><code class="language-go">var versionCmd = &amp;cobra.Command{
+	Use:   &quot;version&quot;,
+	Short: &quot;版本信息&quot;, // 命令提示
+	Long: `版本信息描述`, // 命令说明
+	Run: func(cmd *cobra.Command, args []string) {
+		fmt.Println(&quot;0.0.1-Alpha&quot;)
+	},
+}
+
+func init() {
+	rootCmd.AddCommand(versionCmd) // version 命令是 rootCmd 的一个子命令
+}
+</code></pre>
+<pre><code class="language-shell">#./clid
+A longer description that spans multiple lines and likely contains
+examples and usage of using your application. For example:
+
+Cobra is a CLI library for Go that empowers applications.
+This application is a tool to generate the needed files
+to quickly create a Cobra application.
+
+Usage:
+  1 [command]
+
+Available Commands:
+  completion  Generate the autocompletion script for the specified shell
+  help        Help about any command
+  version     版本信息
+
+</code></pre>
+<pre><code class="language-shell"># ./clid version
+0.0.1-Alpha
+</code></pre>
+<pre><code class="language-shell"># ./clid version -h
+版本信息描述
+
+Usage:
+  clid version [flags]
+
+Flags:
+  -h, --help   help for version
+</code></pre>
+<h3 id="给子命令增加参数">给子命令增加参数</h3>
+<p>重新增加命令测试</p>
+<pre><code class="language-shell">cobra add foo
+</code></pre>
+<pre><code class="language-go">var fooCmd = &amp;cobra.Command{
+	Use:   &quot;foo&quot;,
+	Short: &quot;A brief description of your command&quot;,
+	Long: `A longer description `,
+	Run: func(cmd *cobra.Command, args []string) {
+		fmt.Println(&quot;foo called&quot;)
+		bar, err := cmd.Flags().GetString(&quot;bar&quot;)
+		if err != nil {
+			fmt.Println(&quot;请输入正确的bar&quot;)
+		}
+		fmt.Printf(&quot;输入值bar[%s]&quot;, bar)
+	},
+}
+
+func init() {
+	rootCmd.AddCommand(fooCmd)
+	fooCmd.Flags().StringP(&quot;bar&quot;, &quot;a&quot;, &quot;默认值&quot;, &quot;命令说明&quot;)
+}
+</code></pre>
+<p>执行结果：</p>
+<pre><code class="language-shell">#./clid foo -h
+A longer description 
+
+Usage:
+  clid foo [flags]
+
+Flags:
+  -a, --bar string   命令说明 (default &quot;默认值&quot;)
+  -h, --help         help for foo
+</code></pre>
+<pre><code class="language-shell"># ./clid foo -a test
+# ./clid foo --bar test 
+
+foo called
+输入值bar[test]
+</code></pre>
+<h3 id="命令其他参数">命令其他参数</h3>
+<p>以上是指定了 foo 命令的参数，cobra 还可以识别命令后的附加参数。</p>
+<p>以下代码定义了一个多数求和的命令，执行命令后，在命令后带上需要求和的参数，即可完成求和。</p>
+<pre><code class="language-go">var sumCmd = &amp;cobra.Command{
+	Use:   &quot;sum&quot;,
+	Short: &quot;A brief description of your command&quot;,
+	Long: `A longer description .`,
+	Run: func(cmd *cobra.Command, args []string) {
+		fmt.Println(&quot;sum called&quot;)
+		result := 0
+		for _, v := range args {
+			arg, err := strconv.Atoi(v)
+			if err != nil {
+				fmt.Printf(&quot;args: %s , %s cannot convert to int &quot;, args, v)
+				return
+			}
+			result += arg
+		}
+		fmt.Printf(&quot;result [%d]&quot;, result)
+	},
+}
+</code></pre>
+<p>测试结果：</p>
+<pre><code class="language-shell"># ./clid sum 1 2 3 4 5
+sum called
+result [15]
+</code></pre>
+
+</div>
+</main>
+
+<section class="appendix">
+
+
+
+
+
+<div>
+  <div class="side side-left"><h3>重复使用</h3></div>
+  Text and figures are licensed under <a href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution CC BY 4.0</a>. The source code is licensed under MIT. The full source is available at <a href="https://github.com/qiref/qiref.github.io">https://github.com/qiref/qiref.github.io</a>.
+</div>
+
+
+
+<div>
+  <div class="side side-left"><h3>欢迎修订</h3></div>
+  
+  
+  
+    
+    
+  
+  如果您发现本文里含有任何错误（包括错别字和标点符号），欢迎<a href="https://github.com/qiref/qiref.github.io/tree/master/content/post/2022-02-19-Go%e8%af%ad%e8%a8%80cobra.md" id="edit-link">在本站的 GitHub 项目里提交修订意见。</a>
+</div>
+
+
+
+
+</section>
+
+
+
+<nav class="post-nav">
+  <span class="nav-next">&larr; <a href="/post/2022/01/11/protobuf%E6%95%B0%E6%8D%AE%E5%8D%8F%E8%AE%AE/" title=下一篇&#32;(旧)>ProtoBuf数据协议</a></span>
+  &hercon;
+  <span class="nav-prev"><a href="/post/2022/02/22/flink-wordcount/" title=上一篇&#32;(新)>Flink WordCount</a> &rarr;</span>
+</nav>
+
+
+<script src="https://utteranc.es/client.js"
+        repo="qiref/qiref.github.io"
+        issue-term="pathname"
+        label="Comment"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script>
+
+</div>
+
+
+  <footer>
+  
+
+
+<script src="//yihui.org/js/math-code.js"></script>
+<script async src="//mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+
+
+
+  
+    
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-PGMJFXZJRT"></script>
+      <script>
+        var doNotTrack = false;
+        if ( false ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-PGMJFXZJRT');
+        }
+      </script>
+    
+  
+
+
+
+
+<script src="https://cdn.jsdelivr.net/combine/npm/@xiee/utils/js/number-sections.min.js,npm/@xiee/utils/js/toc.min.js,npm/@xiee/utils/js/toc-highlight.min.js,npm/@xiee/utils/js/sidenotes.min.js,npm/@xiee/utils/js/right-quote.min.js,npm/@xiee/utils/js/center-img.min.js,npm/@xiee/utils/js/fix-pandoc.min.js,npm/@xiee/utils/js/heading-anchor.min.js" defer></script>
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rstudio/markdown/inst/resources/prism-xcode.css">
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-core.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/autoloader/prism-autoloader.min.js" defer></script>
+
+
+  <div class="footer">
+  
+  <ul>
+    
+    <li class="optional">
+      <a href="/post/">Posts</a>
+    </li>
+    
+    <li class="optional">
+      <a href="/tags/">Tags</a>
+    </li>
+    
+    <li id="menu-edit">
+      <a href="#">Suggest an edit</a>
+    </li>
+    
+    <li>
+      <a href="#">Back to top</a>
+    </li>
+    
+  </ul>
+  </div>
+  
+  </footer>
+  <script src="/js/features.js" defer></script>
+  </body>
+</html>
+

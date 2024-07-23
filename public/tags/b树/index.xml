@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>B树 on 大道至简</title>
+    <link>http://localhost:1313/tags/b%E6%A0%91/</link>
+    <description>Recent content in B树 on 大道至简</description>
+    <generator>Hugo</generator>
+    <language>cn-zh</language>
+    <lastBuildDate>Tue, 05 Dec 2023 11:03:22 +0800</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/b%E6%A0%91/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>B&#43;树</title>
+      <link>http://localhost:1313/post/2023/12/05/b-%E6%A0%91/</link>
+      <pubDate>Tue, 05 Dec 2023 11:03:22 +0800</pubDate>
+      <guid>http://localhost:1313/post/2023/12/05/b-%E6%A0%91/</guid>
+      <description>B树引入 B树（英语：B-tree），是一种在计算机科学自平衡的树，能够保持数据有序。这种数据结构能够让查找数据、顺序访问、插入数据及删除的动作，都在对数时间内完成。B树，概括来说是一个一般化的二叉搜索树（binary search tree）一个节点可以拥有2个以上的子节点。与自平衡二叉查找树不同，B树适用于读写相对大的数据块的存储系统，例如磁盘。B树减少定位记录时所经历的中间过程，从而加快访问速度。B树这种数据结构可以用来描述外部存储。这种数据结构常被应用在数据库和文件系统的实现上。&#xA;wiki 上是这么描述 B 树的, 重点在于 B 树被用作存储系统的实现上, 基于二叉搜索树天然的有序性, 实现 logn 级别的查询; 既然是用作存储系统的实现, 那么可以来推导一下, 为什么B 树会用作存储系统的实现?&#xA;想要实现 logn 级别的查询, binary search tree skiip list 都可以实现, Why B 树?&#xA;二叉搜索树 1&#xA;二叉搜索树天然有序, 也能达到 logn 级别的查询性能, 但是二叉搜索树, 有个很严重的问题, 如果插入的数据本身是有序的, 那二叉搜索树就会退化为链表, 要解决这个问题, 可以用 AVL Tree (Balanced binary search tree) 和 Red-Black Tree.&#xA;AVL 树 AVL Tree (Balanced binary search tree) 在二叉搜索树的基础上, 增加了自平衡的机制, 解决二叉搜索树退化为链表的问题, 但是自平衡也会带来新的问题(平衡条件必须满足所有节点的左右子树高度差不超过1), 插入时可能会触发多次的自平衡, 从而会影响数据插入的效率, 那有没有办法解决频繁的自平衡的问题呢?&#xA;红黑树 Red-Black Tree 就能做到, 红黑树通过制定一系列的规则:</description>
+    </item>
+  </channel>
+</rss>

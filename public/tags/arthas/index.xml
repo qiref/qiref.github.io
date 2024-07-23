@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Arthas on 大道至简</title>
+    <link>http://localhost:1313/tags/arthas/</link>
+    <description>Recent content in Arthas on 大道至简</description>
+    <generator>Hugo</generator>
+    <language>cn-zh</language>
+    <lastBuildDate>Wed, 22 Mar 2023 21:29:21 +0800</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/arthas/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Arthas火焰图使用</title>
+      <link>http://localhost:1313/post/2023/03/22/arthas%E7%81%AB%E7%84%B0%E5%9B%BE%E4%BD%BF%E7%94%A8/</link>
+      <pubDate>Wed, 22 Mar 2023 21:29:21 +0800</pubDate>
+      <guid>http://localhost:1313/post/2023/03/22/arthas%E7%81%AB%E7%84%B0%E5%9B%BE%E4%BD%BF%E7%94%A8/</guid>
+      <description>arthas 火焰图相关命令 arthas 中 profiler 命令支持生成应用热点的火焰图。本质上是通过不断的采样，然后把收集到的采样结果生成火焰图。&#xA;启动arthas：&#xA;java -jar arthas-boot.jar 开始收集火焰图：&#xA;[arthas@1]$ profiler start Profiling started [arthas@1]$ profiler status Profiling is running for 6 seconds [arthas@1]$ profiler status Profiling is running for 27 seconds [arthas@1]$ profiler getSamples 2 [arthas@1]$ profiler getSamples 4 [arthas@1]$ profiler stop --file /tmp/cpu-result-1.html OK profiler output file: /tmp/cpu-result-1.html 命令说明：&#xA;profiler start 开启火焰图收集； profiler status 查看火焰图收集的状态，会显示当前已经采集多长时间； profiler getSamples 获取已采集的 sample 的数量，理论上，sample 越多，结果越准确； profiler stop --file /tmp/cpu-result-1.html 停止当前火焰图收集，会输出到文件中去，生成的文件就是火焰图； 关键参数说明 event -e, &amp;ndash;event 默认采集 CPU 信息，可设：cpu, alloc, lock, cache-misses etc</description>
+    </item>
+  </channel>
+</rss>

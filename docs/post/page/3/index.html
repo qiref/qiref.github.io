@@ -69,6 +69,35 @@
     <tr>
     <td>
     
+    <h1><a href="/post/2022/03/13/flink-append%E6%B5%81retract%E6%B5%81upsert%E6%B5%81/">Flink Append流、Retract流、Upsert流</a></h1>
+    <div>
+      <span>2022-03-13</span>
+      
+    </div>
+    <div class="summary">
+      
+      
+      
+      
+      摘要： 介绍 Flink 中 Append流、Retract流、Upsert流的含义。
+[&hellip;] 在 Append 流中，仅通过 INSERT 操作修改的动态表，可以通过输出插入的行转换为流。
+[&hellip;] retract 流包含两种类型的 message： add messages 和 retract messages 。
+通过将INSERT 操作编码为 add &hellip;
+      <a href="/post/2022/03/13/flink-append%E6%B5%81retract%E6%B5%81upsert%E6%B5%81/" class="more" title=阅读全文>阅读全文 &rarr;</a>
+    </div>
+    </td>
+    
+    </tr>
+    </tbody>
+    </table>
+  </section>
+
+  <section class="article-list post-card">
+    <table>
+    <tbody>
+    <tr>
+    <td>
+    
     <h1><a href="/post/2022/03/04/flink-checkpoint%E6%9C%BA%E5%88%B6/">Flink Checkpoint机制</a></h1>
     <div>
       <span>2022-03-04</span>
@@ -312,34 +341,6 @@ git rebase -i [startpoint] [endpoint] 其中-i的意思是&ndash;interactive，�
     </table>
   </section>
 
-  <section class="article-list post-card">
-    <table>
-    <tbody>
-    <tr>
-    <td>
-    
-    <h1><a href="/post/2021/06/29/kubernates%E4%B8%AD%E7%9A%84pod/">Kubernates中的pod</a></h1>
-    <div>
-      <span>2021-06-29</span>
-      
-    </div>
-    <div class="summary">
-      
-      
-      
-      
-      摘要：运行在Kubernates中的容器：pod。由于不能将多个进程聚集在一个单独的容器中，我们需要一种更高级的结构将容器绑定在一起，将它们作为一个单元进行管理，这就是pod诞生的原因。
-[&hellip;] pod是Kubernetes中最重要的概念，pod是Kubernetes中部署的最小单元，一个pod中可以有一个或多个容器，pod有自己独立的私有IP和主机名。
-Kubernetes 集群中 &hellip;
-      <a href="/post/2021/06/29/kubernates%E4%B8%AD%E7%9A%84pod/" class="more" title=阅读全文>阅读全文 &rarr;</a>
-    </div>
-    </td>
-    
-    </tr>
-    </tbody>
-    </table>
-  </section>
-
 
 
 
@@ -392,16 +393,25 @@ Kubernetes 集群中 &hellip;
 
 
 
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-PGMJFXZJRT"></script>
-<script>
-var doNotTrack = false;
-if (!doNotTrack) {
-	window.dataLayer = window.dataLayer || [];
-	function gtag(){dataLayer.push(arguments);}
-	gtag('js', new Date());
-	gtag('config', 'G-PGMJFXZJRT', { 'anonymize_ip': false });
-}
-</script>
+  
+    
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-PGMJFXZJRT"></script>
+      <script>
+        var doNotTrack = false;
+        if ( false ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-PGMJFXZJRT');
+        }
+      </script>
+    
+  
+
 
 
 

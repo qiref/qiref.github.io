@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>DesignPatterns on 大道至简</title>
+    <link>http://localhost:1313/tags/designpatterns/</link>
+    <description>Recent content in DesignPatterns on 大道至简</description>
+    <generator>Hugo</generator>
+    <language>cn-zh</language>
+    <lastBuildDate>Thu, 11 Jul 2019 00:18:23 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/designpatterns/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>工厂模式</title>
+      <link>http://localhost:1313/post/2019/07/11/%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F/</link>
+      <pubDate>Thu, 11 Jul 2019 00:18:23 +0000</pubDate>
+      <guid>http://localhost:1313/post/2019/07/11/%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F/</guid>
+      <description>摘要：详细结束工厂模式（Factory Pattern）的使用，以及在Java中的实现方式。&#xA;简介 工厂模式（Factory Pattern）是 Java 中最常用的设计模式之一。这种类型的设计模式属于创建型模式，它提供了一种创建对象的最佳方式。工厂模式主要是解决创建对象的问题，典型的应用就是在spring中的IOC，反转控制，反转控制就是把创建对象的权限交给框架，所以spring就是一个生产对象的工厂。&#xA;思路 工厂模式的思路就是设计一个产生对象的机制，让生产对象的过程交给第三方，在工厂模式中，不会对客户端暴露创建逻辑，并且使用通用接口接收新创建的对象。&#xA;实现过程 新建抽象的接口 新建具体的实体类，实现抽象的接口 创建实例化对象的工厂 在客户端中通过工厂创建具体的实体对象，对象可以用抽象接口接收。 这种方式是最简单的实现方式：&#xA;// 创建接口 public interface Shape { void draw(); } // 创建实体类Circle public class Circle implements Shape { @Override public void draw() { System.out.println(&amp;quot;drawing a circle&amp;quot;); } } // 创建实体类Rectangle public class Rectangle implements Shape { @Override public void draw() { System.out.println(&amp;quot;drawing a Rectangle&amp;quot;); } } // 创建实体类Square public class Square implements Shape { @Override public void draw() { System.</description>
+    </item>
+  </channel>
+</rss>

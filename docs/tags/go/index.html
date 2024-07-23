@@ -69,6 +69,32 @@
     <tr>
     <td>
     
+    <h1><a href="/post/2024/05/15/%E5%85%B3%E4%BA%8E%E9%94%81%E7%9A%84%E6%80%9D%E8%80%83%E5%92%8C%E6%80%BB%E7%BB%93%E4%B8%80/">关于锁的思考和总结(一)</a></h1>
+    <div>
+      <span>2024-05-15</span>
+      
+    </div>
+    <div class="summary">
+      
+      
+      
+      
+      &fopf;unc add (a *int) *int { *a++ // 线程不安全 return a } 这是一段很典型的线程不安全的代码示例, 在并发场景下, a 的结果是不确定的, 大概率会小于 1000, 原因是 a++ 并非原子操作, 会存在同时有两个协程读取到 a 的值是相同的情况, 执行 a++之后再重新回写时, a的值也是相同的, 想要变为线程安全, 就需要在操作临界资源之前加锁; &hellip;
+      <a href="/post/2024/05/15/%E5%85%B3%E4%BA%8E%E9%94%81%E7%9A%84%E6%80%9D%E8%80%83%E5%92%8C%E6%80%BB%E7%BB%93%E4%B8%80/" class="more" title=阅读全文>阅读全文 &rarr;</a>
+    </div>
+    </td>
+    
+    </tr>
+    </tbody>
+    </table>
+  </section>
+
+  <section class="article-list post-card">
+    <table>
+    <tbody>
+    <tr>
+    <td>
+    
     <h1><a href="/post/2024/02/23/go-ppfof%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8/">Go ppfof工具使用</a></h1>
     <div>
       <span>2024-02-23</span>
@@ -307,36 +333,6 @@ func DeferDemo() { defer fmt.Println(&quot;this is defer println&quot;) &hellip;
     </table>
   </section>
 
-  <section class="article-list post-card">
-    <table>
-    <tbody>
-    <tr>
-    <td>
-    
-    <h1><a href="/post/2021/06/10/go%E8%AF%AD%E8%A8%80%E5%8C%85%E7%AE%A1%E7%90%86/">Go语言包管理</a></h1>
-    <div>
-      <span>2021-06-10</span>
-      
-    </div>
-    <div class="summary">
-      
-      
-      
-      
-      摘要：Go语言包管理。
-[&hellip;] 包的习惯用法：
-[&hellip;] Go 语言中，所有的定义，比如函数、变量、结构体等，如果首字母是大写，那么就可以被其他包使用；同一包下，不存在引用问题。
-[&hellip;] 在Go语言中封装就是把抽象出来的字段和对字段的操作封装在一起，数据被保护在内部，程序的其它包只能通过被授权的方法，才能对字段进行操作。
-封装的好处： 隐藏实现细节； 可以对 &hellip;
-      <a href="/post/2021/06/10/go%E8%AF%AD%E8%A8%80%E5%8C%85%E7%AE%A1%E7%90%86/" class="more" title=阅读全文>阅读全文 &rarr;</a>
-    </div>
-    </td>
-    
-    </tr>
-    </tbody>
-    </table>
-  </section>
-
 
 
 
@@ -380,16 +376,25 @@ func DeferDemo() { defer fmt.Println(&quot;this is defer println&quot;) &hellip;
 
 
 
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-PGMJFXZJRT"></script>
-<script>
-var doNotTrack = false;
-if (!doNotTrack) {
-	window.dataLayer = window.dataLayer || [];
-	function gtag(){dataLayer.push(arguments);}
-	gtag('js', new Date());
-	gtag('config', 'G-PGMJFXZJRT', { 'anonymize_ip': false });
-}
-</script>
+  
+    
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-PGMJFXZJRT"></script>
+      <script>
+        var doNotTrack = false;
+        if ( false ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-PGMJFXZJRT');
+        }
+      </script>
+    
+  
+
 
 
 

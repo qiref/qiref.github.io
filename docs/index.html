@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="cn-zh">
   <head>
-	<meta name="generator" content="Hugo 0.119.0">
+	<meta name="generator" content="Hugo 0.127.0">
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -70,7 +70,38 @@
     <tr>
     <td>
     
-    <h1><a href="/post/2024/05/15/%E5%85%B3%E4%BA%8E%E9%94%81%E7%9A%84%E6%80%BB%E7%BB%93%E5%92%8C%E6%80%9D%E8%80%83%E4%B8%80/">关于锁的总结和思考(一)</a></h1>
+    <h1><a href="/post/2024/05/21/%E5%85%B3%E4%BA%8E%E9%94%81%E7%9A%84%E6%80%9D%E8%80%83%E5%92%8C%E6%80%BB%E7%BB%93%E4%BA%8C/">关于锁的思考和总结(二)</a></h1>
+    <div>
+      <span>2024-05-21</span>
+      
+    </div>
+    <div class="summary">
+      
+      
+      
+      
+      书接上文, 在单机模式下, 可以借助操作系统能力, 使用原子指令去实现锁, 但是在分布式场景中, 这种方案就会无法实现, 因为要竞争锁的进程在不同的机器上, 分布式锁因此而诞生.
+[&hellip;] 举一个很常见的案例, 如果某个服务为了实现高可用而采用了多副本模式, 当服务中存在定时任务, 如何保证同时只有一个定时任务在运行呢? 从这里, 问题就开始变得复杂.
+很常规的思路就是借助数据库, 操 &hellip;
+      <a href="/post/2024/05/21/%E5%85%B3%E4%BA%8E%E9%94%81%E7%9A%84%E6%80%9D%E8%80%83%E5%92%8C%E6%80%BB%E7%BB%93%E4%BA%8C/" class="more" title=阅读全文>阅读全文 &rarr;</a>
+    </div>
+    </td>
+    
+    <td class="spacer spacer-right"></td>
+    <td class="side-title"><h1><a href="/post/">post</a></h1></td>
+    
+    </tr>
+    </tbody>
+    </table>
+  </section>
+
+  <section class="article-list post-card">
+    <table>
+    <tbody>
+    <tr>
+    <td>
+    
+    <h1><a href="/post/2024/05/15/%E5%85%B3%E4%BA%8E%E9%94%81%E7%9A%84%E6%80%9D%E8%80%83%E5%92%8C%E6%80%BB%E7%BB%93%E4%B8%80/">关于锁的思考和总结(一)</a></h1>
     <div>
       <span>2024-05-15</span>
       
@@ -81,7 +112,7 @@
       
       
       &fopf;unc add (a *int) *int { *a++ // 线程不安全 return a } 这是一段很典型的线程不安全的代码示例, 在并发场景下, a 的结果是不确定的, 大概率会小于 1000, 原因是 a++ 并非原子操作, 会存在同时有两个协程读取到 a 的值是相同的情况, 执行 a++之后再重新回写时, a的值也是相同的, 想要变为线程安全, 就需要在操作临界资源之前加锁; &hellip;
-      <a href="/post/2024/05/15/%E5%85%B3%E4%BA%8E%E9%94%81%E7%9A%84%E6%80%BB%E7%BB%93%E5%92%8C%E6%80%9D%E8%80%83%E4%B8%80/" class="more" title=阅读全文>阅读全文 &rarr;</a>
+      <a href="/post/2024/05/15/%E5%85%B3%E4%BA%8E%E9%94%81%E7%9A%84%E6%80%9D%E8%80%83%E5%92%8C%E6%80%BB%E7%BB%93%E4%B8%80/" class="more" title=阅读全文>阅读全文 &rarr;</a>
     </div>
     </td>
     
@@ -336,36 +367,6 @@ import ( &quot;net/http&quot; _ &quot;net/http/pprof&quot; &quot;strconv&quot; )
     </table>
   </section>
 
-  <section class="article-list post-card">
-    <table>
-    <tbody>
-    <tr>
-    <td>
-    
-    <h1><a href="/post/2023/05/08/chandy-lamport-%E7%AE%97%E6%B3%95%E7%AC%94%E8%AE%B0/">Chandy-Lamport 算法笔记</a></h1>
-    <div>
-      <span>2023-05-08</span>
-      
-    </div>
-    <div class="summary">
-      
-      
-      
-      
-      &Gopf;lobal Snapshot（Global State）：全局快照，分布式系统在 Failure Recovery 的时候非常有用，也是广泛应用在分布式系统，更多是分布式计算系统中的一种容错处理理论基础。
-在 Chandy-Lamport 算法中，为了定义分布式系统的 Global Snapshot，先将分布式系统简化成有限个进程和进程之间的 channel 组成，也就是一个有向图 （GAG）： &hellip;
-      <a href="/post/2023/05/08/chandy-lamport-%E7%AE%97%E6%B3%95%E7%AC%94%E8%AE%B0/" class="more" title=阅读全文>阅读全文 &rarr;</a>
-    </div>
-    </td>
-    
-    <td class="spacer spacer-right"></td>
-    <td class="side-title"><h1><a href="/post/">post</a></h1></td>
-    
-    </tr>
-    </tbody>
-    </table>
-  </section>
-
 
 
 
@@ -387,16 +388,25 @@ import ( &quot;net/http&quot; _ &quot;net/http/pprof&quot; &quot;strconv&quot; )
 
 
 
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-PGMJFXZJRT"></script>
-<script>
-var doNotTrack = false;
-if (!doNotTrack) {
-	window.dataLayer = window.dataLayer || [];
-	function gtag(){dataLayer.push(arguments);}
-	gtag('js', new Date());
-	gtag('config', 'G-PGMJFXZJRT', { 'anonymize_ip': false });
-}
-</script>
+  
+    
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-PGMJFXZJRT"></script>
+      <script>
+        var doNotTrack = false;
+        if ( false ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-PGMJFXZJRT');
+        }
+      </script>
+    
+  
+
 
 
 

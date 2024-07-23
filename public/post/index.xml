@@ -1,0 +1,376 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Posts on 大道至简</title>
+    <link>http://localhost:1313/post/</link>
+    <description>Recent content in Posts on 大道至简</description>
+    <generator>Hugo</generator>
+    <language>cn-zh</language>
+    <lastBuildDate>Tue, 21 May 2024 15:53:46 +0800</lastBuildDate>
+    <atom:link href="http://localhost:1313/post/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>关于锁的思考和总结(二)</title>
+      <link>http://localhost:1313/post/2024/05/21/%E5%85%B3%E4%BA%8E%E9%94%81%E7%9A%84%E6%80%9D%E8%80%83%E5%92%8C%E6%80%BB%E7%BB%93%E4%BA%8C/</link>
+      <pubDate>Tue, 21 May 2024 15:53:46 +0800</pubDate>
+      <guid>http://localhost:1313/post/2024/05/21/%E5%85%B3%E4%BA%8E%E9%94%81%E7%9A%84%E6%80%9D%E8%80%83%E5%92%8C%E6%80%BB%E7%BB%93%E4%BA%8C/</guid>
+      <description>书接上文, 在单机模式下, 可以借助操作系统能力, 使用原子指令去实现锁, 但是在分布式场景中, 这种方案就会无法实现, 因为要竞争锁的进程在不同的机器上, 分布式锁因此而诞生.&#xA;分布式锁的常见问题 举一个很常见的案例, 如果某个服务为了实现高可用而采用了多副本模式, 当服务中存在定时任务, 如何保证同时只有一个定时任务在运行呢? 从这里, 问题就开始变得复杂.&#xA;很常规的思路就是借助数据库, 操作系统提供了原子指令, 同样, 数据库也提供了事务来保证原子性, 那么案例中的问题可以这么解决:&#xA;可以设计一张表 lock, id, key 两个字段, 把 key 设置为唯一索引; key 的业务意义是定时任务的唯一标识; 每个实例执行定时任务之前, 往表里写入一条数据: (1, tastA), 由于事务机制的存在, 如果此时有其他实例往这个表里写数据时就会失败, 此时跳过当前实例的定时任务; 执行完定时任务之后, 把 (1, taskA) 这条记录删除; 问题解决了吗? 考虑一下异常情况: 当实例A拿到锁之后挂了, 那其他实例永远也拿不到锁了;&#xA;一个很直观的思路就是给锁设置超时时间, 但是设置超时时间就需要权衡了, 如果定时任务本身的耗时跟锁的超时时间还要长, 那就会出现锁超时而导致同时两个实例在执行定时任务, 因此, 这个方案是需要一定的前提的, 这取决于实际的业务场景;&#xA;再更进一步思考, 如果真的定时任务比锁的超时时间还长, 怎么解决呢? 锁的超时时间如果能动态变化, 这个问题就引刃而解了, 这就是锁续期;&#xA;lock 表结构改为: id, key, createTime, expiredTime ; 在执行定时任务时,往表里写一条数据 (1, tastA), 同步开一个线程去给锁续期, expiredTime 时间增加; 定时任务执行结束时, 续期线程退出, 删除记录 (1, tastA); 注意, 续期的前提是加了锁超时的机制, 如果使用数据库的话, 需要定期扫描, 发现已经达到 expiredTime 时, 就删除记录;</description>
+    </item>
+    <item>
+      <title>关于锁的思考和总结(一)</title>
+      <link>http://localhost:1313/post/2024/05/15/%E5%85%B3%E4%BA%8E%E9%94%81%E7%9A%84%E6%80%9D%E8%80%83%E5%92%8C%E6%80%BB%E7%BB%93%E4%B8%80/</link>
+      <pubDate>Wed, 15 May 2024 15:53:46 +0800</pubDate>
+      <guid>http://localhost:1313/post/2024/05/15/%E5%85%B3%E4%BA%8E%E9%94%81%E7%9A%84%E6%80%9D%E8%80%83%E5%92%8C%E6%80%BB%E7%BB%93%E4%B8%80/</guid>
+      <description>func add (a *int) *int { *a++ // 线程不安全 return a } 这是一段很典型的线程不安全的代码示例, 在并发场景下, a 的结果是不确定的, 大概率会小于 1000, 原因是 a++ 并非原子操作, 会存在同时有两个协程读取到 a 的值是相同的情况, 执行 a++之后再重新回写时, a的值也是相同的, 想要变为线程安全, 就需要在操作临界资源之前加锁;&#xA;Mutex 在操作共享资源之前加锁, 然后操作完临界资源之后释放锁, 保证同时只有一个协程操作临界资源;&#xA;var mu sync.Mutex func addSafe(a *int) *int { mu.Lock() // 加锁 defer mu.Unlock() // 释放锁 *a++ return a } 锁在多线程或多进程环境中实现资源的互斥访问。当一个线程或进程想要访问某个共享资源（如数据结构、文件等）时，它必须首先尝试获取该资源对应的锁。如果锁未被其他线程或进程占用，那么请求的线程或进程将获得锁并继续执行；否则，它将等待，直到锁被释放。&#xA;// If the lock is already in use, the calling goroutine // blocks until the mutex is available.</description>
+    </item>
+    <item>
+      <title>Go ppfof工具使用</title>
+      <link>http://localhost:1313/post/2024/02/23/go-ppfof%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8/</link>
+      <pubDate>Fri, 23 Feb 2024 15:53:46 +0800</pubDate>
+      <guid>http://localhost:1313/post/2024/02/23/go-ppfof%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8/</guid>
+      <description>pprof pprof 是用于可视化和分析性能分析数据的工具;&#xA;runtime/pprof：采集程序（非 Server）的运行数据进行分析 net/http/pprof：采集 HTTP Server 的运行时数据进行分析 启用方式 在main函数之前使用启动, DoProfile(6060)&#xA;import ( &amp;quot;net/http&amp;quot; _ &amp;quot;net/http/pprof&amp;quot; &amp;quot;strconv&amp;quot; ) type ProfileServer struct { } func (this *ProfileServer) DoProfile(port int) { go func() { err := http.ListenAndServe(&amp;quot;:&amp;quot;+strconv.FormatInt(int64(port), 10), nil) if err != nil { log.Errorf(&amp;quot;Failed to do profile on port: %d&amp;quot;, port) } else { log.Infof(&amp;quot;pprof start successfully on port %d&amp;quot;, port) } }() } 分析 curl &#39;http://127.0.0.1:6060/debug/pprof/profile&#39; -o profile.20240223 curl &#39;http://127.</description>
+    </item>
+    <item>
+      <title>B&#43;树</title>
+      <link>http://localhost:1313/post/2023/12/05/b-%E6%A0%91/</link>
+      <pubDate>Tue, 05 Dec 2023 11:03:22 +0800</pubDate>
+      <guid>http://localhost:1313/post/2023/12/05/b-%E6%A0%91/</guid>
+      <description>B树引入 B树（英语：B-tree），是一种在计算机科学自平衡的树，能够保持数据有序。这种数据结构能够让查找数据、顺序访问、插入数据及删除的动作，都在对数时间内完成。B树，概括来说是一个一般化的二叉搜索树（binary search tree）一个节点可以拥有2个以上的子节点。与自平衡二叉查找树不同，B树适用于读写相对大的数据块的存储系统，例如磁盘。B树减少定位记录时所经历的中间过程，从而加快访问速度。B树这种数据结构可以用来描述外部存储。这种数据结构常被应用在数据库和文件系统的实现上。&#xA;wiki 上是这么描述 B 树的, 重点在于 B 树被用作存储系统的实现上, 基于二叉搜索树天然的有序性, 实现 logn 级别的查询; 既然是用作存储系统的实现, 那么可以来推导一下, 为什么B 树会用作存储系统的实现?&#xA;想要实现 logn 级别的查询, binary search tree skiip list 都可以实现, Why B 树?&#xA;二叉搜索树 1&#xA;二叉搜索树天然有序, 也能达到 logn 级别的查询性能, 但是二叉搜索树, 有个很严重的问题, 如果插入的数据本身是有序的, 那二叉搜索树就会退化为链表, 要解决这个问题, 可以用 AVL Tree (Balanced binary search tree) 和 Red-Black Tree.&#xA;AVL 树 AVL Tree (Balanced binary search tree) 在二叉搜索树的基础上, 增加了自平衡的机制, 解决二叉搜索树退化为链表的问题, 但是自平衡也会带来新的问题(平衡条件必须满足所有节点的左右子树高度差不超过1), 插入时可能会触发多次的自平衡, 从而会影响数据插入的效率, 那有没有办法解决频繁的自平衡的问题呢?&#xA;红黑树 Red-Black Tree 就能做到, 红黑树通过制定一系列的规则:</description>
+    </item>
+    <item>
+      <title>Log Structured Merge Tree</title>
+      <link>http://localhost:1313/post/2023/10/13/log-structured-merge-tree/</link>
+      <pubDate>Fri, 13 Oct 2023 11:46:21 +0800</pubDate>
+      <guid>http://localhost:1313/post/2023/10/13/log-structured-merge-tree/</guid>
+      <description>基本概念 Log Structured Merge Tree, 其本质上是一种存储数据的方式,通常用于各种存储系统的底层数据结构,通过尽可能减少磁盘随机IO来提升写入性能, 适用于写多读少的场景.&#xA;随机写和顺序写 对于一个存储系统而言, 不可避免地需要写入文件到磁盘, 对于常规的写来说, 每来一条数据写一次文件, 数据可能是 add update delete, 需要频繁操作文件, 每一次写都是一次随机 IO; 为了提高写入速度, LSM Tree 并不是每一次写操作都把文件写到磁盘, 而是将数据在内存中更新，当内存中的数据达到一定的阈值时，才将这部分数据真正刷新到磁盘文件中. 以这种方式尽可能让每次磁盘 IO 都是顺序写;&#xA;思路 基于减少磁盘的随机 IO 来提升整体存储系统的写入性能这一背景, 很自然可以推导出用批量写入的方式, 要想批量写入, 就需要在内存维护最近写入的数据, 达到阈值之后生成一个文件写入到磁盘, 但是这样又会存在新的问题:&#xA;如果某一条数据已经写入到磁盘文件, 后续又有更新, 怎么处理呢? 内存中维护的临时数据, 如果还未来得及写入磁盘, 服务挂了, 重新启动时, 历史写入的数据如何恢复? 每次内存中数据达到阈值,写一个整个文件到磁盘,那么最终会生成大量的文件, 如何解决? 解决问题1, 为了优化这种更新的写入, 可以采用数据版本的做法, 或者给数据增加标志, 然后定期合并, 当然, 这也是以空间换时间, 相同的数据存储了多次, 以提升写入性能; 与此同时, 在数据读取时,由于写入的逻辑改变, 一条数据可能会存在于多个文件中, 因此在读取时, 需要返回最新的数据, 在读取到多条数据时,需要对多条数据进行合取最新;&#xA;解决问题2, 在业界比较标准的做法是 WAL, WAL 的基本原理是在执行数据修改操作之前，先将这些操作记录在日志（log）文件中, 以确保在发生故障或崩溃时，可以借助日志进行恢复并保持数据的一致性;&#xA;解决问题3, 为了避免大量文件, 可以对文件进行定期合并, 当数据还在内存中时, 可以借助跳表或者 B+Tree 等数据结构保证内存中数据的顺序性, 在写文件时, 由于数据是有序的, 在文件合并时,很自然可以借助归并排序保证合并之后的数据的有序性, 而有序性又能天然提高查询效率.</description>
+    </item>
+    <item>
+      <title>Skip Lists 阅读笔记</title>
+      <link>http://localhost:1313/post/2023/10/01/skip-lists-%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/</link>
+      <pubDate>Sun, 01 Oct 2023 22:05:38 +0800</pubDate>
+      <guid>http://localhost:1313/post/2023/10/01/skip-lists-%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/</guid>
+      <description>算法介绍 《Skip Lists: A Probabilistic Alternative to Balanced Trees》 论文标题翻译就是 跳表: 平衡树的概率性替代方案; 跳表是一种可以用来代替平衡树的数据结构。跳表使用概率平衡而不是严格强制的平衡，因此跳跃列表中的插入和删除算法比平衡树的等效算法要简单得多并且速度明显更快。&#xA;从论文的标题和介绍, 基本上就能知道跳表是一种怎么样的数据结构, 为了解决平衡树实现的复杂性, 提供一种概率性平衡的数据结构,作为平衡树的平替数据结构, 查询和插入时间复杂度是 O(log n).&#xA;算法流程 基本原理 节点结构：跳表由多个层级组成，每个层级都是一个有序链表。每个节点包含一个值和多个指向下一层级节点的指针。&#xA;层级索引：跳表的最底层是一个普通的有序链表，每个节点都连接到下一个节点。而在更高的层级，节点以一定的概率连接到更远的节点，形成了一种“跳跃”的效果。这些连接被称为“跳跃指针”，它们允许我们在查找时可以快速地跳过一些节点。&#xA;查找操作：从跳表的顶层开始，我们沿着每个层级向右移动，直到找到目标值或找到一个大于目标值的节点。然后我们进入下一层级继续查找，直到最底层。这种方式可以在平均情况下实现快速的查找，时间复杂度为 O(log n)。&#xA;插入和删除操作：在插入新节点时，我们首先执行查找操作，找到合适的插入位置。然后我们在每个层级上插入新节点，并根据一定的概率决定是否要为该节点添加跳跃指针。删除操作类似，我们首先找到要删除的节点，然后将其从每个层级中移除。&#xA;查询 level 表示跳表的层级, 而 forward[i] 是每一个层级的链表.&#xA;Search(list, searchKey) x := list→header // 从跳表的顶层开始,遍历到第一层 for i := list→level downto 1 do while x→forward[i]→key &amp;lt; searchKey do x := x→forward[i] // x→key &amp;lt; searchKey ≤ x→forward[1]→key // 最终的结果从跳表最底层获取 x := x→forward[1] if x→key = searchKey then return x→value else return failure 写入 由跳表的定义得出, 跳表的上一层级相当于下一层级的索引, 如果需要构建多级的索引, 首先需要解决: 当前node是否应该索引到上一层级?</description>
+    </item>
+    <item>
+      <title>DBLog 阅读笔记</title>
+      <link>http://localhost:1313/post/2023/08/09/dblog-%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/</link>
+      <pubDate>Wed, 09 Aug 2023 10:39:17 +0800</pubDate>
+      <guid>http://localhost:1313/post/2023/08/09/dblog-%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/</guid>
+      <description>介绍 论文原名: DBLog: A Watermark Based Change-Data-Capture Framework , 基于 Watermark 的 Change-Data-Capture(数据库实时捕获已提交的变更记录) 框架, 本质上是解决数据库同步(全量+增量)的框架, Watermark 是框架使用的一种手段, 在源表中创建表,生成唯一 uuid 并更新表数据, 在源表中就会生成一条变更记录,记作 Watermark 的变更记录, 通过 High Watermark 和 Low Watermark 将变更记录分割, 保证 select chunk 数据包含了增量的变更记录.&#xA;框架整体架构如下:&#xA;框架特点:&#xA;按顺序处理捕获到的 changelog; 转储可以随时进行，跨所有表，针对一个特定的表或者针对一个表的具体主键; 以块(chunk)的形式获取转储，日志与转储事件交错。通过这种方式，changelog 可以与转储处理一起进行。如果进程终止，它可以在最后一个完成的块之后恢复，而不需要从头开始。这还允许在需要时对转储进行调整和暂停; 不会获取表级锁，这可以防止影响源数据库上的写流量; 支持任何类型的输出，因此，输出可以是流、数据存储甚或是 API; 设计充分考虑了高可用性。因此，下游的消费者可以放心，只要源端发生变化，它们就可以收到变化事件。 注意, 本文并非详细介绍 DBLog 框架本身, 而是分析其框架背后的设计思路.&#xA;算法流程 chunk 划分 对于源表数据, 全量数据使用分块读取, 基于 primary key 顺序排序, 将全量数据划分为 N 个 chunk;&#xA;watermark 基于 chunk 划分, 然后 chunk 数据全量写入下游之后, 再将源表的变更记录 changelog 增量同步到下游, 整体思路就是这样, 但是划分 chunk 有个问题需要解决, 就是先同步到下游的数据不一定的最终的数据, 例如上图 chunk1 中的数据在同步到下游之后可能会删除, 那chunk1 的数据写到下游之后, 下游就会出现脏数据; 如何解决 chunk 和 changelog 之间不会相互覆盖的问题?</description>
+    </item>
+    <item>
+      <title>Java进程分析工具</title>
+      <link>http://localhost:1313/post/2023/06/26/java%E8%BF%9B%E7%A8%8B%E5%88%86%E6%9E%90%E5%B7%A5%E5%85%B7/</link>
+      <pubDate>Mon, 26 Jun 2023 21:55:00 +0800</pubDate>
+      <guid>http://localhost:1313/post/2023/06/26/java%E8%BF%9B%E7%A8%8B%E5%88%86%E6%9E%90%E5%B7%A5%E5%85%B7/</guid>
+      <description>JVM 内存区域 如果要为新生代分配 256m 的内存（NewSize 与 MaxNewSize 设为一致），参数应该这样来写：-Xmn256m;&#xA;还可以通过 -XX:NewRatio=&amp;lt;int&amp;gt; 来设置老年代与新生代内存的比值。比如以下参数就是设置老年代与新生代内存的比值为 1。也就是说老年代和新生代所占比值为 1：1，新生代占整个堆栈的 1/2。&#xA;-XX:NewRatio=1 JDK 1.8 ，方法区（HotSpot 的永久代）被彻底移除了，取而代之是元空间 Metaspace，元空间使用的是本地内存。&#xA;Metaspace 的初始容量并不是 -XX:MetaspaceSize 设置，无论 -XX:MetaspaceSize 配置什么值，对于 64 位 JVM 来说，Metaspace 的初始容量都是 21807104（约 20.8m）。可以参考 Oracle 官方文档 :&#xA;Specify a higher value for the option MetaspaceSize to avoid early garbage collections induced for class metadata. The amount of class metadata allocated for an application is application-dependent and general guidelines do not exist for the selection of MetaspaceSize.</description>
+    </item>
+    <item>
+      <title>The Dataflow Model 阅读笔记</title>
+      <link>http://localhost:1313/post/2023/05/16/the-dataflow-model-%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/</link>
+      <pubDate>Tue, 16 May 2023 15:26:10 +0800</pubDate>
+      <guid>http://localhost:1313/post/2023/05/16/the-dataflow-model-%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/</guid>
+      <description>Dataflow 计算模型 Dataflow 的核心计算模型非常简单，它只有两个概念，一个叫做 ParDo，就是并行处理的意思；另一个叫做 GroupByKey，也就是按照 Key 进行分组。&#xA;ParDo ParDo 用来进行通用的并行化处理。每个输入元素（这个元素本身有可能是一个有限的集合）都会使用一个 UDF 进行处理（在Dataflow中叫做DoFn），输出是0或多个输出元素。这个例子是把键的前缀进行展开，然后把值复制到展开后的键构成新的键值对并输出。&#xA;GroupByKey GroupByKey 用来按 Key 把元素重新分组。&#xA;ParDo 操作因为是对每个输入的元素进行处理，因此很自然地就可以适用于无边界的数据。而 GroupByKey 操作，在把数据发送到下游进行汇总前，需要收集到指定的键对应的所有数据。如果输入源是无边界的，那么我们不知道何时才能收集到所有的数据。所以通常的解决方案是对数据使用窗口操作。&#xA;窗口 时间语义 窗口通常基于时间，时间对于窗口来说是必不可少的，在流式计算中，有 processing-time 和 event-time 两种时间语义，具体参考： 时间语义&#xA;窗口分类 固定窗口（Fixed Window）固定区间（互不重叠）的窗口，可以基于时间，也可以基于数量；将事件分配到不同区间的窗口中，在通过窗口边界后，窗口内的所有事件会发送给计算函数进行计算；&#xA;滑动窗口（Sliding Window）固定区间但可以重叠的窗口，需要指定窗口区间以及滑动步长，区间重叠意味着同一个事件会分配到不同窗口参与计算。 窗口区间决定何时触发计算，滑动步长决定何时创建一个新的窗口；&#xA;会话窗口（Session Window）会话窗口通常基于用户的会话，通过定义会话的超时时间，将事件分割到不同的会话中； 例如，有个客服聊天系统，如果用户超过 30 分钟没有互动，则认为一次会话结束，当客户下次进入，就是一个新的会话了。&#xA;窗口分配与合并 Dataflow 模型里，需要的不只是 GroupByKey，实际在统计数据的时候，往往需要的是 GroupByKeyAndWindow。统计一个不考虑任何时间窗口的数据，往往是没有意义的； Dataflow 模型提出：&#xA;从模型简化的角度上，把所有的窗口策略都当做非对齐窗口，而底层实现来负责把对齐窗口作为一个特例进行优化。 窗口操作可以被分隔为两个互相相关的操作： set&amp;lt;Window&amp;gt; AssignWindows(T datum) 即窗口分配操作。这个操作把元素分配到 0 或多个窗口中去。 set&amp;lt;window&amp;gt; MergeWindows(Set&amp;lt;Window&amp;gt; windows) 即窗口合并操作，这个操作在汇总时合并窗口。 而在实际的逻辑实现层面，Dataflow 最重要的两个函数，也就是 AssignWindows 函数和 MergeWindows 函数。 窗口分配 每一个原始的事件，在业务处理函数之前，其实都是（key, value, event_time）这样一个三元组。而 AssignWindows 要做的，就是把这个三元组，根据我们的处理逻辑，变成（key, value, event_time, window）这样的四元组。</description>
+    </item>
+    <item>
+      <title>堆和堆排序</title>
+      <link>http://localhost:1313/post/2023/05/12/%E5%A0%86%E5%92%8C%E5%A0%86%E6%8E%92%E5%BA%8F/</link>
+      <pubDate>Fri, 12 May 2023 17:01:04 +0800</pubDate>
+      <guid>http://localhost:1313/post/2023/05/12/%E5%A0%86%E5%92%8C%E5%A0%86%E6%8E%92%E5%BA%8F/</guid>
+      <description>堆 堆的本质是树，用数组表示的完全二叉树；&#xA;定义 一棵深度为k且有 2^k - 1 个结点的二叉树称为满二叉树。&#xA;根据二叉树的性质2, 满二叉树每一层的结点个数都达到了最大值, 即满二叉树的第i层上有 2^(i-1) 个结点 (i≥1) 。&#xA;如果对满二叉树的结点进行编号, 约定编号从根结点起, 自上而下, 自左而右。则深度为k的, 有n个结点的二叉树, 当且仅当其每一个结点都与深度为k的满二叉树中编号从1至n的结点一一对应时, 称之为完全二叉树。&#xA;从满二叉树和完全二叉树的定义可以看出, 满二叉树是完全二叉树的特殊形态, 即如果一棵二叉树是满二叉树, 则它必定是完全二叉树。&#xA;参考： https://baike.baidu.com/item/%E5%AE%8C%E5%85%A8%E4%BA%8C%E5%8F%89%E6%A0%91/7773232&#xA;性质 arr：[2 3 4 52 2 2 1] idx： 0 1 2 3 4 5 6 i 下标和元素之间的映射关系：&#xA;左子节点：2*i+1 右子节点：2*i+2 父节点：(i-1)/2 大根堆 完全二叉树里，每一个子树的最大值是根节点；&#xA;小根堆 完全二叉树里，每一个子树的最小值是根节点；&#xA;堆排序 定义堆 // maxHeap 定义一个大根堆 type maxHeap struct { Data []int Count int } func NewMaxHeap(size int) *maxHeap { return &amp;amp;maxHeap{ Data: make([]int, size), Count: 0, } } 插入数据 插入数据时，是往数组最后增加元素，由于需要保证大根堆的性质，如果新加入的元素比父节点大，则跟父节点交换位置，以此类推，一直到根节点，这个交换流程完成后，新元素插入就完成了。</description>
+    </item>
+    <item>
+      <title>Chandy-Lamport 算法笔记</title>
+      <link>http://localhost:1313/post/2023/05/08/chandy-lamport-%E7%AE%97%E6%B3%95%E7%AC%94%E8%AE%B0/</link>
+      <pubDate>Mon, 08 May 2023 22:38:42 +0800</pubDate>
+      <guid>http://localhost:1313/post/2023/05/08/chandy-lamport-%E7%AE%97%E6%B3%95%E7%AC%94%E8%AE%B0/</guid>
+      <description>前言 Global Snapshot（Global State）：全局快照，分布式系统在 Failure Recovery 的时候非常有用，也是广泛应用在分布式系统，更多是分布式计算系统中的一种容错处理理论基础。&#xA;在 Chandy-Lamport 算法中，为了定义分布式系统的 Global Snapshot，先将分布式系统简化成有限个进程和进程之间的 channel 组成，也就是一个有向图 （GAG）：节点是进程，边是 channel。因为是分布式系统，也就是说，这些进程是运行在不同的物理机器上的。那么一个分布式系统的 Global Snapshot 就是有进程的状态和 channel 中的 message 组成，这个也是分布式快照算法需要记录的。因此，Chandy-Lamport 算法解决了分布式系统在 Failure Recovery 时，可以从 Global Snapshot 中恢复的问题；&#xA;算法过程 前提条件及定义 process（Pn）：分布式系统中的进程，用 P1，P2，P3 表示； channel：分布式系统中，Pn 与 Pm 通信的管道，C12 表示从 P1 到 P2 的 channel，反之，C32 表示从 P3 到 P2的 channel； message：分布式系统中，Pn 与 Pm 之间发送的业务消息；M23 表示从 P2 到 P3 的 message； marker：在 Chandy-Lamport 算法中，Pn 与 Pm 之间发送的标记消息，不同于业务的 message，marker 是由 Chandy-Lamport 算法定义，用于帮助实现快照算法； snapshot/state：都表示快照，同时包括进程本身的状态和 message；下文中统一全局快照叫 snapshot，process 本地快照叫 state； Chandy-Lamport 算法有一些前提条件：</description>
+    </item>
+    <item>
+      <title>Go语言生产者消费者模型</title>
+      <link>http://localhost:1313/post/2023/04/28/go%E8%AF%AD%E8%A8%80%E7%94%9F%E4%BA%A7%E8%80%85%E6%B6%88%E8%B4%B9%E8%80%85%E6%A8%A1%E5%9E%8B/</link>
+      <pubDate>Fri, 28 Apr 2023 15:57:51 +0800</pubDate>
+      <guid>http://localhost:1313/post/2023/04/28/go%E8%AF%AD%E8%A8%80%E7%94%9F%E4%BA%A7%E8%80%85%E6%B6%88%E8%B4%B9%E8%80%85%E6%A8%A1%E5%9E%8B/</guid>
+      <description>type Request struct { Name string } type XxHandler struct { RequestQueue chan *Request } func (o *XxHandler) String() string { if b, err := json.Marshal(o); err != nil { return &amp;quot;&amp;quot; } else { return string(b) } } // Start 启动队列监听 func (o *XxHandler) Start() { go func() { for request := range o.RequestQueue { go o.Process(request) } }() } // AppendTask 向队列中增加task func (o *XxHandler) AppendTask(request *Request) { if request == nil { return } o.</description>
+    </item>
+    <item>
+      <title>Go语言实现 bitmap</title>
+      <link>http://localhost:1313/post/2023/04/28/go%E8%AF%AD%E8%A8%80%E5%AE%9E%E7%8E%B0-bitmap/</link>
+      <pubDate>Fri, 28 Apr 2023 11:24:38 +0800</pubDate>
+      <guid>http://localhost:1313/post/2023/04/28/go%E8%AF%AD%E8%A8%80%E5%AE%9E%E7%8E%B0-bitmap/</guid>
+      <description>算法说明 Bitmap算法是一种基于位运算的数据结构，用于解决大规模数据的快速查找和统计问题。其基本原理是将一个大数据集合映射到一个二进制向量中，其中每个元素对应于数据集合中的一个元素，向量中的每一位表示该元素是否存在于集合中。&#xA;具体来说，Bitmap算法通过使用一个位图（bitmap）来表示一个数据集合，其中每个元素对应一个位。如果某个元素在数据集合中出现，则将其对应的位设置为1，否则将其对应的位设置为0。通过这种方式，可以快速地进行集合操作，如并集、交集和差集等。&#xA;Bitmap算法的主要优点在于其空间效率高，可以用较小的空间存储大规模数据集合。另外，Bitmap算法的时间复杂度也非常低，可以快速地进行集合操作。&#xA;如何用数组表示一个 bitmap 以 1byte 为例：8位能表示8个元素， 0-7 号对应了 b[0] 下标， 8-15 号对应了 b[1] 下标，以此类推。&#xA;因此，数组下标 n 跟bitmap元素序号 bitmapIdx 的关系为：n = bitmapIdx &amp;gt;&amp;gt; 3&#xA;值如何映射到 bitmap 数组 当找到了 元素序号 n 在数组中的下标之后，如何给 b[n] 赋值呢？&#xA;1 &amp;lt;&amp;lt; (bitmapIdx &amp;amp; 7) 等同于 1 &amp;lt;&amp;lt; (bitmapIdx % 8)&#xA;(bitmapIdx % 8) 找到在了在数组 b[n] 中的第 m 位，然后 1 &amp;lt;&amp;lt; m 之后，就相当于给数组赋值，把第 m 位 置为1。&#xA;验证 同样以 1byte 为例：借用上述结论，第 24 号元素，对应的数组下标 n 为：n = 24 &amp;gt;&amp;gt; 3 结果为3, b[3]；</description>
+    </item>
+    <item>
+      <title>Go语言实现 LRU</title>
+      <link>http://localhost:1313/post/2023/04/27/go%E8%AF%AD%E8%A8%80%E5%AE%9E%E7%8E%B0-lru/</link>
+      <pubDate>Thu, 27 Apr 2023 21:43:12 +0800</pubDate>
+      <guid>http://localhost:1313/post/2023/04/27/go%E8%AF%AD%E8%A8%80%E5%AE%9E%E7%8E%B0-lru/</guid>
+      <description>LRU（Least Recently Used）算法，即最近最少使用算法;其基本思想是，如果一个数据最近被访问过，那么它在未来被访问的概率也会很高；反之，如果一个数据很久都没有被访问过，那么它在未来被访问的概率就相对较低。因此，LRU算法选择淘汰最近最少使用的数据，即选择最长时间没有被访问过的数据进行淘汰。&#xA;具体来说，LRU算法通常使用一个双向链表和一个哈希表来实现。双向链表中的节点按照最近访问时间的顺序排列，最近访问的节点排在链表头部，最久未访问的节点排在链表尾部。哈希表中存储每个节点的地址，以便快速查找和删除。&#xA;当需要访问一个数据时，LRU算法首先在哈希表中查找该数据，如果存在，则将对应的节点移动到链表头部；如果不存在，则将该数据添加到链表头部，并在哈希表中创建对应的节点。&#xA;当需要淘汰数据时，LRU算法选择链表尾部的节点进行淘汰，并在哈希表中删除对应的节点。&#xA;golang 实现 LRU 算法：&#xA;package lru import ( &amp;quot;container/list&amp;quot; &amp;quot;errors&amp;quot; &amp;quot;sync&amp;quot; ) // LRU implements a non-thread safe fixed size LRU cache type LRU struct { size int evictList *list.List items map[interface{}]*list.Element } // entry is used to hold a value in the evictList type entry struct { key interface{} value interface{} } // NewLRU constructs an LRU of the given size func NewLRU(size int) (*LRU, error) { if size &amp;lt;= 0 { return nil, errors.</description>
+    </item>
+    <item>
+      <title>Flink内存模型</title>
+      <link>http://localhost:1313/post/2023/03/28/flink%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B/</link>
+      <pubDate>Tue, 28 Mar 2023 20:31:01 +0800</pubDate>
+      <guid>http://localhost:1313/post/2023/03/28/flink%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B/</guid>
+      <description>Java 堆外内存 import sun.nio.ch.DirectBuffer; import java.nio.ByteBuffer; import java.util.concurrent.TimeUnit; public class OutHeapMem { public static void main(String[] args) throws Exception { // 分配 1G 直接内存 ByteBuffer byteBuffer = ByteBuffer.allocateDirect(1024 * 1024 * 1024); TimeUnit.SECONDS.sleep(30); System.out.println(&amp;quot;clean start&amp;quot;); // 清除直接内存 ((DirectBuffer) byteBuffer).cleaner().clean(); System.out.println(&amp;quot;clean finished&amp;quot;); TimeUnit.SECONDS.sleep(30); } } # 分配内存 Memory used total max usage heap 21M 165M 3641M 0.59% ps_eden_space 3M 64M 1344M 0.29% ps_survivor_space 0K 10752K 10752K 0.00% ps_old_gen 17M 91M 2731M 0.</description>
+    </item>
+    <item>
+      <title>Flink类加载机制</title>
+      <link>http://localhost:1313/post/2023/03/24/flink%E7%B1%BB%E5%8A%A0%E8%BD%BD%E6%9C%BA%E5%88%B6/</link>
+      <pubDate>Fri, 24 Mar 2023 16:13:22 +0800</pubDate>
+      <guid>http://localhost:1313/post/2023/03/24/flink%E7%B1%BB%E5%8A%A0%E8%BD%BD%E6%9C%BA%E5%88%B6/</guid>
+      <description>flink 类加载配置说明 Flink 作为基于 JVM 的框架，在 flink-conf.yaml 中提供了控制类加载策略的参数 classloader.resolve-order，可选项有 child-first（默认）和 parent-first。&#xA;Key Default Type Description classloader.resolve-order &amp;ldquo;child-first&amp;rdquo; String Defines the class resolution strategy when loading classes from user code, meaning whether to first check the user code jar (&amp;ldquo;child-first&amp;rdquo;) or the application classpath (&amp;ldquo;parent-first&amp;rdquo;). The default settings indicate to load classes first from the user code jar, which means that user code jars can include and load different dependencies than Flink uses (transitively).</description>
+    </item>
+    <item>
+      <title>Java双亲委派</title>
+      <link>http://localhost:1313/post/2023/03/24/java%E5%8F%8C%E4%BA%B2%E5%A7%94%E6%B4%BE/</link>
+      <pubDate>Fri, 24 Mar 2023 15:46:27 +0800</pubDate>
+      <guid>http://localhost:1313/post/2023/03/24/java%E5%8F%8C%E4%BA%B2%E5%A7%94%E6%B4%BE/</guid>
+      <description>类加载器 Java语言系统中支持以下4种类加载器：&#xA;Bootstrap ClassLoader 启动类加载器，主要负责加载Java核心类库，%JRE_HOME%\lib下的rt.jar、resources.jar、charsets.jar和class等； Extension ClassLoader 标准扩展类加载器，主要负责加载目录%JRE_HOME%\lib\ext目录下的jar包和class文件； Application ClassLoader 应用类加载器，主要负责加载当前应用的classpath下的所有类； User ClassLoader 用户自定义类加载器，用户自定义的类加载器,可加载指定路径的class文件； 双亲委派 类加载器采用了双亲委派模式，其工作原理是，如果一个类加载器收到了类加载请求，它并不会自己先去加载，而是把这个请求委托给父类的加载器去执行，如果父类加载器还存在其父类加载器，则进一步向上委托，依次递归，请求最终将到达顶层的启动类加载器，如果父类加载器可以完成类加载任务，就成功返回，倘若父类加载器无法完成此加载任务，子加载器才会尝试自己去加载，这就是双亲委派模式。&#xA;双亲委派模式的好处是什么？&#xA;Java 类随着它的类加载器一起具备了一种带有优先级的层次关系，通过这种层次关系可以避免类的重复加载，当父类加载器已经加载过一次时，没有必要子类再去加载一次。 考虑到安全因素，Java 核心 Api 类不会被随意替换，核心类永远是被上层的类加载器加载。如果我们自己定义了一个 java.lang.String 类，它会优先委派给 BootStrapClassLoader 去加载，加载完了就直接返回了。 如果我们定义了一个 java.lang.ExtString，能被加载吗？答案也是不能的，因为 java.lang 包是有权限控制的，自定义了这个包，会报一个错如下：&#xA;java.lang.SecurityException: Prohibited package name: java.lang 源码分析 protected Class&amp;lt;?&amp;gt; loadClass(String name, boolean resolve) throws ClassNotFoundException { synchronized (getClassLoadingLock(name)) { // 首先，检查这个类是否已经被加载了，最终实现是一个 native 本地实现 Class&amp;lt;?&amp;gt; c = findLoadedClass(name); // 如果还没有被加载，则开始加载 if (c == null) { long t0 = System.nanoTime(); try { // 首先如果父加载器不为空，则使用父类加载器加载。Launcher 类里提到的 parent 就在这里使用的。 if (parent !</description>
+    </item>
+    <item>
+      <title>Go语言单例模式</title>
+      <link>http://localhost:1313/post/2023/03/24/go%E8%AF%AD%E8%A8%80%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/</link>
+      <pubDate>Fri, 24 Mar 2023 10:47:42 +0800</pubDate>
+      <guid>http://localhost:1313/post/2023/03/24/go%E8%AF%AD%E8%A8%80%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/</guid>
+      <description>错误示例 type singleton struct {} var instance *singleton func GetInstance() *singleton { if instance == nil { instance = &amp;amp;singleton{} // 不是并发安全的 } return instance } 不优雅示例 func GetInstance() *singleton { mu.Lock() // 如果实例存在没有必要加锁 defer mu.Unlock() if instance == nil { instance = &amp;amp;singleton{} } return instance } 加锁可以保证每次拿到相同实例，但是如果已经实例化，再调用函数，依然有锁存在，浪费性能，不够优雅；&#xA;优雅示例 import ( &amp;quot;sync&amp;quot; ) type singleton struct {} var instance *singleton var once sync.Once func GetInstance() *singleton { once.Do(func() { instance = &amp;amp;singleton{} }) return instance } 该实现利用sync.</description>
+    </item>
+    <item>
+      <title>Flink反压</title>
+      <link>http://localhost:1313/post/2023/03/23/flink%E5%8F%8D%E5%8E%8B/</link>
+      <pubDate>Thu, 23 Mar 2023 16:37:37 +0800</pubDate>
+      <guid>http://localhost:1313/post/2023/03/23/flink%E5%8F%8D%E5%8E%8B/</guid>
+      <description>什么是反压 如果你看到一个 Task 发生 反压警告（例如： High），意味着它生产数据的速率比下游 Task 消费数据的速率要快。 在工作流中数据记录是从上游向下游流动的（例如：从 Source 到 Sink）。反压沿着相反的方向传播，沿着数据流向上游传播。&#xA;以一个简单的 Source -&amp;gt; Sink Job 为例。如果看到 Source 发生了警告，意味着 Sink 消费数据的速率比 Source 生产数据的速率要慢。 Sink 正在向上游的 Source 算子产生反压。&#xA;Task（SubTask）的每个并行实例都可以用三个一组的指标评价：&#xA;backPressureTimeMsPerSecond，subtask 被反压的时间 idleTimeMsPerSecond，subtask 等待某类处理的时间 busyTimeMsPerSecond，subtask 实际工作时间 在任何时间点，这三个指标相加都约等于1000ms。 指标值说明：&#xA;OK: 0 &amp;lt;= 比例 &amp;lt;= 0.10 LOW: 0.10 &amp;lt; 比例 &amp;lt;= 0.5 HIGH: 0.5 &amp;lt; 比例 &amp;lt;= 1 反压问题定位 可以看各个operator的metrics的指标，比如：buffers.outPoolUsage、buffers.inPoolUsage、buffers.inputFloatingBuffersUsage、buffers.inputExclusiveBuffersUsage；&#xA;接收端共用一个LocalBufferPool，接收端每个Channel在初始化阶段都会分配固定数量的Buffer(Exclusive Buffer)。如果某一时刻接收端接受到的数量太多，Exclusive Buffer就会耗尽，此时就会向BufferPool申请剩余的Floating Buffer（除了Exclusive Buffer，其他的都是Floating Buffer,备用Buffer）；inPoolUsage = floatingBuffersUsage + exclusiveBuffersUsage&#xA;若 inPoolUsage 低，而 outPoolUsage 低，则说明完全没有背压现象。 若 inPoolUsage 低，而 outPoolUsage 高，则说明处于临时状态，可能是背压刚开始，也可能是刚结束，需要再观察。 若 inPoolUsage 高，而 outPoolUsage 低，那么通常情况下这个算子就是背压的根源了。 若 inPoolUsage 高，而 outPoolUsage 高，则说明这个算子是被其他下游算子反压而来的，并不是元凶。 在反压定位过程中，建议关闭 Operator Chaining 优化，这样所有的算子可以单独拆分出来，不会相互干扰：</description>
+    </item>
+    <item>
+      <title>Arthas火焰图使用</title>
+      <link>http://localhost:1313/post/2023/03/22/arthas%E7%81%AB%E7%84%B0%E5%9B%BE%E4%BD%BF%E7%94%A8/</link>
+      <pubDate>Wed, 22 Mar 2023 21:29:21 +0800</pubDate>
+      <guid>http://localhost:1313/post/2023/03/22/arthas%E7%81%AB%E7%84%B0%E5%9B%BE%E4%BD%BF%E7%94%A8/</guid>
+      <description>arthas 火焰图相关命令 arthas 中 profiler 命令支持生成应用热点的火焰图。本质上是通过不断的采样，然后把收集到的采样结果生成火焰图。&#xA;启动arthas：&#xA;java -jar arthas-boot.jar 开始收集火焰图：&#xA;[arthas@1]$ profiler start Profiling started [arthas@1]$ profiler status Profiling is running for 6 seconds [arthas@1]$ profiler status Profiling is running for 27 seconds [arthas@1]$ profiler getSamples 2 [arthas@1]$ profiler getSamples 4 [arthas@1]$ profiler stop --file /tmp/cpu-result-1.html OK profiler output file: /tmp/cpu-result-1.html 命令说明：&#xA;profiler start 开启火焰图收集； profiler status 查看火焰图收集的状态，会显示当前已经采集多长时间； profiler getSamples 获取已采集的 sample 的数量，理论上，sample 越多，结果越准确； profiler stop --file /tmp/cpu-result-1.html 停止当前火焰图收集，会输出到文件中去，生成的文件就是火焰图； 关键参数说明 event -e, &amp;ndash;event 默认采集 CPU 信息，可设：cpu, alloc, lock, cache-misses etc</description>
+    </item>
+    <item>
+      <title>Flink Append流、Retract流、Upsert流</title>
+      <link>http://localhost:1313/post/2022/03/13/flink-append%E6%B5%81retract%E6%B5%81upsert%E6%B5%81/</link>
+      <pubDate>Sun, 13 Mar 2022 11:16:23 +0000</pubDate>
+      <guid>http://localhost:1313/post/2022/03/13/flink-append%E6%B5%81retract%E6%B5%81upsert%E6%B5%81/</guid>
+      <description>摘要： 介绍 Flink 中 Append流、Retract流、Upsert流的含义。&#xA;Append流 Retract流 Upsert流 Append流 在 Append 流中，仅通过 INSERT 操作修改的动态表，可以通过输出插入的行转换为流。&#xA;Retract流 retract 流包含两种类型的 message： add messages 和 retract messages 。&#xA;通过将INSERT 操作编码为 add message、将 DELETE 操作编码为 retract message、将 UPDATE 操作编码为更新(先前)行的 retract message 和更新(新)行的 add message，将动态表转换为 retract 流。&#xA;OPERATOR ENCODE insert add update retract -&amp;gt; add delete retract Upsert流 upsert 流包含两种类型的 message： upsert messages 和delete messages。&#xA;转换为 upsert 流的动态表需要(可能是组合的)唯一键。通过将 INSERT 和 UPDATE 操作编码为 upsert message，将 DELETE 操作编码为 delete message ，将具有唯一键的动态表转换为流。消费流的算子需要知道唯一键的属性，以便正确地应用 message。与 retract 流的主要区别在于 UPDATE 操作是用单个 message 编码的，因此效率更高。</description>
+    </item>
+    <item>
+      <title>Flink Checkpoint机制</title>
+      <link>http://localhost:1313/post/2022/03/04/flink-checkpoint%E6%9C%BA%E5%88%B6/</link>
+      <pubDate>Fri, 04 Mar 2022 11:16:23 +0000</pubDate>
+      <guid>http://localhost:1313/post/2022/03/04/flink-checkpoint%E6%9C%BA%E5%88%B6/</guid>
+      <description>摘要： 如果把运行中的 Flink 程序比做一条河流，Checkpoint 就是一个相机，定期地对河流进行拍照，记录河水的状态。本文以自顶向下的视角，从理论到实现，分析 Flink 中的 Checkpoint 机制；&#xA;理论基础 asynchronous barrier snapshotting 算法步骤 算法在 Flink 中的实现 Flink Checkpoint 整体流程 Flink Checkpoint Barrier Alignment Flink Checkpoint 使用 Flink Job 重启策略 Flink Job 开启 Checkpoint 理论基础 asynchronous barrier snapshotting Flink Checkpoint 机制是异步屏障快照（asynchronous barrier snapshotting, ABS）算法的一种实现，而 ABS 算法基于 Chandy-Lamport 的变种，但数据模型是还是基于 Chandy-Lamport；&#xA;在 flink 中，作业算子被抽象为 DAG，节点为 operator，边是每一个 operator 的 stream（channel），与 Chandy-Lamport 的数据模型正好吻合；&#xA;ABS 算法把 Chandy-Lamport 中的 marker 消息换成了 barrier，作用是一致的，都是切分 snapshot；&#xA;ABS 算法 中 asynchronous 是异步的意思，当算子收齐 barrier 并触发快照之后，不会等待快照数据全部写入状态后端，而是一边后台写入，一边立刻继续处理数据流，并将 barrier 发送到下游，实现了最小化延迟。当然，引入异步性之后，所有有状态的算子都需要上报 ack，否则 JobManager 就无法确认一次 snapshot 是否完成。</description>
+    </item>
+    <item>
+      <title>Flink时间语义</title>
+      <link>http://localhost:1313/post/2022/02/25/flink%E6%97%B6%E9%97%B4%E8%AF%AD%E4%B9%89/</link>
+      <pubDate>Fri, 25 Feb 2022 11:16:23 +0000</pubDate>
+      <guid>http://localhost:1313/post/2022/02/25/flink%E6%97%B6%E9%97%B4%E8%AF%AD%E4%B9%89/</guid>
+      <description>摘要： 理解流处理中的时间语义，处理时间和事件时间。&#xA;如图，在无界数据中，随着时间推移，数据一直产生，但真实情况中，往往在一段时间内的数据都是不均匀的，往往会出现意外的情况，比如在地铁无信号的情况下，数据虽然产生，但是会有一段时间延迟才会到达消息队列，例如虚线框中的数据。&#xA;处理时间 处理时间就是流计算处理程序的机器本地时间，按照这种时间语义，在流计算的时间窗口中，上述例子中的数据会按这样分布：&#xA;基于本地时间，在第一分钟，流处理程序只收到了 15、18 两个数据，后续数据由于网络原因，在 8:01:00 之后才到达流计算程序，所以后续数据在下一个时间窗口内。&#xA;事件时间 事件时间就是事件的发生时间，这个时间通常会在数据中，按照这种时间语义，在流计算的时间窗口中，上述例子中的数据会按这样分布：&#xA;基于事件时间，在第一分钟，数据应该是：15 18 9 10 ，在第二分钟，数据应该是：11 。&#xA;watermark 由于事件时间的窗口和事件相关，那么如果下一个事件还未到达，流计算程序是否就无限等待呢？&#xA;为了解决这个问题，flink 引入 watermark 的概念，假如定义 watermark 为 T，那么在每一个时间窗口中，T 都会单调递增 T &amp;lt; T1，并且下一个时间窗口中的事件时间必须大于 T1，那么每一个时间窗口的数据就是介于 T-T1。</description>
+    </item>
+    <item>
+      <title>Flink基本架构</title>
+      <link>http://localhost:1313/post/2022/02/23/flink%E5%9F%BA%E6%9C%AC%E6%9E%B6%E6%9E%84/</link>
+      <pubDate>Wed, 23 Feb 2022 11:16:23 +0000</pubDate>
+      <guid>http://localhost:1313/post/2022/02/23/flink%E5%9F%BA%E6%9C%AC%E6%9E%B6%E6%9E%84/</guid>
+      <description>摘要： 鸟瞰 Flink 架构，分析 Flink 内部组件工作机制。&#xA;Flink 架构图 提交作业流程 Flink 集群模式 JobManager Taskmanager 算子链 Slot task 数据交换策略 Flink 架构图 一个完整的 Flink 集群由一个 Jobmanager 和若干个 Taskmanager 组成，Jobmanager 主要负责调度 task 以及 协调 Checkpoint。Taskmanager 则负责具体的 task 执行，以及数据流的交换。&#xA;可以通过多种方式启动 JobManager 和 TaskManager：直接在机器上作为standalone 集群启动、在容器中启动、或者通过YARN等资源框架管理并启动。TaskManager 连接到 JobManagers，宣布自己可用，并被分配工作。&#xA;提交作业流程 以一个作业提交的流程来说明 Flink 各个组件是如何交互和工作的：&#xA;Flink 集群模式 Flink 集群类型一般有以下几种：&#xA;Flink Session 集群&#xA;这种模式下，集群自创建开始，最后到集群生命周期结束，不受作业因素影响； 集群下的多个作业共享 内存、网络、磁盘等资源，如果集群出现异常，该集群下的所有作业都会收到影响。&#xA;优点：提交作业速度很快，无需提前申请资源； 并且资源利用率较高。&#xA;缺点：作业之间隔离性较差，横向扩展不太方便。&#xA;Flink job 集群&#xA;这种模式也称 pre-job 模式，集群交由 资源管理器托管，例如 Yarn ，需要运行作业，第一步申请资源，启动一个 Flink 集群，第二步提交作业，这种模式下，每个作业会独享一个 Flink 集群。</description>
+    </item>
+    <item>
+      <title>Flink WordCount</title>
+      <link>http://localhost:1313/post/2022/02/22/flink-wordcount/</link>
+      <pubDate>Tue, 22 Feb 2022 18:16:23 +0000</pubDate>
+      <guid>http://localhost:1313/post/2022/02/22/flink-wordcount/</guid>
+      <description>摘要：Flink 从零开始，下载集群并运行 WordCount Job。 完整代码地址： https://github.com/ArchieYao/flink-learning/tree/main/hello-world&#xA;Flink 本地模式集群安装 运行Flink，需提前安装好 Java 8 或者 Java 11。&#xA;wget https://dlcdn.apache.org/flink/flink-1.14.3/flink-1.14.3-bin-scala_2.12.tgz tar -zxvf flink-1.14.3-bin-scala_2.12.tgz cd flink-1.14.3 ./bin/start-cluster.sh 运行成功后，可以在 IP:8081 访问 Flink-UI&#xA;Flink Word Count job source 是多段文本，类型： DataSource ，经过 flatMap，切分为每个单词，然后转换为：(val,n) 的数据，然后根据 val 分组统计，得出 sum(n) 的值。&#xA;public static void main(String[] args) throws Exception { // 创建Flink任务运行环境 final ExecutionEnvironment executionEnvironment = ExecutionEnvironment.getExecutionEnvironment(); // 创建DataSet，数据是一行一行文本 DataSource&amp;lt;String&amp;gt; text = executionEnvironment.fromElements( &amp;quot;Licensed to the Apache Software Foundation (ASF) under one&amp;quot;, &amp;quot;or more contributor license agreements.</description>
+    </item>
+    <item>
+      <title>Go语言cobra</title>
+      <link>http://localhost:1313/post/2022/02/19/go%E8%AF%AD%E8%A8%80cobra/</link>
+      <pubDate>Sat, 19 Feb 2022 18:16:23 +0000</pubDate>
+      <guid>http://localhost:1313/post/2022/02/19/go%E8%AF%AD%E8%A8%80cobra/</guid>
+      <description>摘要：Go语言 cobra 框架使用说明，文中代码地址： https://github.com/ArchieYao/clid&#xA;cobra 简介 cobra是 Go 语言的一个命令行程序库，可以用来编写命令行程序。同时，它也提供了一个脚手架， 用于生成基于 cobra 的应用程序框架。非常多知名的开源项目使用了 cobra 库构建命令行，如Kubernetes、Hugo、etcd等。&#xA;安装 cobra cobra 是由大名鼎鼎的 spf13（golang 开发者） 开发的，GitHub 地址：https://github.com/spf13/cobra&#xA;// 安装 go get -u github.com/spf13/cobra # 检查是否安装成功 cobra -h Cobra is a CLI library for Go that empowers applications. This application is a tool to generate the needed files to quickly create a Cobra application. Usage: cobra [command] Available Commands: add Add a command to a Cobra Application completion Generate the autocompletion script for the specified shell help Help about any command init Initialize a Cobra Application Flags: -a, --author string author name for copyright attribution (default &amp;quot;YOUR NAME&amp;quot;) --config string config file (default is $HOME/.</description>
+    </item>
+    <item>
+      <title>ProtoBuf数据协议</title>
+      <link>http://localhost:1313/post/2022/01/11/protobuf%E6%95%B0%E6%8D%AE%E5%8D%8F%E8%AE%AE/</link>
+      <pubDate>Tue, 11 Jan 2022 00:18:23 +0000</pubDate>
+      <guid>http://localhost:1313/post/2022/01/11/protobuf%E6%95%B0%E6%8D%AE%E5%8D%8F%E8%AE%AE/</guid>
+      <description>摘要：ProtoBuf(Protocol Buffers)是一种跨平台、语言无关、可扩展的序列化结构数据的方法，可用于网络数据交换及数据存储。&#xA;Protocol Buffers介绍 不同于 XML 、JSON 这种文本格式数据，Protocol Buffers 是一种二进制格式数据。在Protocol Buffers 诞生之初，就被赋予两个特点：&#xA;向前兼容，很容易引入新字段，应对字段的频繁变更 数据格式具备描述性，并且支持多语言处理 传输效率高 基于以上这些特性，Protocol Buffers 被广泛应用于各种 RPC 框架中，并且是 Google 的数据通用语言。&#xA;Protocol Buffers协议文件 Protocol Buffers 在使用前需要先定义好协议文件，以 .proto 为后缀的文件就是Protocol Buffers 的协议文件。&#xA;Example:&#xA;// 指定protobuf的版本，proto3是最新的语法版本 syntax = &amp;quot;proto3&amp;quot;; // 定义数据结构，message 你可以想象成java的class，c语言中的struct message Response { string data = 1; // 定义一个string类型的字段，字段名字为data, 序号为1 int32 status = 2; // 定义一个int32类型的字段，字段名字为status, 序号为2 } 如果 A 和 B 要基于 Protocol Buffers 协议进行通信，那么在通信前，A 和 B 都需要有同一份协议文件，所以在 Protocol Buffers 数据传输过程中，不需要数据的 Schema 信息；</description>
+    </item>
+    <item>
+      <title>Log4j2按照时间和日志大小滚动</title>
+      <link>http://localhost:1313/post/2021/08/25/log4j2%E6%8C%89%E7%85%A7%E6%97%B6%E9%97%B4%E5%92%8C%E6%97%A5%E5%BF%97%E5%A4%A7%E5%B0%8F%E6%BB%9A%E5%8A%A8/</link>
+      <pubDate>Wed, 25 Aug 2021 00:18:23 +0000</pubDate>
+      <guid>http://localhost:1313/post/2021/08/25/log4j2%E6%8C%89%E7%85%A7%E6%97%B6%E9%97%B4%E5%92%8C%E6%97%A5%E5%BF%97%E5%A4%A7%E5%B0%8F%E6%BB%9A%E5%8A%A8/</guid>
+      <description>摘要：Log4j2 按照时间和日志大小滚动。&#xA;Log4j2按照时间和日志大小滚 status = error name = PropertiesConfig #Make sure to change log file path as per your need property.filename = C:\\logs\\debug.log filters = threshold filter.threshold.type = ThresholdFilter filter.threshold.level = debug appenders = rolling appender.rolling.type = RollingFile appender.rolling.name = RollingFile appender.rolling.fileName = ${filename} appender.rolling.filePattern = debug-backup-%d{MM-dd-yy-HH-mm-ss}-%i.log.gz appender.rolling.layout.type = PatternLayout appender.rolling.layout.pattern = %d{yyyy-MM-dd HH:mm:ss} %-5p %c{1}:%L - %m%n appender.rolling.policies.type = Policies appender.rolling.policies.time.type = TimeBasedTriggeringPolicy appender.rolling.policies.time.interval = 1 appender.rolling.policies.time.modulate = true appender.</description>
+    </item>
+    <item>
+      <title>Git-rebase用法.md</title>
+      <link>http://localhost:1313/post/2021/08/09/git-rebase%E7%94%A8%E6%B3%95.md/</link>
+      <pubDate>Mon, 09 Aug 2021 00:18:23 +0000</pubDate>
+      <guid>http://localhost:1313/post/2021/08/09/git-rebase%E7%94%A8%E6%B3%95.md/</guid>
+      <description>摘要：Git rebase 的使用方法。&#xA;commit 合并 当多个commit存在时，提交MR会出现很多的commit，review会很困难，这时可以将多个commit合并为一个commit。&#xA;命令说明：&#xA;git rebase -i [startpoint] [endpoint] 其中-i的意思是&amp;ndash;interactive，即弹出交互式的界面让用户编辑完成合并操作，[startpoint] [endpoint] 则指定了一个编辑区间，如果不指定[endpoint]，则该区间的终点默认是当前分支HEAD所指向的commit(注：该区间指定的是一个前开后闭的区间)。 在查看到了log日志后，我们运行以下命令：&#xA;git rebase -i 36224db or git rebase -i HEAD~3 # 合并最近三次commit 每一个commit id 前面的pick表示指令类型，git 为我们提供了以下几个命令: pick：保留该commit（缩写:p） reword：保留该commit，但我需要修改该commit的注释（缩写:r） edit：保留该commit, 但我要停下来修改该提交(不仅仅修改注释)（缩写:e） squash：将该commit和前一个commit合并（缩写:s） fixup：将该commit和前一个commit合并，但我不要保留该提交的注释信息（缩写:f） exec：执行shell命令（缩写:x） drop：我要丢弃该commit（缩写:d）&#xA;示例 git log commit 4ab2734f3380fbdace8620f461cd04c7993b6b0b (HEAD -&amp;gt; master) Author: archieyao &amp;lt;archieyao@tencent.com&amp;gt; Date: Mon Aug 9 16:38:25 2021 +0800 add something 2 commit 60d0bbbe094c0b93903ab995879d30246bbf331e Author: archieyao &amp;lt;archieyao@tencent.com&amp;gt; Date: Mon Aug 9 16:38:02 2021 +0800 add something 1 commit 1c3c12316449cf4f340c68e22c70caa60178ba5c Author: archieyao &amp;lt;archieyao@tencent.</description>
+    </item>
+    <item>
+      <title>Git工程拆分</title>
+      <link>http://localhost:1313/post/2021/07/08/git%E5%B7%A5%E7%A8%8B%E6%8B%86%E5%88%86/</link>
+      <pubDate>Thu, 08 Jul 2021 00:18:23 +0000</pubDate>
+      <guid>http://localhost:1313/post/2021/07/08/git%E5%B7%A5%E7%A8%8B%E6%8B%86%E5%88%86/</guid>
+      <description>摘要：Git将工程按目录拆分。&#xA;# /project/ # ----/test/ # 将test目录抽成单独的工程 cd /project/test # 拆分子目录 $ git subtree split -P test -b test-new-br $ mkdir ../test-new-br $ cd ../test-new-br # 创建子工程 $ git init $ git pull ../project test-new-br # git log 可以看到历史commit &amp;#x1f635;</description>
+    </item>
+    <item>
+      <title>Kubernates中的pod</title>
+      <link>http://localhost:1313/post/2021/06/29/kubernates%E4%B8%AD%E7%9A%84pod/</link>
+      <pubDate>Tue, 29 Jun 2021 10:18:23 +0000</pubDate>
+      <guid>http://localhost:1313/post/2021/06/29/kubernates%E4%B8%AD%E7%9A%84pod/</guid>
+      <description>摘要：运行在Kubernates中的容器：pod。由于不能将多个进程聚集在一个单独的容器中，我们需要一种更高级的结构将容器绑定在一起，将它们作为一个单元进行管理，这就是pod诞生的原因。&#xA;pod基本概念 pod是Kubernetes中最重要的概念，pod是Kubernetes中部署的最小单元，一个pod中可以有一个或多个容器，pod有自己独立的私有IP和主机名。&#xA;Kubernetes 集群中的 Pod 主要有两种用法：&#xA;运行单个容器的 Pod。&amp;ldquo;每个 Pod 一个容器&amp;quot;模型是最常见的 Kubernetes 用例； 在这种情况下，可以将 Pod 看作单个容器的包装器，并且 Kubernetes 直接管理 Pod，而不是容器。 运行多个协同工作的容器的 Pod。 Pod 可能封装由多个紧密耦合且需要共享资源的共处容器组成的应用程序。 这些位于同一位置的容器可能形成单个内聚的服务单元，一个pod中的容器共享网络和volume，并且pod中的容器共享相同的命名空间。（由于一个pod中的容器共享网络，因此也就共享端口和IP。） 一般情况下，如果不是多个容器需要共用net或volume，尽可能地把不同的容器放到不同的pod中，新建一个pod不需要耗费很多资源，Kubernetes可以很方便地对pod进行管理和扩容、缩容等操作，这种方式可以更好地利用基础资源。&#xA;总结来说，pod就是逻辑上的主机。&#xA;pod生命周期 Pending：表示pod已经被同意创建，正在等待kube-scheduler选择合适的节点创建，一般是在准备镜像； Running：表示pod中所有的容器已经被创建，并且至少有一个容器正在运行或者是正在启动或者是正在重启； Succeeded：表示所有容器已经成功终止，并且不会再启动； Failed：表示pod中所有容器都是非0（不正常）状态退出； Unknown：表示无法读取Pod状态，通常是kube-controller-manager无法与Pod通信。 创建pod流程 客户端提交Pod的配置信息（可以是yaml文件定义好的信息）到kube-apiserver； Apiserver收到指令后，通知给controller-manager创建一个资源对象； Controller-manager通过api-server将pod的配置信息存储到ETCD数据中心中； Kube-scheduler检测到pod信息会开始调度预选，会先过滤掉不符合Pod资源配置要求的节点，然后开始调度调优，主要是挑选出更适合运行pod的节点，然后将pod的资源配置单发送到node节点上的kubelet组件上。 Kubelet根据scheduler发来的资源配置单运行pod，运行成功后，将pod的运行信息返回给scheduler，scheduler将返回的pod运行状况的信息存储到etcd数据中心。 删除pod流程 pod从service的endpoint列表中被移除； 如果该pod定义了一个停止前的钩子，其会在pod内部被调用，停止钩子一般定义了如何优雅的结束进程； 进程被发送TERM信号（kill -14）； 当超过优雅退出的时间后，Pod中的所有进程都会被发送SIGKILL信号（kill -9）。 pod常用命令 kubectl describe po cluster-admin-0 -n default # 获取指定namespaces下的pod详情，可以看出container信息 kubectl get pods --all-namespaces # 获取所有namespaces下的pod kubectl get pods -n default # -n 获取指定namaspaces下的pod kubectl get pod podname -nkube-system -oyaml # 获取pod的详情，-oyaml 以yaml格式输出，也可以 -ojson kubectl exec -it taskcenter-0 -c loglistener -noceanus /bin/bash # 进入某个pod下的cotainer kubectl logs tke-log-agent-2687c -c loglistener # 获取某个pod下cotainer的log，也可以加 -f 参数，类似于 tail -f 创建pod的方式 pod本身不具备故障重启以及副本等功能，一般使用其他的资源创建pod。</description>
+    </item>
+    <item>
+      <title>Docker构建Go工程镜像</title>
+      <link>http://localhost:1313/post/2021/06/23/docker%E6%9E%84%E5%BB%BAgo%E5%B7%A5%E7%A8%8B%E9%95%9C%E5%83%8F/</link>
+      <pubDate>Wed, 23 Jun 2021 10:18:23 +0000</pubDate>
+      <guid>http://localhost:1313/post/2021/06/23/docker%E6%9E%84%E5%BB%BAgo%E5%B7%A5%E7%A8%8B%E9%95%9C%E5%83%8F/</guid>
+      <description>摘要：Docker构建Go工程镜像。&#xA;工程 工程是一个比较简单的Http server的demo，现在将这个工程构建为docker镜像。&#xA;import ( &amp;quot;fmt&amp;quot; &amp;quot;log&amp;quot; &amp;quot;net/http&amp;quot; ) func Init() { log.Println(&amp;quot;start server&amp;quot;) http.HandleFunc(&amp;quot;/hello_world&amp;quot;, HelloWorld) http.Handle(&amp;quot;/test_handle&amp;quot;, &amp;amp;TestHandleStruct{content: &amp;quot;test handle&amp;quot;}) if err := http.ListenAndServe(&amp;quot;:8080&amp;quot;, nil); err != nil { log.Println(&amp;quot;start server on 8080&amp;quot;) } log.Fatal(&amp;quot;start server failed.&amp;quot;) } func main() { // 启动HTTP服务 server.Init() } 构建 需要在工程根目录下新建一个Dockerfile&#xA;内容如下：&#xA;# 拉取Go语言的版本 FROM golang:1.16 # 在容器内设置工作目录 WORKDIR /app # 把文件复制到当前工作目录 COPY . . FROM alpine:latest as prod # 设置GOPROXY的环境变量 ENV GOPROXY=&amp;quot;https://goproxy.cn&amp;quot; # 编译项目 #RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o .</description>
+    </item>
+    <item>
+      <title>Docker入门</title>
+      <link>http://localhost:1313/post/2021/06/21/docker%E5%85%A5%E9%97%A8/</link>
+      <pubDate>Mon, 21 Jun 2021 10:18:23 +0000</pubDate>
+      <guid>http://localhost:1313/post/2021/06/21/docker%E5%85%A5%E9%97%A8/</guid>
+      <description>摘要：Docker简单使用。&#xA;Docker 是一个开源的应用容器引擎，基于 Go 语言开发，并遵从 Apache2.0 协议开源。 Docker 可以让开发者打包他们的应用以及依赖包到一个轻量级、可移植的容器中，然后发布到任何流行的 Linux 机器上，也可以实现虚拟化。 容器是完全使用沙箱机制，相互之间不会有任何接口（类似 iPhone 的 app）,更重要的是容器性能开销极低。&#xA;Docker下载地址：https://www.docker.com/get-started&#xA;安装完成后，才可以执行docker的相关命令。&#xA;$ docker system info Client: Context: default Debug Mode: false Plugins: buildx: Build with BuildKit (Docker Inc., v0.5.1-docker) compose: Docker Compose (Docker Inc., 2.0.0-beta.3) scan: Docker Scan (Docker Inc., v0.8.0) Server: Containers: 0 Running: 0 Paused: 0 Stopped: 0 Images: 0 Server Version: 20.10.7 Storage Driver: overlay2 Backing Filesystem: extfs Supports d_type: true Native Overlay Diff: true userxattr: false Logging Driver: json-file Cgroup Driver: cgroupfs Cgroup Version: 1 Plugins: Volume: local Network: bridge host ipvlan macvlan null overlay Log: awslogs fluentd gcplogs gelf journald json-file local logentries splunk syslog Swarm: inactive Runtimes: runc io.</description>
+    </item>
+    <item>
+      <title>Kubernates组件</title>
+      <link>http://localhost:1313/post/2021/06/21/kubernates%E7%BB%84%E4%BB%B6/</link>
+      <pubDate>Mon, 21 Jun 2021 10:18:23 +0000</pubDate>
+      <guid>http://localhost:1313/post/2021/06/21/kubernates%E7%BB%84%E4%BB%B6/</guid>
+      <description>摘要：Kubernates基础概念及其组件。&#xA;Kubernetes是一个开源的容器编排引擎，用来对容器化应用进行自动化部署、扩缩容和管理，简称K8s，K8s 这个缩写是因为k和s之间有八个字符。Google 在 2014 年开源了 Kubernetes 项目。&#xA;控制面组件 kube-apiserver apiserver是 Kubernetes 控制面的组件， 该组件公开了 Kubernetes API。&#xA;etcd etcd 是兼具一致性和高可用性的键值数据库，可以作为保存 Kubernetes 所有集群数据的后台数据库。&#xA;kube-scheduler 负责监视新创建的、未指定运行节点（node）的 Pods，选择节点让 Pod 在上面运行。&#xA;调度决策考虑的因素包括单个 Pod 和 Pod 集合的资源需求、硬件/软件/策略约束、亲和性和反亲和性规范、数据位置、工作负载间的干扰和最后时限。&#xA;kube-controller-manager 从逻辑上讲，每个控制器都是一个单独的进程， 但是为了降低复杂性，它们都被编译到同一个可执行文件，并在一个进程中运行。&#xA;这些控制器包括:&#xA;节点控制器（Node Controller）: 负责在节点出现故障时进行通知和响应 任务控制器（Job controller）: 监测代表一次性任务的 Job 对象，然后创建 Pods 来运行这些任务直至完成 端点控制器（Endpoints Controller）: 填充端点(Endpoints)对象(即加入 Service 与 Pod) 服务帐户和令牌控制器（Service Account &amp;amp; Token Controllers）: 为新的命名空间创建默认帐户和 API 访问令牌 cloud-controller-manager 云控制器管理器是指嵌入特定云的控制逻辑的 控制平面组件。 云控制器管理器允许您链接集群到云提供商的应用编程接口中， 并把和该云平台交互的组件与只和您的集群交互的组件分离开。 cloud-controller-manager 仅运行特定于云平台的控制回路。 如果你在自己的环境中运行 Kubernetes，或者在本地计算机中运行学习环境， 所部署的环境中不需要云控制器管理器。&#xA;与 kube-controller-manager 类似，cloud-controller-manager 将若干逻辑上独立的 控制回路组合到同一个可执行文件中，供你以同一进程的方式运行。 你可以对其执行水平扩容（运行不止一个副本）以提升性能或者增强容错能力。</description>
+    </item>
+    <item>
+      <title>Go语言实现httpServer</title>
+      <link>http://localhost:1313/post/2021/06/19/go%E8%AF%AD%E8%A8%80%E5%AE%9E%E7%8E%B0httpserver/</link>
+      <pubDate>Sat, 19 Jun 2021 10:18:23 +0000</pubDate>
+      <guid>http://localhost:1313/post/2021/06/19/go%E8%AF%AD%E8%A8%80%E5%AE%9E%E7%8E%B0httpserver/</guid>
+      <description>摘要：使用Go语言原生包实现Http Server。&#xA;启动一个Http Server 使用Go语言原生的net/http库可以很简单实现一个http server。&#xA;log.Println(&amp;quot;start server&amp;quot;) if err := http.ListenAndServe(&amp;quot;:8080&amp;quot;, nil); err != nil { log.Println(&amp;quot;start server on 8080&amp;quot;) } log.Fatal(&amp;quot;start server failed.&amp;quot;) 没错，只要这么几行代码，就开启了一个http server，监听8080端口。&#xA;接收Http请求 http.HandleFunc 开启了Http server后，无法处理Http请求这个就是个空的Server，下面给它加上处理Http Request的能力。&#xA;func init() { log.Println(&amp;quot;start server&amp;quot;) http.HandleFunc(&amp;quot;/hello_world&amp;quot;, HelloWorld) if err := http.ListenAndServe(&amp;quot;:8080&amp;quot;, nil); err != nil { log.Println(&amp;quot;start server on 8080&amp;quot;) } log.Fatal(&amp;quot;start server failed.&amp;quot;) } func HelloWorld(w http.ResponseWriter, r *http.Request) { _, err := w.Write([]byte(&amp;quot;hello world&amp;quot;)) if err !</description>
+    </item>
+    <item>
+      <title>Go语言反射</title>
+      <link>http://localhost:1313/post/2021/06/17/go%E8%AF%AD%E8%A8%80%E5%8F%8D%E5%B0%84/</link>
+      <pubDate>Thu, 17 Jun 2021 10:18:23 +0000</pubDate>
+      <guid>http://localhost:1313/post/2021/06/17/go%E8%AF%AD%E8%A8%80%E5%8F%8D%E5%B0%84/</guid>
+      <description>摘要：理解Go语言的反射机制，反射是指在程序运行期对程序本身进行访问和修改的能力。&#xA;反射基础信息 func reflectDemo() { str := &amp;quot;reflect&amp;quot; fmt.Println(reflect.ValueOf(str)) fmt.Println(reflect.TypeOf(str)) } // 结果 // reflect // string reflect.ValueOf()获取数据运行时的值。 reflect.TypeOf()获取数据类型信息。&#xA;// Type values are comparable, such as with the == operator, // so they can be used as map keys. // Two Type values are equal if they represent identical types. type Type interface { // To compare two Values, compare the results of the Interface method. // Using == on two Values does not compare the underlying values // they represent.</description>
+    </item>
+    <item>
+      <title>Go语言defer、panic、recover</title>
+      <link>http://localhost:1313/post/2021/06/15/go%E8%AF%AD%E8%A8%80deferpanicrecover/</link>
+      <pubDate>Tue, 15 Jun 2021 10:18:23 +0000</pubDate>
+      <guid>http://localhost:1313/post/2021/06/15/go%E8%AF%AD%E8%A8%80deferpanicrecover/</guid>
+      <description>摘要：理解Go语言defer、panic、recover。&#xA;defer Go 语言的 defer 会在当前函数返回前执行传入的函数，它会经常被用于关闭文件描述符、关闭数据库连接以及解锁资源，总结一句话就是完成函数执行完的收尾工作。&#xA;func DeferDemo() { defer fmt.Println(&amp;quot;this is defer println&amp;quot;) fmt.Println(&amp;quot;this is println&amp;quot;) } // 输出 // this is println // this is defer println 运行以上代码每次都是第二个println先输出，然后才是defer关键字修饰的println输出。&#xA;如果有多个defer，输出顺序又会如何？&#xA;func MultiDeferDemo() { for i := 0; i &amp;lt; 5; i++ { defer fmt.Println(&amp;quot; defer &amp;quot;, i) } } // 输出 // defer 4 // defer 3 // defer 2 // defer 1 // defer 0 每次最先输出的都是循环的最后一个println，可以得出：多个defer，运行顺序遵循LIFO规则。&#xA;defer的值传递问题。&#xA;基于defer的机制，可以用来统计函数的执行耗时。</description>
+    </item>
+    <item>
+      <title>Go语言包管理</title>
+      <link>http://localhost:1313/post/2021/06/10/go%E8%AF%AD%E8%A8%80%E5%8C%85%E7%AE%A1%E7%90%86/</link>
+      <pubDate>Thu, 10 Jun 2021 10:18:23 +0000</pubDate>
+      <guid>http://localhost:1313/post/2021/06/10/go%E8%AF%AD%E8%A8%80%E5%8C%85%E7%AE%A1%E7%90%86/</guid>
+      <description>摘要：Go语言包管理。&#xA;包使用规范 包的习惯用法：&#xA;包名一般是小写的，使用一个简短且有意义的名称。 包名一般要和所在的目录同名，也可以不同，包名中不能包含- 等特殊符号。 包一般使用域名作为目录名称，这样能保证包名的唯一性，比如 GitHub 项目的包一般会放到GOPATH/src/github.com/userName/projectName 目录下。 包名为 main 的包为应用程序的入口包，编译不包含 main 包的源码文件时不会得到可执行文件。 一个文件夹下的所有源码文件只能属于同一个包，同样属于同一个包的源码文件不能放在多个文件夹下。 Go 语言中，所有的定义，比如函数、变量、结构体等，如果首字母是大写，那么就可以被其他包使用；同一包下，不存在引用问题。&#xA;基于包的封装 在Go语言中封装就是把抽象出来的字段和对字段的操作封装在一起，数据被保护在内部，程序的其它包只能通过被授权的方法，才能对字段进行操作。&#xA;封装的好处： 隐藏实现细节； 可以对数据进行验证，保证数据安全合理。&#xA;封装的实现步骤：&#xA;将结构体、字段的首字母小写； 给结构体所在的包提供一个工厂模式的函数，首字母大写，类似一个构造函数； 提供一个首字母大写的 Set 方法（类似其它语言的 public），用于对属性判断并赋值； 提供一个首字母大写的 Get 方法（类似其它语言的 public），用于获取属性的值。 包的初始化 每个包都允许有一个 init 函数，当这个包被导入时，会执行该包的这个 init 函数，做一些初始化任务。 对于 init 函数的执行有两点需要注意:&#xA;init 函数优先于 main 函数执行 在一个包引用链中，包的初始化是深度优先的。比如，有这样一个包引用关系：main→A→B→C，那么初始化顺序为 C.init→B.init→A.init→main 封装引用实例 建立如下工程结构，在main包中需要访问model包中的内容。&#xA;project |---src |---main -main.go |---model -student.go student.go&#xA;type student struct { Name string idCardNum string // 私有，外部包不可访问 Age int8 } func NewStudent(stuName string, age int8) *student { return &amp;amp;student{ Name: stuName, Age: age, } } // 定义结构体方法 func (stu *student) SetIdCardNum(idCN string) { stu.</description>
+    </item>
+    <item>
+      <title>Go语言channel</title>
+      <link>http://localhost:1313/post/2021/06/09/go%E8%AF%AD%E8%A8%80channel/</link>
+      <pubDate>Wed, 09 Jun 2021 21:18:23 +0000</pubDate>
+      <guid>http://localhost:1313/post/2021/06/09/go%E8%AF%AD%E8%A8%80channel/</guid>
+      <description>摘要：Go语言中，协程之间通过channel相互通信，可以从一个Go协程将值发送到通道，然后在别的协程中接收。&#xA;channel 定义 定义channel的语法为：make(chan val-type)，val-type就是需要传递值的类型。 chan1 &amp;lt;- val 表示将val发送到channel chann1中， r := &amp;lt;- chann1表示从chann1中读取消息。&#xA;func Ping(c *chan string, s string) { *c &amp;lt;- s } func Pong(c *chan string) string { return &amp;lt;-*c } // main func main() { c := make(chan string) go Ping(&amp;amp;c, &amp;quot;ping&amp;quot;) go func() { pong := Pong(&amp;amp;c) fmt.Println(pong) }() time.Sleep(time.Second * 2) } // 结果 // ping 需要注意的是，向通道中发送消息和从通道中接收消息，都是阻塞的，如果发送和接收不是成对出现，就会发生错误。 将上文中代码改成这样：&#xA;c := make(chan string) Ping(&amp;amp;c, &amp;quot;ping&amp;quot;) //go func() { //&#x9;pong := Pong(&amp;amp;c) //&#x9;fmt.</description>
+    </item>
+    <item>
+      <title>Go语言接口</title>
+      <link>http://localhost:1313/post/2021/06/05/go%E8%AF%AD%E8%A8%80%E6%8E%A5%E5%8F%A3/</link>
+      <pubDate>Sat, 05 Jun 2021 21:18:23 +0000</pubDate>
+      <guid>http://localhost:1313/post/2021/06/05/go%E8%AF%AD%E8%A8%80%E6%8E%A5%E5%8F%A3/</guid>
+      <description>摘要：Go支持接口，接口是方法特征的命名集合。&#xA;go语言接口 go语言中有接口的概念，接口是方法特征的命名集合。它把所有的具有共性的方法定义在一起，任何其他类型只要实现了这些方法就是实现了这个接口。&#xA;注意，实现了这些方法就算实现了这个接口。&#xA;定义接口 // 定义geometry接口 type geometry interface { area() float64 peri() float64 } 接口的定义也比较简单。定义和实现规则如下：&#xA;/* 定义接口 */ type interface_name interface { method_name1 [return_type] method_name2 [return_type] method_name3 [return_type] ... method_namen [return_type] } /* 定义结构体 */ type struct_name struct { /* variables */ } /* 实现接口方法 */ func (struct_name_variable struct_name) method_name1() [return_type] { /* 方法实现 */ } ... func (struct_name_variable struct_name) method_namen() [return_type] { /* 方法实现*/ } 实现接口 Go语言中接口的实现都是隐式的，默认实现了接口的所有方法就隐式地实现了接口。</description>
+    </item>
+    <item>
+      <title>Go语言指针</title>
+      <link>http://localhost:1313/post/2021/06/05/go%E8%AF%AD%E8%A8%80%E6%8C%87%E9%92%88/</link>
+      <pubDate>Sat, 05 Jun 2021 21:18:23 +0000</pubDate>
+      <guid>http://localhost:1313/post/2021/06/05/go%E8%AF%AD%E8%A8%80%E6%8C%87%E9%92%88/</guid>
+      <description>摘要：Go支持指针，允许在程序中通过引用传递值或者数据结构。&#xA;go语言中的指针和C语言中的指针类似，但比C语言中的指针更简单。&#xA;// Go语言取地址符号是&amp;amp;，放到变量前会返回对应变量的内存地址 var i1 int = 1 var j = i1 fmt.Println(&amp;amp;i1) fmt.Println(&amp;amp;j) // 定义指针变量 var var_name *var_type s := &amp;quot;sss&amp;quot; p := 2181 var ip *string = &amp;amp;s var port *int = &amp;amp;p fmt.Println(*ip) fmt.Println(*port) 变量、指针和地址三者的关系是，每个变量都拥有地址，指针的值就是地址。&#xA;通过&amp;amp; 获取对应变量的内存地址。 通过* 获取指针的值，也就是指针取值。取地址操作符 &amp;amp; 和取值操作符 * 是一对互补操作符，&amp;amp; 取出地址，* 根据地址取出地址指向的值。&#xA;变量、指针地址、指针变量、取地址、取值的相互关系和特性如下：&#xA;对变量进行取地址操作使用&amp;amp;操作符，可以获得这个变量的指针变量。 指针变量的值是指针地址。 对指针变量进行取值操作使用*操作符，可以获得指针变量指向的原变量的值。 通过New()创建指针 Go语言还提供了另外一种方法来创建指针变量，格式如下： new(type) 这个type可以为int。&#xA;// create ptr by new() func createPtr() { str := new(string) *str = &amp;quot;ssss&amp;quot; fmt.</description>
+    </item>
+    <item>
+      <title>Go语言goroutine</title>
+      <link>http://localhost:1313/post/2021/06/03/go%E8%AF%AD%E8%A8%80goroutine/</link>
+      <pubDate>Thu, 03 Jun 2021 21:18:23 +0000</pubDate>
+      <guid>http://localhost:1313/post/2021/06/03/go%E8%AF%AD%E8%A8%80goroutine/</guid>
+      <description>摘要：Go语言goroutine&#xA;goroutine协程 Go 协程 在执行上来说是轻量级的线程。go语言层面并不支持多进程或多线程，但是协程更好用，协程被称为用户态线程，不存在CPU上下文切换问题，效率非常高。&#xA;go语言中启动一个协程非常简单，只需要在执行函数前加上go关键字，就可以启用goroutine。&#xA;func main() { // 使用匿名函数启用goroutine go func() { fmt.Println(&amp;quot;goroutine&amp;quot;) }() // 调用函数启用goroutine go func1() } func func1() { fmt.Println(&amp;quot;f1() was called.&amp;quot;) } 没错就是这么简单，在go语言中，goroutine会被放到运行队列runtime.runqput中，然后由调度器调度。并非是每一个协程都会有一个对应的线程去执行，协程比线程的粒度更细。&#xA;但是上述代码并不会有输出结果，因为还没等func1()函数执行完成，main()就已经执行完成了。所以在main()函数执行完成之前sleep一下就可以看到func1()的执行结果。&#xA;time.Sleep(time.Second * 1) WaitGroup sleep肯定是不靠谱的，go语言中可以等待协程执行完成后再回到主线程。&#xA;// 定义全局变量 var WG = sync.WaitGroup{} func main() { WG.Add(1) go func1() WG.Wait() } func func1() { fmt.Println(&amp;quot;f1() was called.&amp;quot;) WG.Done() } 在调用func1()之前，调用全局变量WG.Add()方法，然后启用goroutine调用func1()，然后调用WG.Wait()函数进行等待，fun1()调用结束后，调用WG.Done()。 通过试验可以发现：Add()方法中的数值与Done()方法的数量应该保持一致。当Add(2)时，Done()方法应该执行两次。直到 WaitGroup 计数器恢复为 0； 即所有协程的工作都已经完成。 看源码可以发现，Done()与Add()实际上是一个函数。&#xA;// Done decrements the WaitGroup counter by one.</description>
+    </item>
+    <item>
+      <title>Go语言基本数据结构</title>
+      <link>http://localhost:1313/post/2021/06/01/go%E8%AF%AD%E8%A8%80%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/</link>
+      <pubDate>Tue, 01 Jun 2021 21:18:23 +0000</pubDate>
+      <guid>http://localhost:1313/post/2021/06/01/go%E8%AF%AD%E8%A8%80%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/</guid>
+      <description>摘要：Go语言基本数据结构&#xA;数组 strings := [3]string{&amp;quot;1&amp;quot;, &amp;quot;2&amp;quot;, &amp;quot;2&amp;quot;} intArray := [8]int{1, 2, 3, 4, 5, 5, 5, 55} 定义两个数组,fmt.Println(len(strings)) 可以使用len()函数得到数组的长度，strings[1]可以获取指定数组下标的元素。&#xA;所以通过以下方式可以遍历数组：&#xA;for i := 0; i &amp;lt; len(strings); i++ { fmt.Println(strings[i]) } 下文提供了更加优雅的方式。&#xA;slice Go数组的长度不可变，Go提供了一种内置类型切片:slice，与数组相比，切片的长度不是固定的，可以动态扩容、添加元素。&#xA;slice1 := make([]string, 2) fmt.Println(slice1) slice1[0] = &amp;quot;22&amp;quot; slice1[1] = &amp;quot;222&amp;quot; fmt.Println(slice1) slice1 = append(slice1, &amp;quot;33&amp;quot;, &amp;quot;44&amp;quot;, &amp;quot;55&amp;quot;) fmt.Println(slice1) fmt.Println(len(slice1)) // 裁剪，从index 2 到index 4 sliceSub := slice1[2:4] fmt.Println(sliceSub) // 裁剪，从index 2 到最后 sliceSub2 := slice1[2:] fmt.</description>
+    </item>
+    <item>
+      <title>Go语言变量</title>
+      <link>http://localhost:1313/post/2021/05/31/go%E8%AF%AD%E8%A8%80%E5%8F%98%E9%87%8F/</link>
+      <pubDate>Mon, 31 May 2021 21:18:23 +0000</pubDate>
+      <guid>http://localhost:1313/post/2021/05/31/go%E8%AF%AD%E8%A8%80%E5%8F%98%E9%87%8F/</guid>
+      <description>摘要：Go语言变量&#xA;Go语言中的变量定义相对严格，当定义一个局部变量为使用时，会编译报错，在go语言中，无需要多余的代码。但全局变量除外，定义全局变量允许暂不使用。&#xA;全局变量 全局变量可以被全局访问&#xA;定义全局变量：&#xA;// global variable var x, y int var ( a int b bool ) 基本常量 常量一经被定义后无法被重新赋值，常量可以定义为全局的，也可以定义为局部的。&#xA;定义常量：&#xA;// 这是一个常量 const CONST1 = 111 iota常量 iota，特殊常量，可以认为是一个可以被编译器修改的常量。 iota 在 const关键字出现时将被重置为 0(const 内部的第一行之前)，const 中每新增一行常量声明将使 iota 计数一次(iota 可理解为 const 语句块中的行索引)。&#xA;const ( a = iota b = iota c = iota ) // 以上写法可以简写为 const ( d = iota e f ) fmt.Println(a, b, c) fmt.Println(d, e, f) // 输出结果： // 0 1 2 // 0 1 2 iota常量可以恢复计数</description>
+    </item>
+    <item>
+      <title>MySQL执行计划</title>
+      <link>http://localhost:1313/post/2020/10/21/mysql%E6%89%A7%E8%A1%8C%E8%AE%A1%E5%88%92/</link>
+      <pubDate>Wed, 21 Oct 2020 11:18:23 +0000</pubDate>
+      <guid>http://localhost:1313/post/2020/10/21/mysql%E6%89%A7%E8%A1%8C%E8%AE%A1%E5%88%92/</guid>
+      <description>什么是SQL执行计划 EXPLAIN命令是查看查询优化器如何决定执行查询的主要的方法，学会解释EXPLAIN将帮助我们了解SQL优化器是如何工作的。执行计划可以告诉我们SQL如何使用索引，连接查询的执行顺序，查询的数据行数。 要使用EXPLAIN,只需要在查询的SELECT关键字之前增加EXPLAIN这个词。&#xA;MySQL [dev]&amp;gt; explain select * from TableName where Name like &#39;%c&#39;; +----+-------------+--------------+------------+------+---------------+------+---------+------+------+----------+-------------+ | id | select_type | table | partitions | type | possible_keys | key | key_len | ref | rows | filtered | Extra | +----+-------------+--------------+------------+------+---------------+------+---------+------+------+----------+-------------+ | 1 | SIMPLE | ClusterGroup | NULL | ALL | NULL | NULL | NULL | NULL | 254 | 11.11 | Using where | +----+-------------+--------------+------------+------+---------------+------+---------+------+------+----------+-------------+ 1 row in set, 1 warning (0.</description>
+    </item>
+    <item>
+      <title>Centos搭建公共yum源</title>
+      <link>http://localhost:1313/post/2019/12/14/centos%E6%90%AD%E5%BB%BA%E5%85%AC%E5%85%B1yum%E6%BA%90/</link>
+      <pubDate>Sat, 14 Dec 2019 00:18:23 +0000</pubDate>
+      <guid>http://localhost:1313/post/2019/12/14/centos%E6%90%AD%E5%BB%BA%E5%85%AC%E5%85%B1yum%E6%BA%90/</guid>
+      <description>摘要：记录在Centos7中如何挂载ISO镜像作yum源，并借助http服务作公共yum源。&#xA;部署yum私服 上传centos镜像文件到服务器&#xA;mount -t iso9660 -o loop centos-7-x86_64-dvd-1511.iso /mnt/cdrom/ （卸载：umoutn /mnt/cdrom)&#xA;挂载成功！ 将软件链接到http服务发布路径下 确定当前服务器是否安装了httpd服务&#xA;ln -s /mnt/cdrom/ /var/www/html/CentOS7 检查http服务&#xA;systemctl status httpd.service 启动HTTP服务器&#xA;systemctl enable httpd.service systemctl start httpd.service 界面查看&#xA;cd /etc/yum.repos.d/ mkdir bak mv centos-* bak vi CentOS-Base.repo [base] name=CentOS-$releasever - Base baseurl=http://192.168.67.15/CentOS7/ gpgcheck=1 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7 分发到所有服务器&#xA;scp -r /etc/yum.repos.d/ hadoop-01:/etc/ scp -r /etc/yum.repos.d/ hadoop-02:/etc/ 检查是否正成功安装yum 源&#xA;yum clean all yum makecache yum list 如果能看到软件列表则说明安装成功。</description>
+    </item>
+    <item>
+      <title>逆波兰表达式算法</title>
+      <link>http://localhost:1313/post/2019/09/04/%E9%80%86%E6%B3%A2%E5%85%B0%E8%A1%A8%E8%BE%BE%E5%BC%8F%E7%AE%97%E6%B3%95/</link>
+      <pubDate>Wed, 04 Sep 2019 00:18:23 +0000</pubDate>
+      <guid>http://localhost:1313/post/2019/09/04/%E9%80%86%E6%B3%A2%E5%85%B0%E8%A1%A8%E8%BE%BE%E5%BC%8F%E7%AE%97%E6%B3%95/</guid>
+      <description>摘要：将中缀表达式转化为后缀表达式，以及计算后缀表达式的算法。&#xA;import org.slf4j.Logger; import org.slf4j.LoggerFactory; import java.util.HashSet; import java.util.Scanner; import java.util.Stack; /** * @author YaoQi * Date: 2019/1/5 15:45 * Modified: * Description: 中缀表达式转后缀表达式 */ public class InfixToSuffixHandler { private static final Logger logger = LoggerFactory.getLogger(InfixToSuffixHandler.class); private static HashSet&amp;lt;Character&amp;gt; opStr = new HashSet&amp;lt;&amp;gt;(); static { logger.info(&amp;quot;Initialization operator&amp;quot;); opStr.add(&#39;+&#39;); opStr.add(&#39;-&#39;); opStr.add(&#39;*&#39;); opStr.add(&#39;/&#39;); logger.info(&amp;quot;Initialization finished&amp;quot;); } /** * 判断字符是否为操作符 * * @param c 字符 * @return */ private static boolean isOpStr(char c) { return opStr.</description>
+    </item>
+    <item>
+      <title>spark学习笔记-RDD基础算子</title>
+      <link>http://localhost:1313/post/2019/07/27/spark%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-rdd%E5%9F%BA%E7%A1%80%E7%AE%97%E5%AD%90/</link>
+      <pubDate>Sat, 27 Jul 2019 00:18:23 +0000</pubDate>
+      <guid>http://localhost:1313/post/2019/07/27/spark%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-rdd%E5%9F%BA%E7%A1%80%E7%AE%97%E5%AD%90/</guid>
+      <description>摘要：学习spark过程中的笔记，记录spark中的基础算子，以及RDD的基本概念。&#xA;spark transform operation 源码地址：https://github.com/YaoQi17/sparkLearning/tree/master/sparkRDD&#xA;总结 RDD(Resilient Distributed Dataset) 弹性分布式数据集，是一组分布式的数据集合，里面的元素可并行计算，可分区； RDD允许用户在执行多个查询时显示地将工作集缓存在内存中，例如persist()；&#xA;创建方式 创建RDD的两种方式：&#xA;读取外界文件 外界文件不局限于系统文件，包括HDFS、HBase等&#xA;sparkSession.sparkContext.textFile(&amp;quot;sparkRDD/src/main/resources/data.txt&amp;quot;) 通过并行化的方式创建 val sparkSession = getDefaultSparkSession val dataArray = Array(1, 2, 3, 4, 5, 6) // 创建一个RDD val rdd = sparkSession.sparkContext.parallelize(dataArray) 通过并行化的方式创建还可以指定分区的数量&#xA;/** Distribute a local Scala collection to form an RDD. * * @note Parallelize acts lazily. If `seq` is a mutable collection and is altered after the call * to parallelize and before the first action on the RDD, the resultant RDD will reflect the * modified collection.</description>
+    </item>
+    <item>
+      <title>SpringBoot HBase</title>
+      <link>http://localhost:1313/post/2019/07/11/springboot-hbase/</link>
+      <pubDate>Thu, 11 Jul 2019 00:18:23 +0000</pubDate>
+      <guid>http://localhost:1313/post/2019/07/11/springboot-hbase/</guid>
+      <description>摘要:记录自己写的一个基于SpringBoot操作HBase的组件，支持kerberos认证方式访问，本文相当于API文档。&#xA;HBase 组件接口文档 源码地址：https://github.com/YaoQi17/HBase-Component&#xA;使用说明 基本概念&#xA;table: 表&#xA;columnFamily:列族，一个表下可以有多个列族，但是不建议设置多个列族，HBase建议设计长窄型的表而不是短宽型。&#xA;qualifier:列，一个列族下可以有多列，一个表中的列可以是不对齐的，但是这样效率不高，同一张表中的列最好是相同的。&#xA;cell:一列数据下的一个单元格，一个列下可以有多个单元格，根据版本号区分，默认每次读取最新版本的数据，cell下的存储是数据本身。&#xA;row: 行，多列数据组成一行，一行中有多个qualifier。&#xA;rowKey: 行健，用于唯一标识一行数据，一行下有多列，行健的设计直接关系到查询的效率。&#xA;HBase配置 以下配置为最基础配置，缺一不可。&#xA;HBase: conf: quorum: 192.168.80.234:2181,192.168.80.235:2181,192.168.80.241:2181 znodeParent: /hbase-unsecure #如果有更多配置，写在config下，例如： #config: # key: value # key: value 如果需要更多配置，需要在config中配置，以key-value的形式书写。&#xA;参数说明 quorum是HBase中zookeeper的配置，znodeParent是HBase配置在zookeeper中的路径。&#xA;简单示例 引入组件jar包：&#xA;&amp;lt;dependency&amp;gt; &amp;lt;groupId&amp;gt;com.semptian.hbase.component&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;hbase-component&amp;lt;/artifactId&amp;gt; &amp;lt;version&amp;gt;1.0.1-SNAPSHOT&amp;lt;/version&amp;gt; &amp;lt;/dependency&amp;gt; 在需要的地方注入HBaseOperations接口，该接口的实现类是HBaseTemplate，通过这个类来操作HBase。&#xA;@Autowired private HBaseOperations hBaseDao; 查询一条数据，通过rowKey查询：&#xA;public void testQueryTable() { Result result = hBaseDao.queryByTableNameAndRowKey( &amp;quot;LBS&amp;quot;, 9223372036854775803L); System.out.println(result.isEmpty()); result.listCells().forEach(cell -&amp;gt; { System.out.println( &amp;quot;row:&amp;quot; + Bytes.toLong(CellUtil.cloneRow(cell)) + &amp;quot;,family:&amp;quot;+ Bytes.toString(CellUtil.cloneFamily(cell)) + &amp;quot;, qualifier: &amp;quot; + Bytes.</description>
+    </item>
+    <item>
+      <title>工厂模式</title>
+      <link>http://localhost:1313/post/2019/07/11/%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F/</link>
+      <pubDate>Thu, 11 Jul 2019 00:18:23 +0000</pubDate>
+      <guid>http://localhost:1313/post/2019/07/11/%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F/</guid>
+      <description>摘要：详细结束工厂模式（Factory Pattern）的使用，以及在Java中的实现方式。&#xA;简介 工厂模式（Factory Pattern）是 Java 中最常用的设计模式之一。这种类型的设计模式属于创建型模式，它提供了一种创建对象的最佳方式。工厂模式主要是解决创建对象的问题，典型的应用就是在spring中的IOC，反转控制，反转控制就是把创建对象的权限交给框架，所以spring就是一个生产对象的工厂。&#xA;思路 工厂模式的思路就是设计一个产生对象的机制，让生产对象的过程交给第三方，在工厂模式中，不会对客户端暴露创建逻辑，并且使用通用接口接收新创建的对象。&#xA;实现过程 新建抽象的接口 新建具体的实体类，实现抽象的接口 创建实例化对象的工厂 在客户端中通过工厂创建具体的实体对象，对象可以用抽象接口接收。 这种方式是最简单的实现方式：&#xA;// 创建接口 public interface Shape { void draw(); } // 创建实体类Circle public class Circle implements Shape { @Override public void draw() { System.out.println(&amp;quot;drawing a circle&amp;quot;); } } // 创建实体类Rectangle public class Rectangle implements Shape { @Override public void draw() { System.out.println(&amp;quot;drawing a Rectangle&amp;quot;); } } // 创建实体类Square public class Square implements Shape { @Override public void draw() { System.</description>
+    </item>
+    <item>
+      <title>Git学习笔记</title>
+      <link>http://localhost:1313/post/2019/06/16/git%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/</link>
+      <pubDate>Sun, 16 Jun 2019 00:18:23 +0000</pubDate>
+      <guid>http://localhost:1313/post/2019/06/16/git%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/</guid>
+      <description>摘要：学习Git的一些笔记，记录了Git的一些常见命令，以及Git中文件的生命周期。&#xA;git文件状态变化 状态说明： 状态转换: 正常流程 git clone 从远程拉一个工程下来 增加一个文件 git status 查看状态 git add 把文件从Untracked&amp;ndash;&amp;gt;Staged git rm &amp;ndash;cached git commit 提交 git push 把master分支的内容提交到远端 git diff 查看变化 操作实例 回滚还没有commit的文件 操作实例 回滚某个提交 操作实例 分支操作 查看分支 创建分支 分支上增加内容 推送分支到远程 两个分支进行比较 分支合并到master上 从远程拉一个分支 tag操作 其他 git覆盖本地修改，pull 远程 git修改上一次commit message git重命名分支 git文件状态变化 状态说明： Untracked: 刚新加的文件，还没有纳入git管理范围&#xA;UnModified: 已经committed的文件&#xA;Modified: 已经committed的文件，通过vi等修改后，就变成Modified&#xA;Staged: git add 后的文件&#xA;状态转换: Untracked-&amp;gt;Staged: 通过git add 来完成&#xA;UnModified-&amp;gt;Modified: 修改文件内容来完成，比如vi命令&#xA;Modified-&amp;gt;Staged: 通过git add 来完成</description>
+    </item>
+    <item>
+      <title>SpringBoot中使用AOP</title>
+      <link>http://localhost:1313/post/2019/06/16/springboot%E4%B8%AD%E4%BD%BF%E7%94%A8aop/</link>
+      <pubDate>Sun, 16 Jun 2019 00:18:23 +0000</pubDate>
+      <guid>http://localhost:1313/post/2019/06/16/springboot%E4%B8%AD%E4%BD%BF%E7%94%A8aop/</guid>
+      <description>摘要：Spring中如何使用注解实现面向切面编程，以及如何使用自定义注解。&#xA;场景 比如用户登录，每个请求发起之前都会判断用户是否登录，如果每个请求都去判断一次，那就重复地做了很多事情，只要是有重复的地方，就有优化的空间。现在就把重复的地方抽取出来，暂且称之为 &amp;quot; 拦截器 &amp;ldquo;，然后每次请求之前就先经过&amp;rdquo; 拦截器 &amp;ldquo;，这个编程的思想就可以称之为面向切面编程。AOP(Aspect Oriented Program)&#xA;最典型的应用就是事务管理和权限验证，还有日志统计，下文中的案例就是接口执行时间的统计。&#xA;spring中使用AOP（基于注解） 不得不说注解是个很巧妙的设计，使用很少量的信息描述数据，这类数据称之为元数据，描述数据的数据。关于注解的理解，这里有个传送门：http://www.importnew.com/10294.html&#xA;下面的案例是在springBoot中进行的，直观地感受一下如何使用注解完成AOP。&#xA;@Service public class UserService { public void getUser() { //To do something System.out.println(&amp;quot;getUser() has been called&amp;quot;); try { Thread.sleep(1000); } catch (InterruptedException e) { e.printStackTrace(); } } } 切面是这样定义的：&#xA;@Component @Aspect public class LoggerAspect { /** * getUser()执行之前执行 */ @Before(&amp;quot;execution(* com.springboot.demo.service.UserService.getUser(..))&amp;quot;) public void callBefore() { System.out.println(&amp;quot;before call method&amp;quot;); System.out.println(&amp;quot;begin........................&amp;quot;); } /** * getUser()执行之后执行 */ @After(&amp;quot;execution(* com.springboot.demo.service.UserService.getUser(..))&amp;quot;) public void callAfter() { System.</description>
+    </item>
+  </channel>
+</rss>

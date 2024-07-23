@@ -69,7 +69,7 @@
     <tr>
     <td>
     
-    <h1><a href="/post/2024/05/15/%E5%85%B3%E4%BA%8E%E9%94%81%E7%9A%84%E6%80%BB%E7%BB%93%E5%92%8C%E6%80%9D%E8%80%83%E4%B8%80/">关于锁的总结和思考(一)</a></h1>
+    <h1><a href="/post/2024/05/15/%E5%85%B3%E4%BA%8E%E9%94%81%E7%9A%84%E6%80%9D%E8%80%83%E5%92%8C%E6%80%BB%E7%BB%93%E4%B8%80/">关于锁的思考和总结(一)</a></h1>
     <div>
       <span>2024-05-15</span>
       
@@ -80,7 +80,7 @@
       
       
       &fopf;unc add (a *int) *int { *a++ // 线程不安全 return a } 这是一段很典型的线程不安全的代码示例, 在并发场景下, a 的结果是不确定的, 大概率会小于 1000, 原因是 a++ 并非原子操作, 会存在同时有两个协程读取到 a 的值是相同的情况, 执行 a++之后再重新回写时, a的值也是相同的, 想要变为线程安全, 就需要在操作临界资源之前加锁; &hellip;
-      <a href="/post/2024/05/15/%E5%85%B3%E4%BA%8E%E9%94%81%E7%9A%84%E6%80%BB%E7%BB%93%E5%92%8C%E6%80%9D%E8%80%83%E4%B8%80/" class="more" title=阅读全文>阅读全文 &rarr;</a>
+      <a href="/post/2024/05/15/%E5%85%B3%E4%BA%8E%E9%94%81%E7%9A%84%E6%80%9D%E8%80%83%E5%92%8C%E6%80%BB%E7%BB%93%E4%B8%80/" class="more" title=阅读全文>阅读全文 &rarr;</a>
     </div>
     </td>
     
@@ -112,16 +112,25 @@
 
 
 
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-PGMJFXZJRT"></script>
-<script>
-var doNotTrack = false;
-if (!doNotTrack) {
-	window.dataLayer = window.dataLayer || [];
-	function gtag(){dataLayer.push(arguments);}
-	gtag('js', new Date());
-	gtag('config', 'G-PGMJFXZJRT', { 'anonymize_ip': false });
-}
-</script>
+  
+    
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-PGMJFXZJRT"></script>
+      <script>
+        var doNotTrack = false;
+        if ( false ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-PGMJFXZJRT');
+        }
+      </script>
+    
+  
+
 
 
 

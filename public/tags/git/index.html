@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="cn-zh">
+  <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title> Git | 大道至简</title>
+    
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@xiee/utils/css/article.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@xiee/utils/css/heading-anchor.min.css">
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/fonts.css" />
+    <link rel="stylesheet" href="/css/custom.css" />
+    
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-PGMJFXZJRT"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-PGMJFXZJRT');
+</script>
+  </head>
+
+  <body>
+
+    <nav class="menu">
+    <ul>
+      <li class="left">
+        <a href="/"><span>大道至简</span></a>
+      </li>
+      
+      <li>
+        <a href="/post/">Posts</a>
+      </li>
+      
+      <li>
+        <a href="/tags/">Tags</a>
+      </li>
+      
+      <li id="menu-search">
+        <a href="/#">Search</a>
+      </li>
+      
+    </ul>
+    </nav>
+
+
+<div class="container list">
+<main>
+
+<h1>Git</h1>
+
+
+
+
+
+
+
+
+
+
+
+
+  <section class="article-list post-card">
+    <table>
+    <tbody>
+    <tr>
+    <td>
+    
+    <h1><a href="/post/2021/08/09/git-rebase%E7%94%A8%E6%B3%95.md/">Git-rebase用法.md</a></h1>
+    <div>
+      <span>2021-08-09</span>
+      
+    </div>
+    <div class="summary">
+      
+      
+      
+      
+      摘要：Git rebase 的使用方法。
+[&hellip;] 当多个commit存在时，提交MR会出现很多的commit，review会很困难，这时可以将多个commit合并为一个commit。
+命令说明：
+git rebase -i [startpoint] [endpoint] 其中-i的意思是&ndash;interactive，即弹出交互式的界面让用户编辑完成合并操 &hellip;
+      <a href="/post/2021/08/09/git-rebase%E7%94%A8%E6%B3%95.md/" class="more" title=阅读全文>阅读全文 &rarr;</a>
+    </div>
+    </td>
+    
+    </tr>
+    </tbody>
+    </table>
+  </section>
+
+  <section class="article-list post-card">
+    <table>
+    <tbody>
+    <tr>
+    <td>
+    
+    <h1><a href="/post/2021/07/08/git%E5%B7%A5%E7%A8%8B%E6%8B%86%E5%88%86/">Git工程拆分</a></h1>
+    <div>
+      <span>2021-07-08</span>
+      
+    </div>
+    <div class="summary">
+      
+      
+      
+      
+      摘要：Git将工程按目录拆分。
+[&hellip;] # /project/ # ----/test/ # 将test目录抽成单独的工程 cd /project/test # 拆分子目录 $ git subtree split -P test -b test-new-br $ mkdir ../test-new-br $ cd ../test-new-br # 创建子工程 $ git init $ &hellip;
+      <a href="/post/2021/07/08/git%E5%B7%A5%E7%A8%8B%E6%8B%86%E5%88%86/" class="more" title=阅读全文>阅读全文 &rarr;</a>
+    </div>
+    </td>
+    
+    </tr>
+    </tbody>
+    </table>
+  </section>
+
+  <section class="article-list post-card">
+    <table>
+    <tbody>
+    <tr>
+    <td>
+    
+    <h1><a href="/post/2019/06/16/git%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">Git学习笔记</a></h1>
+    <div>
+      <span>2019-06-16</span>
+      
+    </div>
+    <div class="summary">
+      
+      
+      
+      
+      摘要：学习Git的一些笔记，记录了Git的一些常见命令，以及Git中文件的生命周期。
+[&hellip;] Untracked: 刚新加的文件，还没有纳入git管理范围
+UnModified: 已经committed的文件
+Modified: 已经committed的文件，通过vi等修改后，就变成Modified
+Staged: git add 后的文件
+[&hellip;] &hellip;
+      <a href="/post/2019/06/16/git%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" class="more" title=阅读全文>阅读全文 &rarr;</a>
+    </div>
+    </td>
+    
+    </tr>
+    </tbody>
+    </table>
+  </section>
+
+
+
+
+
+
+<script src="https://utteranc.es/client.js"
+        repo="qiref/qiref.github.io"
+        issue-term="pathname"
+        label="Comment"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script>
+
+</main>
+</div>
+
+  <footer>
+  
+
+
+
+
+  
+    
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-PGMJFXZJRT"></script>
+      <script>
+        var doNotTrack = false;
+        if ( false ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-PGMJFXZJRT');
+        }
+      </script>
+    
+  
+
+
+
+
+
+
+
+  <div class="footer">
+  
+  <ul>
+    
+    <li class="optional">
+      <a href="/post/">Posts</a>
+    </li>
+    
+    <li class="optional">
+      <a href="/tags/">Tags</a>
+    </li>
+    
+    <li id="menu-edit">
+      <a href="#">Suggest an edit</a>
+    </li>
+    
+    <li>
+      <a href="#">Back to top</a>
+    </li>
+    
+  </ul>
+  </div>
+  
+  <div class="footer hidden">
+  
+
+  </div>
+  
+  </footer>
+  <script src="/js/features.js" defer></script>
+  </body>
+</html>
+

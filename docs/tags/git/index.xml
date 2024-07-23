@@ -4,48 +4,30 @@
     <title>Git on 大道至简</title>
     <link>https://qiref.github.io/tags/git/</link>
     <description>Recent content in Git on 大道至简</description>
-    <generator>Hugo -- gohugo.io</generator>
+    <generator>Hugo</generator>
     <language>cn-zh</language>
-    <lastBuildDate>Mon, 09 Aug 2021 00:18:23 +0000</lastBuildDate><atom:link href="https://qiref.github.io/tags/git/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 09 Aug 2021 00:18:23 +0000</lastBuildDate>
+    <atom:link href="https://qiref.github.io/tags/git/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Git-rebase用法.md</title>
       <link>https://qiref.github.io/post/2021/08/09/git-rebase%E7%94%A8%E6%B3%95.md/</link>
       <pubDate>Mon, 09 Aug 2021 00:18:23 +0000</pubDate>
-      
       <guid>https://qiref.github.io/post/2021/08/09/git-rebase%E7%94%A8%E6%B3%95.md/</guid>
-      <description>摘要：Git rebase 的使用方法。
-commit 合并 当多个commit存在时，提交MR会出现很多的commit，review会很困难，这时可以将多个commit合并为一个commit。
-命令说明：
-git rebase -i [startpoint] [endpoint] 其中-i的意思是&amp;ndash;interactive，即弹出交互式的界面让用户编辑完成合并操作，[startpoint] [endpoint] 则指定了一个编辑区间，如果不指定[endpoint]，则该区间的终点默认是当前分支HEAD所指向的commit(注：该区间指定的是一个前开后闭的区间)。 在查看到了log日志后，我们运行以下命令：
-git rebase -i 36224db or git rebase -i HEAD~3 # 合并最近三次commit 每一个commit id 前面的pick表示指令类型，git 为我们提供了以下几个命令: pick：保留该commit（缩写:p） reword：保留该commit，但我需要修改该commit的注释（缩写:r） edit：保留该commit, 但我要停下来修改该提交(不仅仅修改注释)（缩写:e） squash：将该commit和前一个commit合并（缩写:s） fixup：将该commit和前一个commit合并，但我不要保留该提交的注释信息（缩写:f） exec：执行shell命令（缩写:x） drop：我要丢弃该commit（缩写:d）
-示例 git log commit 4ab2734f3380fbdace8620f461cd04c7993b6b0b (HEAD -&amp;gt; master) Author: archieyao &amp;lt;archieyao@tencent.com&amp;gt; Date: Mon Aug 9 16:38:25 2021 +0800 add something 2 commit 60d0bbbe094c0b93903ab995879d30246bbf331e Author: archieyao &amp;lt;archieyao@tencent.com&amp;gt; Date: Mon Aug 9 16:38:02 2021 +0800 add something 1 commit 1c3c12316449cf4f340c68e22c70caa60178ba5c Author: archieyao &amp;lt;archieyao@tencent.</description>
+      <description>摘要：Git rebase 的使用方法。&#xA;commit 合并 当多个commit存在时，提交MR会出现很多的commit，review会很困难，这时可以将多个commit合并为一个commit。&#xA;命令说明：&#xA;git rebase -i [startpoint] [endpoint] 其中-i的意思是&amp;ndash;interactive，即弹出交互式的界面让用户编辑完成合并操作，[startpoint] [endpoint] 则指定了一个编辑区间，如果不指定[endpoint]，则该区间的终点默认是当前分支HEAD所指向的commit(注：该区间指定的是一个前开后闭的区间)。 在查看到了log日志后，我们运行以下命令：&#xA;git rebase -i 36224db or git rebase -i HEAD~3 # 合并最近三次commit 每一个commit id 前面的pick表示指令类型，git 为我们提供了以下几个命令: pick：保留该commit（缩写:p） reword：保留该commit，但我需要修改该commit的注释（缩写:r） edit：保留该commit, 但我要停下来修改该提交(不仅仅修改注释)（缩写:e） squash：将该commit和前一个commit合并（缩写:s） fixup：将该commit和前一个commit合并，但我不要保留该提交的注释信息（缩写:f） exec：执行shell命令（缩写:x） drop：我要丢弃该commit（缩写:d）&#xA;示例 git log commit 4ab2734f3380fbdace8620f461cd04c7993b6b0b (HEAD -&amp;gt; master) Author: archieyao &amp;lt;archieyao@tencent.com&amp;gt; Date: Mon Aug 9 16:38:25 2021 +0800 add something 2 commit 60d0bbbe094c0b93903ab995879d30246bbf331e Author: archieyao &amp;lt;archieyao@tencent.com&amp;gt; Date: Mon Aug 9 16:38:02 2021 +0800 add something 1 commit 1c3c12316449cf4f340c68e22c70caa60178ba5c Author: archieyao &amp;lt;archieyao@tencent.</description>
     </item>
-    
     <item>
       <title>Git工程拆分</title>
       <link>https://qiref.github.io/post/2021/07/08/git%E5%B7%A5%E7%A8%8B%E6%8B%86%E5%88%86/</link>
       <pubDate>Thu, 08 Jul 2021 00:18:23 +0000</pubDate>
-      
       <guid>https://qiref.github.io/post/2021/07/08/git%E5%B7%A5%E7%A8%8B%E6%8B%86%E5%88%86/</guid>
-      <description>摘要：Git将工程按目录拆分。
-# /project/ # ----/test/ # 将test目录抽成单独的工程 cd /project/test # 拆分子目录 $ git subtree split -P test -b test-new-br $ mkdir ../test-new-br $ cd ../test-new-br # 创建子工程 $ git init $ git pull ../project test-new-br # git log 可以看到历史commit 😵</description>
+      <description>摘要：Git将工程按目录拆分。&#xA;# /project/ # ----/test/ # 将test目录抽成单独的工程 cd /project/test # 拆分子目录 $ git subtree split -P test -b test-new-br $ mkdir ../test-new-br $ cd ../test-new-br # 创建子工程 $ git init $ git pull ../project test-new-br # git log 可以看到历史commit &amp;#x1f635;</description>
     </item>
-    
     <item>
       <title>Git学习笔记</title>
       <link>https://qiref.github.io/post/2019/06/16/git%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/</link>
       <pubDate>Sun, 16 Jun 2019 00:18:23 +0000</pubDate>
-      
       <guid>https://qiref.github.io/post/2019/06/16/git%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/</guid>
-      <description>摘要：学习Git的一些笔记，记录了Git的一些常见命令，以及Git中文件的生命周期。
-git文件状态变化 状态说明： 状态转换: 正常流程 git clone 从远程拉一个工程下来 增加一个文件 git status 查看状态 git add 把文件从Untracked&amp;ndash;&amp;gt;Staged git rm &amp;ndash;cached git commit 提交 git push 把master分支的内容提交到远端 git diff 查看变化 操作实例 回滚还没有commit的文件 操作实例 回滚某个提交 操作实例 分支操作 查看分支 创建分支 分支上增加内容 推送分支到远程 两个分支进行比较 分支合并到master上 从远程拉一个分支 tag操作 其他 git覆盖本地修改，pull 远程 git修改上一次commit message git重命名分支 git文件状态变化 状态说明： Untracked: 刚新加的文件，还没有纳入git管理范围
-UnModified: 已经committed的文件
-Modified: 已经committed的文件，通过vi等修改后，就变成Modified
-Staged: git add 后的文件
-状态转换: Untracked-&amp;gt;Staged: 通过git add 来完成
-UnModified-&amp;gt;Modified: 修改文件内容来完成，比如vi命令
-Modified-&amp;gt;Staged: 通过git add 来完成</description>
+      <description>摘要：学习Git的一些笔记，记录了Git的一些常见命令，以及Git中文件的生命周期。&#xA;git文件状态变化 状态说明： 状态转换: 正常流程 git clone 从远程拉一个工程下来 增加一个文件 git status 查看状态 git add 把文件从Untracked&amp;ndash;&amp;gt;Staged git rm &amp;ndash;cached git commit 提交 git push 把master分支的内容提交到远端 git diff 查看变化 操作实例 回滚还没有commit的文件 操作实例 回滚某个提交 操作实例 分支操作 查看分支 创建分支 分支上增加内容 推送分支到远程 两个分支进行比较 分支合并到master上 从远程拉一个分支 tag操作 其他 git覆盖本地修改，pull 远程 git修改上一次commit message git重命名分支 git文件状态变化 状态说明： Untracked: 刚新加的文件，还没有纳入git管理范围&#xA;UnModified: 已经committed的文件&#xA;Modified: 已经committed的文件，通过vi等修改后，就变成Modified&#xA;Staged: git add 后的文件&#xA;状态转换: Untracked-&amp;gt;Staged: 通过git add 来完成&#xA;UnModified-&amp;gt;Modified: 修改文件内容来完成，比如vi命令&#xA;Modified-&amp;gt;Staged: 通过git add 来完成</description>
     </item>
-    
   </channel>
 </rss>

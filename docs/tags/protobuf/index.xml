@@ -4,22 +4,16 @@
     <title>ProtoBuf on 大道至简</title>
     <link>https://qiref.github.io/tags/protobuf/</link>
     <description>Recent content in ProtoBuf on 大道至简</description>
-    <generator>Hugo -- gohugo.io</generator>
+    <generator>Hugo</generator>
     <language>cn-zh</language>
-    <lastBuildDate>Tue, 11 Jan 2022 00:18:23 +0000</lastBuildDate><atom:link href="https://qiref.github.io/tags/protobuf/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 11 Jan 2022 00:18:23 +0000</lastBuildDate>
+    <atom:link href="https://qiref.github.io/tags/protobuf/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>ProtoBuf数据协议</title>
       <link>https://qiref.github.io/post/2022/01/11/protobuf%E6%95%B0%E6%8D%AE%E5%8D%8F%E8%AE%AE/</link>
       <pubDate>Tue, 11 Jan 2022 00:18:23 +0000</pubDate>
-      
       <guid>https://qiref.github.io/post/2022/01/11/protobuf%E6%95%B0%E6%8D%AE%E5%8D%8F%E8%AE%AE/</guid>
-      <description>摘要：ProtoBuf(Protocol Buffers)是一种跨平台、语言无关、可扩展的序列化结构数据的方法，可用于网络数据交换及数据存储。
-Protocol Buffers介绍 不同于 XML 、JSON 这种文本格式数据，Protocol Buffers 是一种二进制格式数据。在Protocol Buffers 诞生之初，就被赋予两个特点：
-向前兼容，很容易引入新字段，应对字段的频繁变更 数据格式具备描述性，并且支持多语言处理 传输效率高 基于以上这些特性，Protocol Buffers 被广泛应用于各种 RPC 框架中，并且是 Google 的数据通用语言。
-Protocol Buffers协议文件 Protocol Buffers 在使用前需要先定义好协议文件，以 .proto 为后缀的文件就是Protocol Buffers 的协议文件。
-Example:
-// 指定protobuf的版本，proto3是最新的语法版本 syntax = &amp;quot;proto3&amp;quot;; // 定义数据结构，message 你可以想象成java的class，c语言中的struct message Response { string data = 1; // 定义一个string类型的字段，字段名字为data, 序号为1 int32 status = 2; // 定义一个int32类型的字段，字段名字为status, 序号为2 } 如果 A 和 B 要基于 Protocol Buffers 协议进行通信，那么在通信前，A 和 B 都需要有同一份协议文件，所以在 Protocol Buffers 数据传输过程中，不需要数据的 Schema 信息；</description>
+      <description>摘要：ProtoBuf(Protocol Buffers)是一种跨平台、语言无关、可扩展的序列化结构数据的方法，可用于网络数据交换及数据存储。&#xA;Protocol Buffers介绍 不同于 XML 、JSON 这种文本格式数据，Protocol Buffers 是一种二进制格式数据。在Protocol Buffers 诞生之初，就被赋予两个特点：&#xA;向前兼容，很容易引入新字段，应对字段的频繁变更 数据格式具备描述性，并且支持多语言处理 传输效率高 基于以上这些特性，Protocol Buffers 被广泛应用于各种 RPC 框架中，并且是 Google 的数据通用语言。&#xA;Protocol Buffers协议文件 Protocol Buffers 在使用前需要先定义好协议文件，以 .proto 为后缀的文件就是Protocol Buffers 的协议文件。&#xA;Example:&#xA;// 指定protobuf的版本，proto3是最新的语法版本 syntax = &amp;quot;proto3&amp;quot;; // 定义数据结构，message 你可以想象成java的class，c语言中的struct message Response { string data = 1; // 定义一个string类型的字段，字段名字为data, 序号为1 int32 status = 2; // 定义一个int32类型的字段，字段名字为status, 序号为2 } 如果 A 和 B 要基于 Protocol Buffers 协议进行通信，那么在通信前，A 和 B 都需要有同一份协议文件，所以在 Protocol Buffers 数据传输过程中，不需要数据的 Schema 信息；</description>
     </item>
-    
   </channel>
 </rss>

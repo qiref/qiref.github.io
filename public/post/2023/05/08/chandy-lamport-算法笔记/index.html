@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="cn-zh">
+  <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title> Chandy-Lamport 算法笔记 | 大道至简</title>
+    
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@xiee/utils/css/article.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@xiee/utils/css/heading-anchor.min.css">
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/fonts.css" />
+    <link rel="stylesheet" href="/css/custom.css" />
+    
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-PGMJFXZJRT"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-PGMJFXZJRT');
+</script>
+  </head>
+
+  <body>
+
+    <nav class="menu">
+    <ul>
+      <li class="left">
+        <a href="/"><span>大道至简</span></a>
+      </li>
+      
+      <li>
+        <a href="/post/">Posts</a>
+      </li>
+      
+      <li>
+        <a href="/tags/">Tags</a>
+      </li>
+      
+      <li id="menu-search">
+        <a href="/#">Search</a>
+      </li>
+      
+    </ul>
+    </nav>
+
+
+<div class="container single">
+<main>
+
+<div class="article-meta">
+<h1><span class="title">Chandy-Lamport 算法笔记</span></h1>
+
+<h3 class="date">2023-05-08</h3>
+<p class="terms">
+  
+  
+  
+  
+  Tags: <a href="/tags/algorithm">Algorithm</a> <a href="/tags/paper">Paper</a> 
+  
+  
+</p>
+</div>
+
+<div class="article">
+<h2 id="前言">前言</h2>
+<p>Global Snapshot（Global State）：全局快照，分布式系统在 Failure Recovery 的时候非常有用，也是广泛应用在分布式系统，更多是分布式计算系统中的一种容错处理理论基础。</p>
+<p>在 Chandy-Lamport 算法中，为了定义分布式系统的 Global Snapshot，先将分布式系统简化成有限个进程和进程之间的 channel 组成，也就是一个有向图 （GAG）：节点是进程，边是 channel。因为是分布式系统，也就是说，这些进程是运行在不同的物理机器上的。那么一个分布式系统的  Global Snapshot 就是有进程的状态和 channel 中的 message 组成，这个也是分布式快照算法需要记录的。因此，Chandy-Lamport 算法解决了分布式系统在 Failure Recovery 时，可以从  Global Snapshot 中恢复的问题；</p>
+<h2 id="算法过程">算法过程</h2>
+<h3 id="前提条件及定义">前提条件及定义</h3>
+<ul>
+<li>process（Pn）：分布式系统中的进程，用 P1，P2，P3 表示；</li>
+<li>channel：分布式系统中，Pn 与 Pm 通信的管道，C12 表示从 P1 到 P2 的 channel，反之，C32 表示从 P3 到 P2的 channel；</li>
+<li>message：分布式系统中，Pn 与 Pm 之间发送的业务消息；M23 表示从 P2 到 P3 的 message；</li>
+<li>marker：在 Chandy-Lamport 算法中，Pn 与 Pm 之间发送的标记消息，不同于业务的 message，marker 是由 Chandy-Lamport 算法定义，用于帮助实现快照算法；</li>
+<li>snapshot/state：都表示快照，同时包括进程本身的状态和 message；下文中统一全局快照叫 snapshot，process 本地快照叫 state；</li>
+</ul>
+<p>Chandy-Lamport 算法有一些前提条件：</p>
+<ol>
+<li>进程之间的 message 是有序的，也即FIFO channel；</li>
+<li>进程之间的 message 是可靠传递的；</li>
+</ol>
+<h3 id="算法步骤">算法步骤</h3>
+<ol>
+<li>Pn 中任意进程发起 snapshot，例如 P1 此时发起 snapshot；
+<ol>
+<li>P1 首先保存本地的 state；</li>
+<li>P1 向 output channel 发送 marker 消息到其他进程（P2，P3）；</li>
+<li>P1 开始记录所有 input channel 的 message；？？？</li>
+</ol>
+</li>
+<li>P2 收到 marker 消息后；
+<ol>
+<li>如果 P2 还未记录本地的 state，也就是第一次收到 marker消息（例如收到 P1 marker 消息）；
+<ol>
+<li>P2 开始记录本地 state；</li>
+<li>P2 将 input channel C12 置为空；？？？</li>
+<li>P2 向 output channel 发送 marker 消息（P1，P3）；</li>
+<li>P2 记录除 C12 之外的所有 input channel 的 message；</li>
+</ol>
+</li>
+<li>如果 P2 已经完成本地 state 记录，不是第一次收到 marker消息（例如收到 P3 marker 消息）；
+<ol>
+<li>记录 input channel C32 在收到 marker 消息之前的 message；</li>
+</ol>
+</li>
+</ol>
+</li>
+<li>P1 P2 P3 收到 marker 消息并记录自己的 state 和 message；所有 state 都记录完成后，可以由某个服务器收集这些分散的快照，形成全局快照 （Global Snapshot），全局快照由每个进程的 state 和每个通道的 message 组成；</li>
+</ol>
+<h3 id="问题">问题</h3>
+<p>为什么 P1 发起 snapshot 之后，要开始记录所有 input channel 的 message？</p>
+<p>要回答这个问题，首先要明确，每一次的 snapshot 是从什么时候结束的，当最后一个 P 本地的 state 全部完成之后，才算是一次 snapshot；所以，在一次 snapshot 发起之后，到最后一个 P 完成本地 state，进程之间的增量 message 也会记录并保存到 state 中；</p>
+<p>为什么 P2 开始记录本地 state 之后需要将 C12 置为空？</p>
+<p>回答这个问题，需要理解算法中，marker 这个消息有什么作用，其实 marker 是为了分割每一次的 snapshot！ 相当于是 message 之间的分隔符，当 P2 记录本地 state 之后，说明 P2 此时已经从 C12 中得到一个 marker 消息，从 P1 → P2 的消息默认都已经被 P2 接收到，并且处理完成（已经保存到 P2 的本地 state 中），换句话说，从 C12 中 marker 之后的消息，是下一次 snapshot 的 message；</p>
+<h2 id="示例">示例</h2>
+<p>背景说明，3 个进程 P1 P2 P3；每个进程在运行中会产生自身的 state 例如 P1（a,b）,每个进程之间还会产生message，例如 message (b-&gt;f);</p>
+<p><img src="/assets/img/chandy-lamport-bg.svg" alt="chandy-lamport-bg"></p>
+<p>在 Chandy-Lamport 算法中，可以由任意进程发起 snapshot；假设这里 P1 先发起 Global Snapshot；</p>
+<p><img src="/assets/img/chandy-lamport-P1.svg" alt="chandy-lamport-P1"></p>
+<p>P1 先记录自身的 state(a,b)，然后向 P2 P3 发送 marker，最后记录 input channel C21 C31</p>
+<p><img src="/assets/img/chandy-lamport-P3.svg" alt="chandy-lamport-P3"></p>
+<p>假设 P3 先接收到 marker 消息，此时是 P3 第一次收到 marker 消息，P3 先开始记录自身的 state(i)，然后将 C13 置为空，然后向 P1 和 P2 发送 marker 消息，最后，P3 记录 C23 的消息；</p>
+<p><img src="/assets/img/chandy-lamport-P2.svg" alt="chandy-lamport-P2"></p>
+<p>当 P2 接收到 marker 消息之后，此时 P2 也是第一次收到 marker 消息，P2 开始记录自身的 state(f,g,h)，然后将 C32 置为空（marker 消息来自于 P3），然后向 P1 P3 发送 marker 消息，最后，P2 记录 C12 的消息；</p>
+<p>至此，所有的 marker 消息已经发出，剩余的过程就是处理非首次接受到 marker 消息的流程；</p>
+<p><img src="/assets/img/chandy-lamport-P1'.svg" alt="chandy-lamport-P1&rsquo;"></p>
+<p>当 P1 收到 P2 P3 的 marker 消息时，由于 P1 是 snapshot 的发起者，认为 P1 已经接受到 marker 消息，此时：</p>
+<ul>
+<li>在 time1 时刻，接收到 P3 的 marker 消息，只需要记录 C31 的消息，此时 C31 为空；</li>
+<li>在 time2 时刻，接收到 P2 的 marker 消息，只需要记录 C21 的消息，此时 channel 中有个消息 message（h-&gt;d）,因此，需要把 message（h-&gt;d）记录到 snapshot 中，P1 的工作完成了;</li>
+</ul>
+<p>与 P1 同理，当 P2 P3 再次接收到 marker 消息时，只需要记录 channel 的消息就行，由于 P2 P3 后续过程没有消息传输，这里不再赘述； 当所有进程处理完所有 marker 消息之后，一次 snapshot 流程就结束了；</p>
+<p>从结果上看，一次 snapshot 包括了 <code>state(a,b,f,g,h,i) + message（h-&gt;d）</code> , 由于 g 在 state 中，并且 h-&gt;d 是在一次 snapshot 中发生的，所以，h-&gt;d 也应该包含在这次 snapshot 中，这也就是 Chandy-Lamport 算法的精妙之处！</p>
+<h2 id="参考">参考</h2>
+<p><a href="https://yang.observer/2021/11/27/distributed-snapshots/">分布式系统的全局快照 - Yang Blog</a></p>
+<p><a href="https://github.com/legendtkl/paper_reading/blob/main/realtime-compute/Chandy-Lamport.md">paper_reading/Chandy-Lamport.md at main · legendtkl/paper_reading · GitHub</a></p>
+<p><a href="https://en.wikipedia.org/wiki/Chandy%E2%80%93Lamport_algorithm">Chandy–Lamport algorithm - Wikipedia</a></p>
+
+</div>
+</main>
+
+<section class="appendix">
+
+
+
+
+
+<div>
+  <div class="side side-left"><h3>重复使用</h3></div>
+  Text and figures are licensed under <a href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution CC BY 4.0</a>. The source code is licensed under MIT. The full source is available at <a href="https://github.com/qiref/qiref.github.io">https://github.com/qiref/qiref.github.io</a>.
+</div>
+
+
+
+<div>
+  <div class="side side-left"><h3>欢迎修订</h3></div>
+  
+  
+  
+    
+    
+  
+  如果您发现本文里含有任何错误（包括错别字和标点符号），欢迎<a href="https://github.com/qiref/qiref.github.io/tree/master/content/post/2023-05-08-Chandy-Lamport%20%e7%ae%97%e6%b3%95%e7%ac%94%e8%ae%b0.md" id="edit-link">在本站的 GitHub 项目里提交修订意见。</a>
+</div>
+
+
+
+
+</section>
+
+
+
+<nav class="post-nav">
+  <span class="nav-next">&larr; <a href="/post/2023/04/28/go%E8%AF%AD%E8%A8%80%E7%94%9F%E4%BA%A7%E8%80%85%E6%B6%88%E8%B4%B9%E8%80%85%E6%A8%A1%E5%9E%8B/" title=下一篇&#32;(旧)>Go语言生产者消费者模型</a></span>
+  &hercon;
+  <span class="nav-prev"><a href="/post/2023/05/12/%E5%A0%86%E5%92%8C%E5%A0%86%E6%8E%92%E5%BA%8F/" title=上一篇&#32;(新)>堆和堆排序</a> &rarr;</span>
+</nav>
+
+
+<script src="https://utteranc.es/client.js"
+        repo="qiref/qiref.github.io"
+        issue-term="pathname"
+        label="Comment"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script>
+
+</div>
+
+
+  <footer>
+  
+
+
+
+
+  
+    
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-PGMJFXZJRT"></script>
+      <script>
+        var doNotTrack = false;
+        if ( false ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-PGMJFXZJRT');
+        }
+      </script>
+    
+  
+
+
+
+
+<script src="https://cdn.jsdelivr.net/combine/npm/@xiee/utils/js/number-sections.min.js,npm/@xiee/utils/js/toc.min.js,npm/@xiee/utils/js/toc-highlight.min.js,npm/@xiee/utils/js/sidenotes.min.js,npm/@xiee/utils/js/right-quote.min.js,npm/@xiee/utils/js/center-img.min.js,npm/@xiee/utils/js/fix-pandoc.min.js,npm/@xiee/utils/js/heading-anchor.min.js" defer></script>
+
+
+
+
+  <div class="footer">
+  
+  <ul>
+    
+    <li class="optional">
+      <a href="/post/">Posts</a>
+    </li>
+    
+    <li class="optional">
+      <a href="/tags/">Tags</a>
+    </li>
+    
+    <li id="menu-edit">
+      <a href="#">Suggest an edit</a>
+    </li>
+    
+    <li>
+      <a href="#">Back to top</a>
+    </li>
+    
+  </ul>
+  </div>
+  
+  </footer>
+  <script src="/js/features.js" defer></script>
+  </body>
+</html>
+

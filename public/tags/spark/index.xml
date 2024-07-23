@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Spark on 大道至简</title>
+    <link>http://localhost:1313/tags/spark/</link>
+    <description>Recent content in Spark on 大道至简</description>
+    <generator>Hugo</generator>
+    <language>cn-zh</language>
+    <lastBuildDate>Sat, 27 Jul 2019 00:18:23 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/spark/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>spark学习笔记-RDD基础算子</title>
+      <link>http://localhost:1313/post/2019/07/27/spark%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-rdd%E5%9F%BA%E7%A1%80%E7%AE%97%E5%AD%90/</link>
+      <pubDate>Sat, 27 Jul 2019 00:18:23 +0000</pubDate>
+      <guid>http://localhost:1313/post/2019/07/27/spark%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-rdd%E5%9F%BA%E7%A1%80%E7%AE%97%E5%AD%90/</guid>
+      <description>摘要：学习spark过程中的笔记，记录spark中的基础算子，以及RDD的基本概念。&#xA;spark transform operation 源码地址：https://github.com/YaoQi17/sparkLearning/tree/master/sparkRDD&#xA;总结 RDD(Resilient Distributed Dataset) 弹性分布式数据集，是一组分布式的数据集合，里面的元素可并行计算，可分区； RDD允许用户在执行多个查询时显示地将工作集缓存在内存中，例如persist()；&#xA;创建方式 创建RDD的两种方式：&#xA;读取外界文件 外界文件不局限于系统文件，包括HDFS、HBase等&#xA;sparkSession.sparkContext.textFile(&amp;quot;sparkRDD/src/main/resources/data.txt&amp;quot;) 通过并行化的方式创建 val sparkSession = getDefaultSparkSession val dataArray = Array(1, 2, 3, 4, 5, 6) // 创建一个RDD val rdd = sparkSession.sparkContext.parallelize(dataArray) 通过并行化的方式创建还可以指定分区的数量&#xA;/** Distribute a local Scala collection to form an RDD. * * @note Parallelize acts lazily. If `seq` is a mutable collection and is altered after the call * to parallelize and before the first action on the RDD, the resultant RDD will reflect the * modified collection.</description>
+    </item>
+  </channel>
+</rss>

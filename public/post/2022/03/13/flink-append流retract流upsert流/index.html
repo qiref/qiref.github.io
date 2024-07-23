@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="cn-zh">
+  <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title> Flink Append流、Retract流、Upsert流 | 大道至简</title>
+    
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@xiee/utils/css/article.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@xiee/utils/css/heading-anchor.min.css">
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/fonts.css" />
+    <link rel="stylesheet" href="/css/custom.css" />
+    
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-PGMJFXZJRT"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-PGMJFXZJRT');
+</script>
+  </head>
+
+  <body>
+
+    <nav class="menu">
+    <ul>
+      <li class="left">
+        <a href="/"><span>大道至简</span></a>
+      </li>
+      
+      <li>
+        <a href="/post/">Posts</a>
+      </li>
+      
+      <li>
+        <a href="/tags/">Tags</a>
+      </li>
+      
+      <li id="menu-search">
+        <a href="/#">Search</a>
+      </li>
+      
+    </ul>
+    </nav>
+
+
+<div class="container single">
+<main>
+
+<div class="article-meta">
+<h1><span class="title">Flink Append流、Retract流、Upsert流</span></h1>
+
+<h3 class="date">2022-03-13</h3>
+<p class="terms">
+  
+  
+  
+  
+  Tags: <a href="/tags/flink">Flink</a> 
+  
+  
+</p>
+</div>
+
+<div class="article">
+<p>摘要： 介绍 Flink 中 Append流、Retract流、Upsert流的含义。</p>
+<hr>
+<ul>
+<li><a href="#append%E6%B5%81">Append流</a></li>
+<li><a href="#retract%E6%B5%81">Retract流</a></li>
+<li><a href="#upsert%E6%B5%81">Upsert流</a></li>
+</ul>
+<h2 id="append流">Append流</h2>
+<p>在 Append 流中，仅通过 <code>INSERT</code> 操作修改的动态表，可以通过输出插入的行转换为流。</p>
+<h2 id="retract流">Retract流</h2>
+<p>retract 流包含两种类型的 message： add messages 和 retract messages 。</p>
+<p>通过将INSERT 操作编码为 add message、将 <code>DELETE</code> 操作编码为 retract message、将 <code>UPDATE</code> 操作编码为更新(先前)行的 retract message 和更新(新)行的 add message，将动态表转换为 retract 流。</p>
+<table>
+<thead>
+<tr>
+<th>OPERATOR</th>
+<th>ENCODE</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>insert</td>
+<td>add</td>
+</tr>
+<tr>
+<td>update</td>
+<td>retract -&gt; add</td>
+</tr>
+<tr>
+<td>delete</td>
+<td>retract</td>
+</tr>
+</tbody>
+</table>
+<h2 id="upsert流">Upsert流</h2>
+<p>upsert 流包含两种类型的 message： upsert messages 和delete messages。</p>
+<p>转换为 upsert 流的动态表需要(可能是组合的)唯一键。通过将 <code>INSERT</code> 和 <code>UPDATE</code> 操作编码为 upsert message，将 <code>DELETE</code> 操作编码为 delete message ，将具有唯一键的动态表转换为流。消费流的算子需要知道唯一键的属性，以便正确地应用 message。与 retract 流的主要区别在于 <code>UPDATE</code> 操作是用单个 message 编码的，因此效率更高。</p>
+<table>
+<thead>
+<tr>
+<th>OPERATOR</th>
+<th>ENCODE</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>insert</td>
+<td>upsert</td>
+</tr>
+<tr>
+<td>update</td>
+<td>upsert</td>
+</tr>
+<tr>
+<td>delete</td>
+<td>delete</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>
+<p>将动态表转为datastream时，仅支持append 流与retract流。</p>
+</li>
+<li>
+<p>将动态表输出到外部系统时，支持Append、Retract以及Upsert模式</p>
+</li>
+</ul>
+<p><a href="https://nightlies.apache.org/flink/flink-docs-release-1.12/zh/dev/table/streaming/dynamic_tables.html">https://nightlies.apache.org/flink/flink-docs-release-1.12/zh/dev/table/streaming/dynamic_tables.html</a></p>
+
+</div>
+</main>
+
+<section class="appendix">
+
+
+
+
+
+<div>
+  <div class="side side-left"><h3>重复使用</h3></div>
+  Text and figures are licensed under <a href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution CC BY 4.0</a>. The source code is licensed under MIT. The full source is available at <a href="https://github.com/qiref/qiref.github.io">https://github.com/qiref/qiref.github.io</a>.
+</div>
+
+
+
+<div>
+  <div class="side side-left"><h3>欢迎修订</h3></div>
+  
+  
+  
+    
+    
+  
+  如果您发现本文里含有任何错误（包括错别字和标点符号），欢迎<a href="https://github.com/qiref/qiref.github.io/tree/master/content/post/2022-03-13-Flink-Append%e6%b5%81%e3%80%81Retract%e6%b5%81%e3%80%81Upsert%e6%b5%81.md" id="edit-link">在本站的 GitHub 项目里提交修订意见。</a>
+</div>
+
+
+
+
+</section>
+
+
+
+<nav class="post-nav">
+  <span class="nav-next">&larr; <a href="/post/2022/03/04/flink-checkpoint%E6%9C%BA%E5%88%B6/" title=下一篇&#32;(旧)>Flink Checkpoint机制</a></span>
+  &hercon;
+  <span class="nav-prev"><a href="/post/2023/03/22/arthas%E7%81%AB%E7%84%B0%E5%9B%BE%E4%BD%BF%E7%94%A8/" title=上一篇&#32;(新)>Arthas火焰图使用</a> &rarr;</span>
+</nav>
+
+
+<script src="https://utteranc.es/client.js"
+        repo="qiref/qiref.github.io"
+        issue-term="pathname"
+        label="Comment"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script>
+
+</div>
+
+
+  <footer>
+  
+
+
+
+
+  
+    
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-PGMJFXZJRT"></script>
+      <script>
+        var doNotTrack = false;
+        if ( false ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-PGMJFXZJRT');
+        }
+      </script>
+    
+  
+
+
+
+
+<script src="https://cdn.jsdelivr.net/combine/npm/@xiee/utils/js/number-sections.min.js,npm/@xiee/utils/js/toc.min.js,npm/@xiee/utils/js/toc-highlight.min.js,npm/@xiee/utils/js/sidenotes.min.js,npm/@xiee/utils/js/right-quote.min.js,npm/@xiee/utils/js/center-img.min.js,npm/@xiee/utils/js/fix-pandoc.min.js,npm/@xiee/utils/js/heading-anchor.min.js" defer></script>
+
+
+
+
+  <div class="footer">
+  
+  <ul>
+    
+    <li class="optional">
+      <a href="/post/">Posts</a>
+    </li>
+    
+    <li class="optional">
+      <a href="/tags/">Tags</a>
+    </li>
+    
+    <li id="menu-edit">
+      <a href="#">Suggest an edit</a>
+    </li>
+    
+    <li>
+      <a href="#">Back to top</a>
+    </li>
+    
+  </ul>
+  </div>
+  
+  </footer>
+  <script src="/js/features.js" defer></script>
+  </body>
+</html>
+

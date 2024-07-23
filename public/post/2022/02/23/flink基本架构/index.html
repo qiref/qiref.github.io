@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="cn-zh">
+  <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title> Flink基本架构 | 大道至简</title>
+    
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@xiee/utils/css/article.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@xiee/utils/css/heading-anchor.min.css">
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/fonts.css" />
+    <link rel="stylesheet" href="/css/custom.css" />
+    
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-PGMJFXZJRT"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-PGMJFXZJRT');
+</script>
+  </head>
+
+  <body>
+
+    <nav class="menu">
+    <ul>
+      <li class="left">
+        <a href="/"><span>大道至简</span></a>
+      </li>
+      
+      <li>
+        <a href="/post/">Posts</a>
+      </li>
+      
+      <li>
+        <a href="/tags/">Tags</a>
+      </li>
+      
+      <li id="menu-search">
+        <a href="/#">Search</a>
+      </li>
+      
+    </ul>
+    </nav>
+
+
+<div class="container single">
+<main>
+
+<div class="article-meta">
+<h1><span class="title">Flink基本架构</span></h1>
+
+<h3 class="date">2022-02-23</h3>
+<p class="terms">
+  
+  
+  
+  
+  Tags: <a href="/tags/flink">Flink</a> 
+  
+  
+</p>
+</div>
+
+<div class="article">
+<p>摘要： 鸟瞰 Flink 架构，分析 Flink 内部组件工作机制。</p>
+<hr>
+<ul>
+<li><a href="#flink-%E6%9E%B6%E6%9E%84%E5%9B%BE">Flink 架构图</a></li>
+<li><a href="#%E6%8F%90%E4%BA%A4%E4%BD%9C%E4%B8%9A%E6%B5%81%E7%A8%8B">提交作业流程</a></li>
+<li><a href="#flink-%E9%9B%86%E7%BE%A4%E6%A8%A1%E5%BC%8F">Flink 集群模式</a></li>
+<li><a href="#jobmanager">JobManager</a></li>
+<li><a href="#taskmanager">Taskmanager</a>
+<ul>
+<li><a href="#%E7%AE%97%E5%AD%90%E9%93%BE">算子链</a></li>
+<li><a href="#slot">Slot</a></li>
+<li><a href="#task-%E6%95%B0%E6%8D%AE%E4%BA%A4%E6%8D%A2%E7%AD%96%E7%95%A5">task 数据交换策略</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="flink-架构图">Flink 架构图</h2>
+<p><img src="/assets/img/flink-struct.svg" alt="Flink架构图"></p>
+<p>一个完整的 Flink 集群由一个 Jobmanager 和若干个 Taskmanager 组成，Jobmanager 主要负责调度 task 以及 协调 Checkpoint。Taskmanager 则负责具体的 task 执行，以及数据流的交换。</p>
+<p>可以通过多种方式启动 JobManager 和 TaskManager：直接在机器上作为standalone 集群启动、在容器中启动、或者通过YARN等资源框架管理并启动。TaskManager 连接到 JobManagers，宣布自己可用，并被分配工作。</p>
+<h2 id="提交作业流程">提交作业流程</h2>
+<p>以一个作业提交的流程来说明 Flink 各个组件是如何交互和工作的：</p>
+<p><img src="/assets/img/flink-struct-1.svg" alt="提交作业流程"></p>
+<h2 id="flink-集群模式">Flink 集群模式</h2>
+<p>Flink 集群类型一般有以下几种：</p>
+<ul>
+<li>
+<p>Flink Session 集群</p>
+<p>这种模式下，集群自创建开始，最后到集群生命周期结束，不受作业因素影响； 集群下的多个作业共享 内存、网络、磁盘等资源，如果集群出现异常，该集群下的所有作业都会收到影响。</p>
+<p>优点：提交作业速度很快，无需提前申请资源； 并且资源利用率较高。</p>
+<p>缺点：作业之间隔离性较差，横向扩展不太方便。</p>
+</li>
+<li>
+<p>Flink job 集群</p>
+<p>这种模式也称 pre-job 模式，集群交由 资源管理器托管，例如 Yarn ，需要运行作业，第一步申请资源，启动一个 Flink 集群，第二步提交作业，这种模式下，每个作业会独享一个 Flink 集群。</p>
+<p>优点：作业之间相互隔离，稳定性高，并且不同作业可以根据资源情况灵活调整。</p>
+<p>缺点：资源浪费，并且作业启动较慢。</p>
+</li>
+<li>
+<p>Flink Application 集群</p>
+<p>这种模式也称 Application 模式，这种模式的集群和作业相关，每一个作业独享一个集群，无需事先启动一个集群，而且直接从作业 jar 中提取 JobGraph 执行。这种模式下，每一个作业就是一个 Application ，同时也是一个 Flink 集群。</p>
+<p>优点：集群直接相互隔离，可以很好地利用资源；</p>
+<p>缺点：暂无。</p>
+</li>
+</ul>
+<h2 id="jobmanager">JobManager</h2>
+<p>在 Flink 集群中，JobManager 负责协调、调度 Task ，以及作业快照、从快照中恢复等功能。</p>
+<p>Jobmanager 核心组件：</p>
+<ol>
+<li>
+<p>ResourceManager</p>
+<p>ResourceManager 负责 Flink 集群中的资源分配、回收，并管理 task slot。</p>
+</li>
+<li>
+<p>Dispatcher</p>
+<p>Dispatcher 提供了一个 REST 接口，用来提交 Flink 应用程序执行，并为每个提交的作业启动一个新的 JobMaster。它还运行 Flink WebUI 用来提供作业执行信息。</p>
+</li>
+<li>
+<p>JobMaster</p>
+<p>JobMaster 负责管理单个JobGraph的执行。Flink 集群中可以同时运行多个作业，每个作业都有自己的 JobMaster。</p>
+</li>
+</ol>
+<p>一个 Flink 集群中，至少有一个 Jobmanager ，可以设定多个 Jobmanager ，leader 只有一个，其他 Jobmanager 为 standby。</p>
+<h2 id="taskmanager">Taskmanager</h2>
+<p>Taskmanager 负责具体 task 的执行，以及数据流的交换。 同时， Taskmanager 需要将资源状态向 Jobmanager 汇报。</p>
+<h3 id="算子链">算子链</h3>
+<p>假设 Flink 算子并行度为2，该算子的 subTask 有两个，Flink 会将算子的 subtasks 链接成 tasks。每个 tasks 由一个线程执行。将算子链接成 task 是个有用的优化：它减少线程间切换、缓冲的开销，并且减少延迟的同时增加整体吞吐量，此时一个线程将会执行多个 subTask。</p>
+<p>链行为是可以配置的，如果想对整个作业禁用算子链，可以调用 <code>StreamExecutionEnvironment.disableOperatorChaining()</code>。</p>
+<p><img src="/assets/img/tasks_chains.svg" alt="slot和算子的关系"></p>
+<h3 id="slot">Slot</h3>
+<p>task slot 代表 Taskmanager 中的可用资源（不包括CPU）的集合，例如，如果一个 Taskmanager 有3个 slot，那每个 slot 将会平分 Taskmanager 的内存资源，当第四个 task 提交过来时，task 将进入 SCHEDULE 状态，需要等待其他 task 执行完成，才能执行下一个 task。</p>
+<p>slot共享：</p>
+<p>默认情况下，Flink 允许 subtask 共享 slot，即便它们是不同的 task 的 subtask，只要是来自于同一作业即可。算子最大并行度和 slot 数量一致，算子之间的数据交换会根据不同的策略进行。</p>
+<p>每一个 subtasks 算子链由一个线程执行，在 slot 中的执行情况如下：</p>
+<p><img src="/assets/img/tasks_slots.svg" alt="slot和算子的关系"></p>
+<h3 id="task-数据交换策略">task 数据交换策略</h3>
+<p>数据交换策略定义了在物理执行流图中如何将数据分配给任务，</p>
+<p><img src="/assets/img/spaf_0203.png" alt="数据交换策略"></p>
+<ul>
+<li>
+<p>Forward</p>
+<p>将数据从一个任务发送到接收任务。如果两个任务都位于同一台物理计算机上（这通常由任务调度器确保），这种交换策略可以避免网络通信。</p>
+</li>
+<li>
+<p>BroadCast</p>
+<p>将所有数据发送到算子的所有的并行任务上面去。因为这种策略会复制数据和涉及网络通信，所以代价相当昂贵。</p>
+</li>
+<li>
+<p>Key-based</p>
+<p>基于键控的策略通过Key值(键)对数据进行分区保证具有相同Key的数据将由同一任务处理。</p>
+</li>
+<li>
+<p>Random</p>
+<p>随机策略统一将数据分配到算子的任务中去，以便均匀地将负载分配到不同的计算任务。</p>
+</li>
+</ul>
+<p>参考：</p>
+<p><a href="https://nightlies.apache.org/flink/flink-docs-release-1.14/zh/docs/concepts/flink-architecture/">https://nightlies.apache.org/flink/flink-docs-release-1.14/zh/docs/concepts/flink-architecture/</a></p>
+<p><a href="https://www.jianshu.com/p/3898dd13f079">https://www.jianshu.com/p/3898dd13f079</a></p>
+<p><a href="https://confucianzuoyuan.github.io/flink-tutorial/book/chapter02-01-03-%E6%95%B0%E6%8D%AE%E4%BA%A4%E6%8D%A2%E7%AD%96%E7%95%A5.html">https://confucianzuoyuan.github.io/flink-tutorial/book/chapter02-01-03-%E6%95%B0%E6%8D%AE%E4%BA%A4%E6%8D%A2%E7%AD%96%E7%95%A5.html</a></p>
+
+</div>
+</main>
+
+<section class="appendix">
+
+
+
+
+
+<div>
+  <div class="side side-left"><h3>重复使用</h3></div>
+  Text and figures are licensed under <a href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution CC BY 4.0</a>. The source code is licensed under MIT. The full source is available at <a href="https://github.com/qiref/qiref.github.io">https://github.com/qiref/qiref.github.io</a>.
+</div>
+
+
+
+<div>
+  <div class="side side-left"><h3>欢迎修订</h3></div>
+  
+  
+  
+    
+    
+  
+  如果您发现本文里含有任何错误（包括错别字和标点符号），欢迎<a href="https://github.com/qiref/qiref.github.io/tree/master/content/post/2022-02-23-Flink-%e5%9f%ba%e6%9c%ac%e6%9e%b6%e6%9e%84.md" id="edit-link">在本站的 GitHub 项目里提交修订意见。</a>
+</div>
+
+
+
+
+</section>
+
+
+
+<nav class="post-nav">
+  <span class="nav-next">&larr; <a href="/post/2022/02/22/flink-wordcount/" title=下一篇&#32;(旧)>Flink WordCount</a></span>
+  &hercon;
+  <span class="nav-prev"><a href="/post/2022/02/25/flink%E6%97%B6%E9%97%B4%E8%AF%AD%E4%B9%89/" title=上一篇&#32;(新)>Flink时间语义</a> &rarr;</span>
+</nav>
+
+
+<script src="https://utteranc.es/client.js"
+        repo="qiref/qiref.github.io"
+        issue-term="pathname"
+        label="Comment"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script>
+
+</div>
+
+
+  <footer>
+  
+
+
+
+
+  
+    
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-PGMJFXZJRT"></script>
+      <script>
+        var doNotTrack = false;
+        if ( false ) {
+          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
+          var doNotTrack = (dnt == "1" || dnt == "yes");
+        }
+        if (!doNotTrack) {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-PGMJFXZJRT');
+        }
+      </script>
+    
+  
+
+
+
+
+<script src="https://cdn.jsdelivr.net/combine/npm/@xiee/utils/js/number-sections.min.js,npm/@xiee/utils/js/toc.min.js,npm/@xiee/utils/js/toc-highlight.min.js,npm/@xiee/utils/js/sidenotes.min.js,npm/@xiee/utils/js/right-quote.min.js,npm/@xiee/utils/js/center-img.min.js,npm/@xiee/utils/js/fix-pandoc.min.js,npm/@xiee/utils/js/heading-anchor.min.js" defer></script>
+
+
+
+
+  <div class="footer">
+  
+  <ul>
+    
+    <li class="optional">
+      <a href="/post/">Posts</a>
+    </li>
+    
+    <li class="optional">
+      <a href="/tags/">Tags</a>
+    </li>
+    
+    <li id="menu-edit">
+      <a href="#">Suggest an edit</a>
+    </li>
+    
+    <li>
+      <a href="#">Back to top</a>
+    </li>
+    
+  </ul>
+  </div>
+  
+  </footer>
+  <script src="/js/features.js" defer></script>
+  </body>
+</html>
+

@@ -4,20 +4,16 @@
     <title>CAS on 大道至简</title>
     <link>https://qiref.github.io/tags/cas/</link>
     <description>Recent content in CAS on 大道至简</description>
-    <generator>Hugo -- gohugo.io</generator>
+    <generator>Hugo</generator>
     <language>cn-zh</language>
-    <lastBuildDate>Wed, 15 May 2024 15:53:46 +0800</lastBuildDate><atom:link href="https://qiref.github.io/tags/cas/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 15 May 2024 15:53:46 +0800</lastBuildDate>
+    <atom:link href="https://qiref.github.io/tags/cas/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>关于锁的总结和思考(一)</title>
-      <link>https://qiref.github.io/post/2024/05/15/%E5%85%B3%E4%BA%8E%E9%94%81%E7%9A%84%E6%80%BB%E7%BB%93%E5%92%8C%E6%80%9D%E8%80%83%E4%B8%80/</link>
+      <title>关于锁的思考和总结(一)</title>
+      <link>https://qiref.github.io/post/2024/05/15/%E5%85%B3%E4%BA%8E%E9%94%81%E7%9A%84%E6%80%9D%E8%80%83%E5%92%8C%E6%80%BB%E7%BB%93%E4%B8%80/</link>
       <pubDate>Wed, 15 May 2024 15:53:46 +0800</pubDate>
-      
-      <guid>https://qiref.github.io/post/2024/05/15/%E5%85%B3%E4%BA%8E%E9%94%81%E7%9A%84%E6%80%BB%E7%BB%93%E5%92%8C%E6%80%9D%E8%80%83%E4%B8%80/</guid>
-      <description>func add (a *int) *int { *a++ // 线程不安全 return a } 这是一段很典型的线程不安全的代码示例, 在并发场景下, a 的结果是不确定的, 大概率会小于 1000, 原因是 a++ 并非原子操作, 会存在同时有两个协程读取到 a 的值是相同的情况, 执行 a++之后再重新回写时, a的值也是相同的, 想要变为线程安全, 就需要在操作临界资源之前加锁;
-Mutex 在操作共享资源之前加锁, 然后操作完临界资源之后释放锁, 保证同时只有一个协程操作临界资源;
-var mu sync.Mutex func addSafe(a *int) *int { mu.Lock() // 加锁 defer mu.Unlock() // 释放锁 *a++ return a } 锁在多线程或多进程环境中实现资源的互斥访问。当一个线程或进程想要访问某个共享资源（如数据结构、文件等）时，它必须首先尝试获取该资源对应的锁。如果锁未被其他线程或进程占用，那么请求的线程或进程将获得锁并继续执行；否则，它将等待，直到锁被释放。
-// If the lock is already in use, the calling goroutine // blocks until the mutex is available.</description>
+      <guid>https://qiref.github.io/post/2024/05/15/%E5%85%B3%E4%BA%8E%E9%94%81%E7%9A%84%E6%80%9D%E8%80%83%E5%92%8C%E6%80%BB%E7%BB%93%E4%B8%80/</guid>
+      <description>func add (a *int) *int { *a++ // 线程不安全 return a } 这是一段很典型的线程不安全的代码示例, 在并发场景下, a 的结果是不确定的, 大概率会小于 1000, 原因是 a++ 并非原子操作, 会存在同时有两个协程读取到 a 的值是相同的情况, 执行 a++之后再重新回写时, a的值也是相同的, 想要变为线程安全, 就需要在操作临界资源之前加锁;&#xA;Mutex 在操作共享资源之前加锁, 然后操作完临界资源之后释放锁, 保证同时只有一个协程操作临界资源;&#xA;var mu sync.Mutex func addSafe(a *int) *int { mu.Lock() // 加锁 defer mu.Unlock() // 释放锁 *a++ return a } 锁在多线程或多进程环境中实现资源的互斥访问。当一个线程或进程想要访问某个共享资源（如数据结构、文件等）时，它必须首先尝试获取该资源对应的锁。如果锁未被其他线程或进程占用，那么请求的线程或进程将获得锁并继续执行；否则，它将等待，直到锁被释放。&#xA;// If the lock is already in use, the calling goroutine // blocks until the mutex is available.</description>
     </item>
-    
   </channel>
 </rss>
