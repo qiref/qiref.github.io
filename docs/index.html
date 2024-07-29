@@ -70,6 +70,36 @@
     <tr>
     <td>
     
+    <h1><a href="/post/2024/07/25/%E4%B8%A4%E9%98%B6%E6%AE%B5%E6%8F%90%E4%BA%A4%E5%92%8C%E4%B8%89%E9%98%B6%E6%AE%B5%E6%8F%90%E4%BA%A4/">两阶段提交和三阶段提交</a></h1>
+    <div>
+      <span>2024-07-25</span>
+      
+    </div>
+    <div class="summary">
+      
+      
+      
+      
+      分布式共识问题是指在分布式系统中，多个节点或参与者需要就某个共同的结果达成一致意见的问题。例如主从同步问题, 简单的主从同步可以借助两阶段提交和三阶段提交来解决,确保所有节点上的事务操作能够保持一致性，即要么全部提交，要么全部回滚。
+[&hellip;] 在主从同步的场景中, backup 需要从 master 同步数据, 从数据写入的场景来说, 假定主从节点是同步复制, 实际上就是一次分布式事 &hellip;
+      <a href="/post/2024/07/25/%E4%B8%A4%E9%98%B6%E6%AE%B5%E6%8F%90%E4%BA%A4%E5%92%8C%E4%B8%89%E9%98%B6%E6%AE%B5%E6%8F%90%E4%BA%A4/" class="more" title=阅读全文>阅读全文 &rarr;</a>
+    </div>
+    </td>
+    
+    <td class="spacer spacer-right"></td>
+    <td class="side-title"><h1><a href="/post/">post</a></h1></td>
+    
+    </tr>
+    </tbody>
+    </table>
+  </section>
+
+  <section class="article-list post-card">
+    <table>
+    <tbody>
+    <tr>
+    <td>
+    
     <h1><a href="/post/2024/05/21/%E5%85%B3%E4%BA%8E%E9%94%81%E7%9A%84%E6%80%9D%E8%80%83%E5%92%8C%E6%80%BB%E7%BB%93%E4%BA%8C/">关于锁的思考和总结(二)</a></h1>
     <div>
       <span>2024-05-21</span>
@@ -324,38 +354,6 @@ import ( &quot;net/http&quot; _ &quot;net/http/pprof&quot; &quot;strconv&quot; )
       &Dopf;ataflow 的核心计算模型非常简单，它只有两个概念，一个叫做 ParDo，就是并行处理的意思；另一个叫做 GroupByKey，也就是按照 Key 进行分组。
 [&hellip;] ParDo 用来进行通用的并行化处理。每个输入元素（这个元素本身有可能是一个有限的集合）都会使用一个 UDF 进行处理（在Dataflow中叫做DoFn），输出是0或多个输出元素。这个例子是把键的前缀进行展开，然 &hellip;
       <a href="/post/2023/05/16/the-dataflow-model-%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/" class="more" title=阅读全文>阅读全文 &rarr;</a>
-    </div>
-    </td>
-    
-    <td class="spacer spacer-right"></td>
-    <td class="side-title"><h1><a href="/post/">post</a></h1></td>
-    
-    </tr>
-    </tbody>
-    </table>
-  </section>
-
-  <section class="article-list post-card">
-    <table>
-    <tbody>
-    <tr>
-    <td>
-    
-    <h1><a href="/post/2023/05/12/%E5%A0%86%E5%92%8C%E5%A0%86%E6%8E%92%E5%BA%8F/">堆和堆排序</a></h1>
-    <div>
-      <span>2023-05-12</span>
-      
-    </div>
-    <div class="summary">
-      
-      
-      
-      
-      堆的本质是树，用数组表示的完全二叉树；
-[&hellip;] 一棵深度为k且有 2^k - 1 个结点的二叉树称为满二叉树。
-根据二叉树的性质2, 满二叉树每一层的结点个数都达到了最大值, 即满二叉树的第i层上有 2^(i-1) 个结点 (i≥1) 。
-如果对满二叉树的结点进行编号, 约定编号从根结点起, 自上而下, 自左而右。则深度为k的, 有n个结点的二叉树, 当且仅当其每一个结点都与深度为k &hellip;
-      <a href="/post/2023/05/12/%E5%A0%86%E5%92%8C%E5%A0%86%E6%8E%92%E5%BA%8F/" class="more" title=阅读全文>阅读全文 &rarr;</a>
     </div>
     </td>
     

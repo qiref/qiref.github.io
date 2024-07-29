@@ -69,6 +69,33 @@
     <tr>
     <td>
     
+    <h1><a href="/post/2021/07/08/git%E5%B7%A5%E7%A8%8B%E6%8B%86%E5%88%86/">Git工程拆分</a></h1>
+    <div>
+      <span>2021-07-08</span>
+      
+    </div>
+    <div class="summary">
+      
+      
+      
+      
+      摘要：Git将工程按目录拆分。
+[&hellip;] # /project/ # ----/test/ # 将test目录抽成单独的工程 cd /project/test # 拆分子目录 $ git subtree split -P test -b test-new-br $ mkdir ../test-new-br $ cd ../test-new-br # 创建子工程 $ git init $ &hellip;
+      <a href="/post/2021/07/08/git%E5%B7%A5%E7%A8%8B%E6%8B%86%E5%88%86/" class="more" title=阅读全文>阅读全文 &rarr;</a>
+    </div>
+    </td>
+    
+    </tr>
+    </tbody>
+    </table>
+  </section>
+
+  <section class="article-list post-card">
+    <table>
+    <tbody>
+    <tr>
+    <td>
+    
     <h1><a href="/post/2021/06/29/kubernates%E4%B8%AD%E7%9A%84pod/">Kubernates中的pod</a></h1>
     <div>
       <span>2021-06-29</span>
@@ -307,35 +334,6 @@ func DeferDemo() { defer fmt.Println(&quot;this is defer println&quot;) &hellip;
 [&hellip;] 定义channel的语法为：make(chan val-type)，val-type就是需要传递值的类型。 chan1 &lt;- val 表示将val发送到channel chann1中， r := &lt;- chann1表示从chann1中读取消息。
 func &hellip;
       <a href="/post/2021/06/09/go%E8%AF%AD%E8%A8%80channel/" class="more" title=阅读全文>阅读全文 &rarr;</a>
-    </div>
-    </td>
-    
-    </tr>
-    </tbody>
-    </table>
-  </section>
-
-  <section class="article-list post-card">
-    <table>
-    <tbody>
-    <tr>
-    <td>
-    
-    <h1><a href="/post/2021/06/05/go%E8%AF%AD%E8%A8%80%E6%8E%A5%E5%8F%A3/">Go语言接口</a></h1>
-    <div>
-      <span>2021-06-05</span>
-      
-    </div>
-    <div class="summary">
-      
-      
-      
-      
-      摘要：Go支持接口，接口是方法特征的命名集合。
-[&hellip;] go语言中有接口的概念，接口是方法特征的命名集合。它把所有的具有共性的方法定义在一起，任何其他类型只要实现了这些方法就是实现了这个接口。
-注意，实现了这些方法就算实现了这个接口。
-[&hellip;] // 定义geometry接口 type geometry interface { area() float64 peri() &hellip;
-      <a href="/post/2021/06/05/go%E8%AF%AD%E8%A8%80%E6%8E%A5%E5%8F%A3/" class="more" title=阅读全文>阅读全文 &rarr;</a>
     </div>
     </td>
     

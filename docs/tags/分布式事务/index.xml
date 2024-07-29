@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>分布式事务 on 大道至简</title>
+    <link>https://qiref.github.io/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/</link>
+    <description>Recent content in 分布式事务 on 大道至简</description>
+    <generator>Hugo</generator>
+    <language>cn-zh</language>
+    <lastBuildDate>Thu, 25 Jul 2024 20:57:06 +0800</lastBuildDate>
+    <atom:link href="https://qiref.github.io/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>两阶段提交和三阶段提交</title>
+      <link>https://qiref.github.io/post/2024/07/25/%E4%B8%A4%E9%98%B6%E6%AE%B5%E6%8F%90%E4%BA%A4%E5%92%8C%E4%B8%89%E9%98%B6%E6%AE%B5%E6%8F%90%E4%BA%A4/</link>
+      <pubDate>Thu, 25 Jul 2024 20:57:06 +0800</pubDate>
+      <guid>https://qiref.github.io/post/2024/07/25/%E4%B8%A4%E9%98%B6%E6%AE%B5%E6%8F%90%E4%BA%A4%E5%92%8C%E4%B8%89%E9%98%B6%E6%AE%B5%E6%8F%90%E4%BA%A4/</guid>
+      <description>分布式共识问题 分布式共识问题是指在分布式系统中，多个节点或参与者需要就某个共同的结果达成一致意见的问题。例如主从同步问题, 简单的主从同步可以借助两阶段提交和三阶段提交来解决,确保所有节点上的事务操作能够保持一致性，即要么全部提交，要么全部回滚。&#xA;两阶段提交 在主从同步的场景中, backup 需要从 master 同步数据, 从数据写入的场景来说, 假定主从节点是同步复制, 实际上就是一次分布式事务, backup 和 master 的一次写入要么都成功, 要么都失败, 才能保证主从节点的数据一致性;&#xA;借助两阶段提交, 需要引入一个协调者: Coordinator, 如下:&#xA;将提交过程分为两个阶段: PreCommit、commit;&#xA;在 PreCommit 阶段, 执行 WAL 流程, 把事务日志提前写入, 然后 Coordinator 在收到参与者的 PreCommit ack 之后, 开启第二阶段 commit, commit 成功之后, 数据才算是真正的写入. 当 PreCommit 失败时, Coordinator 会发起事务回滚, 所有参与者会基于 WAL 的事务日志, 回滚此次事务;&#xA;当 Coordinator 和 Participant 网络异常时, 如果是在 PreCommit 阶段, 那事务都不会提交, 相当于一次写入就失败了; 如果在 commit 阶段网络异常, Coordinator 会重试执行, 直到 Participant 恢复, 事务重新提交或者回滚. 但在此期间, 客户端的写入都会被拒绝, 此时分布式系统处于不可用状态(相当于保证了数据一致性, 牺牲了可用性)</description>
+    </item>
+  </channel>
+</rss>
