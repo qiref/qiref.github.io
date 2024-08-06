@@ -135,6 +135,16 @@ while true do
 <p>在第 7 步接收到<code>hw</code>后，非冲突的chunk块将被提交写入，以便按顺序发送到下游。这是一个非阻塞操作，因为写入在单独的线程中运行，允许在step 7 之后快速恢复日志处理。然后，<code>changelog</code>处理将继续处理<code>hw</code>之后发生的事件。</p>
 <p>在下图中，使用上图相同的示例来描述整个同步数据的写顺序, 出现在<code>hw</code>之前的<code>changelog</code>首先被写入, 然后是chunk结果(被修正后), 最后是在<code>hw</code>之后发生的<code>changelog</code>。</p>
 <p><img src="/assets/img/DBLog-5.svg" alt="DBLog-5"></p>
+<h3 id="问题">问题</h3>
+<h4 id="当chunk划分完之后-进入增量的-binlog-offset-应该如何选取">当chunk划分完之后, 进入增量的 binlog offset 应该如何选取?</h4>
+<p>chunk 划分过程中,实际上已经把 <code>lw</code> 到 <code>hw</code> 范围中的增量数据, 合并到 chunk 的全量数据中(只合并chunk范围内的数据), 因此, 增量阶段的 binlog offset 应该要从chuck中最小的 <code>hw</code> 开始, 一直到最大的 <code>hw</code> 为止, 这个范围内的数据, 如果 binlog 已经包含在 chunk 中, 就无需处理, 否则往下游发送;</p>
+<p>增量阶段开始的 offset 为什么不是最小的 <code>lw</code> ? 如果从chuck中最小的 <code>hw</code> 开始, 那从 <code>lw - hw</code> 这一段的 binlog中, 没被合并到 chunk 中的 binlog不就漏掉了?</p>
+<p>如下图, [lw1, hw1] 这个范围中, 如果在 chunk 中, 会合并, 如果不在 chunk 中, 这个范围的数据在下一个 chunk 的全量阶段能查询到, 所以从 <code>min(hw)</code> 的 offset 开启增量阶段即可.</p>
+<p><img src="/assets/img/DBLog-6.svg" alt="DBLog-6"></p>
+<h4 id="多个-chunk-读取是并行的-如果两个-chunk-的-lw-到-hw-binlog-数据有交叉-或者-chunk-乱序-是否会影响结果">多个 chunk 读取是并行的, 如果两个 chunk 的 <code>lw</code> 到 <code>hw</code> binlog 数据有交叉, 或者 chunk 乱序, 是否会影响结果?</h4>
+<p>在增量阶段开始时, 会从 <code>min(hw)</code> 的 offset 开始消费 binlog, 直到 <code>max(hw)</code>, 此范围中的数据, 如果是不在对应的 chunk 中(全量阶段已经合并), 则会向下游发送;</p>
+<p>当 watermark 有交叉时, 交叉部分的 binlog 会依次在不同的 chunk 中进行判断, 因此不会重复;
+当 watermark 乱序时, 全量阶段,每个 chunk 划分的范围不同, 乱序没有影响, 至于 binlog 消费, 也是顺序的, 不会影响增量阶段的顺序;</p>
 <h2 id="参考">参考</h2>
 <p><a href="https://arxiv.org/pdf/2010.12597.pdf">https://arxiv.org/pdf/2010.12597.pdf</a></p>
 <p><a href="https://netflixtechblog.com/dblog-a-generic-change-data-capture-framework-69351fb9099b">https://netflixtechblog.com/dblog-a-generic-change-data-capture-framework-69351fb9099b</a></p>
