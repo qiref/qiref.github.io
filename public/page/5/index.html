@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+	<meta name="generator" content="Hugo 0.127.0"><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+<title>MeiK&#39;s blog</title>
+
+
+
+  
+
+
+<meta charset="utf-8">
+<meta name="X-UA-Compatible" content="IE=edge">
+<meta name="google-site-verification" content="UA-123456-789">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=5, user-scalable=5" name="viewport">
+<meta content="telephone=no" name="format-detection">
+<meta name="description" content="In solitude, where we are least alone.">
+<meta name="renderer" content="webkit">
+<meta name="theme-color" content="#ffffff">
+
+
+
+
+
+
+
+
+
+
+
+  
+    
+      
+    
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+<link rel="icon" href="http://localhost:1313/images/github.png">
+
+
+
+    <link type="text/css" rel="stylesheet" href="/vendor/css/bootstrap.min.css">
+
+<link rel="stylesheet" href="/scss/dark-mode.min.cb53f1bee2b8900cb4f082afbf00175d6618f281cf9a2fe8619e3b52d20b5721.css" integrity="sha256-y1PxvuK4kAy08IKvvwAXXWYY8oHPmi/oYZ47UtILVyE=" media="screen">
+
+
+<link rel="stylesheet"
+          href="https://fonts.googleapis.com/css?family=Material+Icons">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body>
+    	<div id="app"><div class="single-column-drawer-container" id="drawer"
+     v-bind:class="{ 'single-column-drawer-container-active': isDrawerOpen }">
+    <div class="drawer-content">
+        <div class="drawer-menu">
+            
+            
+            
+            
+        </div>
+    </div>
+</div>
+<transition name="fade">
+    <div id="drawer-mask" v-bind:class="{ 'single-column-drawer-mask': mounted }" v-if="isDrawerOpen" v-on:click="toggleDrawer"></div>
+</transition>
+<nav id="navBar" class="navbar sticky-top navbar-light single-column-nav-container">
+    <div id="navBackground" class="nav-background"></div>
+    <div class="container container-narrow nav-content">
+        <button id="nav_dropdown_btn" class="nav-dropdown-toggle" type="button" v-on:click="toggleDrawer">
+            <i class="material-icons">
+                menu
+            </i>
+        </button>
+        <a id="navTitle" class="navbar-brand" href="http://localhost:1313/">
+            MeiK&#39;s blog
+        </a>
+        
+        <button type="button" class="nav-darkmode-toggle" id="darkModeToggleButton2">
+            <i class="material-icons" id="darkModeToggleIcon2">
+                dark_mode
+            </i>
+        </button>
+        
+    </div>
+</nav>
+<div class="single-column-header-container" id="pageHead"
+     v-bind:style="{ transform: 'translateZ(0px) translateY('+.3*scrollY+'px)', opacity: 1-navOpacity }">
+    <a href="http://localhost:1313/">
+        <div class="single-column-header-title">MeiK&#39;s blog</div>
+        
+
+    </a>
+</div>
+
+            <div id="content">
+                <div id="streamContainer" class="stream-container">
+
+    <div class="post-list-container post-list-container-no-background">
+        
+        
+            <a href="/post/2021-06-05-go%E8%AF%AD%E8%A8%80%E6%8C%87%E9%92%88/" class="a-block">
+                <div class="post-item-wrapper">
+                    <div class="post-item post-item-no-divider">
+                        <div class="post-item-info-wrapper">
+                            <div class="post-item-title">
+                                Go语言指针
+                            </div>
+                            <div class="post-item-summary">
+                                
+                                    摘要：Go支持指针，允许在程序中通过引用传递值或者数据结构。
+go语言中的指针和C语言中的指针类似，但比C语言中的指针更简单。
+// Go语言取地址符号是&amp;，放到变量前会返回对应变量的内存地址 var i1 int = 1 var j = i1 fmt.Println(&amp;i1) fmt.Println(&amp;j) // 定义指针变量 var var_name *var_type s := &#34;sss&#34; p := 2181 var ip *string = &amp;s var port *int = &amp;p fmt.Println(*ip) fmt.Println(*port) 变量、指针和地址三者的关系是，每个变量都拥有地址，指针的值就是地址。
+通过&amp; 获取对应变量的内存地址。 通过* 获取指针的值，也就是指针取值。取地址操作符 &amp; 和取值操作符 * 是一对互补操作符，&amp; 取出地址，* 根据地址取出地址指向的值。
+变量、指针地址、指针变量、取地址、取值的相互关系和特性如下：
+对变量进行取地址操作使用&amp;操作符，可以获得这个变量的指针变量。 指针变量的值是指针地址。 对指针变量进行取值操作使用*操作符，可以获得指针变量指向的原变量的值。 通过New()创建指针 Go语言还提供了另外一种方法来创建指针变量，格式如下： new(type) 这个type可以为int。
+// create ptr by new() func createPtr() { str := new(string) *str = &#34;ssss&#34; fmt.
+                                
+                            </div>
+                            <div class="post-item-meta">
+    2021-06-05
+    &emsp;
+    
+    
+    
+    &emsp;
+    
+</div>
+
+                        </div>
+                        
+                        
+                    </div>
+                </div>
+        
+            <a href="/post/2021-06-05-go%E8%AF%AD%E8%A8%80%E6%8E%A5%E5%8F%A3/" class="a-block">
+                <div class="post-item-wrapper">
+                    <div class="post-item post-item-no-divider">
+                        <div class="post-item-info-wrapper">
+                            <div class="post-item-title">
+                                Go语言接口
+                            </div>
+                            <div class="post-item-summary">
+                                
+                                    摘要：Go支持接口，接口是方法特征的命名集合。
+go语言接口 go语言中有接口的概念，接口是方法特征的命名集合。它把所有的具有共性的方法定义在一起，任何其他类型只要实现了这些方法就是实现了这个接口。
+注意，实现了这些方法就算实现了这个接口。
+定义接口 // 定义geometry接口 type geometry interface { area() float64 peri() float64 } 接口的定义也比较简单。定义和实现规则如下：
+/* 定义接口 */ type interface_name interface { method_name1 [return_type] method_name2 [return_type] method_name3 [return_type] ... method_namen [return_type] } /* 定义结构体 */ type struct_name struct { /* variables */ } /* 实现接口方法 */ func (struct_name_variable struct_name) method_name1() [return_type] { /* 方法实现 */ } ... func (struct_name_variable struct_name) method_namen() [return_type] { /* 方法实现*/ } 实现接口 Go语言中接口的实现都是隐式的，默认实现了接口的所有方法就隐式地实现了接口。
+                                
+                            </div>
+                            <div class="post-item-meta">
+    2021-06-05
+    &emsp;
+    
+    
+    
+    &emsp;
+    
+</div>
+
+                        </div>
+                        
+                        
+                    </div>
+                </div>
+        
+            <a href="/post/2021-06-03-go%E8%AF%AD%E8%A8%80goroutine/" class="a-block">
+                <div class="post-item-wrapper">
+                    <div class="post-item post-item-no-divider">
+                        <div class="post-item-info-wrapper">
+                            <div class="post-item-title">
+                                Go语言goroutine
+                            </div>
+                            <div class="post-item-summary">
+                                
+                                    摘要：Go语言goroutine
+goroutine协程 Go 协程 在执行上来说是轻量级的线程。go语言层面并不支持多进程或多线程，但是协程更好用，协程被称为用户态线程，不存在CPU上下文切换问题，效率非常高。
+go语言中启动一个协程非常简单，只需要在执行函数前加上go关键字，就可以启用goroutine。
+func main() { // 使用匿名函数启用goroutine go func() { fmt.Println(&#34;goroutine&#34;) }() // 调用函数启用goroutine go func1() } func func1() { fmt.Println(&#34;f1() was called.&#34;) } 没错就是这么简单，在go语言中，goroutine会被放到运行队列runtime.runqput中，然后由调度器调度。并非是每一个协程都会有一个对应的线程去执行，协程比线程的粒度更细。
+但是上述代码并不会有输出结果，因为还没等func1()函数执行完成，main()就已经执行完成了。所以在main()函数执行完成之前sleep一下就可以看到func1()的执行结果。
+time.Sleep(time.Second * 1) WaitGroup sleep肯定是不靠谱的，go语言中可以等待协程执行完成后再回到主线程。
+// 定义全局变量 var WG = sync.WaitGroup{} func main() { WG.Add(1) go func1() WG.Wait() } func func1() { fmt.Println(&#34;f1() was called.&#34;) WG.Done() } 在调用func1()之前，调用全局变量WG.Add()方法，然后启用goroutine调用func1()，然后调用WG.Wait()函数进行等待，fun1()调用结束后，调用WG.Done()。 通过试验可以发现：Add()方法中的数值与Done()方法的数量应该保持一致。当Add(2)时，Done()方法应该执行两次。直到 WaitGroup 计数器恢复为 0； 即所有协程的工作都已经完成。 看源码可以发现，Done()与Add()实际上是一个函数。
+// Done decrements the WaitGroup counter by one.
+                                
+                            </div>
+                            <div class="post-item-meta">
+    2021-06-03
+    &emsp;
+    
+    
+    
+    &emsp;
+    
+</div>
+
+                        </div>
+                        
+                        
+                    </div>
+                </div>
+        
+            <a href="/post/2021-06-01-go%E8%AF%AD%E8%A8%80%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" class="a-block">
+                <div class="post-item-wrapper">
+                    <div class="post-item post-item-no-divider">
+                        <div class="post-item-info-wrapper">
+                            <div class="post-item-title">
+                                Go语言基本数据结构
+                            </div>
+                            <div class="post-item-summary">
+                                
+                                    摘要：Go语言基本数据结构
+数组 strings := [3]string{&#34;1&#34;, &#34;2&#34;, &#34;2&#34;} intArray := [8]int{1, 2, 3, 4, 5, 5, 5, 55} 定义两个数组,fmt.Println(len(strings)) 可以使用len()函数得到数组的长度，strings[1]可以获取指定数组下标的元素。
+所以通过以下方式可以遍历数组：
+for i := 0; i &lt; len(strings); i++ { fmt.Println(strings[i]) } 下文提供了更加优雅的方式。
+slice Go数组的长度不可变，Go提供了一种内置类型切片:slice，与数组相比，切片的长度不是固定的，可以动态扩容、添加元素。
+slice1 := make([]string, 2) fmt.Println(slice1) slice1[0] = &#34;22&#34; slice1[1] = &#34;222&#34; fmt.Println(slice1) slice1 = append(slice1, &#34;33&#34;, &#34;44&#34;, &#34;55&#34;) fmt.Println(slice1) fmt.Println(len(slice1)) // 裁剪，从index 2 到index 4 sliceSub := slice1[2:4] fmt.Println(sliceSub) // 裁剪，从index 2 到最后 sliceSub2 := slice1[2:] fmt.
+                                
+                            </div>
+                            <div class="post-item-meta">
+    2021-06-01
+    &emsp;
+    
+    
+    
+    &emsp;
+    
+</div>
+
+                        </div>
+                        
+                        
+                    </div>
+                </div>
+        
+            <a href="/post/2021-05-31-go%E8%AF%AD%E8%A8%80%E5%8F%98%E9%87%8F/" class="a-block">
+                <div class="post-item-wrapper">
+                    <div class="post-item post-item-no-divider">
+                        <div class="post-item-info-wrapper">
+                            <div class="post-item-title">
+                                Go语言变量
+                            </div>
+                            <div class="post-item-summary">
+                                
+                                    摘要：Go语言变量
+Go语言中的变量定义相对严格，当定义一个局部变量为使用时，会编译报错，在go语言中，无需要多余的代码。但全局变量除外，定义全局变量允许暂不使用。
+全局变量 全局变量可以被全局访问
+定义全局变量：
+// global variable var x, y int var ( a int b bool ) 基本常量 常量一经被定义后无法被重新赋值，常量可以定义为全局的，也可以定义为局部的。
+定义常量：
+// 这是一个常量 const CONST1 = 111 iota常量 iota，特殊常量，可以认为是一个可以被编译器修改的常量。 iota 在 const关键字出现时将被重置为 0(const 内部的第一行之前)，const 中每新增一行常量声明将使 iota 计数一次(iota 可理解为 const 语句块中的行索引)。
+const ( a = iota b = iota c = iota ) // 以上写法可以简写为 const ( d = iota e f ) fmt.Println(a, b, c) fmt.Println(d, e, f) // 输出结果： // 0 1 2 // 0 1 2 iota常量可以恢复计数
+                                
+                            </div>
+                            <div class="post-item-meta">
+    2021-05-31
+    &emsp;
+    
+    
+    
+    &emsp;
+    
+</div>
+
+                        </div>
+                        
+                        
+                    </div>
+                </div>
+        
+            <a href="/post/2020-10-21-mysql%E6%89%A7%E8%A1%8C%E8%AE%A1%E5%88%92/" class="a-block">
+                <div class="post-item-wrapper">
+                    <div class="post-item post-item-no-divider">
+                        <div class="post-item-info-wrapper">
+                            <div class="post-item-title">
+                                MySQL执行计划
+                            </div>
+                            <div class="post-item-summary">
+                                
+                                    什么是SQL执行计划 EXPLAIN命令是查看查询优化器如何决定执行查询的主要的方法，学会解释EXPLAIN将帮助我们了解SQL优化器是如何工作的。执行计划可以告诉我们SQL如何使用索引，连接查询的执行顺序，查询的数据行数。 要使用EXPLAIN,只需要在查询的SELECT关键字之前增加EXPLAIN这个词。
+MySQL [dev]&gt; explain select * from TableName where Name like &#39;%c&#39;; +----+-------------+--------------+------------+------+---------------+------+---------+------+------+----------+-------------+ | id | select_type | table | partitions | type | possible_keys | key | key_len | ref | rows | filtered | Extra | +----+-------------+--------------+------------+------+---------------+------+---------+------+------+----------+-------------+ | 1 | SIMPLE | ClusterGroup | NULL | ALL | NULL | NULL | NULL | NULL | 254 | 11.11 | Using where | +----+-------------+--------------+------------+------+---------------+------+---------+------+------+----------+-------------+ 1 row in set, 1 warning (0.
+                                
+                            </div>
+                            <div class="post-item-meta">
+    2020-10-21
+    &emsp;
+    
+    
+    
+    &emsp;
+    
+</div>
+
+                        </div>
+                        
+                        
+                    </div>
+                </div>
+        
+            <a href="/post/2019-12-14-centos%E6%90%AD%E5%BB%BA%E5%85%AC%E5%85%B1yum%E6%BA%90/" class="a-block">
+                <div class="post-item-wrapper">
+                    <div class="post-item post-item-no-divider">
+                        <div class="post-item-info-wrapper">
+                            <div class="post-item-title">
+                                Centos搭建公共yum源
+                            </div>
+                            <div class="post-item-summary">
+                                
+                                    摘要：记录在Centos7中如何挂载ISO镜像作yum源，并借助http服务作公共yum源。
+部署yum私服 上传centos镜像文件到服务器
+mount -t iso9660 -o loop centos-7-x86_64-dvd-1511.iso /mnt/cdrom/ （卸载：umoutn /mnt/cdrom)
+挂载成功！ 将软件链接到http服务发布路径下 确定当前服务器是否安装了httpd服务
+ln -s /mnt/cdrom/ /var/www/html/CentOS7 检查http服务
+systemctl status httpd.service 启动HTTP服务器
+systemctl enable httpd.service systemctl start httpd.service 界面查看
+cd /etc/yum.repos.d/ mkdir bak mv centos-* bak vi CentOS-Base.repo [base] name=CentOS-$releasever - Base baseurl=http://192.168.67.15/CentOS7/ gpgcheck=1 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7 分发到所有服务器
+scp -r /etc/yum.repos.d/ hadoop-01:/etc/ scp -r /etc/yum.repos.d/ hadoop-02:/etc/ 检查是否正成功安装yum 源
+yum clean all yum makecache yum list 如果能看到软件列表则说明安装成功。
+                                
+                            </div>
+                            <div class="post-item-meta">
+    2019-12-14
+    &emsp;
+    
+    
+    
+    &emsp;
+    
+</div>
+
+                        </div>
+                        
+                        
+                    </div>
+                </div>
+        
+            <a href="/post/2019-9-4-%E9%80%86%E6%B3%A2%E5%85%B0%E8%A1%A8%E8%BE%BE%E5%BC%8F%E7%AE%97%E6%B3%95/" class="a-block">
+                <div class="post-item-wrapper">
+                    <div class="post-item post-item-no-divider">
+                        <div class="post-item-info-wrapper">
+                            <div class="post-item-title">
+                                逆波兰表达式算法
+                            </div>
+                            <div class="post-item-summary">
+                                
+                                    摘要：将中缀表达式转化为后缀表达式，以及计算后缀表达式的算法。
+import org.slf4j.Logger; import org.slf4j.LoggerFactory; import java.util.HashSet; import java.util.Scanner; import java.util.Stack; /** * @author YaoQi * Date: 2019/1/5 15:45 * Modified: * Description: 中缀表达式转后缀表达式 */ public class InfixToSuffixHandler { private static final Logger logger = LoggerFactory.getLogger(InfixToSuffixHandler.class); private static HashSet&lt;Character&gt; opStr = new HashSet&lt;&gt;(); static { logger.info(&#34;Initialization operator&#34;); opStr.add(&#39;+&#39;); opStr.add(&#39;-&#39;); opStr.add(&#39;*&#39;); opStr.add(&#39;/&#39;); logger.info(&#34;Initialization finished&#34;); } /** * 判断字符是否为操作符 * * @param c 字符 * @return */ private static boolean isOpStr(char c) { return opStr.
+                                
+                            </div>
+                            <div class="post-item-meta">
+    2019-09-04
+    &emsp;
+    
+    
+    
+    &emsp;
+    
+</div>
+
+                        </div>
+                        
+                        
+                    </div>
+                </div>
+        
+            <a href="/post/2019-7-27-spark%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-rdd%E5%9F%BA%E7%A1%80%E7%AE%97%E5%AD%90/" class="a-block">
+                <div class="post-item-wrapper">
+                    <div class="post-item post-item-no-divider">
+                        <div class="post-item-info-wrapper">
+                            <div class="post-item-title">
+                                spark学习笔记-RDD基础算子
+                            </div>
+                            <div class="post-item-summary">
+                                
+                                    摘要：学习spark过程中的笔记，记录spark中的基础算子，以及RDD的基本概念。
+spark transform operation 源码地址：https://github.com/YaoQi17/sparkLearning/tree/master/sparkRDD
+总结 RDD(Resilient Distributed Dataset) 弹性分布式数据集，是一组分布式的数据集合，里面的元素可并行计算，可分区； RDD允许用户在执行多个查询时显示地将工作集缓存在内存中，例如persist()；
+创建方式 创建RDD的两种方式：
+读取外界文件 外界文件不局限于系统文件，包括HDFS、HBase等
+sparkSession.sparkContext.textFile(&#34;sparkRDD/src/main/resources/data.txt&#34;) 通过并行化的方式创建 val sparkSession = getDefaultSparkSession val dataArray = Array(1, 2, 3, 4, 5, 6) // 创建一个RDD val rdd = sparkSession.sparkContext.parallelize(dataArray) 通过并行化的方式创建还可以指定分区的数量
+/** Distribute a local Scala collection to form an RDD. * * @note Parallelize acts lazily. If `seq` is a mutable collection and is altered after the call * to parallelize and before the first action on the RDD, the resultant RDD will reflect the * modified collection.
+                                
+                            </div>
+                            <div class="post-item-meta">
+    2019-07-27
+    &emsp;
+    
+    
+    
+    &emsp;
+    
+</div>
+
+                        </div>
+                        
+                        
+                    </div>
+                </div>
+        
+            <a href="/post/2019-7-11-springboot-hbase/" class="a-block">
+                <div class="post-item-wrapper">
+                    <div class="post-item post-item-no-divider">
+                        <div class="post-item-info-wrapper">
+                            <div class="post-item-title">
+                                SpringBoot HBase
+                            </div>
+                            <div class="post-item-summary">
+                                
+                                    摘要:记录自己写的一个基于SpringBoot操作HBase的组件，支持kerberos认证方式访问，本文相当于API文档。
+HBase 组件接口文档 源码地址：https://github.com/YaoQi17/HBase-Component
+使用说明 基本概念
+table: 表
+columnFamily:列族，一个表下可以有多个列族，但是不建议设置多个列族，HBase建议设计长窄型的表而不是短宽型。
+qualifier:列，一个列族下可以有多列，一个表中的列可以是不对齐的，但是这样效率不高，同一张表中的列最好是相同的。
+cell:一列数据下的一个单元格，一个列下可以有多个单元格，根据版本号区分，默认每次读取最新版本的数据，cell下的存储是数据本身。
+row: 行，多列数据组成一行，一行中有多个qualifier。
+rowKey: 行健，用于唯一标识一行数据，一行下有多列，行健的设计直接关系到查询的效率。
+HBase配置 以下配置为最基础配置，缺一不可。
+HBase: conf: quorum: 192.168.80.234:2181,192.168.80.235:2181,192.168.80.241:2181 znodeParent: /hbase-unsecure #如果有更多配置，写在config下，例如： #config: # key: value # key: value 如果需要更多配置，需要在config中配置，以key-value的形式书写。
+参数说明 quorum是HBase中zookeeper的配置，znodeParent是HBase配置在zookeeper中的路径。
+简单示例 引入组件jar包：
+&lt;dependency&gt; &lt;groupId&gt;com.semptian.hbase.component&lt;/groupId&gt; &lt;artifactId&gt;hbase-component&lt;/artifactId&gt; &lt;version&gt;1.0.1-SNAPSHOT&lt;/version&gt; &lt;/dependency&gt; 在需要的地方注入HBaseOperations接口，该接口的实现类是HBaseTemplate，通过这个类来操作HBase。
+@Autowired private HBaseOperations hBaseDao; 查询一条数据，通过rowKey查询：
+public void testQueryTable() { Result result = hBaseDao.queryByTableNameAndRowKey( &#34;LBS&#34;, 9223372036854775803L); System.out.println(result.isEmpty()); result.listCells().forEach(cell -&gt; { System.out.println( &#34;row:&#34; + Bytes.toLong(CellUtil.cloneRow(cell)) + &#34;,family:&#34;+ Bytes.toString(CellUtil.cloneFamily(cell)) + &#34;, qualifier: &#34; + Bytes.
+                                
+                            </div>
+                            <div class="post-item-meta">
+    2019-07-11
+    &emsp;
+    
+    
+    
+    &emsp;
+    
+</div>
+
+                        </div>
+                        
+                        
+                    </div>
+                </div>
+        
+        </a>
+    </div>
+
+
+                    </div>
+            </div><div id="sideContainer" class="side-container">
+    
+    <a class="a-block nav-head active" href="http://localhost:1313/">
+    
+        <div class="nav-title">
+            MeiK&#39;s blog
+        </div>
+        
+    </a>
+
+    <div class="nav-link-list">
+        
+        
+    </div>
+
+    
+
+    <div class="nav-footer">
+        
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://risehere.net/">Rise</a>
+<br>
+Ported from <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	2024 MeiK&#39;s blog
+	
+
+    </div>
+    
+</div><div id="extraContainer" class="extra-container">
+    <div class="toc-wrapper">
+        
+
+        
+    </div>
+    <div class="pagination">
+        <a id="globalBackToTop" class="pagination-action animated-visibility" href="#top"
+            :class="{ invisible: scrollY == 0 }">
+            <i class="material-icons pagination-action-icon">
+                keyboard_arrow_up
+            </i>
+        </a>
+        
+        <a type="button" class="pagination-action" id="darkModeToggleButton">
+            <span class="material-icons pagination-action-icon" id="darkModeToggleIcon">
+                dark_mode
+            </span>
+        </a>
+        
+        
+        
+
+        <a class="pagination-action"  href="/page/4/">
+            
+            <i class="material-icons pagination-action-icon">
+                chevron_left
+            </i>
+        </a>
+
+        <div class="pagination-indicator">
+            <span style="text-align: center">
+                5<br>
+                <div style="display: inline-block; transform: rotate(-28deg)">-</div><br>6
+            </span>
+        </div>
+
+
+        <a class="pagination-action"  href="/page/6/">
+            
+            <i class="material-icons pagination-action-icon">
+                chevron_right
+            </i>
+        </a>
+        
+        
+    </div>
+</div>
+
+
+<div class="pagination">
+    
+    <a class="pagination-action" href="/page/4/" style="opacity:1">
+    
+        <i class="material-icons pagination-action-icon">
+            chevron_left
+        </i>
+    </a>
+
+        <div class="pagination-indicator">
+            <span>5/6</span>
+        </div>
+
+        
+        <a class="pagination-action" href="/page/6/"
+           style="opacity:1">
+        
+                <i class="material-icons pagination-action-icon">
+                    chevron_right
+                </i>
+            </a>
+</div>
+
+
+
+<div id="single-column-footer">
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://risehere.net/">Rise</a>
+<br>
+Ported from <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	2024 MeiK&#39;s blog
+	
+</div>
+            </div>
+    
+    <script src="/js/journal.js"></script></body>
+</html>

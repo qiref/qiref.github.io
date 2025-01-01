@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en"><head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+<title>Git-rebase用法.md</title>
+
+
+
+
+<meta charset="utf-8">
+<meta name="X-UA-Compatible" content="IE=edge">
+<meta name="google-site-verification" content="UA-123456-789">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=5, user-scalable=5" name="viewport">
+<meta content="telephone=no" name="format-detection">
+<meta name="description" content="">
+<meta name="renderer" content="webkit">
+<meta name="theme-color" content="#ffffff">
+
+
+
+
+
+
+
+
+
+
+
+  
+    
+      
+    
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+<link rel="icon" href="http://localhost:1313/images/github.png">
+
+
+
+      <script src="/js/toc.js"></script>
+    
+    <link type="text/css" rel="stylesheet" href="/vendor/css/bootstrap.min.css">
+
+<link rel="stylesheet" href="/scss/dark-mode.min.cb53f1bee2b8900cb4f082afbf00175d6618f281cf9a2fe8619e3b52d20b5721.css" integrity="sha256-y1PxvuK4kAy08IKvvwAXXWYY8oHPmi/oYZ47UtILVyE=" media="screen">
+
+
+<link rel="stylesheet"
+          href="https://fonts.googleapis.com/css?family=Material+Icons">
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+<script src="/vendor/js/md5.min.js"></script><script>
+  var gitalk = new Gitalk({
+  clientID: '',
+  clientSecret: '',
+  repo: '',
+  owner: '',
+  admin: [''],
+  id: md5(location.pathname),
+  distractionFreeMode: 'false'
+  });
+  window.onload = function () {
+        gitalk.render('gitalk-container')
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body>
+    	<div id="app"><div class="single-column-drawer-container" id="drawer"
+     v-bind:class="{ 'single-column-drawer-container-active': isDrawerOpen }">
+    <div class="drawer-content">
+        <div class="drawer-menu">
+            
+            
+            
+            
+            <div class="toc">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- CATALOG -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#commit-%e5%90%88%e5%b9%b6" class="nav-commit-合并">
+									commit 合并
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e7%a4%ba%e4%be%8b" class="nav-示例">
+									示例
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e5%90%8c%e6%ad%a5master%e4%bb%a3%e7%a0%81" class="nav-同步master代码">
+									同步master代码
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+            
+        </div>
+    </div>
+</div>
+<transition name="fade">
+    <div id="drawer-mask" v-bind:class="{ 'single-column-drawer-mask': mounted }" v-if="isDrawerOpen" v-on:click="toggleDrawer"></div>
+</transition>
+<nav id="navBar" class="navbar sticky-top navbar-light single-column-nav-container">
+    <div id="navBackground" class="nav-background"></div>
+    <div class="container container-narrow nav-content">
+        <button id="nav_dropdown_btn" class="nav-dropdown-toggle" type="button" v-on:click="toggleDrawer">
+            <i class="material-icons">
+                menu
+            </i>
+        </button>
+        <a id="navTitle" class="navbar-brand" href="http://localhost:1313/">
+            MeiK&#39;s blog
+        </a>
+        
+        <button type="button" class="nav-darkmode-toggle" id="darkModeToggleButton2">
+            <i class="material-icons" id="darkModeToggleIcon2">
+                dark_mode
+            </i>
+        </button>
+        
+    </div>
+</nav>
+<div class="single-column-header-container" id="pageHead"
+     v-bind:style="{ transform: 'translateZ(0px) translateY('+.3*scrollY+'px)', opacity: 1-navOpacity }">
+    <a href="http://localhost:1313/">
+        <div class="single-column-header-title">MeiK&#39;s blog</div>
+        
+
+    </a>
+</div>
+
+            <div id="content">
+                <div id="streamContainer" class="stream-container">
+
+    <div class="post-list-container post-list-container-shadow">
+        <div class="post">
+            
+            
+            
+
+            <div class="post-head-wrapper-text-only"
+                
+            >
+                <div class="post-title">
+                    Git-rebase用法.md
+                    
+                    <div class="post-meta">
+                        
+                        <time itemprop="datePublished">
+                            2021-08-09 00:18
+                        </time>
+                        
+
+                        
+
+                        
+                            <i class="material-icons" style="">label</i>
+                            
+                                <a href="/tags/git">Git</a>
+                                &nbsp;
+                            
+                        
+                        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="post-body-wrapper">
+                
+                <div class="post-body" v-pre>
+                
+                    <p>摘要：Git rebase 的使用方法。</p>
+<hr>
+<h2 id="commit-合并">commit 合并</h2>
+<p>当多个commit存在时，提交MR会出现很多的commit，review会很困难，这时可以将多个commit合并为一个commit。</p>
+<p>命令说明：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">git rebase -i  <span class="o">[</span>startpoint<span class="o">]</span>  <span class="o">[</span>endpoint<span class="o">]</span> 
+</span></span></code></pre></div><p>其中-i的意思是&ndash;interactive，即弹出交互式的界面让用户编辑完成合并操作，[startpoint] [endpoint] 则指定了一个编辑区间，如果不指定[endpoint]，则该区间的终点默认是当前分支HEAD所指向的commit(注：该区间指定的是一个前开后闭的区间)。
+在查看到了log日志后，我们运行以下命令：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">git rebase -i 36224db
+</span></span><span class="line"><span class="cl">or
+</span></span><span class="line"><span class="cl">git rebase -i HEAD~3 <span class="c1"># 合并最近三次commit</span>
+</span></span></code></pre></div><p>每一个commit id 前面的pick表示指令类型，git 为我们提供了以下几个命令:
+pick：保留该commit（缩写:p）
+reword：保留该commit，但我需要修改该commit的注释（缩写:r）
+edit：保留该commit, 但我要停下来修改该提交(不仅仅修改注释)（缩写:e）
+squash：将该commit和前一个commit合并（缩写:s）
+fixup：将该commit和前一个commit合并，但我不要保留该提交的注释信息（缩写:f）
+exec：执行shell命令（缩写:x）
+drop：我要丢弃该commit（缩写:d）</p>
+<h3 id="示例">示例</h3>
+<pre tabindex="0"><code class="language-shel" data-lang="shel">git log
+
+commit 4ab2734f3380fbdace8620f461cd04c7993b6b0b (HEAD -&gt; master)
+Author: archieyao &lt;archieyao@tencent.com&gt;
+Date:   Mon Aug 9 16:38:25 2021 +0800
+
+    add something 2
+
+commit 60d0bbbe094c0b93903ab995879d30246bbf331e
+Author: archieyao &lt;archieyao@tencent.com&gt;
+Date:   Mon Aug 9 16:38:02 2021 +0800
+
+    add something 1
+
+commit 1c3c12316449cf4f340c68e22c70caa60178ba5c
+Author: archieyao &lt;archieyao@tencent.com&gt;
+Date:   Mon Aug 9 16:37:43 2021 +0800
+
+    add something
+
+commit 7a9ab6f445ce0c7525a5dce3ca15fe600282553b
+Author: archieyao &lt;archieyao@tencent.com&gt;
+Date:   Mon Aug 9 09:31:11 2021 +0800
+
+    [update] readme
+</code></pre><p>现在合并最近三次的commit。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">git rebase -i 7a9ab6f445ce0c7525a5dce3ca15fe600282553b
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">pick 1c3c123 add something
+</span></span><span class="line"><span class="cl">s 60d0bbb add something <span class="m">1</span>
+</span></span><span class="line"><span class="cl">s 4ab2734 add something <span class="m">2</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Rebase 7a9ab6f..4ab2734 onto 7a9ab6f (3 commands)</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># Commands:</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># p, pick &lt;commit&gt; = use commit</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># r, reword &lt;commit&gt; = use commit, but edit the commit message</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># e, edit &lt;commit&gt; = use commit, but stop for amending</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># s, squash &lt;commit&gt; = use commit, but meld into previous commit</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># f, fixup &lt;commit&gt; = like &#34;squash&#34;, but discard this commit&#39;s log message</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># x, exec &lt;command&gt; = run command (the rest of the line) using shell</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># b, break = stop here (continue rebase later with &#39;git rebase --continue&#39;)</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># d, drop &lt;commit&gt; = remove commit</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># l, label &lt;label&gt; = label current HEAD with a name</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># t, reset &lt;label&gt; = reset HEAD to a label</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># m, merge [-C &lt;commit&gt; | -c &lt;commit&gt;] &lt;label&gt; [# &lt;oneline&gt;]</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># .       create a merge commit using the original merge commit&#39;s</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># .       message (or the oneline, if no original merge commit was</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># .       specified). Use -c &lt;commit&gt; to reword the commit message.</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># These lines can be re-ordered; they are executed from top to bottom.</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># If you remove a line here THAT COMMIT WILL BE LOST.</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># However, if you remove everything, the rebase will be aborted.</span>
+</span></span></code></pre></div><p>然后继续编辑，选择commit message，删除后两次的commit message。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1"># This is a combination of 3 commits.</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># This is the 1st commit message:</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">add something
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># This is the commit message #2:</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">add something <span class="m">1</span> <span class="c1"># 删除这行</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># This is the commit message #3:</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">add something <span class="m">2</span>  <span class="c1"># 删除这行</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Please enter the commit message for your changes. Lines starting</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># with &#39;#&#39; will be ignored, and an empty message aborts the commit.</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># Date:      Mon Aug 9 16:37:43 2021 +0800</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># interactive rebase in progress; onto 7a9ab6f</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># Last commands done (3 commands done):</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#    squash 60d0bbb add something 1</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#    squash 4ab2734 add something 2</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># No commands remaining.</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># You are currently rebasing branch &#39;master&#39; on &#39;7a9ab6f&#39;.</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># Changes to be committed:</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#       modified:   README.md</span>
+</span></span></code></pre></div><p>保存退出后，可以看到输出信息：</p>
+<pre tabindex="0"><code class="language-shel" data-lang="shel">[detached HEAD 98eef0d] add something
+ Date: Mon Aug 9 16:37:43 2021 +0800
+ 1 file changed, 8 insertions(+)
+Successfully rebased and updated refs/heads/master.
+</code></pre><p>如果后续推送到远程，需要 <code>git push origin --force xxx</code> ，强制覆盖远程代码。</p>
+<h2 id="同步master代码">同步master代码</h2>
+<p>开发时，从master上checkout一个dev分支，开发一段时间后，master上的代码有更新，这时从master上拉取更新。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">git rebase origin master
+</span></span><span class="line"><span class="cl"><span class="c1"># 等价于 git pull origin master --rebase</span>
+</span></span><span class="line"><span class="cl">git rebase --continue
+</span></span><span class="line"><span class="cl">git rebase --abort
+</span></span></code></pre></div><p>在rebase的过程中，也许会出现冲突(conflict)，在这种情况，Git会停止rebase并会让你去解决冲突；</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">git add conflict file
+</span></span><span class="line"><span class="cl">git rebase --continue
+</span></span></code></pre></div><p>在解决完冲突后，用<code>git-add</code>去更新这些内容的索引(index)， 然后，你无需执行 git-commit,只要执行: <code>git rebase --continue</code>这样git会继续应用(apply)余下的补丁。</p>
+<p>在任何时候，你可以用<code> git rebase --abort</code>来终止rebase的行动，并且&quot;mywork&quot; 分支会回到rebase开始前的状态。</p>
+<p>git merge 与 git rebase 的最终效果是一致的，但git merge会产生合并记录，使用git rebase 会让分支看起来没有合并一样。</p>
+<hr>
+
+                    
+                    <HR width="100%" id="EOF">
+		    <p style="color:#777;">Last modified on 2024-01-24</p>
+                    
+                </div>
+            </div>
+            
+            
+            <nav class="post-pagination">
+
+                
+                <a class="newer-posts" href="/post/2021-08-25-log4j2%E6%8C%89%E7%85%A7%E6%97%B6%E9%97%B4%E5%92%8C%E6%97%A5%E5%BF%97%E5%A4%A7%E5%B0%8F%E6%BB%9A%E5%8A%A8/">
+			Next<br>Log4j2按照时间和日志大小滚动
+                </a>
+                
+                
+                
+                <a class="older-posts" href="/post/2021-07-08-git%E5%B7%A5%E7%A8%8B%E6%8B%86%E5%88%86/">
+			Previous<br>Git工程拆分
+                </a>
+                
+            </nav>
+            <div class="post-comment-wrapper">
+                
+
+
+<div id="gitalk-container"></div>
+
+
+
+
+
+
+
+
+
+
+
+            </div>
+        </div>
+    </div>
+
+
+                    </div>
+            </div><div id="sideContainer" class="side-container">
+    
+    <a class="a-block nav-head false" href="http://localhost:1313/">
+    
+        <div class="nav-title">
+            MeiK&#39;s blog
+        </div>
+        
+    </a>
+
+    <div class="nav-link-list">
+        
+        
+    </div>
+
+    
+
+    <div class="nav-footer">
+        
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://risehere.net/">Rise</a>
+<br>
+Ported from <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	2024 MeiK&#39;s blog
+	
+
+    </div>
+    
+</div><div id="extraContainer" class="extra-container">
+    <div class="toc-wrapper">
+        
+
+        
+        <div class="toc">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- CATALOG -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#commit-%e5%90%88%e5%b9%b6" class="nav-commit-合并">
+									commit 合并
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e7%a4%ba%e4%be%8b" class="nav-示例">
+									示例
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e5%90%8c%e6%ad%a5master%e4%bb%a3%e7%a0%81" class="nav-同步master代码">
+									同步master代码
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+        
+    </div>
+    <div class="pagination">
+        <a id="globalBackToTop" class="pagination-action animated-visibility" href="#top"
+            :class="{ invisible: scrollY == 0 }">
+            <i class="material-icons pagination-action-icon">
+                keyboard_arrow_up
+            </i>
+        </a>
+        
+        <a type="button" class="pagination-action" id="darkModeToggleButton">
+            <span class="material-icons pagination-action-icon" id="darkModeToggleIcon">
+                dark_mode
+            </span>
+        </a>
+        
+        
+    </div>
+</div>
+
+<div id="single-column-footer">
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://risehere.net/">Rise</a>
+<br>
+Ported from <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	2024 MeiK&#39;s blog
+	
+</div>
+            </div>
+    
+    <script src="/js/journal.js"></script></body>
+</html>

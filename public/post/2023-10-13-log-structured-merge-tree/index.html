@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="en"><head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+<title>Log Structured Merge Tree</title>
+
+
+
+
+<meta charset="utf-8">
+<meta name="X-UA-Compatible" content="IE=edge">
+<meta name="google-site-verification" content="UA-123456-789">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=5, user-scalable=5" name="viewport">
+<meta content="telephone=no" name="format-detection">
+<meta name="description" content="">
+<meta name="renderer" content="webkit">
+<meta name="theme-color" content="#ffffff">
+
+
+
+
+
+
+
+
+
+
+
+  
+    
+      
+    
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+<link rel="icon" href="http://localhost:1313/images/github.png">
+
+
+
+      <script src="/js/toc.js"></script>
+    
+    <link type="text/css" rel="stylesheet" href="/vendor/css/bootstrap.min.css">
+
+<link rel="stylesheet" href="/scss/dark-mode.min.cb53f1bee2b8900cb4f082afbf00175d6618f281cf9a2fe8619e3b52d20b5721.css" integrity="sha256-y1PxvuK4kAy08IKvvwAXXWYY8oHPmi/oYZ47UtILVyE=" media="screen">
+
+
+<link rel="stylesheet"
+          href="https://fonts.googleapis.com/css?family=Material+Icons">
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+<script src="/vendor/js/md5.min.js"></script><script>
+  var gitalk = new Gitalk({
+  clientID: '',
+  clientSecret: '',
+  repo: '',
+  owner: '',
+  admin: [''],
+  id: md5(location.pathname),
+  distractionFreeMode: 'false'
+  });
+  window.onload = function () {
+        gitalk.render('gitalk-container')
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body>
+    	<div id="app"><div class="single-column-drawer-container" id="drawer"
+     v-bind:class="{ 'single-column-drawer-container-active': isDrawerOpen }">
+    <div class="drawer-content">
+        <div class="drawer-menu">
+            
+            
+            
+            
+            <div class="toc">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- CATALOG -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%9f%ba%e6%9c%ac%e6%a6%82%e5%bf%b5" class="nav-基本概念">
+									基本概念
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e9%9a%8f%e6%9c%ba%e5%86%99%e5%92%8c%e9%a1%ba%e5%ba%8f%e5%86%99" class="nav-随机写和顺序写">
+									随机写和顺序写
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%80%9d%e8%b7%af" class="nav-思路">
+									思路
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e6%9e%b6%e6%9e%84" class="nav-架构">
+									架构
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#wal" class="nav-wal">
+									WAL
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#sstable" class="nav-sstable">
+									SStable
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#compaction" class="nav-compaction">
+									compaction
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%b9%b6%e5%8f%91%e9%97%ae%e9%a2%98" class="nav-并发问题">
+									并发问题
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e5%8f%82%e8%80%83" class="nav-参考">
+									参考
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+            
+        </div>
+    </div>
+</div>
+<transition name="fade">
+    <div id="drawer-mask" v-bind:class="{ 'single-column-drawer-mask': mounted }" v-if="isDrawerOpen" v-on:click="toggleDrawer"></div>
+</transition>
+<nav id="navBar" class="navbar sticky-top navbar-light single-column-nav-container">
+    <div id="navBackground" class="nav-background"></div>
+    <div class="container container-narrow nav-content">
+        <button id="nav_dropdown_btn" class="nav-dropdown-toggle" type="button" v-on:click="toggleDrawer">
+            <i class="material-icons">
+                menu
+            </i>
+        </button>
+        <a id="navTitle" class="navbar-brand" href="http://localhost:1313/">
+            MeiK&#39;s blog
+        </a>
+        
+        <button type="button" class="nav-darkmode-toggle" id="darkModeToggleButton2">
+            <i class="material-icons" id="darkModeToggleIcon2">
+                dark_mode
+            </i>
+        </button>
+        
+    </div>
+</nav>
+<div class="single-column-header-container" id="pageHead"
+     v-bind:style="{ transform: 'translateZ(0px) translateY('+.3*scrollY+'px)', opacity: 1-navOpacity }">
+    <a href="http://localhost:1313/">
+        <div class="single-column-header-title">MeiK&#39;s blog</div>
+        
+
+    </a>
+</div>
+
+            <div id="content">
+                <div id="streamContainer" class="stream-container">
+
+    <div class="post-list-container post-list-container-shadow">
+        <div class="post">
+            
+            
+            
+
+            <div class="post-head-wrapper-text-only"
+                
+            >
+                <div class="post-title">
+                    Log Structured Merge Tree
+                    
+                    <div class="post-meta">
+                        
+                        <time itemprop="datePublished">
+                            2023-10-13 11:46
+                        </time>
+                        
+
+                        
+
+                        
+                            <i class="material-icons" style="">label</i>
+                            
+                                <a href="/tags/algorithm">Algorithm</a>
+                                &nbsp;
+                            
+                                <a href="/tags/paper">Paper</a>
+                                &nbsp;
+                            
+                                <a href="/tags/lsm-tree">LSM Tree</a>
+                                &nbsp;
+                            
+                                <a href="/tags/wal">WAL</a>
+                                &nbsp;
+                            
+                                <a href="/tags/sstable">SSTable</a>
+                                &nbsp;
+                            
+                        
+                        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="post-body-wrapper">
+                
+                <div class="post-body" v-pre>
+                
+                    <h2 id="基本概念">基本概念</h2>
+<p><code>Log Structured Merge Tree</code>, 其本质上是一种存储数据的方式,通常用于各种存储系统的底层数据结构,通过尽可能减少磁盘随机IO来提升写入性能, 适用于写多读少的场景.</p>
+<h3 id="随机写和顺序写">随机写和顺序写</h3>
+<p>对于一个存储系统而言, 不可避免地需要写入文件到磁盘, 对于常规的写来说, 每来一条数据写一次文件, 数据可能是 <code>add update delete</code>, 需要频繁操作文件, 每一次写都是一次随机 IO; 为了提高写入速度, <code>LSM Tree</code> 并不是每一次写操作都把文件写到磁盘, 而是将数据在内存中更新，当内存中的数据达到一定的阈值时，才将这部分数据真正刷新到磁盘文件中. 以这种方式尽可能让每次磁盘 IO 都是顺序写;</p>
+<h3 id="思路">思路</h3>
+<p>基于减少磁盘的随机 IO 来提升整体存储系统的写入性能这一背景, 很自然可以推导出用批量写入的方式, 要想批量写入, 就需要在内存维护最近写入的数据, 达到阈值之后生成一个文件写入到磁盘, 但是这样又会存在新的问题:</p>
+<ol>
+<li>如果某一条数据已经写入到磁盘文件, 后续又有更新, 怎么处理呢?</li>
+<li>内存中维护的临时数据, 如果还未来得及写入磁盘, 服务挂了, 重新启动时, 历史写入的数据如何恢复?</li>
+<li>每次内存中数据达到阈值,写一个整个文件到磁盘,那么最终会生成大量的文件, 如何解决?</li>
+</ol>
+<ul>
+<li>
+<p>解决问题1, 为了优化这种更新的写入, 可以采用数据版本的做法, 或者给数据增加标志, 然后定期合并, 当然, 这也是以空间换时间, 相同的数据存储了多次, 以提升写入性能; 与此同时, 在数据读取时,由于写入的逻辑改变, 一条数据可能会存在于多个文件中, 因此在读取时, 需要返回最新的数据, 在读取到多条数据时,需要对多条数据进行合取最新;</p>
+</li>
+<li>
+<p>解决问题2, 在业界比较标准的做法是 <code>WAL</code>, <code>WAL</code> 的基本原理是在执行数据修改操作之前，先将这些操作记录在日志（log）文件中, 以确保在发生故障或崩溃时，可以借助日志进行恢复并保持数据的一致性;</p>
+</li>
+<li>
+<p>解决问题3, 为了避免大量文件, 可以对文件进行定期合并, 当数据还在内存中时, 可以借助跳表或者 <code>B+Tree</code> 等数据结构保证内存中数据的顺序性, 在写文件时, 由于数据是有序的, 在文件合并时,很自然可以借助归并排序保证合并之后的数据的有序性, 而有序性又能天然提高查询效率.</p>
+</li>
+</ul>
+<h2 id="架构">架构</h2>
+<p><code>lsm</code> 基本上就是基于以上的推导思路实现的, 整体的架构如下:</p>
+<p><img src="/assets/img/lsm-tree-1.svg" alt="lsm-tree-1"></p>
+<h3 id="wal">WAL</h3>
+<p>WAL(Write Ahead Logging)即日志先写原理。 日志记录所有的数据修改操作, 把数据修改预先写入日志文件, 然后在写内存或者磁盘数据区, 当日志记录了写入操作, 后续的写动作过程中, 任意步骤出现问题导致进程崩溃, 都可以借助 log 进行数据恢复;</p>
+<p>WAL的通常的工作流程:</p>
+<ol>
+<li>客户端发起数据修改请求。</li>
+<li>服务器将修改操作记录到WAL日志文件。</li>
+<li>返回成功响应给客户端。</li>
+<li>异步线程将WAL日志内容同步到磁盘数据文件。</li>
+<li>当WAL日志同步完毕,数据修改才真正完成。</li>
+</ol>
+<p><img src="/assets/img/lsm-tree-wal.svg" alt="lsm-tree-wal"></p>
+<p>在 lsm tree 中, 整个 WAL 的流程可以完全融入到写入的过程中, 包括 log 文件的生命周期, 也可以随着 sstable 的落盘而结束.</p>
+<h3 id="sstable">SStable</h3>
+<p>SStable sorted string table, 这是一种存储数据的格式, 并且在文件中, 数据都是有序的, 并且在文件中, 保存了元数据信息, 提高数据查询的效率; 具体格式如下:</p>
+<p><img src="/assets/img/lsm-tree-2.svg" alt="lsm-tree-2"></p>
+<p>从文件的结构基本能看出来数据是如何写入的, 整个文件分为元数据信息和数据本身, 加上元数据信息是为了提高数据查询的效率, 比如元数据信息包含了当前文件中 key 的范围, 并且还可以保存 bloomfilter; 其中一个比较有意思的设计是: footer 数据为什么是在文件末尾? 从读取文件的角度而言, 读取文件的起始位置不是更符合习惯, 从后往前读, 读取文件的后 48 字节不是需要事先知道文件的大小?</p>
+<p>个人认为这个设计主要是基于以下考虑:</p>
+<p>数据写完才知道元数据里的 stat 和 key range, 直接把元数据 append 到文件尾部, 写入效率会更高; 如果元数据在文件的起始位置, 写完数据本身之后, 还需要去更新文件起始位置的元数据信息, 这一过程有可能会导致随机 IO;</p>
+<h3 id="compaction">compaction</h3>
+<p>从 lsm tree 的写入过程可以得出, L0 层的文件都是来源于 Memtable(immutable) , 为了保证顺序写入, 每次写入到磁盘都会生成一个新的文件, 基于这种背景, 数据在查询的时候又需要去查询 L0 层的文件, 如果文件很多, 查询效率必然受影响, 而 compaction 的设计就是为了提升数据查询效率;</p>
+<p>文件在存储时设置层级, L0 文件大小上限为 10M L1 为 100M, 以此类推, 同时每个层级的文件个数也有限制; 触发 compaction 的条件为:</p>
+<ol>
+<li>Ln 层的文件超过预定个数;</li>
+<li>Ln 层的文件大小超过层级的大小限制;</li>
+<li>某个文件的无效读取过多;</li>
+</ol>
+<p>compaction 的过程就是把 Li 层的若干个文件, 合并到 Li+1层, 在合并过程中,重新计算新文件的 key 范围, 如果有相同 key , 只保留最新的 key, 合并完成之后, 重新计算元数据, 然后清理历史的文件;</p>
+<p>从 sstable 文件存储的形式来分析, compaction 的过程可以抽象为一个多路归并的算法, 可以参考 : <a href="https://leetcode.cn/problems/merge-k-sorted-lists/description/">leetcode</a> , 稍微有些区别就是合并的内容是链表或者其他数据结构.</p>
+<p>而解决多路归并的算法, 思路也有很多, 最简单的就是直接合并多个数组,然后基于最后的数组排序, 也可以借助大根堆进行排序, 具体实现可以参考: <a href="https://chicbyte.github.io/post/2023/05/12/%E5%A0%86%E5%92%8C%E5%A0%86%E6%8E%92%E5%BA%8F/">堆排序</a>.</p>
+<h3 id="并发问题">并发问题</h3>
+<p>当在 compaction 过程中, 会有文件的清理, 此时如果用户正在读需要合并的文件, 如何解决这个读写冲突?</p>
+<p>遇到读写冲突, 首先就能想到加锁, 读时给文件加锁, 写操作被阻塞, 虽然这样能解决问题, 但是却违背了 lsm tree 的设计初衷: 高性能的写入;</p>
+<p>更好的解决办法是: MVCC(Multi-Version Concurrency Control)是多版本并发控制;</p>
+<ol>
+<li>sstable 文件设置为只读，每次 compaction 都只是对若干个 sstable 文件进行多路合并后创建新的文件，故不会影响在某个 sstable 文件读操作的正确性；</li>
+<li>sstable 都是具有版本信息的，即每次 compaction 完成后，都会生成新版本的 sstable，因此可以保障读写操作都可以针对于相应的版本文件进行，解决了读写冲突；</li>
+<li>compaction 生成的文件只有等合并完成后才会写元数据，在此期间对读操作来说是透明的，不会污染正常的读操作；</li>
+<li>采用引用计数来控制删除行为。当 compaction 完成后试图去删除某个 sstable 文件，会根据该文件的引用计数作适当的删除延迟，即引用计数不为0时，需要等待至该文件的计数为0才真正进行删除；</li>
+</ol>
+<h2 id="参考">参考</h2>
+<p><a href="https://leveldb-handbook.readthedocs.io/zh/latest/basic.html">https://leveldb-handbook.readthedocs.io/zh/latest/basic.html</a></p>
+<p><a href="https://github.com/facebook/rocksdb/wiki/RocksDB-Overview">https://github.com/facebook/rocksdb/wiki/RocksDB-Overview</a></p>
+<p><a href="https://zhuanlan.zhihu.com/p/351241814">https://zhuanlan.zhihu.com/p/351241814</a></p>
+
+                    
+                    <HR width="100%" id="EOF">
+		    <p style="color:#777;">Last modified on 2024-01-24</p>
+                    
+                </div>
+            </div>
+            
+            
+            <nav class="post-pagination">
+
+                
+                <a class="newer-posts" href="/post/2023-12-05-b&#43;%E6%A0%91/">
+			Next<br>B&#43;树
+                </a>
+                
+                
+                
+                <a class="older-posts" href="/post/2023-10-01-skip-list-%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/">
+			Previous<br>Skip Lists 阅读笔记
+                </a>
+                
+            </nav>
+            <div class="post-comment-wrapper">
+                
+
+
+<div id="gitalk-container"></div>
+
+
+
+
+
+
+
+
+
+
+
+            </div>
+        </div>
+    </div>
+
+
+                    </div>
+            </div><div id="sideContainer" class="side-container">
+    
+    <a class="a-block nav-head false" href="http://localhost:1313/">
+    
+        <div class="nav-title">
+            MeiK&#39;s blog
+        </div>
+        
+    </a>
+
+    <div class="nav-link-list">
+        
+        
+    </div>
+
+    
+
+    <div class="nav-footer">
+        
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://risehere.net/">Rise</a>
+<br>
+Ported from <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	2024 MeiK&#39;s blog
+	
+
+    </div>
+    
+</div><div id="extraContainer" class="extra-container">
+    <div class="toc-wrapper">
+        
+
+        
+        <div class="toc">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- CATALOG -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%9f%ba%e6%9c%ac%e6%a6%82%e5%bf%b5" class="nav-基本概念">
+									基本概念
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e9%9a%8f%e6%9c%ba%e5%86%99%e5%92%8c%e9%a1%ba%e5%ba%8f%e5%86%99" class="nav-随机写和顺序写">
+									随机写和顺序写
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%80%9d%e8%b7%af" class="nav-思路">
+									思路
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e6%9e%b6%e6%9e%84" class="nav-架构">
+									架构
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#wal" class="nav-wal">
+									WAL
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#sstable" class="nav-sstable">
+									SStable
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#compaction" class="nav-compaction">
+									compaction
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%b9%b6%e5%8f%91%e9%97%ae%e9%a2%98" class="nav-并发问题">
+									并发问题
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e5%8f%82%e8%80%83" class="nav-参考">
+									参考
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+        
+    </div>
+    <div class="pagination">
+        <a id="globalBackToTop" class="pagination-action animated-visibility" href="#top"
+            :class="{ invisible: scrollY == 0 }">
+            <i class="material-icons pagination-action-icon">
+                keyboard_arrow_up
+            </i>
+        </a>
+        
+        <a type="button" class="pagination-action" id="darkModeToggleButton">
+            <span class="material-icons pagination-action-icon" id="darkModeToggleIcon">
+                dark_mode
+            </span>
+        </a>
+        
+        
+    </div>
+</div>
+
+<div id="single-column-footer">
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://risehere.net/">Rise</a>
+<br>
+Ported from <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	2024 MeiK&#39;s blog
+	
+</div>
+            </div>
+    
+    <script src="/js/journal.js"></script></body>
+</html>

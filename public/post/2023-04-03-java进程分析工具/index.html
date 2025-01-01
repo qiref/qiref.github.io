@@ -1,0 +1,1592 @@
+<!DOCTYPE html>
+<html lang="en"><head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+<title>Java进程分析工具</title>
+
+
+
+
+<meta charset="utf-8">
+<meta name="X-UA-Compatible" content="IE=edge">
+<meta name="google-site-verification" content="UA-123456-789">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=5, user-scalable=5" name="viewport">
+<meta content="telephone=no" name="format-detection">
+<meta name="description" content="">
+<meta name="renderer" content="webkit">
+<meta name="theme-color" content="#ffffff">
+
+
+
+
+
+
+
+
+
+
+
+  
+    
+      
+    
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+<link rel="icon" href="http://localhost:1313/images/github.png">
+
+
+
+      <script src="/js/toc.js"></script>
+    
+    <link type="text/css" rel="stylesheet" href="/vendor/css/bootstrap.min.css">
+
+<link rel="stylesheet" href="/scss/dark-mode.min.cb53f1bee2b8900cb4f082afbf00175d6618f281cf9a2fe8619e3b52d20b5721.css" integrity="sha256-y1PxvuK4kAy08IKvvwAXXWYY8oHPmi/oYZ47UtILVyE=" media="screen">
+
+
+<link rel="stylesheet"
+          href="https://fonts.googleapis.com/css?family=Material+Icons">
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+<script src="/vendor/js/md5.min.js"></script><script>
+  var gitalk = new Gitalk({
+  clientID: '',
+  clientSecret: '',
+  repo: '',
+  owner: '',
+  admin: [''],
+  id: md5(location.pathname),
+  distractionFreeMode: 'false'
+  });
+  window.onload = function () {
+        gitalk.render('gitalk-container')
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body>
+    	<div id="app"><div class="single-column-drawer-container" id="drawer"
+     v-bind:class="{ 'single-column-drawer-container-active': isDrawerOpen }">
+    <div class="drawer-content">
+        <div class="drawer-menu">
+            
+            
+            
+            
+            <div class="toc">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- CATALOG -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#jvm-%e5%86%85%e5%ad%98%e5%8c%ba%e5%9f%9f" class="nav-jvm-内存区域">
+									JVM 内存区域
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#jmap" class="nav-jmap">
+									jmap
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e6%89%93%e5%8d%b0heap%e4%bf%a1%e6%81%af" class="nav-打印heap信息">
+									打印heap信息
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e7%bb%9f%e8%ae%a1heap%e5%af%b9%e8%b1%a1" class="nav-统计heap对象">
+									统计heap对象
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%89%93%e5%8d%b0%e7%ad%89%e5%be%85%e7%bb%88%e7%bb%93%e7%9a%84%e5%af%b9%e8%b1%a1" class="nav-打印等待终结的对象">
+									打印等待终结的对象
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e7%94%9f%e6%88%90dump%e6%96%87%e4%bb%b6" class="nav-生成dump文件">
+									生成dump文件
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#jhat" class="nav-jhat">
+									jhat
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%88%86%e6%9e%90dump%e6%96%87%e4%bb%b6" class="nav-分析dump文件">
+									分析dump文件
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#jinfo" class="nav-jinfo">
+									jinfo
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#jstat" class="nav-jstat">
+									jstat
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#jstack" class="nav-jstack">
+									jstack
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#native-memory-tracking" class="nav-native-memory-tracking">
+									Native Memory Tracking
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%bc%80%e5%90%af-nmt" class="nav-开启-nmt">
+									开启 NMT
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%90%84%e5%8c%ba%e5%9f%9f%e8%af%b4%e6%98%8e" class="nav-各区域说明">
+									各区域说明
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#java-heap" class="nav-java-heap">
+									Java Heap
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#class" class="nav-class">
+									Class
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#thread" class="nav-thread">
+									Thread
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#code" class="nav-code">
+									Code
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#gc" class="nav-gc">
+									GC
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#internal" class="nav-internal">
+									Internal
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#symbol" class="nav-symbol">
+									Symbol
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e5%9f%ba%e7%ba%bf%e5%88%86%e6%9e%90" class="nav-基线分析">
+									基线分析
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+            
+        </div>
+    </div>
+</div>
+<transition name="fade">
+    <div id="drawer-mask" v-bind:class="{ 'single-column-drawer-mask': mounted }" v-if="isDrawerOpen" v-on:click="toggleDrawer"></div>
+</transition>
+<nav id="navBar" class="navbar sticky-top navbar-light single-column-nav-container">
+    <div id="navBackground" class="nav-background"></div>
+    <div class="container container-narrow nav-content">
+        <button id="nav_dropdown_btn" class="nav-dropdown-toggle" type="button" v-on:click="toggleDrawer">
+            <i class="material-icons">
+                menu
+            </i>
+        </button>
+        <a id="navTitle" class="navbar-brand" href="http://localhost:1313/">
+            MeiK&#39;s blog
+        </a>
+        
+        <button type="button" class="nav-darkmode-toggle" id="darkModeToggleButton2">
+            <i class="material-icons" id="darkModeToggleIcon2">
+                dark_mode
+            </i>
+        </button>
+        
+    </div>
+</nav>
+<div class="single-column-header-container" id="pageHead"
+     v-bind:style="{ transform: 'translateZ(0px) translateY('+.3*scrollY+'px)', opacity: 1-navOpacity }">
+    <a href="http://localhost:1313/">
+        <div class="single-column-header-title">MeiK&#39;s blog</div>
+        
+
+    </a>
+</div>
+
+            <div id="content">
+                <div id="streamContainer" class="stream-container">
+
+    <div class="post-list-container post-list-container-shadow">
+        <div class="post">
+            
+            
+            
+
+            <div class="post-head-wrapper-text-only"
+                
+            >
+                <div class="post-title">
+                    Java进程分析工具
+                    
+                    <div class="post-meta">
+                        
+                        <time itemprop="datePublished">
+                            2023-06-26 21:55
+                        </time>
+                        
+
+                        
+
+                        
+                            <i class="material-icons" style="">label</i>
+                            
+                                <a href="/tags/java">Java</a>
+                                &nbsp;
+                            
+                                <a href="/tags/jvm">JVM</a>
+                                &nbsp;
+                            
+                        
+                        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="post-body-wrapper">
+                
+                <div class="post-body" v-pre>
+                
+                    <h2 id="jvm-内存区域">JVM 内存区域</h2>
+<p><img src="/assets/img/jvm-area.svg" alt="jvm-area"></p>
+<p>如果要为<code>新生代</code>分配 <code>256m</code> 的内存（<code>NewSize</code> 与 <code>MaxNewSize</code> 设为一致），参数应该这样来写：<code>-Xmn256m</code>;</p>
+<p>还可以通过 <code>-XX:NewRatio=&lt;int&gt;</code> 来设置<code>老年代</code>与<code>新生代</code>内存的比值。比如以下参数就是设置老年代与新生代内存的比值为 1。也就是说老年代和新生代所占比值为 1：1，新生代占整个堆栈的 1/2。</p>
+<pre tabindex="0"><code>-XX:NewRatio=1
+</code></pre><p>JDK 1.8 ，方法区（HotSpot 的永久代）被彻底移除了，取而代之是元空间 Metaspace，元空间使用的是本地内存。</p>
+<ol>
+<li>
+<p>Metaspace 的初始容量并不是 <code>-XX:MetaspaceSize</code> 设置，无论 <code>-XX:MetaspaceSize</code> 配置什么值，对于 64 位 JVM 来说，Metaspace 的初始容量都是 21807104（约 20.8m）。可以参考 Oracle 官方文档 :</p>
+<blockquote>
+<p>Specify a higher value for the option MetaspaceSize to avoid early garbage collections induced for class metadata. The amount of class metadata allocated for an application is application-dependent and general guidelines do not exist for the selection of MetaspaceSize. The default size of MetaspaceSize is platform-dependent and ranges from 12 MB to about 20 MB.</p>
+</blockquote>
+</li>
+<li>
+<p>Metaspace 由于使用不断扩容到<code>-XX:MetaspaceSize</code>参数指定的量，就会发生 Full GC，且之后每次 Metaspace 扩容都会发生 Full GC。也就是说，MetaspaceSize 表示 Metaspace 使用过程中触发 Full GC 的阈值，只对触发起作用；如果 <code>MaxMetaspaceSize</code> 设置太小，可能会导致频繁 Full GC ，甚至OOM。</p>
+</li>
+</ol>
+<hr>
+<h2 id="jmap">jmap</h2>
+<h3 id="打印heap信息">打印heap信息</h3>
+<p>命令：jmap -heap pid</p>
+<p>描述：显示Java堆详细信息</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">➜  ~ jmap -heap <span class="m">10439</span>
+</span></span><span class="line"><span class="cl">Attaching to process ID 10439, please wait...
+</span></span><span class="line"><span class="cl">Error attaching to process: sun.jvm.hotspot.runtime.VMVersionMismatchException: 
+</span></span><span class="line"><span class="cl">  Supported versions are 25.312-b07. Target VM is 25.272-b1
+</span></span><span class="line"><span class="cl">sun.jvm.hotspot.debugger.DebuggerException: sun.jvm.hotspot.runtime.VMVersionMismatchException: 
+</span></span><span class="line"><span class="cl">  Supported versions are 25.312-b07. Target VM is 25.272-b1
+</span></span><span class="line"><span class="cl">	at sun.jvm.hotspot.HotSpotAgent.setupVM<span class="o">(</span>HotSpotAgent.java:435<span class="o">)</span>
+</span></span><span class="line"><span class="cl">	at sun.jvm.hotspot.HotSpotAgent.go<span class="o">(</span>HotSpotAgent.java:305<span class="o">)</span>
+</span></span><span class="line"><span class="cl">	at sun.jvm.hotspot.HotSpotAgent.attach<span class="o">(</span>HotSpotAgent.java:140<span class="o">)</span>
+</span></span><span class="line"><span class="cl">	at sun.jvm.hotspot.tools.Tool.start<span class="o">(</span>Tool.java:185<span class="o">)</span>
+</span></span><span class="line"><span class="cl">	at sun.jvm.hotspot.tools.Tool.execute<span class="o">(</span>Tool.java:118<span class="o">)</span>
+</span></span><span class="line"><span class="cl">	at sun.jvm.hotspot.tools.HeapSummary.main<span class="o">(</span>HeapSummary.java:50<span class="o">)</span>
+</span></span><span class="line"><span class="cl">	at sun.reflect.NativeMethodAccessorImpl.invoke0<span class="o">(</span>Native Method<span class="o">)</span>
+</span></span><span class="line"><span class="cl">	at sun.reflect.NativeMethodAccessorImpl.invoke<span class="o">(</span>NativeMethodAccessorImpl.java:62<span class="o">)</span>
+</span></span><span class="line"><span class="cl">	at sun.reflect.DelegatingMethodAccessorImpl.invoke<span class="o">(</span>DelegatingMethodAccessorImpl.java:43<span class="o">)</span>
+</span></span><span class="line"><span class="cl">	at java.lang.reflect.Method.invoke<span class="o">(</span>Method.java:498<span class="o">)</span>
+</span></span><span class="line"><span class="cl">	at sun.tools.jmap.JMap.runTool<span class="o">(</span>JMap.java:201<span class="o">)</span>
+</span></span><span class="line"><span class="cl">	at sun.tools.jmap.JMap.main<span class="o">(</span>JMap.java:130<span class="o">)</span>
+</span></span><span class="line"><span class="cl">Caused by: sun.jvm.hotspot.runtime.VMVersionMismatchException: Supported versions are 25.312-b07. 
+</span></span><span class="line"><span class="cl">  Target VM is 25.272-b1
+</span></span><span class="line"><span class="cl">	at sun.jvm.hotspot.runtime.VM.checkVMVersion<span class="o">(</span>VM.java:227<span class="o">)</span>
+</span></span><span class="line"><span class="cl">	at sun.jvm.hotspot.runtime.VM.&lt;init&gt;<span class="o">(</span>VM.java:294<span class="o">)</span>
+</span></span><span class="line"><span class="cl">	at sun.jvm.hotspot.runtime.VM.initialize<span class="o">(</span>VM.java:370<span class="o">)</span>
+</span></span><span class="line"><span class="cl">	at sun.jvm.hotspot.HotSpotAgent.setupVM<span class="o">(</span>HotSpotAgent.java:431<span class="o">)</span>
+</span></span></code></pre></div><p>报错原因是系统有多个jdk，可以指定绝对路径。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">➜  ~ <span class="nb">echo</span> <span class="nv">$JAVA_HOME</span>
+</span></span><span class="line"><span class="cl">/usr/local/TencentKona-8.0.4-272
+</span></span><span class="line"><span class="cl">➜  ~ /usr/local/TencentKona-8.0.4-272/bin/jmap -heap <span class="m">10439</span>
+</span></span><span class="line"><span class="cl">Attaching to process ID 10439, please wait...
+</span></span><span class="line"><span class="cl">Debugger attached successfully.
+</span></span><span class="line"><span class="cl">Server compiler detected.
+</span></span><span class="line"><span class="cl">JVM version is 25.272-b1
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">using thread-local object allocation.
+</span></span><span class="line"><span class="cl">Garbage-First <span class="o">(</span>G1<span class="o">)</span> GC with <span class="m">8</span> thread<span class="o">(</span>s<span class="o">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Heap Configuration:
+</span></span><span class="line"><span class="cl">   <span class="nv">MinHeapFreeRatio</span>         <span class="o">=</span> <span class="m">40</span>
+</span></span><span class="line"><span class="cl">   <span class="nv">MaxHeapFreeRatio</span>         <span class="o">=</span> <span class="m">70</span>
+</span></span><span class="line"><span class="cl">   <span class="nv">MaxHeapSize</span>              <span class="o">=</span> <span class="m">536870912</span> <span class="o">(</span>512.0MB<span class="o">)</span>
+</span></span><span class="line"><span class="cl">   <span class="nv">NewSize</span>                  <span class="o">=</span> <span class="m">1363144</span> <span class="o">(</span>1.2999954223632812MB<span class="o">)</span>
+</span></span><span class="line"><span class="cl">   <span class="nv">MaxNewSize</span>               <span class="o">=</span> <span class="m">321912832</span> <span class="o">(</span>307.0MB<span class="o">)</span>
+</span></span><span class="line"><span class="cl">   <span class="nv">OldSize</span>                  <span class="o">=</span> <span class="m">5452592</span> <span class="o">(</span>5.1999969482421875MB<span class="o">)</span>
+</span></span><span class="line"><span class="cl">   <span class="nv">NewRatio</span>                 <span class="o">=</span> <span class="m">2</span>
+</span></span><span class="line"><span class="cl">   <span class="nv">SurvivorRatio</span>            <span class="o">=</span> <span class="m">8</span>
+</span></span><span class="line"><span class="cl">   <span class="nv">MetaspaceSize</span>            <span class="o">=</span> <span class="m">21807104</span> <span class="o">(</span>20.796875MB<span class="o">)</span>
+</span></span><span class="line"><span class="cl">   <span class="nv">CompressedClassSpaceSize</span> <span class="o">=</span> <span class="m">260046848</span> <span class="o">(</span>248.0MB<span class="o">)</span>
+</span></span><span class="line"><span class="cl">   <span class="nv">MaxMetaspaceSize</span>         <span class="o">=</span> <span class="m">268435456</span> <span class="o">(</span>256.0MB<span class="o">)</span>
+</span></span><span class="line"><span class="cl">   <span class="nv">G1HeapRegionSize</span>         <span class="o">=</span> <span class="m">1048576</span> <span class="o">(</span>1.0MB<span class="o">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Heap Usage:
+</span></span><span class="line"><span class="cl">G1 Heap:
+</span></span><span class="line"><span class="cl">   <span class="nv">regions</span>  <span class="o">=</span> <span class="m">512</span>
+</span></span><span class="line"><span class="cl">   <span class="nv">capacity</span> <span class="o">=</span> <span class="m">536870912</span> <span class="o">(</span>512.0MB<span class="o">)</span>
+</span></span><span class="line"><span class="cl">   <span class="nv">used</span>     <span class="o">=</span> <span class="m">226987352</span> <span class="o">(</span>216.47200775146484MB<span class="o">)</span>
+</span></span><span class="line"><span class="cl">   <span class="nv">free</span>     <span class="o">=</span> <span class="m">309883560</span> <span class="o">(</span>295.52799224853516MB<span class="o">)</span>
+</span></span><span class="line"><span class="cl">   42.27968901395798% used
+</span></span><span class="line"><span class="cl">G1 Young Generation:
+</span></span><span class="line"><span class="cl">Eden Space:
+</span></span><span class="line"><span class="cl">   <span class="nv">regions</span>  <span class="o">=</span> <span class="m">207</span>
+</span></span><span class="line"><span class="cl">   <span class="nv">capacity</span> <span class="o">=</span> <span class="m">338690048</span> <span class="o">(</span>323.0MB<span class="o">)</span>
+</span></span><span class="line"><span class="cl">   <span class="nv">used</span>     <span class="o">=</span> <span class="m">217055232</span> <span class="o">(</span>207.0MB<span class="o">)</span>
+</span></span><span class="line"><span class="cl">   <span class="nv">free</span>     <span class="o">=</span> <span class="m">121634816</span> <span class="o">(</span>116.0MB<span class="o">)</span>
+</span></span><span class="line"><span class="cl">   64.08668730650155% used
+</span></span><span class="line"><span class="cl">Survivor Space:
+</span></span><span class="line"><span class="cl">   <span class="nv">regions</span>  <span class="o">=</span> <span class="m">0</span>
+</span></span><span class="line"><span class="cl">   <span class="nv">capacity</span> <span class="o">=</span> <span class="m">0</span> <span class="o">(</span>0.0MB<span class="o">)</span>
+</span></span><span class="line"><span class="cl">   <span class="nv">used</span>     <span class="o">=</span> <span class="m">0</span> <span class="o">(</span>0.0MB<span class="o">)</span>
+</span></span><span class="line"><span class="cl">   <span class="nv">free</span>     <span class="o">=</span> <span class="m">0</span> <span class="o">(</span>0.0MB<span class="o">)</span>
+</span></span><span class="line"><span class="cl">   0.0% used
+</span></span><span class="line"><span class="cl">G1 Old Generation:
+</span></span><span class="line"><span class="cl">   <span class="nv">regions</span>  <span class="o">=</span> <span class="m">10</span>
+</span></span><span class="line"><span class="cl">   <span class="nv">capacity</span> <span class="o">=</span> <span class="m">198180864</span> <span class="o">(</span>189.0MB<span class="o">)</span>
+</span></span><span class="line"><span class="cl">   <span class="nv">used</span>     <span class="o">=</span> <span class="m">9932120</span> <span class="o">(</span>9.472007751464844MB<span class="o">)</span>
+</span></span><span class="line"><span class="cl">   <span class="nv">free</span>     <span class="o">=</span> <span class="m">188248744</span> <span class="o">(</span>179.52799224853516MB<span class="o">)</span>
+</span></span><span class="line"><span class="cl">   5.0116443129443615% used
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="m">8841</span> interned Strings occupying <span class="m">891192</span> bytes.
+</span></span></code></pre></div><h3 id="统计heap对象">统计heap对象</h3>
+<p>命令：jmap -histo:live pid
+描述：显示堆中对象的统计信息</p>
+<p>其中包括每个Java类、对象数量、内存大小(单位：字节)、完全限定的类名。打印的虚拟机内部的类名称将会带有一个 <code>*</code> 前缀。如果指定了live子选项，则只计算活动的对象。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">➜  ~ /usr/local/TencentKona-8.0.4-272/bin/jmap -histo:live <span class="m">10439</span> <span class="p">|</span>head -n <span class="m">30</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"> num     <span class="c1">#instances         #bytes  class name</span>
+</span></span><span class="line"><span class="cl">----------------------------------------------
+</span></span><span class="line"><span class="cl">   1:         <span class="m">23634</span>        <span class="m">2041848</span>  <span class="o">[</span>C
+</span></span><span class="line"><span class="cl">   2:            <span class="m">43</span>        <span class="m">1409712</span>  <span class="o">[</span>Ljava.util.concurrent.ForkJoinTask<span class="p">;</span>
+</span></span><span class="line"><span class="cl">   3:          <span class="m">1053</span>        <span class="m">1191208</span>  <span class="o">[</span>B
+</span></span><span class="line"><span class="cl">   4:          <span class="m">7197</span>         <span class="m">790496</span>  java.lang.Class
+</span></span><span class="line"><span class="cl">   5:         <span class="m">23631</span>         <span class="m">567144</span>  java.lang.String
+</span></span><span class="line"><span class="cl">   6:          <span class="m">6322</span>         <span class="m">542264</span>  <span class="o">[</span>Ljava.lang.Object<span class="p">;</span>
+</span></span><span class="line"><span class="cl">   7:          <span class="m">8725</span>         <span class="m">279200</span>  java.util.concurrent.ConcurrentHashMap<span class="nv">$Node</span>
+</span></span><span class="line"><span class="cl">   8:          <span class="m">4123</span>         <span class="m">263872</span>  java.nio.DirectByteBuffer
+</span></span><span class="line"><span class="cl">   9:          <span class="m">4096</span>         <span class="m">229376</span>  org.apache.flink.core.memory.MemorySegment
+</span></span><span class="line"><span class="cl">  10:          <span class="m">2900</span>         <span class="m">201184</span>  <span class="o">[</span>I
+</span></span><span class="line"><span class="cl">  11:          <span class="m">4117</span>         <span class="m">164680</span>  sun.misc.Cleaner
+</span></span><span class="line"><span class="cl">  12:          <span class="m">4115</span>         <span class="m">131680</span>  java.nio.DirectByteBuffer<span class="nv">$Deallocator</span>
+</span></span><span class="line"><span class="cl">  13:          <span class="m">3923</span>         <span class="m">125536</span>  java.util.HashMap<span class="nv">$Node</span>
+</span></span><span class="line"><span class="cl">  14:          <span class="m">5009</span>          <span class="m">80144</span>  java.lang.Object
+</span></span><span class="line"><span class="cl">  15:           <span class="m">900</span>          <span class="m">79200</span>  java.lang.reflect.Method
+</span></span><span class="line"><span class="cl">  16:           <span class="m">811</span>          <span class="m">77264</span>  <span class="o">[</span>Ljava.util.HashMap<span class="nv">$Node</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  17:          <span class="m">1304</span>          <span class="m">73024</span>  java.lang.invoke.MemberName
+</span></span><span class="line"><span class="cl">  18:           <span class="m">101</span>          <span class="m">66976</span>  <span class="o">[</span>Ljava.util.concurrent.ConcurrentHashMap<span class="nv">$Node</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  19:          <span class="m">4160</span>          <span class="m">66560</span>  java.util.concurrent.atomic.AtomicBoolean
+</span></span><span class="line"><span class="cl">  20:            <span class="m">80</span>          <span class="m">53760</span>  org.apache.flink.shaded.netty4.io.netty.util.internal.shaded.
+</span></span><span class="line"><span class="cl">                                    org.jctools.queues.MpscArrayQueue
+</span></span><span class="line"><span class="cl">  21:          <span class="m">1266</span>          <span class="m">50640</span>  java.util.LinkedHashMap<span class="nv">$Entry</span>
+</span></span><span class="line"><span class="cl">  22:          <span class="m">1160</span>          <span class="m">46400</span>  java.lang.invoke.MethodType
+</span></span><span class="line"><span class="cl">  23:          <span class="m">1144</span>          <span class="m">45760</span>  java.lang.ref.SoftReference
+</span></span><span class="line"><span class="cl">  24:          <span class="m">1663</span>          <span class="m">41632</span>  <span class="o">[</span>Ljava.lang.Class<span class="p">;</span>
+</span></span><span class="line"><span class="cl">  25:           <span class="m">986</span>          <span class="m">39440</span>  com.typesafe.config.impl.SimpleConfigOrigin
+</span></span><span class="line"><span class="cl">  26:          <span class="m">1177</span>          <span class="m">37664</span>  java.lang.invoke.MethodType<span class="nv">$ConcurrentWeakInternSet$WeakEntry</span>
+</span></span><span class="line"><span class="cl">  27:           <span class="m">777</span>          <span class="m">37296</span>  java.util.HashMap
+</span></span></code></pre></div><h3 id="打印等待终结的对象">打印等待终结的对象</h3>
+<p>命令：jmap -finalizerinfo pid</p>
+<p>描述：打印等待终结的对象信息</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">➜  ~ /usr/local/TencentKona-8.0.4-272/bin/jmap -finalizerinfo <span class="m">10439</span>
+</span></span><span class="line"><span class="cl">Attaching to process ID 10439, please wait...
+</span></span><span class="line"><span class="cl">Debugger attached successfully.
+</span></span><span class="line"><span class="cl">Server compiler detected.
+</span></span><span class="line"><span class="cl">JVM version is 25.272-b1
+</span></span><span class="line"><span class="cl">Number of objects pending <span class="k">for</span> finalization: <span class="m">0</span>
+</span></span></code></pre></div><h3 id="生成dump文件">生成<code>dump</code>文件</h3>
+<p>命令：jmap -dump:format=b,file=heapdump.hprof pid</p>
+<p>描述：生成堆转储快照dump文件。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">➜  ~ /usr/local/TencentKona-8.0.4-272/bin/jmap -dump:format<span class="o">=</span>b,file<span class="o">=</span>heapdump.hprof <span class="m">10439</span>
+</span></span><span class="line"><span class="cl">Dumping heap to /root/heapdump.hprof ...
+</span></span><span class="line"><span class="cl">Heap dump file created
+</span></span></code></pre></div><p>以hprof二进制格式转储Java堆到指定filename的文件中。live子选项是可选的，如果指定了live子选项，堆中只有活动的对象会被转储。想要浏览heap dump，你可以使用jhat(Java堆分析工具)读取生成的文件。</p>
+<h2 id="jhat">jhat</h2>
+<h3 id="分析dump文件">分析dump文件</h3>
+<p>命令：<code>jhat -J-mx1024m heapdump.hprof</code>，当dump文件很大时，需要适当调高-mx；
+当端口有占用时 <code>jhat -port 7080 heapdump.hprof</code> 可以指定端口；</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">➜  ~ jhat -J-mx1024m heapdump.hprof
+</span></span><span class="line"><span class="cl">Reading from heapdump.phrof...
+</span></span><span class="line"><span class="cl">Dump file created Tue May <span class="m">24</span> 21:38:43 CST <span class="m">2022</span>
+</span></span><span class="line"><span class="cl">Snapshot read, resolving...
+</span></span><span class="line"><span class="cl">Resolving <span class="m">4346760</span> objects...
+</span></span><span class="line"><span class="cl">Chasing references, expect <span class="m">869</span> dots
+</span></span><span class="line"><span class="cl">Eliminating duplicate references.
+</span></span><span class="line"><span class="cl">Snapshot resolved.
+</span></span><span class="line"><span class="cl">Started HTTP server on port <span class="m">7000</span>
+</span></span><span class="line"><span class="cl">Server is ready.
+</span></span></code></pre></div><p>jhat会启动一个web服务，在web界面上查看dump文件解析的结果。</p>
+<p>使用EMA工具，会比jhat更友好的界面；</p>
+<h2 id="jinfo">jinfo</h2>
+<p>jinfo  <!-- raw HTML omitted --> 获取 JVM 运行参数，包括启动时指定的环境变量；</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">$ /usr/local/TencentKona-8.0.10-332/bin/jinfo  <span class="m">1</span>
+</span></span><span class="line"><span class="cl">Attaching to process ID 1, please wait...
+</span></span><span class="line"><span class="cl">Debugger attached successfully.
+</span></span><span class="line"><span class="cl">Server compiler detected.
+</span></span><span class="line"><span class="cl">JVM version is 25.332-b1
+</span></span><span class="line"><span class="cl">Java System Properties:
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">zookeeper.sasl.client <span class="o">=</span> <span class="nb">true</span>
+</span></span><span class="line"><span class="cl">java.runtime.name <span class="o">=</span> OpenJDK Runtime Environment
+</span></span><span class="line"><span class="cl">java.vm.version <span class="o">=</span> 25.332-b1
+</span></span><span class="line"><span class="cl">sun.boot.library.path <span class="o">=</span> /usr/local/TencentKona-8.0.10-332/jre/lib/amd64
+</span></span><span class="line"><span class="cl">java.vm.vendor <span class="o">=</span> Tencent
+</span></span><span class="line"><span class="cl">path.separator <span class="o">=</span> :
+</span></span><span class="line"><span class="cl">file.encoding.pkg <span class="o">=</span> sun.io
+</span></span><span class="line"><span class="cl">java.vm.name <span class="o">=</span> OpenJDK 64-Bit Server VM
+</span></span><span class="line"><span class="cl">sun.os.patch.level <span class="o">=</span> unknown
+</span></span><span class="line"><span class="cl">sun.java.launcher <span class="o">=</span> SUN_STANDARD
+</span></span><span class="line"><span class="cl">user.dir <span class="o">=</span> /
+</span></span><span class="line"><span class="cl">java.vm.specification.name <span class="o">=</span> Java Virtual Machine Specification
+</span></span><span class="line"><span class="cl">java.runtime.version <span class="o">=</span> 1.8.0_332-b1
+</span></span><span class="line"><span class="cl">java.awt.graphicsenv <span class="o">=</span> sun.awt.X11GraphicsEnvironment
+</span></span><span class="line"><span class="cl">os.arch <span class="o">=</span> amd64
+</span></span><span class="line"><span class="cl">java.endorsed.dirs <span class="o">=</span> /usr/local/TencentKona-8.0.10-332/jre/lib/endorsed
+</span></span><span class="line"><span class="cl">line.separator <span class="o">=</span> 
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">...
+</span></span><span class="line"><span class="cl">VM Flags:
+</span></span><span class="line"><span class="cl">Non-default VM flags: -XX:ActiveProcessorCount<span class="o">=</span><span class="m">8</span> -XX:CICompilerCount<span class="o">=</span><span class="m">4</span> 
+</span></span><span class="line"><span class="cl">-XX:CompressedClassSpaceSize<span class="o">=</span><span class="m">260046848</span> -XX:ErrorFile<span class="o">=</span>null 
+</span></span><span class="line"><span class="cl">-XX:InitialHeapSize<span class="o">=</span><span class="m">3103784960</span> -XX:MaxDirectMemorySize<span class="o">=</span><span class="m">493921243</span> 
+</span></span><span class="line"><span class="cl">-XX:MaxHeapSize<span class="o">=</span><span class="m">3103784960</span> -XX:MaxMetaspaceSize<span class="o">=</span><span class="m">268435456</span> -XX:MaxNewSize<span class="o">=</span><span class="m">1034420224</span> 
+</span></span><span class="line"><span class="cl">-XX:MinHeapDeltaBytes<span class="o">=</span><span class="m">524288</span> -XX:NewSize<span class="o">=</span><span class="m">1034420224</span> -XX:OldSize<span class="o">=</span><span class="m">2069364736</span> -XX:+PrintGC 
+</span></span><span class="line"><span class="cl">-XX:+PrintGCDetails -XX:+PrintGCTimeStamps -XX:+UseCompressedClassPointers -XX:+UseCompressedOops 
+</span></span><span class="line"><span class="cl">-XX:+UseParallelGC -XX:+UseUTF8UTF16Intrinsics 
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Command line:  -Duser.timezone<span class="o">=</span>GMT+08 -Dlog.level<span class="o">=</span>INFO -Xmx3103113861 -Xms3103113861 
+</span></span><span class="line"><span class="cl">-XX:MaxDirectMemorySize<span class="o">=</span><span class="m">493921243</span> -XX:MaxMetaspaceSize<span class="o">=</span><span class="m">268435456</span> -verbose:gc -XX:+PrintGCDetails 
+</span></span><span class="line"><span class="cl">-XX:+PrintGCTimeStamps -XX:ActiveProcessorCount<span class="o">=</span><span class="m">8</span> -Dlog4j2.formatMsgNoLookups<span class="o">=</span><span class="nb">true</span>
+</span></span></code></pre></div><h2 id="jstat">jstat</h2>
+<p>jstat -gc  <!-- raw HTML omitted -->  <!-- raw HTML omitted -->  监控GC相关信息。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">/usr/local/TencentKona-8.0.10-332/bin/jstat -gc <span class="m">1</span> <span class="m">1000</span>
+</span></span><span class="line"><span class="cl">S0C     S1C      S0U   S1U     EC       EU       OC          OU        MC      MU      CCSC    CCSU       YGC   YGCT    FGC    FGCT     GCT   
+</span></span><span class="line"><span class="cl">43520.0 43008.0  0.0   27234.4 922112.0 282128.7 2020864.0   35542.2   76928.0 73257.9 10368.0 9767.7      <span class="m">9</span>    0.124   <span class="m">3</span>      0.320    0.444
+</span></span><span class="line"><span class="cl">43520.0 43008.0  0.0   27234.4 922112.0 282128.7 2020864.0   35542.2   76928.0 73257.9 10368.0 9767.7      <span class="m">9</span>    0.124   <span class="m">3</span>      0.320    0.444
+</span></span><span class="line"><span class="cl">43520.0 43008.0  0.0   27234.4 922112.0 282128.7 2020864.0   35542.2   76928.0 73257.9 10368.0 9767.7      <span class="m">9</span>    0.124   <span class="m">3</span>      0.320    0.444
+</span></span><span class="line"><span class="cl">43520.0 43008.0  0.0   27234.4 922112.0 282128.7 2020864.0   35542.2   76928.0 73257.9 10368.0 9767.7      <span class="m">9</span>    0.124   <span class="m">3</span>      0.320    0.444
+</span></span><span class="line"><span class="cl">43520.0 43008.0  0.0   27234.4 922112.0 282128.7 2020864.0   35542.2   76928.0 73257.9 10368.0 9767.7      <span class="m">9</span>    0.124   <span class="m">3</span>      0.320    0.444
+</span></span><span class="line"><span class="cl">43520.0 43008.0  0.0   27234.4 922112.0 285552.9 2020864.0   35542.2   76928.0 73257.9 10368.0 9767.7      <span class="m">9</span>    0.124   <span class="m">3</span>      0.320    0.444
+</span></span><span class="line"><span class="cl">43520.0 43008.0  0.0   27234.4 922112.0 285992.0 2020864.0   35542.2   76928.0 73257.9 10368.0 9767.7      <span class="m">9</span>    0.124   <span class="m">3</span>      0.320    0.444
+</span></span><span class="line"><span class="cl">43520.0 43008.0  0.0   27234.4 922112.0 285992.0 2020864.0   35542.2   76928.0 73257.9 10368.0 9767.7      <span class="m">9</span>    0.124   <span class="m">3</span>      0.320    0.444
+</span></span></code></pre></div><ul>
+<li>S0C: S0区0的容量 (kB);</li>
+<li>S1C: S1的容量(kB);</li>
+<li>S0U: S0已用内存 (kB);</li>
+<li>S1U: S1已用内存 (kB);</li>
+<li>EC: 伊甸园区容量 (kB);</li>
+<li>EU: 伊甸园区已用内存 (kB);</li>
+<li>OC: 老年代容量 (kB);</li>
+<li>OU: 老年代已用内存 (kB);</li>
+<li>MC: 元数据区容量 (kB);</li>
+<li>MU: 元数据区已用内存 (kB);</li>
+<li>CCSC: 类压缩区容量 (kB);</li>
+<li>CCSU: 类压缩区已用内存 (kB);</li>
+<li>YGC：年轻代垃圾回收次数;</li>
+<li>YGCT：年轻代垃圾回收时间;</li>
+<li>FGC：老年代垃圾回收次数;</li>
+<li>FGCT：老年代垃圾回收时间;</li>
+<li>GCT：总垃圾回收时间;</li>
+</ul>
+<p>jstat -gcutil  <!-- raw HTML omitted -->  <!-- raw HTML omitted --> 监控JVM GC 的信息。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">/usr/local/TencentKona-8.0.10-332/bin/jstat -gcutil <span class="m">1</span> <span class="m">1000</span>
+</span></span><span class="line"><span class="cl">  S0     S1     E      O      M     CCS    YGC     YGCT    FGC    FGCT     GCT   
+</span></span><span class="line"><span class="cl">  0.00  63.32   9.70   1.76  95.23  94.21      <span class="m">9</span>    0.124     <span class="m">3</span>    0.320    0.444
+</span></span><span class="line"><span class="cl">  0.00  63.32   9.71   1.76  95.23  94.21      <span class="m">9</span>    0.124     <span class="m">3</span>    0.320    0.444
+</span></span><span class="line"><span class="cl">  0.00  63.32   9.71   1.76  95.23  94.21      <span class="m">9</span>    0.124     <span class="m">3</span>    0.320    0.444
+</span></span><span class="line"><span class="cl">  0.00  63.32  10.92   1.76  95.23  94.21      <span class="m">9</span>    0.124     <span class="m">3</span>    0.320    0.444
+</span></span><span class="line"><span class="cl">  0.00  63.32  12.08   1.76  95.23  94.21      <span class="m">9</span>    0.124     <span class="m">3</span>    0.320    0.444
+</span></span><span class="line"><span class="cl">  0.00  63.32  12.08   1.76  95.23  94.21      <span class="m">9</span>    0.124     <span class="m">3</span>    0.320    0.444
+</span></span><span class="line"><span class="cl">  0.00  63.32  13.03   1.76  95.23  94.21      <span class="m">9</span>    0.124     <span class="m">3</span>    0.320    0.444
+</span></span></code></pre></div><ul>
+<li>S0：S0区域使用率</li>
+<li>S1：S1区域使用率</li>
+<li>E：伊甸园区使用率</li>
+<li>O：Old Generation使用率，OU/OC</li>
+<li>M：Matespace区使用率，MU/MC</li>
+<li>CCS：压缩类空间使用率</li>
+<li>YGC：年轻代垃圾回收次数</li>
+<li>YGCT：年轻代垃圾回收时间</li>
+<li>FGC：老年代垃圾回收次数</li>
+<li>FGCT：老年代垃圾回收时间</li>
+<li>GCT：总垃圾回收时间</li>
+</ul>
+<h2 id="jstack">jstack</h2>
+<p>jstack -l <!-- raw HTML omitted --> 获取线程栈信息，可以分析java进程中线程的执行情况，可以协助分析死锁问题；</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">/usr/local/TencentKona-8.0.10-332/bin/jstack  -l <span class="m">1</span> 
+</span></span></code></pre></div><p>一般情况下，线程栈会很长，可以输出到文件中分析.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">/usr/local/TencentKona-8.0.10-332/bin/jstack  -l <span class="m">1</span> &gt; /tmp/1.threaddump
+</span></span></code></pre></div><h2 id="native-memory-tracking">Native Memory Tracking</h2>
+<p>默认情况下，NMT是处于关闭状态的，我们可以通过设置 JVM 启动参数来开启：<code>-XX:NativeMemoryTracking=[off | summary | detail]</code>；（启用NMT会导致5% -10%的性能开销）</p>
+<ul>
+<li>off	不跟踪 JVM 本地内存使用情况。如果不指定 <code>-XX:NativeMemoryTracking</code> 选项则默认为off。</li>
+<li>summary	仅跟踪 JVM 子系统（如：Java heap、class、code、thread等）的内存使用情况。</li>
+<li>detail	除了通过 JVM 子系统跟踪内存使用情况外，还可以通过单独的 CallSite、单独的虚拟内存区域及其提交区域来跟踪内存使用情况。</li>
+</ul>
+<p>除了在虚拟机运行时获取 NMT 数据，我们还可以通过两个参数：<code>-XX:+UnlockDiagnosticVMOptions</code>和<code>-XX:+PrintNMTStatistics </code>，来获取虚拟机退出时内存使用情况的数据（输出数据的详细程度取决于你设定的跟踪级别，如 summary/detail 等）。</p>
+<ul>
+<li><code>-XX:+UnlockDiagnosticVMOptions</code>：解锁用于诊断 JVM 的选项，默认关闭。</li>
+<li><code>-XX:+PrintNMTStatistics</code>：当启用 NMT 时，在虚拟机退出时打印内存使用情况，默认关闭，需要开启前置参数 <code>-XX:+UnlockDiagnosticVMOptions</code> 才能正常使用。</li>
+</ul>
+<h3 id="开启-nmt">开启 NMT</h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">jcmd &lt;pid&gt; VM.native_memory <span class="o">[</span>summary <span class="p">|</span> detail <span class="p">|</span> baseline <span class="p">|</span> summary.diff <span class="p">|</span> detail.diff <span class="p">|</span> shutdown<span class="o">]</span> 
+</span></span><span class="line"><span class="cl">  <span class="o">[</span><span class="nv">scale</span><span class="o">=</span> KB <span class="p">|</span> MB <span class="p">|</span> GB<span class="o">]</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">jcmd <span class="m">33561</span> VM.native_memory summary <span class="nv">scale</span><span class="o">=</span>MB
+</span></span><span class="line"><span class="cl">33561:
+</span></span><span class="line"><span class="cl">Native Memory Tracking:
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Total: <span class="nv">reserved</span><span class="o">=</span>5593MB, <span class="nv">committed</span><span class="o">=</span>477MB
+</span></span><span class="line"><span class="cl">-                 Java Heap <span class="o">(</span><span class="nv">reserved</span><span class="o">=</span>4096MB, <span class="nv">committed</span><span class="o">=</span>256MB<span class="o">)</span>
+</span></span><span class="line"><span class="cl">                            <span class="o">(</span>mmap: <span class="nv">reserved</span><span class="o">=</span>4096MB, <span class="nv">committed</span><span class="o">=</span>256MB<span class="o">)</span> 
+</span></span><span class="line"><span class="cl"> 
+</span></span><span class="line"><span class="cl">-                     Class <span class="o">(</span><span class="nv">reserved</span><span class="o">=</span>1049MB, <span class="nv">committed</span><span class="o">=</span>25MB<span class="o">)</span>
+</span></span><span class="line"><span class="cl">                            <span class="o">(</span>classes <span class="c1">#2428)</span>
+</span></span><span class="line"><span class="cl">                            <span class="o">(</span><span class="nv">malloc</span><span class="o">=</span>11MB <span class="c1">#2029) </span>
+</span></span><span class="line"><span class="cl">                            <span class="o">(</span>mmap: <span class="nv">reserved</span><span class="o">=</span>1038MB, <span class="nv">committed</span><span class="o">=</span>14MB<span class="o">)</span> 
+</span></span><span class="line"><span class="cl"> 
+</span></span><span class="line"><span class="cl">-                    Thread <span class="o">(</span><span class="nv">reserved</span><span class="o">=</span>25MB, <span class="nv">committed</span><span class="o">=</span>25MB<span class="o">)</span>
+</span></span><span class="line"><span class="cl">                            <span class="o">(</span>thread <span class="c1">#26)</span>
+</span></span><span class="line"><span class="cl">                            <span class="o">(</span>stack: <span class="nv">reserved</span><span class="o">=</span>25MB, <span class="nv">committed</span><span class="o">=</span>25MB<span class="o">)</span>
+</span></span><span class="line"><span class="cl"> 
+</span></span><span class="line"><span class="cl">-                      Code <span class="o">(</span><span class="nv">reserved</span><span class="o">=</span>244MB, <span class="nv">committed</span><span class="o">=</span>5MB<span class="o">)</span>
+</span></span><span class="line"><span class="cl">                            <span class="o">(</span><span class="nv">malloc</span><span class="o">=</span>1MB <span class="c1">#1623) </span>
+</span></span><span class="line"><span class="cl">                            <span class="o">(</span>mmap: <span class="nv">reserved</span><span class="o">=</span>244MB, <span class="nv">committed</span><span class="o">=</span>4MB<span class="o">)</span> 
+</span></span><span class="line"><span class="cl"> 
+</span></span><span class="line"><span class="cl">-                        GC <span class="o">(</span><span class="nv">reserved</span><span class="o">=</span>162MB, <span class="nv">committed</span><span class="o">=</span>150MB<span class="o">)</span>
+</span></span><span class="line"><span class="cl">                            <span class="o">(</span><span class="nv">malloc</span><span class="o">=</span>12MB <span class="c1">#148) </span>
+</span></span><span class="line"><span class="cl">                            <span class="o">(</span>mmap: <span class="nv">reserved</span><span class="o">=</span>150MB, <span class="nv">committed</span><span class="o">=</span>137MB<span class="o">)</span> 
+</span></span><span class="line"><span class="cl"> 
+</span></span><span class="line"><span class="cl">-                  Internal <span class="o">(</span><span class="nv">reserved</span><span class="o">=</span>12MB, <span class="nv">committed</span><span class="o">=</span>12MB<span class="o">)</span>
+</span></span><span class="line"><span class="cl">                            <span class="o">(</span><span class="nv">malloc</span><span class="o">=</span>12MB <span class="c1">#4010) </span>
+</span></span><span class="line"><span class="cl"> 
+</span></span><span class="line"><span class="cl">-                    Symbol <span class="o">(</span><span class="nv">reserved</span><span class="o">=</span>4MB, <span class="nv">committed</span><span class="o">=</span>4MB<span class="o">)</span>
+</span></span><span class="line"><span class="cl">                            <span class="o">(</span><span class="nv">malloc</span><span class="o">=</span>3MB <span class="c1">#13444) </span>
+</span></span><span class="line"><span class="cl">                            <span class="o">(</span><span class="nv">arena</span><span class="o">=</span>1MB <span class="c1">#1)</span>
+</span></span></code></pre></div><h3 id="各区域说明">各区域说明</h3>
+<p>主要关注 <code>committed</code> 部分，这部分是已使用的内存；</p>
+<h4 id="java-heap">Java Heap</h4>
+<p>Java 堆所使用的内存大小；可以使用 <code>-Xms/-Xmx</code> 或 <code>-XX:InitialHeapSize/-XX:MaxHeapSize</code> 等参数来控制初始/最大的大小</p>
+<h4 id="class">Class</h4>
+<p>Class 主要是类元数据（meta data）所使用的内存空间，即虚拟机规范中规定的方法区。具体到 HotSpot 的实现中，JDK7 之前是实现在 PermGen 永久代中，JDK8 之后则是移除了 PermGen 变成了 MetaSpace 元空间。
+基于此，那在启动 JVM 进程的时候设置的 <code>-XX:MaxMetaspaceSize=256M</code> 参数应该可以限制 Class 所使用的内存大小； 但实际情况并非这样，这里 Class 需要设置  <code>-XX:CompressedClassSpaceSize=256M</code> 来控制。</p>
+<ul>
+<li><code>-XX:MaxMetaspaceSize：Metaspace</code> 总空间的最大允许使用内存，默认是不限制。</li>
+<li><code>-XX:CompressedClassSpaceSize：Metaspace</code> 中的 Compressed Class Space 的最大允许内存，默认值是 1G，这部分会在 JVM 启动的时候向操作系统申请 1G 的虚拟地址映射，但不是真的就用了操作系统的 1G 内存。</li>
+</ul>
+<h4 id="thread">Thread</h4>
+<p>线程所使用的内存；可以使用参数 <code>-Xss/-XX:ThreadStackSize</code> 设置</p>
+<h4 id="code">Code</h4>
+<p>JVM 自身会生成一些 native code 并将其存储在称为 codecache 的内存区域中。JVM 生成 native code 的原因有很多，包括动态生成的解释器循环、 JNI、即时编译器(JIT)编译 Java 方法生成的本机代码 。其中 JIT 生成的 native code 占据了 codecache 绝大部分的空间。</p>
+<p>codecache reserve 的最大内存是由 <code>-XX:ReservedCodeCacheSize</code> 参数决定的；
+codecache commit 的内存是由  <code>-XX:InitialCodeCacheSize</code> 参数决定的。</p>
+<h4 id="gc">GC</h4>
+<p>GC 所使用的内存，就是垃圾收集器使用的数据所占据的内存，例如卡表 card tables、记忆集 remembered sets、标记栈 marking stack、标记位图 marking bitmaps 等等。其实都是一种借助额外的空间，来记录不同内存区域之间引用关系的结构（都是基于空间换时间的思想，否则寻找引用关系就需要诸如遍历这种浪费时间的方式）。GC 这块内存是必须的，也是我们在使用过程中无法压缩的。</p>
+<h4 id="internal">Internal</h4>
+<p>Internal 包含命令行解析器使用的内存、JVMTI、PerfData 以及 Unsafe 分配的内存等等。
+直接内存可以由 <code>-XX:MaxDirectMemorySize=128M</code> 参数决定，最后会在 Internal 中体现：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="n">ByteBuffer</span><span class="p">.</span><span class="na">allocateDirect</span><span class="p">(</span><span class="n">256</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">_1M</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c1">// 如果设置 -XX:MaxDirectMemorySize=128M，这里分配 DirectMemory 会失败</span><span class="w">
+</span></span></span></code></pre></div><h4 id="symbol">Symbol</h4>
+<p>Symbol 为 JVM 中的符号表所使用的内存，HotSpot中符号表主要有两种：SymbolTable 与 StringTable。</p>
+<p>Java 的类在编译之后会生成 Constant pool 常量池，常量池中会有很多的字符串常量，HotSpot 出于节省内存的考虑，往往会将这些字符串常量作为一个 Symbol 对象存入一个 HashTable 的表结构中即 SymbolTable，如果该字符串可以在 SymbolTable 中 lookup（SymbolTable::lookup）到，那么就会重用该字符串，如果找不到才会创建新的 Symbol（SymbolTable::new_symbol）。</p>
+<p>除了 SymbolTable，还有 StringTable（StringTable 结构与 SymbolTable 基本是一致的，都是 HashTable 的结构），即我们常说的字符串常量池。HotSpot 也是基于节省内存的考虑为我们提供了 StringTable，我们可以通过 String.intern 的方式将字符串放入 StringTable 中来重用字符串。</p>
+<p><code>-XX:StringTableSize</code> 参数设置 HashTable 的长度；
+<code>-XX:SymbolTableSize</code> 参数设置 SymbolTable 的长度。</p>
+<p>如果该值设置的过小的话会导致hash 冲突，即使 HashTable 进行 rehash，hash 冲突也会十分频繁；</p>
+<h3 id="基线分析">基线分析</h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">jcmd <span class="m">33561</span> VM.native_memory baseline
+</span></span><span class="line"><span class="cl">33561:
+</span></span><span class="line"><span class="cl">Baseline succeeded
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">jcmd <span class="m">33561</span> VM.native_memory  summary.diff <span class="nv">scale</span><span class="o">=</span>MB
+</span></span><span class="line"><span class="cl">33561:
+</span></span><span class="line"><span class="cl">Native Memory Tracking:
+</span></span><span class="line"><span class="cl">Total: <span class="nv">reserved</span><span class="o">=</span>5593MB, <span class="nv">committed</span><span class="o">=</span>479MB
+</span></span><span class="line"><span class="cl">-                 Java Heap <span class="o">(</span><span class="nv">reserved</span><span class="o">=</span>4096MB, <span class="nv">committed</span><span class="o">=</span>256MB<span class="o">)</span>
+</span></span><span class="line"><span class="cl">                            <span class="o">(</span>mmap: <span class="nv">reserved</span><span class="o">=</span>4096MB, <span class="nv">committed</span><span class="o">=</span>256MB<span class="o">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">-                     Class <span class="o">(</span><span class="nv">reserved</span><span class="o">=</span>1049MB, <span class="nv">committed</span><span class="o">=</span>26MB<span class="o">)</span>
+</span></span><span class="line"><span class="cl">                            <span class="o">(</span>classes <span class="c1">#2428)</span>
+</span></span><span class="line"><span class="cl">                            <span class="o">(</span><span class="nv">malloc</span><span class="o">=</span>11MB <span class="c1">#2270 +99)</span>
+</span></span><span class="line"><span class="cl">                            <span class="o">(</span>mmap: <span class="nv">reserved</span><span class="o">=</span>1038MB, <span class="nv">committed</span><span class="o">=</span>14MB<span class="o">)</span>
+</span></span><span class="line"><span class="cl"> 
+</span></span><span class="line"><span class="cl">-                    Thread <span class="o">(</span><span class="nv">reserved</span><span class="o">=</span>25MB, <span class="nv">committed</span><span class="o">=</span>25MB<span class="o">)</span>
+</span></span><span class="line"><span class="cl">                            <span class="o">(</span>thread <span class="c1">#26)</span>
+</span></span><span class="line"><span class="cl">                            <span class="o">(</span>stack: <span class="nv">reserved</span><span class="o">=</span>25MB, <span class="nv">committed</span><span class="o">=</span>25MB<span class="o">)</span>
+</span></span><span class="line"><span class="cl"> 
+</span></span><span class="line"><span class="cl">-                      Code <span class="o">(</span><span class="nv">reserved</span><span class="o">=</span>245MB, <span class="nv">committed</span><span class="o">=</span>6MB<span class="o">)</span>
+</span></span><span class="line"><span class="cl">                            <span class="o">(</span><span class="nv">malloc</span><span class="o">=</span>1MB <span class="c1">#1996 +106)</span>
+</span></span><span class="line"><span class="cl">                            <span class="o">(</span>mmap: <span class="nv">reserved</span><span class="o">=</span>244MB, <span class="nv">committed</span><span class="o">=</span>5MB<span class="o">)</span>
+</span></span><span class="line"><span class="cl"> 
+</span></span><span class="line"><span class="cl">-                        GC <span class="o">(</span><span class="nv">reserved</span><span class="o">=</span>162MB, <span class="nv">committed</span><span class="o">=</span>150MB<span class="o">)</span>
+</span></span><span class="line"><span class="cl">                            <span class="o">(</span><span class="nv">malloc</span><span class="o">=</span>12MB <span class="c1">#148)</span>
+</span></span><span class="line"><span class="cl">                            <span class="o">(</span>mmap: <span class="nv">reserved</span><span class="o">=</span>150MB, <span class="nv">committed</span><span class="o">=</span>137MB<span class="o">)</span>
+</span></span><span class="line"><span class="cl"> 
+</span></span><span class="line"><span class="cl">-                  Internal <span class="o">(</span><span class="nv">reserved</span><span class="o">=</span>12MB, <span class="nv">committed</span><span class="o">=</span>12MB<span class="o">)</span>
+</span></span><span class="line"><span class="cl">                            <span class="o">(</span><span class="nv">malloc</span><span class="o">=</span>12MB <span class="c1">#4029 +3)</span>
+</span></span><span class="line"><span class="cl"> 
+</span></span><span class="line"><span class="cl">-                    Symbol <span class="o">(</span><span class="nv">reserved</span><span class="o">=</span>4MB, <span class="nv">committed</span><span class="o">=</span>4MB<span class="o">)</span>
+</span></span><span class="line"><span class="cl">                            <span class="o">(</span><span class="nv">malloc</span><span class="o">=</span>3MB <span class="c1">#13444)</span>
+</span></span><span class="line"><span class="cl">                            <span class="o">(</span><span class="nv">arena</span><span class="o">=</span>1MB <span class="c1">#1)</span>
+</span></span><span class="line"><span class="cl"> 
+</span></span><span class="line"><span class="cl">-    Native Memory Tracking <span class="o">(</span><span class="nv">reserved</span><span class="o">=</span>1MB, <span class="nv">committed</span><span class="o">=</span>1MB<span class="o">)</span>
+</span></span><span class="line"><span class="cl">                            <span class="o">(</span>tracking <span class="nv">overhead</span><span class="o">=</span>0MB<span class="o">)</span>
+</span></span></code></pre></div><p>基线分析会输出从 <code>baseline</code> 开始，到现在各区域的大小变化，以及线程数量变化；</p>
+
+                    
+                    <HR width="100%" id="EOF">
+		    <p style="color:#777;">Last modified on 2024-01-24</p>
+                    
+                </div>
+            </div>
+            
+            
+            <nav class="post-pagination">
+
+                
+                <a class="newer-posts" href="/post/2023-08-09-dblog-%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/">
+			Next<br>DBLog 阅读笔记
+                </a>
+                
+                
+                
+                <a class="older-posts" href="/post/2023-05-16-the-dataflow-model-%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/">
+			Previous<br>The Dataflow Model 阅读笔记
+                </a>
+                
+            </nav>
+            <div class="post-comment-wrapper">
+                
+
+
+<div id="gitalk-container"></div>
+
+
+
+
+
+
+
+
+
+
+
+            </div>
+        </div>
+    </div>
+
+
+                    </div>
+            </div><div id="sideContainer" class="side-container">
+    
+    <a class="a-block nav-head false" href="http://localhost:1313/">
+    
+        <div class="nav-title">
+            MeiK&#39;s blog
+        </div>
+        
+    </a>
+
+    <div class="nav-link-list">
+        
+        
+    </div>
+
+    
+
+    <div class="nav-footer">
+        
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://risehere.net/">Rise</a>
+<br>
+Ported from <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	2024 MeiK&#39;s blog
+	
+
+    </div>
+    
+</div><div id="extraContainer" class="extra-container">
+    <div class="toc-wrapper">
+        
+
+        
+        <div class="toc">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- CATALOG -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#jvm-%e5%86%85%e5%ad%98%e5%8c%ba%e5%9f%9f" class="nav-jvm-内存区域">
+									JVM 内存区域
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#jmap" class="nav-jmap">
+									jmap
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e6%89%93%e5%8d%b0heap%e4%bf%a1%e6%81%af" class="nav-打印heap信息">
+									打印heap信息
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e7%bb%9f%e8%ae%a1heap%e5%af%b9%e8%b1%a1" class="nav-统计heap对象">
+									统计heap对象
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%89%93%e5%8d%b0%e7%ad%89%e5%be%85%e7%bb%88%e7%bb%93%e7%9a%84%e5%af%b9%e8%b1%a1" class="nav-打印等待终结的对象">
+									打印等待终结的对象
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e7%94%9f%e6%88%90dump%e6%96%87%e4%bb%b6" class="nav-生成dump文件">
+									生成dump文件
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#jhat" class="nav-jhat">
+									jhat
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%88%86%e6%9e%90dump%e6%96%87%e4%bb%b6" class="nav-分析dump文件">
+									分析dump文件
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#jinfo" class="nav-jinfo">
+									jinfo
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#jstat" class="nav-jstat">
+									jstat
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#jstack" class="nav-jstack">
+									jstack
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#native-memory-tracking" class="nav-native-memory-tracking">
+									Native Memory Tracking
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%bc%80%e5%90%af-nmt" class="nav-开启-nmt">
+									开启 NMT
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%90%84%e5%8c%ba%e5%9f%9f%e8%af%b4%e6%98%8e" class="nav-各区域说明">
+									各区域说明
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#java-heap" class="nav-java-heap">
+									Java Heap
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#class" class="nav-class">
+									Class
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#thread" class="nav-thread">
+									Thread
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#code" class="nav-code">
+									Code
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#gc" class="nav-gc">
+									GC
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#internal" class="nav-internal">
+									Internal
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#symbol" class="nav-symbol">
+									Symbol
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e5%9f%ba%e7%ba%bf%e5%88%86%e6%9e%90" class="nav-基线分析">
+									基线分析
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+        
+    </div>
+    <div class="pagination">
+        <a id="globalBackToTop" class="pagination-action animated-visibility" href="#top"
+            :class="{ invisible: scrollY == 0 }">
+            <i class="material-icons pagination-action-icon">
+                keyboard_arrow_up
+            </i>
+        </a>
+        
+        <a type="button" class="pagination-action" id="darkModeToggleButton">
+            <span class="material-icons pagination-action-icon" id="darkModeToggleIcon">
+                dark_mode
+            </span>
+        </a>
+        
+        
+    </div>
+</div>
+
+<div id="single-column-footer">
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://risehere.net/">Rise</a>
+<br>
+Ported from <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	2024 MeiK&#39;s blog
+	
+</div>
+            </div>
+    
+    <script src="/js/journal.js"></script></body>
+</html>

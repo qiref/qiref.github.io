@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="en"><head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+<title>spark学习笔记-RDD基础算子</title>
+
+
+
+
+<meta charset="utf-8">
+<meta name="X-UA-Compatible" content="IE=edge">
+<meta name="google-site-verification" content="UA-123456-789">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=5, user-scalable=5" name="viewport">
+<meta content="telephone=no" name="format-detection">
+<meta name="description" content="">
+<meta name="renderer" content="webkit">
+<meta name="theme-color" content="#ffffff">
+
+
+
+
+
+
+
+
+
+
+
+  
+    
+      
+    
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+<link rel="icon" href="http://localhost:1313/images/github.png">
+
+
+
+      <script src="/js/toc.js"></script>
+    
+    <link type="text/css" rel="stylesheet" href="/vendor/css/bootstrap.min.css">
+
+<link rel="stylesheet" href="/scss/dark-mode.min.cb53f1bee2b8900cb4f082afbf00175d6618f281cf9a2fe8619e3b52d20b5721.css" integrity="sha256-y1PxvuK4kAy08IKvvwAXXWYY8oHPmi/oYZ47UtILVyE=" media="screen">
+
+
+<link rel="stylesheet"
+          href="https://fonts.googleapis.com/css?family=Material+Icons">
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+<script src="/vendor/js/md5.min.js"></script><script>
+  var gitalk = new Gitalk({
+  clientID: '',
+  clientSecret: '',
+  repo: '',
+  owner: '',
+  admin: [''],
+  id: md5(location.pathname),
+  distractionFreeMode: 'false'
+  });
+  window.onload = function () {
+        gitalk.render('gitalk-container')
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body>
+    	<div id="app"><div class="single-column-drawer-container" id="drawer"
+     v-bind:class="{ 'single-column-drawer-container-active': isDrawerOpen }">
+    <div class="drawer-content">
+        <div class="drawer-menu">
+            
+            
+            
+            
+            <div class="toc">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- CATALOG -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#spark-transform-operation" class="nav-spark-transform-operation">
+									spark transform operation
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%80%bb%e7%bb%93" class="nav-总结">
+									总结
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%88%9b%e5%bb%ba%e6%96%b9%e5%bc%8f" class="nav-创建方式">
+									创建方式
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#rdd%e7%bc%96%e7%a8%8b" class="nav-rdd编程">
+									RDD编程
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#transformation-%e7%ae%97%e5%ad%90" class="nav-transformation-算子">
+									Transformation 算子
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%b0%8f%e7%bb%86%e8%8a%821-%e5%bc%95%e7%94%a8%e6%88%90%e5%91%98%e5%8f%98%e9%87%8f" class="nav-小细节1-引用成员变量">
+									小细节1 引用成员变量
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%b0%8f%e7%bb%86%e8%8a%822-%e6%b1%82%e5%92%8c%e6%93%8d%e4%bd%9c" class="nav-小细节2-求和操作">
+									小细节2 求和操作
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+            
+        </div>
+    </div>
+</div>
+<transition name="fade">
+    <div id="drawer-mask" v-bind:class="{ 'single-column-drawer-mask': mounted }" v-if="isDrawerOpen" v-on:click="toggleDrawer"></div>
+</transition>
+<nav id="navBar" class="navbar sticky-top navbar-light single-column-nav-container">
+    <div id="navBackground" class="nav-background"></div>
+    <div class="container container-narrow nav-content">
+        <button id="nav_dropdown_btn" class="nav-dropdown-toggle" type="button" v-on:click="toggleDrawer">
+            <i class="material-icons">
+                menu
+            </i>
+        </button>
+        <a id="navTitle" class="navbar-brand" href="http://localhost:1313/">
+            MeiK&#39;s blog
+        </a>
+        
+        <button type="button" class="nav-darkmode-toggle" id="darkModeToggleButton2">
+            <i class="material-icons" id="darkModeToggleIcon2">
+                dark_mode
+            </i>
+        </button>
+        
+    </div>
+</nav>
+<div class="single-column-header-container" id="pageHead"
+     v-bind:style="{ transform: 'translateZ(0px) translateY('+.3*scrollY+'px)', opacity: 1-navOpacity }">
+    <a href="http://localhost:1313/">
+        <div class="single-column-header-title">MeiK&#39;s blog</div>
+        
+
+    </a>
+</div>
+
+            <div id="content">
+                <div id="streamContainer" class="stream-container">
+
+    <div class="post-list-container post-list-container-shadow">
+        <div class="post">
+            
+            
+            
+
+            <div class="post-head-wrapper-text-only"
+                
+            >
+                <div class="post-title">
+                    spark学习笔记-RDD基础算子
+                    
+                    <div class="post-meta">
+                        
+                        <time itemprop="datePublished">
+                            2019-07-27 00:18
+                        </time>
+                        
+
+                        
+
+                        
+                            <i class="material-icons" style="">label</i>
+                            
+                                <a href="/tags/spark">Spark</a>
+                                &nbsp;
+                            
+                        
+                        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="post-body-wrapper">
+                
+                <div class="post-body" v-pre>
+                
+                    <p>摘要：学习spark过程中的笔记，记录spark中的基础算子，以及RDD的基本概念。</p>
+<hr>
+<h2 id="spark-transform-operation">spark transform operation</h2>
+<p>源码地址：<a href="https://github.com/YaoQi17/sparkLearning/tree/master/sparkRDD">https://github.com/YaoQi17/sparkLearning/tree/master/sparkRDD</a></p>
+<hr>
+<h2 id="总结">总结</h2>
+<p>RDD(Resilient Distributed Dataset) 弹性分布式数据集，是一组分布式的数据集合，里面的元素可并行计算，可分区；
+RDD允许用户在执行多个查询时显示地将工作集缓存在内存中，例如persist()；</p>
+<h3 id="创建方式">创建方式</h3>
+<p>创建RDD的两种方式：</p>
+<ul>
+<li>读取外界文件</li>
+</ul>
+<p>外界文件不局限于系统文件，包括HDFS、HBase等</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-scala" data-lang="scala"><span class="line"><span class="cl"><span class="n">sparkSession</span><span class="o">.</span><span class="n">sparkContext</span><span class="o">.</span><span class="n">textFile</span><span class="o">(</span><span class="s">&#34;sparkRDD/src/main/resources/data.txt&#34;</span><span class="o">)</span>
+</span></span></code></pre></div><ul>
+<li>通过并行化的方式创建</li>
+</ul>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-scala" data-lang="scala"><span class="line"><span class="cl"><span class="k">val</span> <span class="n">sparkSession</span> <span class="k">=</span> <span class="n">getDefaultSparkSession</span>
+</span></span><span class="line"><span class="cl"><span class="k">val</span> <span class="n">dataArray</span> <span class="k">=</span> <span class="nc">Array</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="mi">2</span><span class="o">,</span> <span class="mi">3</span><span class="o">,</span> <span class="mi">4</span><span class="o">,</span> <span class="mi">5</span><span class="o">,</span> <span class="mi">6</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// 创建一个RDD
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">val</span> <span class="n">rdd</span> <span class="k">=</span> <span class="n">sparkSession</span><span class="o">.</span><span class="n">sparkContext</span><span class="o">.</span><span class="n">parallelize</span><span class="o">(</span><span class="n">dataArray</span><span class="o">)</span>
+</span></span></code></pre></div><p>通过并行化的方式创建还可以指定分区的数量</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-scala" data-lang="scala"><span class="line"><span class="cl"><span class="cm">/** Distribute a local Scala collection to form an RDD.
+</span></span></span><span class="line"><span class="cl"><span class="cm">   *
+</span></span></span><span class="line"><span class="cl"><span class="cm">   * @note Parallelize acts lazily. If `seq` is a mutable collection and is altered after the call
+</span></span></span><span class="line"><span class="cl"><span class="cm">   * to parallelize and before the first action on the RDD, the resultant RDD will reflect the
+</span></span></span><span class="line"><span class="cl"><span class="cm">   * modified collection. Pass a copy of the argument to avoid this.
+</span></span></span><span class="line"><span class="cl"><span class="cm">   * @note avoid using `parallelize(Seq())` to create an empty `RDD`. Consider `emptyRDD` for an
+</span></span></span><span class="line"><span class="cl"><span class="cm">   * RDD with no partitions, or `parallelize(Seq[T]())` for an RDD of `T` with empty partitions.
+</span></span></span><span class="line"><span class="cl"><span class="cm">   * @param seq Scala collection to distribute
+</span></span></span><span class="line"><span class="cl"><span class="cm">   * @param numSlices number of partitions to divide the collection into
+</span></span></span><span class="line"><span class="cl"><span class="cm">   * @return RDD representing distributed collection
+</span></span></span><span class="line"><span class="cl"><span class="cm">   */</span>
+</span></span><span class="line"><span class="cl">  <span class="k">def</span> <span class="n">parallelize</span><span class="o">[</span><span class="kt">T:</span> <span class="kt">ClassTag</span><span class="o">](</span>
+</span></span><span class="line"><span class="cl">      <span class="n">seq</span><span class="k">:</span> <span class="kt">Seq</span><span class="o">[</span><span class="kt">T</span><span class="o">],</span>
+</span></span><span class="line"><span class="cl">      <span class="n">numSlices</span><span class="k">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="n">defaultParallelism</span><span class="o">)</span><span class="k">:</span> <span class="kt">RDD</span><span class="o">[</span><span class="kt">T</span><span class="o">]</span> <span class="k">=</span> <span class="n">withScope</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">assertNotStopped</span><span class="o">()</span>
+</span></span><span class="line"><span class="cl">    <span class="k">new</span> <span class="nc">ParallelCollectionRDD</span><span class="o">[</span><span class="kt">T</span><span class="o">](</span><span class="k">this</span><span class="o">,</span> <span class="n">seq</span><span class="o">,</span> <span class="n">numSlices</span><span class="o">,</span> <span class="nc">Map</span><span class="o">[</span><span class="kt">Int</span>, <span class="kt">Seq</span><span class="o">[</span><span class="kt">String</span><span class="o">]]())</span>
+</span></span><span class="line"><span class="cl">  <span class="o">}</span>
+</span></span></code></pre></div><h3 id="rdd编程">RDD编程</h3>
+<p>RDD中包含两种类型的算子：Transformation和Action；</p>
+<h4 id="transformation-算子">Transformation 算子</h4>
+<p>Transformation 转换操作，将一个RDD转化为另外一个RDD，但是该过程具有延迟加载性；
+Transformation算子不会马上执行，只有当遇到Action算子时才会执行。</p>
+<p>常见的Transformation算子：</p>
+<ul>
+<li>
+<p><strong>map(function)</strong> 由一个RDD转化为另外一个RDD，function的每一次输出组成另外一个RDD；</p>
+</li>
+<li>
+<p><strong>filter(function)</strong> 由一个RDD的元素经过筛选，满足function条件的元素组成一个新的RDD；</p>
+</li>
+<li>
+<p><strong>flatMap(function)</strong> 类似于map，但是每一个元素可以被转化为多个元素，function应该返回一个序列；</p>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-scala" data-lang="scala"><span class="line"><span class="cl">  <span class="cm">/**
+</span></span></span><span class="line"><span class="cl"><span class="cm">    * flatMap实例，flatMap返回的是一组元素，官网说是一个Seq ，而不是一个元素
+</span></span></span><span class="line"><span class="cl"><span class="cm">    */</span>
+</span></span><span class="line"><span class="cl">  <span class="k">def</span> <span class="n">flatMapDemo</span><span class="o">()</span><span class="k">:</span> <span class="kt">Unit</span> <span class="o">=</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">val</span> <span class="n">sparkSession</span> <span class="k">=</span> <span class="n">getDefaultSparkSession</span>
+</span></span><span class="line"><span class="cl">    <span class="k">val</span> <span class="n">textData</span> <span class="k">=</span> <span class="n">sparkSession</span><span class="o">.</span><span class="n">sparkContext</span><span class="o">.</span><span class="n">textFile</span><span class="o">(</span><span class="s">&#34;sparkRDD/src/main/resources/data.txt&#34;</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">//    val flatData = textData.flatMap(row =&gt; row.split(&#34; &#34;))
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">val</span> <span class="n">flatData</span> <span class="k">=</span> <span class="n">textData</span><span class="o">.</span><span class="n">map</span><span class="o">(</span><span class="n">row</span> <span class="k">=&gt;</span> <span class="n">row</span><span class="o">.</span><span class="n">split</span><span class="o">(</span><span class="s">&#34; &#34;</span><span class="o">))</span>
+</span></span><span class="line"><span class="cl">    <span class="n">flatData</span><span class="o">.</span><span class="n">collect</span><span class="o">().</span><span class="n">foreach</span><span class="o">(</span><span class="n">println</span><span class="o">(</span><span class="k">_</span><span class="o">))</span>
+</span></span><span class="line"><span class="cl">  <span class="o">}</span>
+</span></span></code></pre></div><ul>
+<li>
+<p><strong>mapPartitions(function)</strong> 类似于map，但独立地在RDD的每一个分片上运行，函数类型是：Iterator[T] =&gt; Iterator[U]；</p>
+<p>传值调用（call-by-value）：先计算参数表达式的值，再应用到函数内部，在函数外部求值；</p>
+<p>传名调用（call-by-name）：将未计算的参数表达式直接应用到函数内部，在函数内部求值；</p>
+<p>Iterator[T] =&gt; Iterator[U] 就是表示该函数为传名调用。</p>
+</li>
+<li>
+<p><strong>mapPartitionsWithIndex(function)</strong> 类似于mapPartitions，但是传入的参数中多了一个索引值，该索引值为RDD分片数的索引值；
+（传入的函数类型为：(Int, Iterator<!-- raw HTML omitted -->) =&gt; Iterator<!-- raw HTML omitted -->）</p>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-scala" data-lang="scala"><span class="line"><span class="cl">  <span class="cm">/**
+</span></span></span><span class="line"><span class="cl"><span class="cm">    * mapPartitionsWithIndex使用示例
+</span></span></span><span class="line"><span class="cl"><span class="cm">    */</span>
+</span></span><span class="line"><span class="cl">  <span class="k">def</span> <span class="n">mapPartitionsWithIndexDemo</span><span class="o">()</span><span class="k">:</span> <span class="kt">Unit</span> <span class="o">=</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">val</span> <span class="n">sparkSession</span> <span class="k">=</span> <span class="n">getDefaultSparkSession</span>
+</span></span><span class="line"><span class="cl">    <span class="k">val</span> <span class="n">rddData</span> <span class="k">=</span> <span class="n">sparkSession</span><span class="o">.</span><span class="n">sparkContext</span><span class="o">.</span><span class="n">parallelize</span><span class="o">(</span><span class="nc">Array</span><span class="o">(</span><span class="s">&#34;a&#34;</span><span class="o">,</span> <span class="s">&#34;b&#34;</span><span class="o">,</span> <span class="s">&#34;c&#34;</span><span class="o">,</span> <span class="s">&#34;d&#34;</span><span class="o">,</span> <span class="s">&#34;e&#34;</span><span class="o">))</span>
+</span></span><span class="line"><span class="cl">    <span class="k">val</span> <span class="n">data</span> <span class="k">=</span> <span class="n">rddData</span><span class="o">.</span><span class="n">mapPartitionsWithIndex</span><span class="o">((</span><span class="n">index</span><span class="k">:</span> <span class="kt">Int</span><span class="o">,</span> <span class="n">row</span><span class="k">:</span> <span class="kt">Iterator</span><span class="o">[</span><span class="kt">String</span><span class="o">])</span> <span class="k">=&gt;</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">      <span class="n">row</span><span class="o">.</span><span class="n">toList</span><span class="o">.</span><span class="n">map</span><span class="o">(</span><span class="n">x</span> <span class="k">=&gt;</span> <span class="s">&#34;[partID:&#34;</span> <span class="o">+</span> <span class="n">index</span> <span class="o">+</span> <span class="s">&#34;:&#34;</span> <span class="o">+</span> <span class="n">x</span> <span class="o">+</span> <span class="s">&#34;]&#34;</span><span class="o">).</span><span class="n">iterator</span>
+</span></span><span class="line"><span class="cl">    <span class="o">})</span>
+</span></span><span class="line"><span class="cl">    <span class="n">data</span><span class="o">.</span><span class="n">collect</span><span class="o">().</span><span class="n">foreach</span><span class="o">(</span><span class="n">println</span><span class="o">(</span><span class="k">_</span><span class="o">))</span>
+</span></span><span class="line"><span class="cl">  <span class="o">}</span>
+</span></span></code></pre></div><ul>
+<li>
+<p><strong>sample(withReplacement, fraction, seed)</strong> 根据fraction指定的比例对数据进行采样，可以选择是否使用随机数进行替换，seed用于指定随机数生成器种子；</p>
+</li>
+<li>
+<p><strong>union(otherDataset)</strong>  对源RDD和参数中的RDD求并集后返回一个新的RDD；</p>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-scala" data-lang="scala"><span class="line"><span class="cl">  <span class="cm">/**
+</span></span></span><span class="line"><span class="cl"><span class="cm">    * 求并集示例
+</span></span></span><span class="line"><span class="cl"><span class="cm">    */</span>
+</span></span><span class="line"><span class="cl">  <span class="k">def</span> <span class="n">unionRDD</span><span class="o">()</span><span class="k">:</span> <span class="kt">Unit</span> <span class="o">=</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">val</span> <span class="n">sparkSession</span> <span class="k">=</span> <span class="n">getDefaultSparkSession</span>
+</span></span><span class="line"><span class="cl">    <span class="k">val</span> <span class="n">rddData1</span> <span class="k">=</span> <span class="n">sparkSession</span><span class="o">.</span><span class="n">sparkContext</span><span class="o">.</span><span class="n">parallelize</span><span class="o">(</span><span class="nc">List</span><span class="o">(</span><span class="s">&#34;s&#34;</span><span class="o">,</span> <span class="s">&#34;d&#34;</span><span class="o">,</span> <span class="s">&#34;f&#34;</span><span class="o">,</span> <span class="s">&#34;a&#34;</span><span class="o">))</span>
+</span></span><span class="line"><span class="cl">    <span class="k">val</span> <span class="n">rddData2</span> <span class="k">=</span> <span class="n">rddData1</span><span class="o">.</span><span class="n">map</span><span class="o">(</span><span class="n">row</span> <span class="k">=&gt;</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">      <span class="k">if</span> <span class="o">(</span><span class="n">row</span><span class="o">.</span><span class="n">equals</span><span class="o">(</span><span class="s">&#34;s&#34;</span><span class="o">))</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">row</span> <span class="o">+</span> <span class="s">&#34;s&#34;</span>
+</span></span><span class="line"><span class="cl">      <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">row</span>
+</span></span><span class="line"><span class="cl">      <span class="o">}</span>
+</span></span><span class="line"><span class="cl">    <span class="o">})</span>
+</span></span><span class="line"><span class="cl">    <span class="n">println</span><span class="o">(</span><span class="s">&#34;求并集:&#34;</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">rddData1</span><span class="o">.</span><span class="n">union</span><span class="o">(</span><span class="n">rddData2</span><span class="o">).</span><span class="n">foreach</span><span class="o">(</span><span class="n">println</span><span class="o">(</span><span class="k">_</span><span class="o">))</span>
+</span></span><span class="line"><span class="cl">    <span class="n">println</span><span class="o">(</span><span class="s">&#34;求交集:&#34;</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">rddData1</span><span class="o">.</span><span class="n">intersection</span><span class="o">(</span><span class="n">rddData2</span><span class="o">).</span><span class="n">foreach</span><span class="o">(</span><span class="n">println</span><span class="o">(</span><span class="k">_</span><span class="o">))</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">val</span> <span class="n">rddData3</span> <span class="k">=</span> <span class="n">rddData1</span><span class="o">.</span><span class="n">union</span><span class="o">(</span><span class="n">rddData2</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">println</span><span class="o">(</span><span class="s">&#34;去重:&#34;</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">rddData3</span><span class="o">.</span><span class="n">distinct</span><span class="o">().</span><span class="n">collect</span><span class="o">().</span><span class="n">foreach</span><span class="o">(</span><span class="n">println</span><span class="o">(</span><span class="k">_</span><span class="o">))</span>
+</span></span><span class="line"><span class="cl">  <span class="o">}</span>
+</span></span></code></pre></div><ul>
+<li>
+<p><strong>intersection(otherDataset)</strong>  对源RDD和参数中的RDD求交集后返回一个新的RDD；</p>
+</li>
+<li>
+<p><strong>distinct([numTasks]))</strong>  对源RDD进行去重后返回一个新的RDD；</p>
+</li>
+<li>
+<p><strong>groupByKey([numTasks])</strong>  在一个(K,V)的RDD上调用，返回一个(K, Iterator[V])的RDD；</p>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-scala" data-lang="scala"><span class="line"><span class="cl">  <span class="cm">/**
+</span></span></span><span class="line"><span class="cl"><span class="cm">    * 分组示例
+</span></span></span><span class="line"><span class="cl"><span class="cm">    */</span>
+</span></span><span class="line"><span class="cl">  <span class="k">def</span> <span class="n">groupByKeyDemo</span><span class="o">()</span><span class="k">:</span> <span class="kt">Unit</span> <span class="o">=</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">val</span> <span class="n">sparkSession</span> <span class="k">=</span> <span class="n">getDefaultSparkSession</span>
+</span></span><span class="line"><span class="cl">    <span class="k">val</span> <span class="n">textFileRDD</span> <span class="k">=</span> <span class="n">sparkSession</span><span class="o">.</span><span class="n">sparkContext</span><span class="o">.</span><span class="n">textFile</span><span class="o">(</span><span class="s">&#34;sparkRDD/src/main/resources/data.txt&#34;</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">val</span> <span class="n">rddData</span> <span class="k">=</span> <span class="n">textFileRDD</span><span class="o">.</span><span class="n">flatMap</span><span class="o">(</span><span class="k">_</span><span class="o">.</span><span class="n">split</span><span class="o">(</span><span class="s">&#34; &#34;</span><span class="o">)).</span><span class="n">map</span><span class="o">(</span><span class="n">row</span> <span class="k">=&gt;</span> <span class="o">(</span><span class="n">row</span><span class="o">,</span> <span class="mi">1</span><span class="o">))</span>
+</span></span><span class="line"><span class="cl">    <span class="n">rddData</span><span class="o">.</span><span class="n">groupByKey</span><span class="o">().</span><span class="n">map</span><span class="o">(</span><span class="n">row</span> <span class="k">=&gt;</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">      <span class="k">val</span> <span class="n">count</span> <span class="k">=</span> <span class="n">row</span><span class="o">.</span><span class="n">_2</span><span class="o">.</span><span class="n">sum</span>
+</span></span><span class="line"><span class="cl">      <span class="o">(</span><span class="n">row</span><span class="o">.</span><span class="n">_1</span><span class="o">,</span> <span class="n">count</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}).</span><span class="n">collect</span><span class="o">().</span><span class="n">foreach</span><span class="o">(</span><span class="n">println</span><span class="o">(</span><span class="k">_</span><span class="o">))</span>
+</span></span><span class="line"><span class="cl">    <span class="n">rddData</span><span class="o">.</span><span class="n">reduceByKey</span><span class="o">((</span><span class="n">x</span><span class="o">,</span> <span class="n">y</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span><span class="o">).</span><span class="n">collect</span><span class="o">().</span><span class="n">foreach</span><span class="o">(</span><span class="n">println</span><span class="o">(</span><span class="k">_</span><span class="o">))</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">//    rddData.groupByKey().collect().foreach(println(_))
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="o">}</span>
+</span></span></code></pre></div><ul>
+<li><strong>reduceByKey(func, [numTasks])</strong> 在一个(K,V)的RDD上调用，返回一个(K,V)的RDD，使用指定的reduce函数，将相同key的值聚合到一起，与groupByKey类似，reduce任务的个数可以通过第二个可选的参数来设置； 与groupByKey的不同在于reduceByKey中可以传入一个函数，处理规约后的每个值；groupByKey则是将分组后的值都放到Iterator中；</li>
+</ul>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-scala" data-lang="scala"><span class="line"><span class="cl">  <span class="k">val</span> <span class="n">textFileRDD</span> <span class="k">=</span> <span class="n">sparkSession</span><span class="o">.</span><span class="n">sparkContext</span><span class="o">.</span><span class="n">textFile</span><span class="o">(</span><span class="s">&#34;sparkRDD/src/main/resources/data.txt&#34;</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">      <span class="k">val</span> <span class="n">rddData</span> <span class="k">=</span> <span class="n">textFileRDD</span><span class="o">.</span><span class="n">flatMap</span><span class="o">(</span><span class="k">_</span><span class="o">.</span><span class="n">split</span><span class="o">(</span><span class="s">&#34; &#34;</span><span class="o">)).</span><span class="n">map</span><span class="o">(</span><span class="n">row</span> <span class="k">=&gt;</span> <span class="o">(</span><span class="n">row</span><span class="o">,</span> <span class="mi">1</span><span class="o">))</span>
+</span></span><span class="line"><span class="cl">      <span class="n">rddData</span><span class="o">.</span><span class="n">groupByKey</span><span class="o">().</span><span class="n">map</span><span class="o">(</span><span class="n">row</span> <span class="k">=&gt;</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">val</span> <span class="n">count</span> <span class="k">=</span> <span class="n">row</span><span class="o">.</span><span class="n">_2</span><span class="o">.</span><span class="n">sum</span>
+</span></span><span class="line"><span class="cl">        <span class="o">(</span><span class="n">row</span><span class="o">.</span><span class="n">_1</span><span class="o">,</span> <span class="n">count</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">      <span class="o">}).</span><span class="n">collect</span><span class="o">().</span><span class="n">foreach</span><span class="o">(</span><span class="n">println</span><span class="o">(</span><span class="k">_</span><span class="o">))</span>
+</span></span><span class="line"><span class="cl">  
+</span></span><span class="line"><span class="cl">      <span class="n">rddData</span><span class="o">.</span><span class="n">reduceByKey</span><span class="o">((</span><span class="n">x</span><span class="o">,</span> <span class="n">y</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span><span class="o">).</span><span class="n">collect</span><span class="o">().</span><span class="n">foreach</span><span class="o">(</span><span class="n">println</span><span class="o">(</span><span class="k">_</span><span class="o">))</span>
+</span></span></code></pre></div><p>看完reduceByKey之后再去看看distinct()的源码，就会发现很有意思：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-scala" data-lang="scala"><span class="line"><span class="cl">  <span class="k">def</span> <span class="n">distinct</span><span class="o">(</span><span class="n">numPartitions</span><span class="k">:</span> <span class="kt">Int</span><span class="o">)(</span><span class="k">implicit</span> <span class="n">ord</span><span class="k">:</span> <span class="kt">Ordering</span><span class="o">[</span><span class="kt">T</span><span class="o">]</span> <span class="k">=</span> <span class="kc">null</span><span class="o">)</span><span class="k">:</span> <span class="kt">RDD</span><span class="o">[</span><span class="kt">T</span><span class="o">]</span> <span class="k">=</span> <span class="n">withScope</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">map</span><span class="o">(</span><span class="n">x</span> <span class="k">=&gt;</span> <span class="o">(</span><span class="n">x</span><span class="o">,</span> <span class="kc">null</span><span class="o">)).</span><span class="n">reduceByKey</span><span class="o">((</span><span class="n">x</span><span class="o">,</span> <span class="n">y</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="n">x</span><span class="o">,</span> <span class="n">numPartitions</span><span class="o">).</span><span class="n">map</span><span class="o">(</span><span class="k">_</span><span class="o">.</span><span class="n">_1</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">  <span class="o">}</span>
+</span></span></code></pre></div><p>先是将一个RDD转化为(x,null) 这种二元结构，然后按照每个key进行规约，这样就能保证key只有一个，而x,y都为null，最后只需要再将规约后的key取出来，就是去重后的RDD了。</p>
+<ul>
+<li><strong>aggregateByKey (zeroValue)(seqOp, combOp, [numTasks])</strong>  先按分区聚合 ，再总的聚合 ；每次要跟初始值交流 例如：aggregateByKey(0)(<em>+</em>,<em>+</em>) 对k/y的RDD进行操作；</li>
+</ul>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-scala" data-lang="scala"><span class="line"><span class="cl">  <span class="cm">/**
+</span></span></span><span class="line"><span class="cl"><span class="cm">    * 聚合，暂时还没理解
+</span></span></span><span class="line"><span class="cl"><span class="cm">    */</span>
+</span></span><span class="line"><span class="cl">  <span class="k">def</span> <span class="n">aggregateByKeyDemo</span><span class="o">()</span><span class="k">:</span> <span class="kt">Unit</span> <span class="o">=</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">val</span> <span class="n">sparkSession</span> <span class="k">=</span> <span class="n">getDefaultSparkSession</span>
+</span></span><span class="line"><span class="cl">    <span class="k">val</span> <span class="n">textFileRDD</span> <span class="k">=</span> <span class="n">sparkSession</span><span class="o">.</span><span class="n">sparkContext</span><span class="o">.</span><span class="n">textFile</span><span class="o">(</span><span class="s">&#34;sparkRDD/src/main/resources/data.txt&#34;</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">val</span> <span class="n">rddData</span> <span class="k">=</span> <span class="n">textFileRDD</span><span class="o">.</span><span class="n">flatMap</span><span class="o">(</span><span class="k">_</span><span class="o">.</span><span class="n">split</span><span class="o">(</span><span class="s">&#34; &#34;</span><span class="o">)).</span><span class="n">map</span><span class="o">(</span><span class="n">row</span> <span class="k">=&gt;</span> <span class="o">(</span><span class="n">row</span><span class="o">,</span> <span class="mi">1</span><span class="o">))</span>
+</span></span><span class="line"><span class="cl">    <span class="k">val</span> <span class="n">aggregateRDD</span> <span class="k">=</span> <span class="n">rddData</span><span class="o">.</span><span class="n">aggregateByKey</span><span class="o">(</span><span class="mi">0</span><span class="o">)(</span><span class="k">_</span> <span class="o">+</span> <span class="k">_</span><span class="o">,</span> <span class="k">_</span> <span class="o">+</span> <span class="k">_</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">aggregateRDD</span><span class="o">.</span><span class="n">collect</span><span class="o">().</span><span class="n">foreach</span><span class="o">(</span><span class="n">println</span><span class="o">(</span><span class="k">_</span><span class="o">))</span>
+</span></span><span class="line"><span class="cl">  <span class="o">}</span>
+</span></span></code></pre></div><ul>
+<li><strong>sortByKey([<em>ascending</em>], [<em>numPartitions</em>])</strong>  在一个(K,V)的RDD上调用，K必须实现Ordered接口，返回一个按照key进行排序的(K,V)的RDD；</li>
+</ul>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-scala" data-lang="scala"><span class="line"><span class="cl">  <span class="cm">/**
+</span></span></span><span class="line"><span class="cl"><span class="cm">    * 特殊的排序
+</span></span></span><span class="line"><span class="cl"><span class="cm">    */</span>
+</span></span><span class="line"><span class="cl">  <span class="k">def</span> <span class="n">sortByKeyDemo</span><span class="o">()</span><span class="k">:</span> <span class="kt">Unit</span> <span class="o">=</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">val</span> <span class="n">sparkSession</span> <span class="k">=</span> <span class="n">getDefaultSparkSession</span>
+</span></span><span class="line"><span class="cl">    <span class="k">val</span> <span class="n">rddData2</span> <span class="k">=</span> <span class="n">sparkSession</span><span class="o">.</span><span class="n">sparkContext</span><span class="o">.</span><span class="n">parallelize</span><span class="o">(</span><span class="nc">List</span><span class="o">(</span><span class="s">&#34;CSDN&#34;</span><span class="o">,</span> <span class="s">&#34;ITEYE&#34;</span><span class="o">,</span> <span class="s">&#34;CNBLOG&#34;</span><span class="o">,</span> <span class="s">&#34;OSCHINA&#34;</span><span class="o">,</span> <span class="s">&#34;GITHUB&#34;</span><span class="o">))</span>
+</span></span><span class="line"><span class="cl">    <span class="k">val</span> <span class="n">rddData3</span> <span class="k">=</span> <span class="n">sparkSession</span><span class="o">.</span><span class="n">sparkContext</span><span class="o">.</span><span class="n">parallelize</span><span class="o">(</span><span class="mi">1</span> <span class="n">to</span> <span class="n">rddData2</span><span class="o">.</span><span class="n">count</span><span class="o">().</span><span class="n">toInt</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">val</span> <span class="n">rddData4</span> <span class="k">=</span> <span class="n">rddData2</span><span class="o">.</span><span class="n">zip</span><span class="o">(</span><span class="n">rddData3</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">rddData4</span><span class="o">.</span><span class="n">sortByKey</span><span class="o">().</span><span class="n">collect</span><span class="o">().</span><span class="n">foreach</span><span class="o">(</span><span class="n">println</span><span class="o">(</span><span class="k">_</span><span class="o">))</span>
+</span></span><span class="line"><span class="cl">  <span class="o">}</span>
+</span></span></code></pre></div><ul>
+<li><strong>sortBy(func,[ascending], [numTasks])</strong> 与sortByKey类似，排序的对象也是（K,V）结构，第一个参数是根据什么排序， 第二个是怎么排序 false倒序 ，第三个排序后分区数 ，默认与原RDD一样；</li>
+</ul>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-scala" data-lang="scala"><span class="line"><span class="cl">  <span class="k">def</span> <span class="n">sortByDemo</span><span class="o">()</span><span class="k">:</span> <span class="kt">Unit</span> <span class="o">=</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">      <span class="k">val</span> <span class="n">sparkSession</span> <span class="k">=</span> <span class="n">getDefaultSparkSession</span>
+</span></span><span class="line"><span class="cl">      <span class="k">val</span> <span class="n">rddData</span> <span class="k">=</span> <span class="n">sparkSession</span><span class="o">.</span><span class="n">sparkContext</span><span class="o">.</span><span class="n">parallelize</span><span class="o">(</span><span class="nc">List</span><span class="o">(</span><span class="mi">3</span><span class="o">,</span> <span class="mi">23</span><span class="o">,</span> <span class="mi">4</span><span class="o">,</span> <span class="mi">6</span><span class="o">,</span> <span class="mi">234</span><span class="o">,</span> <span class="mi">87</span><span class="o">))</span>
+</span></span><span class="line"><span class="cl">      <span class="k">val</span> <span class="n">newRdd</span> <span class="k">=</span> <span class="n">rddData</span><span class="o">.</span><span class="n">mapPartitionsWithIndex</span><span class="o">((</span><span class="n">index</span><span class="k">:</span> <span class="kt">Int</span><span class="o">,</span> <span class="n">row</span><span class="k">:</span> <span class="kt">Iterator</span><span class="o">[</span><span class="kt">Int</span><span class="o">])</span> <span class="k">=&gt;</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">row</span><span class="o">.</span><span class="n">toList</span><span class="o">.</span><span class="n">map</span><span class="o">(</span><span class="n">r</span> <span class="k">=&gt;</span> <span class="o">(</span><span class="n">index</span><span class="o">,</span> <span class="n">r</span><span class="o">)).</span><span class="n">iterator</span>
+</span></span><span class="line"><span class="cl">      <span class="o">})</span>
+</span></span><span class="line"><span class="cl">      <span class="n">newRdd</span><span class="o">.</span><span class="n">sortBy</span><span class="o">(</span><span class="k">_</span><span class="o">.</span><span class="n">_2</span><span class="o">,</span> <span class="n">ascending</span> <span class="k">=</span> <span class="kc">false</span><span class="o">).</span><span class="n">collect</span><span class="o">().</span><span class="n">foreach</span><span class="o">(</span><span class="n">println</span><span class="o">(</span><span class="k">_</span><span class="o">))</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span></code></pre></div><ul>
+<li><strong>join(otherDataset, [numTasks])</strong>  在类型为(K,V)和(K,W)的RDD上调用，返回一个相同key对应的所有元素对在一起的(K,(V,W))的RDD ,相当于内连接（求交集)；</li>
+</ul>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-scala" data-lang="scala"><span class="line"><span class="cl">  <span class="cm">/**
+</span></span></span><span class="line"><span class="cl"><span class="cm">    * zip 和 join 操作
+</span></span></span><span class="line"><span class="cl"><span class="cm">    */</span>
+</span></span><span class="line"><span class="cl">  <span class="k">def</span> <span class="n">joinDemo</span><span class="o">()</span><span class="k">:</span> <span class="kt">Unit</span> <span class="o">=</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">val</span> <span class="n">sparkSession</span> <span class="k">=</span> <span class="n">getDefaultSparkSession</span>
+</span></span><span class="line"><span class="cl">    <span class="k">val</span> <span class="n">rddDataName</span> <span class="k">=</span> <span class="n">sparkSession</span><span class="o">.</span><span class="n">sparkContext</span><span class="o">.</span><span class="n">parallelize</span><span class="o">(</span><span class="nc">List</span><span class="o">(</span><span class="s">&#34;Tom&#34;</span><span class="o">,</span> <span class="s">&#34;Rose&#34;</span><span class="o">,</span> <span class="s">&#34;Jack&#34;</span><span class="o">,</span> <span class="s">&#34;Jerry&#34;</span><span class="o">))</span>
+</span></span><span class="line"><span class="cl">    <span class="k">val</span> <span class="n">rddDataId</span> <span class="k">=</span> <span class="n">sparkSession</span><span class="o">.</span><span class="n">sparkContext</span><span class="o">.</span><span class="n">parallelize</span><span class="o">(</span><span class="nc">List</span><span class="o">(</span><span class="s">&#34;1001&#34;</span><span class="o">,</span> <span class="s">&#34;1002&#34;</span><span class="o">,</span> <span class="s">&#34;1003&#34;</span><span class="o">,</span> <span class="s">&#34;1004&#34;</span><span class="o">))</span>
+</span></span><span class="line"><span class="cl">    <span class="k">val</span> <span class="n">rddDataAge</span> <span class="k">=</span> <span class="n">sparkSession</span><span class="o">.</span><span class="n">sparkContext</span><span class="o">.</span><span class="n">parallelize</span><span class="o">(</span><span class="nc">List</span><span class="o">(</span><span class="mi">12</span><span class="o">,</span> <span class="mi">22</span><span class="o">,</span> <span class="mi">13</span><span class="o">,</span> <span class="mi">20</span><span class="o">))</span>
+</span></span><span class="line"><span class="cl">    <span class="k">val</span> <span class="n">rddIdAndName</span> <span class="k">=</span> <span class="n">rddDataId</span><span class="o">.</span><span class="n">zip</span><span class="o">(</span><span class="n">rddDataName</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">rddIdAndName</span><span class="o">.</span><span class="n">collect</span><span class="o">().</span><span class="n">foreach</span><span class="o">(</span><span class="n">println</span><span class="o">(</span><span class="k">_</span><span class="o">))</span>
+</span></span><span class="line"><span class="cl">    <span class="k">val</span> <span class="n">rddIdAndAge</span> <span class="k">=</span> <span class="n">rddDataId</span><span class="o">.</span><span class="n">zip</span><span class="o">(</span><span class="n">rddDataAge</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">rddIdAndAge</span><span class="o">.</span><span class="n">collect</span><span class="o">().</span><span class="n">foreach</span><span class="o">(</span><span class="n">println</span><span class="o">(</span><span class="k">_</span><span class="o">))</span>
+</span></span><span class="line"><span class="cl">    <span class="k">val</span> <span class="n">fullRdd</span> <span class="k">=</span> <span class="n">rddIdAndName</span><span class="o">.</span><span class="n">join</span><span class="o">(</span><span class="n">rddIdAndAge</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">fullRdd</span><span class="o">.</span><span class="n">collect</span><span class="o">().</span><span class="n">foreach</span><span class="o">(</span><span class="n">println</span><span class="o">(</span><span class="k">_</span><span class="o">))</span>
+</span></span><span class="line"><span class="cl">  <span class="o">}</span>
+</span></span></code></pre></div><ul>
+<li><strong>cogroup(otherDataset, [numTasks])</strong>  在类型为(K,V)和(K,W)的RDD上调用，返回一个(K,(Iterable<!-- raw HTML omitted -->,Iterable<!-- raw HTML omitted -->))类型的RDD；在2.3之后没有该方法。</li>
+</ul>
+<h4 id="小细节1-引用成员变量">小细节1 引用成员变量</h4>
+<p>以下代码中map中引用了class中的成员变量；</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-scala" data-lang="scala"><span class="line"><span class="cl"><span class="k">class</span> <span class="nc">MyClass</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">val</span> <span class="n">field</span> <span class="k">=</span> <span class="s">&#34;Hello&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="k">def</span> <span class="n">doStuff</span><span class="o">(</span><span class="n">rdd</span><span class="k">:</span> <span class="kt">RDD</span><span class="o">[</span><span class="kt">String</span><span class="o">])</span><span class="k">:</span> <span class="kt">RDD</span><span class="o">[</span><span class="kt">String</span><span class="o">]</span> <span class="k">=</span> <span class="o">{</span> <span class="n">rdd</span><span class="o">.</span><span class="n">map</span><span class="o">(</span><span class="n">x</span> <span class="k">=&gt;</span> <span class="n">field</span> <span class="o">+</span> <span class="n">x</span><span class="o">)</span> <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></div><p>但这种方式等价于： <code>scala rdd.map(x =&gt; this.field + x) </code> ，这种情况会引用整个this；
+正确的做法是这样的：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-scala" data-lang="scala"><span class="line"><span class="cl"><span class="k">def</span> <span class="n">doStuff</span><span class="o">(</span><span class="n">rdd</span><span class="k">:</span> <span class="kt">RDD</span><span class="o">[</span><span class="kt">String</span><span class="o">])</span><span class="k">:</span> <span class="kt">RDD</span><span class="o">[</span><span class="kt">String</span><span class="o">]</span> <span class="k">=</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">// 复制一份副本到本地
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="k">val</span> <span class="n">field_</span> <span class="k">=</span> <span class="k">this</span><span class="o">.</span><span class="n">field</span>
+</span></span><span class="line"><span class="cl">  <span class="n">rdd</span><span class="o">.</span><span class="n">map</span><span class="o">(</span><span class="n">x</span> <span class="k">=&gt;</span> <span class="n">field_</span> <span class="o">+</span> <span class="n">x</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></div><p>在map中引用成员变量，应该在进行转换之前就复制一份副本到本地，然后使用本地的副本而不是去引用成员变量；</p>
+<h4 id="小细节2-求和操作">小细节2 求和操作</h4>
+<p>不能在代码中直接使用foreach求和</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-scala" data-lang="scala"><span class="line"><span class="cl"><span class="k">var</span> <span class="n">counter</span> <span class="k">=</span> <span class="mi">0</span>
+</span></span><span class="line"><span class="cl"><span class="k">var</span> <span class="n">rdd</span> <span class="k">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">parallelize</span><span class="o">(</span><span class="n">data</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// Wrong: Don&#39;t do this!!
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">rdd</span><span class="o">.</span><span class="n">foreach</span><span class="o">(</span><span class="n">x</span> <span class="k">=&gt;</span> <span class="n">counter</span> <span class="o">+=</span> <span class="n">x</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">println</span><span class="o">(</span><span class="s">&#34;Counter value: &#34;</span> <span class="o">+</span> <span class="n">counter</span><span class="o">)</span>
+</span></span></code></pre></div>
+                    
+                    <HR width="100%" id="EOF">
+		    <p style="color:#777;">Last modified on 2024-01-24</p>
+                    
+                </div>
+            </div>
+            
+            
+            <nav class="post-pagination">
+
+                
+                <a class="newer-posts" href="/post/2019-9-4-%E9%80%86%E6%B3%A2%E5%85%B0%E8%A1%A8%E8%BE%BE%E5%BC%8F%E7%AE%97%E6%B3%95/">
+			Next<br>逆波兰表达式算法
+                </a>
+                
+                
+                
+                <a class="older-posts" href="/post/2019-7-11-springboot-hbase/">
+			Previous<br>SpringBoot HBase
+                </a>
+                
+            </nav>
+            <div class="post-comment-wrapper">
+                
+
+
+<div id="gitalk-container"></div>
+
+
+
+
+
+
+
+
+
+
+
+            </div>
+        </div>
+    </div>
+
+
+                    </div>
+            </div><div id="sideContainer" class="side-container">
+    
+    <a class="a-block nav-head false" href="http://localhost:1313/">
+    
+        <div class="nav-title">
+            MeiK&#39;s blog
+        </div>
+        
+    </a>
+
+    <div class="nav-link-list">
+        
+        
+    </div>
+
+    
+
+    <div class="nav-footer">
+        
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://risehere.net/">Rise</a>
+<br>
+Ported from <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	2024 MeiK&#39;s blog
+	
+
+    </div>
+    
+</div><div id="extraContainer" class="extra-container">
+    <div class="toc-wrapper">
+        
+
+        
+        <div class="toc">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- CATALOG -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#spark-transform-operation" class="nav-spark-transform-operation">
+									spark transform operation
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%80%bb%e7%bb%93" class="nav-总结">
+									总结
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%88%9b%e5%bb%ba%e6%96%b9%e5%bc%8f" class="nav-创建方式">
+									创建方式
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#rdd%e7%bc%96%e7%a8%8b" class="nav-rdd编程">
+									RDD编程
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#transformation-%e7%ae%97%e5%ad%90" class="nav-transformation-算子">
+									Transformation 算子
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%b0%8f%e7%bb%86%e8%8a%821-%e5%bc%95%e7%94%a8%e6%88%90%e5%91%98%e5%8f%98%e9%87%8f" class="nav-小细节1-引用成员变量">
+									小细节1 引用成员变量
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%b0%8f%e7%bb%86%e8%8a%822-%e6%b1%82%e5%92%8c%e6%93%8d%e4%bd%9c" class="nav-小细节2-求和操作">
+									小细节2 求和操作
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+        
+    </div>
+    <div class="pagination">
+        <a id="globalBackToTop" class="pagination-action animated-visibility" href="#top"
+            :class="{ invisible: scrollY == 0 }">
+            <i class="material-icons pagination-action-icon">
+                keyboard_arrow_up
+            </i>
+        </a>
+        
+        <a type="button" class="pagination-action" id="darkModeToggleButton">
+            <span class="material-icons pagination-action-icon" id="darkModeToggleIcon">
+                dark_mode
+            </span>
+        </a>
+        
+        
+    </div>
+</div>
+
+<div id="single-column-footer">
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://risehere.net/">Rise</a>
+<br>
+Ported from <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	2024 MeiK&#39;s blog
+	
+</div>
+            </div>
+    
+    <script src="/js/journal.js"></script></body>
+</html>

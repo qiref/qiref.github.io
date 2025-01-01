@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en"><head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+<title>Flink类加载机制</title>
+
+
+
+
+<meta charset="utf-8">
+<meta name="X-UA-Compatible" content="IE=edge">
+<meta name="google-site-verification" content="UA-123456-789">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=5, user-scalable=5" name="viewport">
+<meta content="telephone=no" name="format-detection">
+<meta name="description" content="">
+<meta name="renderer" content="webkit">
+<meta name="theme-color" content="#ffffff">
+
+
+
+
+
+
+
+
+
+
+
+  
+    
+      
+    
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+<link rel="icon" href="http://localhost:1313/images/github.png">
+
+
+
+      <script src="/js/toc.js"></script>
+    
+    <link type="text/css" rel="stylesheet" href="/vendor/css/bootstrap.min.css">
+
+<link rel="stylesheet" href="/scss/dark-mode.min.cb53f1bee2b8900cb4f082afbf00175d6618f281cf9a2fe8619e3b52d20b5721.css" integrity="sha256-y1PxvuK4kAy08IKvvwAXXWYY8oHPmi/oYZ47UtILVyE=" media="screen">
+
+
+<link rel="stylesheet"
+          href="https://fonts.googleapis.com/css?family=Material+Icons">
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+<script src="/vendor/js/md5.min.js"></script><script>
+  var gitalk = new Gitalk({
+  clientID: '',
+  clientSecret: '',
+  repo: '',
+  owner: '',
+  admin: [''],
+  id: md5(location.pathname),
+  distractionFreeMode: 'false'
+  });
+  window.onload = function () {
+        gitalk.render('gitalk-container')
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body>
+    	<div id="app"><div class="single-column-drawer-container" id="drawer"
+     v-bind:class="{ 'single-column-drawer-container-active': isDrawerOpen }">
+    <div class="drawer-content">
+        <div class="drawer-menu">
+            
+            
+            
+            
+            <div class="toc">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- CATALOG -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#flink-%e7%b1%bb%e5%8a%a0%e8%bd%bd%e9%85%8d%e7%bd%ae%e8%af%b4%e6%98%8e" class="nav-flink-类加载配置说明">
+									flink 类加载配置说明
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#parent-first-%e7%b1%bb%e5%8a%a0%e8%bd%bd%e7%ad%96%e7%95%a5" class="nav-parent-first-类加载策略">
+									parent-first 类加载策略
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#child-first-%e7%b1%bb%e5%8a%a0%e8%bd%bd%e7%ad%96%e7%95%a5" class="nav-child-first-类加载策略">
+									child-first 类加载策略
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+            
+        </div>
+    </div>
+</div>
+<transition name="fade">
+    <div id="drawer-mask" v-bind:class="{ 'single-column-drawer-mask': mounted }" v-if="isDrawerOpen" v-on:click="toggleDrawer"></div>
+</transition>
+<nav id="navBar" class="navbar sticky-top navbar-light single-column-nav-container">
+    <div id="navBackground" class="nav-background"></div>
+    <div class="container container-narrow nav-content">
+        <button id="nav_dropdown_btn" class="nav-dropdown-toggle" type="button" v-on:click="toggleDrawer">
+            <i class="material-icons">
+                menu
+            </i>
+        </button>
+        <a id="navTitle" class="navbar-brand" href="http://localhost:1313/">
+            MeiK&#39;s blog
+        </a>
+        
+        <button type="button" class="nav-darkmode-toggle" id="darkModeToggleButton2">
+            <i class="material-icons" id="darkModeToggleIcon2">
+                dark_mode
+            </i>
+        </button>
+        
+    </div>
+</nav>
+<div class="single-column-header-container" id="pageHead"
+     v-bind:style="{ transform: 'translateZ(0px) translateY('+.3*scrollY+'px)', opacity: 1-navOpacity }">
+    <a href="http://localhost:1313/">
+        <div class="single-column-header-title">MeiK&#39;s blog</div>
+        
+
+    </a>
+</div>
+
+            <div id="content">
+                <div id="streamContainer" class="stream-container">
+
+    <div class="post-list-container post-list-container-shadow">
+        <div class="post">
+            
+            
+            
+
+            <div class="post-head-wrapper-text-only"
+                
+            >
+                <div class="post-title">
+                    Flink类加载机制
+                    
+                    <div class="post-meta">
+                        
+                        <time itemprop="datePublished">
+                            2023-03-24 16:13
+                        </time>
+                        
+
+                        
+
+                        
+                            <i class="material-icons" style="">label</i>
+                            
+                                <a href="/tags/flink">Flink</a>
+                                &nbsp;
+                            
+                        
+                        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="post-body-wrapper">
+                
+                <div class="post-body" v-pre>
+                
+                    <h2 id="flink-类加载配置说明">flink 类加载配置说明</h2>
+<p>Flink 作为基于 JVM 的框架，在 flink-conf.yaml 中提供了控制类加载策略的参数 classloader.resolve-order，可选项有 child-first（默认）和 parent-first。</p>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Default</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>classloader.resolve-order</td>
+<td>&ldquo;child-first&rdquo;</td>
+<td>String</td>
+<td>Defines the class resolution strategy when loading classes from user code, meaning whether to first check the user code jar (&ldquo;child-first&rdquo;) or the application classpath (&ldquo;parent-first&rdquo;). The default settings indicate to load classes first from the user code jar, which means that user code jars can include and load different dependencies than Flink uses (transitively).</td>
+</tr>
+<tr>
+<td>classloader.parent-first-patterns.default</td>
+<td>&ldquo;java.&rdquo;;<!-- raw HTML omitted -->&ldquo;scala.&rdquo;;<!-- raw HTML omitted -->&ldquo;org.apache.flink.&rdquo;;<!-- raw HTML omitted -->&ldquo;com.esotericsoftware.kryo&rdquo;;<!-- raw HTML omitted -->&ldquo;org.apache.hadoop.&rdquo;;<!-- raw HTML omitted -->&ldquo;javax.annotation.&rdquo;;<!-- raw HTML omitted -->&ldquo;org.xml&rdquo;;<!-- raw HTML omitted -->&ldquo;javax.xml&rdquo;;<!-- raw HTML omitted -->&ldquo;org.apache.xerces&rdquo;;<!-- raw HTML omitted -->&ldquo;org.w3c&rdquo;;<!-- raw HTML omitted -->&ldquo;org.rocksdb.&rdquo;;<!-- raw HTML omitted -->&ldquo;org.slf4j&rdquo;;<!-- raw HTML omitted -->&ldquo;org.apache.log4j&rdquo;;<!-- raw HTML omitted -->&ldquo;org.apache.logging&rdquo;;<!-- raw HTML omitted -->&ldquo;org.apache.commons.logging&rdquo;;<!-- raw HTML omitted -->&ldquo;ch.qos.logback&rdquo;</td>
+<td>List<!-- raw HTML omitted --></td>
+<td>A (semicolon-separated) list of patterns that specifies which classes should always be resolved through the parent ClassLoader first. A pattern is a simple prefix that is checked against the fully qualified class name. This setting should generally not be modified. To add another pattern we recommend to use &ldquo;classloader.parent-first-patterns.additional&rdquo; instead.</td>
+</tr>
+<tr>
+<td>classloader.parent-first-patterns.additional</td>
+<td></td>
+<td>List<!-- raw HTML omitted --></td>
+<td>A (semicolon-separated) list of patterns that specifies which classes should always be resolved through the parent ClassLoader first. A pattern is a simple prefix that is checked against the fully qualified class name. These patterns are appended to &ldquo;classloader.parent-first-patterns.default&rdquo;.</td>
+</tr>
+<tr>
+<td>classloader.fail-on-metaspace-oom-error</td>
+<td>true</td>
+<td>Boolean</td>
+<td>Fail Flink JVM processes if &lsquo;OutOfMemoryError: Metaspace&rsquo; is thrown while trying to load a user code class.</td>
+</tr>
+<tr>
+<td>classloader.check-leaked-classloader</td>
+<td>true</td>
+<td>Boolean</td>
+<td>Fails attempts at loading classes if the user classloader of a job is used after it has terminated. This is usually caused by the classloader being leaked by lingering threads or misbehaving libraries, which may also result in the classloader being used by other jobs. This check should only be disabled if such a leak prevents further jobs from running.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="parent-first-类加载策略">parent-first 类加载策略</h2>
+<p>ParentFirstClassLoader 和 ChildFirstClassLoader 类的父类均为 FlinkUserCodeClassLoader 抽象类：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="cm">/**
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * This class loader accepts a custom handler if an exception occurs in {@link #loadClass(String,
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * boolean)}.
+</span></span></span><span class="line"><span class="cl"><span class="cm"> */</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="kd">abstract</span><span class="w"> </span><span class="kd">class</span> <span class="nc">FlinkUserCodeClassLoader</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">URLClassLoader</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">Consumer</span><span class="o">&lt;</span><span class="n">Throwable</span><span class="o">&gt;</span><span class="w"> </span><span class="n">NOOP_EXCEPTION_HANDLER</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">classLoadingException</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{};</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">Consumer</span><span class="o">&lt;</span><span class="n">Throwable</span><span class="o">&gt;</span><span class="w"> </span><span class="n">classLoadingExceptionHandler</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">protected</span><span class="w"> </span><span class="nf">FlinkUserCodeClassLoader</span><span class="p">(</span><span class="n">URL</span><span class="o">[]</span><span class="w"> </span><span class="n">urls</span><span class="p">,</span><span class="w"> </span><span class="n">ClassLoader</span><span class="w"> </span><span class="n">parent</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">this</span><span class="p">(</span><span class="n">urls</span><span class="p">,</span><span class="w"> </span><span class="n">parent</span><span class="p">,</span><span class="w"> </span><span class="n">NOOP_EXCEPTION_HANDLER</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">protected</span><span class="w"> </span><span class="nf">FlinkUserCodeClassLoader</span><span class="p">(</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">URL</span><span class="o">[]</span><span class="w"> </span><span class="n">urls</span><span class="p">,</span><span class="w"> </span><span class="n">ClassLoader</span><span class="w"> </span><span class="n">parent</span><span class="p">,</span><span class="w"> </span><span class="n">Consumer</span><span class="o">&lt;</span><span class="n">Throwable</span><span class="o">&gt;</span><span class="w"> </span><span class="n">classLoadingExceptionHandler</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="kd">super</span><span class="p">(</span><span class="n">urls</span><span class="p">,</span><span class="w"> </span><span class="n">parent</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">this</span><span class="p">.</span><span class="na">classLoadingExceptionHandler</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">classLoadingExceptionHandler</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nd">@Override</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">Class</span><span class="o">&lt;?&gt;</span><span class="w"> </span><span class="n">loadClass</span><span class="p">(</span><span class="n">String</span><span class="w"> </span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="kt">boolean</span><span class="w"> </span><span class="n">resolve</span><span class="p">)</span><span class="w"> </span><span class="kd">throws</span><span class="w"> </span><span class="n">ClassNotFoundException</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">try</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="kd">synchronized</span><span class="w"> </span><span class="p">(</span><span class="n">getClassLoadingLock</span><span class="p">(</span><span class="n">name</span><span class="p">))</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="k">return</span><span class="w"> </span><span class="n">loadClassWithoutExceptionHandling</span><span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="n">resolve</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="n">Throwable</span><span class="w"> </span><span class="n">classLoadingException</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">classLoadingExceptionHandler</span><span class="p">.</span><span class="na">accept</span><span class="p">(</span><span class="n">classLoadingException</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="k">throw</span><span class="w"> </span><span class="n">classLoadingException</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="cm">/**
+</span></span></span><span class="line"><span class="cl"><span class="cm">     * Same as {@link #loadClass(String, boolean)} but without exception handling.
+</span></span></span><span class="line"><span class="cl"><span class="cm">     *
+</span></span></span><span class="line"><span class="cl"><span class="cm">     * &lt;p&gt;Extending concrete class loaders should implement this instead of {@link
+</span></span></span><span class="line"><span class="cl"><span class="cm">     * #loadClass(String, boolean)}.
+</span></span></span><span class="line"><span class="cl"><span class="cm">     */</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">protected</span><span class="w"> </span><span class="n">Class</span><span class="o">&lt;?&gt;</span><span class="w"> </span><span class="n">loadClassWithoutExceptionHandling</span><span class="p">(</span><span class="n">String</span><span class="w"> </span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="kt">boolean</span><span class="w"> </span><span class="n">resolve</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="kd">throws</span><span class="w"> </span><span class="n">ClassNotFoundException</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="kd">super</span><span class="p">.</span><span class="na">loadClass</span><span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="n">resolve</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>FlinkUserCodeClassLoader 继承自 URLClassLoader。因为 Flink App 的用户代码在运行期才能确定，所以通过 URL 在 JAR 包内寻找全限定名对应的类是比较合适的。而 ParentFirstClassLoader 仅仅是一个继承 FlinkUserCodeClassLoader 的空类而已。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="w">    </span><span class="cm">/**
+</span></span></span><span class="line"><span class="cl"><span class="cm">     * Regular URLClassLoader that first loads from the parent and only after that from the URLs.
+</span></span></span><span class="line"><span class="cl"><span class="cm">     */</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kd">class</span> <span class="nc">ParentFirstClassLoader</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">FlinkUserCodeClassLoader</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">ParentFirstClassLoader</span><span class="p">(</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="n">URL</span><span class="o">[]</span><span class="w"> </span><span class="n">urls</span><span class="p">,</span><span class="w"> </span><span class="n">ClassLoader</span><span class="w"> </span><span class="n">parent</span><span class="p">,</span><span class="w"> </span><span class="n">Consumer</span><span class="o">&lt;</span><span class="n">Throwable</span><span class="o">&gt;</span><span class="w"> </span><span class="n">classLoadingExceptionHandler</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="kd">super</span><span class="p">(</span><span class="n">urls</span><span class="p">,</span><span class="w"> </span><span class="n">parent</span><span class="p">,</span><span class="w"> </span><span class="n">classLoadingExceptionHandler</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="kd">static</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">ClassLoader</span><span class="p">.</span><span class="na">registerAsParallelCapable</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>这样就相当于 ParentFirstClassLoader 直接调用了父加载器的 loadClass() 方法。之前已经讲过，JVM 中类加载器的层次关系和默认 loadClass() 方法的逻辑由双亲委派模型（parents delegation model）来体现：</p>
+<blockquote>
+<p>如果一个类加载器要加载一个类，它首先不会自己尝试加载这个类，而是把加载的请求委托给父加载器完成，所有的类加载请求最终都应该传递给最顶层的启动类加载器。只有当父加载器无法加载到这个类时，子加载器才会尝试自己加载。 <a href="https://archieyao.github.io/posts/2023-03-24-java%E5%8F%8C%E4%BA%B2%E5%A7%94%E6%B4%BE/">双亲委派模型</a></p>
+</blockquote>
+<p>可见，Flink 的 parent-first 类加载策略就是照搬双亲委派模型的。也就是说，用户代码的类加载器是 Custom ClassLoader，Flink 框架本身的类加载器是 Application ClassLoader。用户代码中的类先由 Flink 框架的类加载器加载，再由用户代码的类加载器加载。但是，Flink 默认并不采用 parent-first 策略，而是采用 child-first 策略。</p>
+<h2 id="child-first-类加载策略">child-first 类加载策略</h2>
+<p>双亲委派模型的好处就是类加载器的层次关系保证了被加载类的层次关系，从而保证了 Java 运行环境的安全性。但是在 Flink App 这种依赖纷繁复杂的环境中，双亲委派模型可能并不适用。例如，程序中引入的 Flink-Cassandra Connector 总是依赖于固定的 Cassandra 版本，用户代码中为了兼容实际使用的 Cassandra 版本，会引入一个更低或更高的依赖。而同一个组件不同版本的类定义有可能会不同（即使类的全限定名是相同的），如果仍然用双亲委派模型，就会因为 Flink 框架指定版本的类先加载，而出现莫名其妙的兼容性问题，如NoSuchMethodError、IllegalAccessError 等。</p>
+<p>鉴于此，Flink 实现了 ChildFirstClassLoader 类加载器并作为默认策略。它打破了双亲委派模型，使得用户代码的类先加载，官方文档中将这个操作称为&quot;Inverted Class Loading&quot;。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="kd">class</span> <span class="nc">ChildFirstClassLoader</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">FlinkUserCodeClassLoader</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="cm">/**
+</span></span></span><span class="line"><span class="cl"><span class="cm">     * The classes that should always go through the parent ClassLoader. This is relevant for Flink
+</span></span></span><span class="line"><span class="cl"><span class="cm">     * classes, for example, to avoid loading Flink classes that cross the user-code/system-code
+</span></span></span><span class="line"><span class="cl"><span class="cm">     * barrier in the user-code ClassLoader.
+</span></span></span><span class="line"><span class="cl"><span class="cm">     */</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">String</span><span class="o">[]</span><span class="w"> </span><span class="n">alwaysParentFirstPatterns</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="nf">ChildFirstClassLoader</span><span class="p">(</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">URL</span><span class="o">[]</span><span class="w"> </span><span class="n">urls</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">ClassLoader</span><span class="w"> </span><span class="n">parent</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">String</span><span class="o">[]</span><span class="w"> </span><span class="n">alwaysParentFirstPatterns</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">Consumer</span><span class="o">&lt;</span><span class="n">Throwable</span><span class="o">&gt;</span><span class="w"> </span><span class="n">classLoadingExceptionHandler</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="kd">super</span><span class="p">(</span><span class="n">urls</span><span class="p">,</span><span class="w"> </span><span class="n">parent</span><span class="p">,</span><span class="w"> </span><span class="n">classLoadingExceptionHandler</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">this</span><span class="p">.</span><span class="na">alwaysParentFirstPatterns</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">alwaysParentFirstPatterns</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nd">@Override</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">protected</span><span class="w"> </span><span class="n">Class</span><span class="o">&lt;?&gt;</span><span class="w"> </span><span class="n">loadClassWithoutExceptionHandling</span><span class="p">(</span><span class="n">String</span><span class="w"> </span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="kt">boolean</span><span class="w"> </span><span class="n">resolve</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="kd">throws</span><span class="w"> </span><span class="n">ClassNotFoundException</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// First, check if the class has already been loaded</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">Class</span><span class="o">&lt;?&gt;</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">findLoadedClass</span><span class="p">(</span><span class="n">name</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">c</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="kc">null</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="c1">// check whether the class should go parent-first</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">String</span><span class="w"> </span><span class="n">alwaysParentFirstPattern</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">alwaysParentFirstPatterns</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">name</span><span class="p">.</span><span class="na">startsWith</span><span class="p">(</span><span class="n">alwaysParentFirstPattern</span><span class="p">))</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                    </span><span class="k">return</span><span class="w"> </span><span class="kd">super</span><span class="p">.</span><span class="na">loadClassWithoutExceptionHandling</span><span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="n">resolve</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="k">try</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="c1">// check the URLs</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">findClass</span><span class="p">(</span><span class="n">name</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="n">ClassNotFoundException</span><span class="w"> </span><span class="n">e</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="c1">// let URLClassLoader do it, which will eventually call the parent</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kd">super</span><span class="p">.</span><span class="na">loadClassWithoutExceptionHandling</span><span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="n">resolve</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">resolve</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">resolveClass</span><span class="p">(</span><span class="n">c</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">c</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>核心逻辑在 loadClassWithoutExceptionHandling() 方法中：</p>
+<ol>
+<li>调用 findLoadedClass() 方法检查全限定名 name 对应的类是否已经加载过，若没有加载过，再继续往下执行。</li>
+<li>检查要加载的类是否以 alwaysParentFirstPatterns 集合中的前缀开头。如果是，则调用父类的对应方法，以 parent-first 的方式来加载它。alwaysParentFirstPatterns 集合中的这些类都是 Java、Flink 等组件的基础，不能被用户代码覆盖。它由以下两个参数来指定：
+<ul>
+<li>
+<p>classloader.parent-first-patterns.default，不建议修改，固定为以下这些值：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="n">java</span><span class="p">.;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">scala</span><span class="p">.;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">org</span><span class="p">.</span><span class="na">apache</span><span class="p">.</span><span class="na">flink</span><span class="p">.;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">com</span><span class="p">.</span><span class="na">esotericsoftware</span><span class="p">.</span><span class="na">kryo</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">org</span><span class="p">.</span><span class="na">apache</span><span class="p">.</span><span class="na">hadoop</span><span class="p">.;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">javax</span><span class="p">.</span><span class="na">annotation</span><span class="p">.;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">org</span><span class="p">.</span><span class="na">slf4j</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">org</span><span class="p">.</span><span class="na">apache</span><span class="p">.</span><span class="na">log4j</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">org</span><span class="p">.</span><span class="na">apache</span><span class="p">.</span><span class="na">logging</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">org</span><span class="p">.</span><span class="na">apache</span><span class="p">.</span><span class="na">commons</span><span class="p">.</span><span class="na">logging</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">ch</span><span class="p">.</span><span class="na">qos</span><span class="p">.</span><span class="na">logback</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">org</span><span class="p">.</span><span class="na">xml</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">javax</span><span class="p">.</span><span class="na">xml</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">org</span><span class="p">.</span><span class="na">apache</span><span class="p">.</span><span class="na">xerces</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">org</span><span class="p">.</span><span class="na">w3c</span><span class="w">
+</span></span></span></code></pre></div></li>
+<li>
+<p>classloader.parent-first-patterns.additional：除了上一个参数指定的类之外，用户如果有其他类以 child-first 模式会发生冲突，而希望以双亲委派模型来加载的话，可以额外指定（分号分隔）。</p>
+</li>
+</ul>
+</li>
+<li>如果类不符合 alwaysParentFirstPatterns 集合的条件，就调用 findClass() 方法在用户代码中查找并获取该类的定义（该方法在 URLClassLoader 中有默认实现）。如果找不到，再 fallback 到父加载器来加载。</li>
+<li>最后，若 resolve 参数为 true，就调用 resolveClass() 方法链接该类，最后返回对应的 Class 对象。</li>
+</ol>
+<p>参考：</p>
+<p><a href="https://developer.aliyun.com/article/771412">双亲委派模型与 Flink 的类加载策略-阿里云开发者社区 (aliyun.com)</a></p>
+<p><a href="https://nightlies.apache.org/flink/flink-docs-release-1.13/zh/docs/ops/debugging/debugging_classloading/">调试类加载 | Apache Flink</a></p>
+
+                    
+                    <HR width="100%" id="EOF">
+		    <p style="color:#777;">Last modified on 2024-01-24</p>
+                    
+                </div>
+            </div>
+            
+            
+            <nav class="post-pagination">
+
+                
+                <a class="newer-posts" href="/post/2023-03-28-flink%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B/">
+			Next<br>Flink内存模型
+                </a>
+                
+                
+                
+                <a class="older-posts" href="/post/2023-03-24-java%E5%8F%8C%E4%BA%B2%E5%A7%94%E6%B4%BE/">
+			Previous<br>Java双亲委派
+                </a>
+                
+            </nav>
+            <div class="post-comment-wrapper">
+                
+
+
+<div id="gitalk-container"></div>
+
+
+
+
+
+
+
+
+
+
+
+            </div>
+        </div>
+    </div>
+
+
+                    </div>
+            </div><div id="sideContainer" class="side-container">
+    
+    <a class="a-block nav-head false" href="http://localhost:1313/">
+    
+        <div class="nav-title">
+            MeiK&#39;s blog
+        </div>
+        
+    </a>
+
+    <div class="nav-link-list">
+        
+        
+    </div>
+
+    
+
+    <div class="nav-footer">
+        
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://risehere.net/">Rise</a>
+<br>
+Ported from <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	2024 MeiK&#39;s blog
+	
+
+    </div>
+    
+</div><div id="extraContainer" class="extra-container">
+    <div class="toc-wrapper">
+        
+
+        
+        <div class="toc">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- CATALOG -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#flink-%e7%b1%bb%e5%8a%a0%e8%bd%bd%e9%85%8d%e7%bd%ae%e8%af%b4%e6%98%8e" class="nav-flink-类加载配置说明">
+									flink 类加载配置说明
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#parent-first-%e7%b1%bb%e5%8a%a0%e8%bd%bd%e7%ad%96%e7%95%a5" class="nav-parent-first-类加载策略">
+									parent-first 类加载策略
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#child-first-%e7%b1%bb%e5%8a%a0%e8%bd%bd%e7%ad%96%e7%95%a5" class="nav-child-first-类加载策略">
+									child-first 类加载策略
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+        
+    </div>
+    <div class="pagination">
+        <a id="globalBackToTop" class="pagination-action animated-visibility" href="#top"
+            :class="{ invisible: scrollY == 0 }">
+            <i class="material-icons pagination-action-icon">
+                keyboard_arrow_up
+            </i>
+        </a>
+        
+        <a type="button" class="pagination-action" id="darkModeToggleButton">
+            <span class="material-icons pagination-action-icon" id="darkModeToggleIcon">
+                dark_mode
+            </span>
+        </a>
+        
+        
+    </div>
+</div>
+
+<div id="single-column-footer">
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://risehere.net/">Rise</a>
+<br>
+Ported from <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	2024 MeiK&#39;s blog
+	
+</div>
+            </div>
+    
+    <script src="/js/journal.js"></script></body>
+</html>

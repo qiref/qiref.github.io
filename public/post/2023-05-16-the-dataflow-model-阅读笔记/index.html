@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="en"><head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+<title>The Dataflow Model 阅读笔记</title>
+
+
+
+
+<meta charset="utf-8">
+<meta name="X-UA-Compatible" content="IE=edge">
+<meta name="google-site-verification" content="UA-123456-789">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=5, user-scalable=5" name="viewport">
+<meta content="telephone=no" name="format-detection">
+<meta name="description" content="">
+<meta name="renderer" content="webkit">
+<meta name="theme-color" content="#ffffff">
+
+
+
+
+
+
+
+
+
+
+
+  
+    
+      
+    
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+<link rel="icon" href="http://localhost:1313/images/github.png">
+
+
+
+      <script src="/js/toc.js"></script>
+    
+    <link type="text/css" rel="stylesheet" href="/vendor/css/bootstrap.min.css">
+
+<link rel="stylesheet" href="/scss/dark-mode.min.cb53f1bee2b8900cb4f082afbf00175d6618f281cf9a2fe8619e3b52d20b5721.css" integrity="sha256-y1PxvuK4kAy08IKvvwAXXWYY8oHPmi/oYZ47UtILVyE=" media="screen">
+
+
+<link rel="stylesheet"
+          href="https://fonts.googleapis.com/css?family=Material+Icons">
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+<script src="/vendor/js/md5.min.js"></script><script>
+  var gitalk = new Gitalk({
+  clientID: '',
+  clientSecret: '',
+  repo: '',
+  owner: '',
+  admin: [''],
+  id: md5(location.pathname),
+  distractionFreeMode: 'false'
+  });
+  window.onload = function () {
+        gitalk.render('gitalk-container')
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body>
+    	<div id="app"><div class="single-column-drawer-container" id="drawer"
+     v-bind:class="{ 'single-column-drawer-container-active': isDrawerOpen }">
+    <div class="drawer-content">
+        <div class="drawer-menu">
+            
+            
+            
+            
+            <div class="toc">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- CATALOG -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#dataflow-%e8%ae%a1%e7%ae%97%e6%a8%a1%e5%9e%8b" class="nav-dataflow-计算模型">
+									Dataflow 计算模型
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#pardo" class="nav-pardo">
+									ParDo
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#groupbykey" class="nav-groupbykey">
+									GroupByKey
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e7%aa%97%e5%8f%a3" class="nav-窗口">
+									窗口
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e6%97%b6%e9%97%b4%e8%af%ad%e4%b9%89" class="nav-时间语义">
+									时间语义
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e7%aa%97%e5%8f%a3%e5%88%86%e7%b1%bb" class="nav-窗口分类">
+									窗口分类
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e7%aa%97%e5%8f%a3%e5%88%86%e9%85%8d%e4%b8%8e%e5%90%88%e5%b9%b6" class="nav-窗口分配与合并">
+									窗口分配与合并
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e7%aa%97%e5%8f%a3%e5%88%86%e9%85%8d" class="nav-窗口分配">
+									窗口分配
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e7%aa%97%e5%8f%a3%e5%90%88%e5%b9%b6" class="nav-窗口合并">
+									窗口合并
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e8%a7%a6%e5%8f%91%e5%99%a8%e5%92%8c%e5%a2%9e%e9%87%8f%e5%a4%84%e7%90%86" class="nav-触发器和增量处理">
+									触发器和增量处理
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%8f%82%e8%80%83" class="nav-参考">
+									参考
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+            
+        </div>
+    </div>
+</div>
+<transition name="fade">
+    <div id="drawer-mask" v-bind:class="{ 'single-column-drawer-mask': mounted }" v-if="isDrawerOpen" v-on:click="toggleDrawer"></div>
+</transition>
+<nav id="navBar" class="navbar sticky-top navbar-light single-column-nav-container">
+    <div id="navBackground" class="nav-background"></div>
+    <div class="container container-narrow nav-content">
+        <button id="nav_dropdown_btn" class="nav-dropdown-toggle" type="button" v-on:click="toggleDrawer">
+            <i class="material-icons">
+                menu
+            </i>
+        </button>
+        <a id="navTitle" class="navbar-brand" href="http://localhost:1313/">
+            MeiK&#39;s blog
+        </a>
+        
+        <button type="button" class="nav-darkmode-toggle" id="darkModeToggleButton2">
+            <i class="material-icons" id="darkModeToggleIcon2">
+                dark_mode
+            </i>
+        </button>
+        
+    </div>
+</nav>
+<div class="single-column-header-container" id="pageHead"
+     v-bind:style="{ transform: 'translateZ(0px) translateY('+.3*scrollY+'px)', opacity: 1-navOpacity }">
+    <a href="http://localhost:1313/">
+        <div class="single-column-header-title">MeiK&#39;s blog</div>
+        
+
+    </a>
+</div>
+
+            <div id="content">
+                <div id="streamContainer" class="stream-container">
+
+    <div class="post-list-container post-list-container-shadow">
+        <div class="post">
+            
+            
+            
+
+            <div class="post-head-wrapper-text-only"
+                
+            >
+                <div class="post-title">
+                    The Dataflow Model 阅读笔记
+                    
+                    <div class="post-meta">
+                        
+                        <time itemprop="datePublished">
+                            2023-05-16 15:26
+                        </time>
+                        
+
+                        
+
+                        
+                            <i class="material-icons" style="">label</i>
+                            
+                                <a href="/tags/algorithm">Algorithm</a>
+                                &nbsp;
+                            
+                                <a href="/tags/paper">Paper</a>
+                                &nbsp;
+                            
+                        
+                        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="post-body-wrapper">
+                
+                <div class="post-body" v-pre>
+                
+                    <h2 id="dataflow-计算模型">Dataflow 计算模型</h2>
+<p>Dataflow 的核心计算模型非常简单，它只有两个概念，一个叫做 ParDo，就是并行处理的意思；另一个叫做 GroupByKey，也就是按照 Key 进行分组。</p>
+<h3 id="pardo">ParDo</h3>
+<p>ParDo 用来进行通用的并行化处理。每个输入元素（这个元素本身有可能是一个有限的集合）都会使用一个 UDF 进行处理（在Dataflow中叫做DoFn），输出是0或多个输出元素。这个例子是把键的前缀进行展开，然后把值复制到展开后的键构成新的键值对并输出。</p>
+<p><img src="/assets/img/dataflow-pardo.svg" alt="dataflow-pardo"></p>
+<h3 id="groupbykey">GroupByKey</h3>
+<p>GroupByKey 用来按 Key 把元素重新分组。</p>
+<p><img src="/assets/img/dataflow-group-by-key.svg" alt="dataflow-group-by-key"></p>
+<p>ParDo 操作因为是对每个输入的元素进行处理，因此很自然地就可以适用于无边界的数据。而 GroupByKey 操作，在把数据发送到下游进行汇总前，需要收集到指定的键对应的所有数据。如果输入源是无边界的，那么我们不知道何时才能收集到所有的数据。所以通常的解决方案是对数据使用窗口操作。</p>
+<h2 id="窗口">窗口</h2>
+<h3 id="时间语义">时间语义</h3>
+<p>窗口通常基于时间，时间对于窗口来说是必不可少的，在流式计算中，有 processing-time 和 event-time 两种时间语义，具体参考： <a href="https://archieyao.github.io/posts/2022-02-25-flink-%E6%97%B6%E9%97%B4%E8%AF%AD%E4%B9%89/">时间语义</a></p>
+<h3 id="窗口分类">窗口分类</h3>
+<ul>
+<li>
+<p>固定窗口（Fixed Window）固定区间（互不重叠）的窗口，可以基于时间，也可以基于数量；将事件分配到不同区间的窗口中，在通过窗口边界后，窗口内的所有事件会发送给计算函数进行计算；</p>
+</li>
+<li>
+<p>滑动窗口（Sliding Window）固定区间但可以重叠的窗口，需要指定窗口区间以及滑动步长，区间重叠意味着同一个事件会分配到不同窗口参与计算。 窗口区间决定何时触发计算，滑动步长决定何时创建一个新的窗口；</p>
+</li>
+<li>
+<p>会话窗口（Session Window）会话窗口通常基于用户的会话，通过定义会话的超时时间，将事件分割到不同的会话中； 例如，有个客服聊天系统，如果用户超过 30 分钟没有互动，则认为一次会话结束，当客户下次进入，就是一个新的会话了。</p>
+</li>
+</ul>
+<h3 id="窗口分配与合并">窗口分配与合并</h3>
+<p>Dataflow 模型里，需要的不只是 GroupByKey，实际在统计数据的时候，往往需要的是 GroupByKeyAndWindow。统计一个不考虑任何时间窗口的数据，往往是没有意义的；
+Dataflow 模型提出：</p>
+<ol>
+<li>从模型简化的角度上，把所有的窗口策略都当做非对齐窗口，而底层实现来负责把对齐窗口作为一个特例进行优化。</li>
+<li>窗口操作可以被分隔为两个互相相关的操作：
+<ul>
+<li><code>set&lt;Window&gt; AssignWindows(T datum)</code> 即窗口分配操作。这个操作把元素分配到 0 或多个窗口中去。</li>
+<li><code>set&lt;window&gt; MergeWindows(Set&lt;Window&gt; windows)</code> 即窗口合并操作，这个操作在汇总时合并窗口。
+而在实际的逻辑实现层面，Dataflow 最重要的两个函数，也就是 AssignWindows 函数和 MergeWindows 函数。</li>
+</ul>
+</li>
+</ol>
+<h4 id="窗口分配">窗口分配</h4>
+<p>每一个原始的事件，在业务处理函数之前，其实都是（key, value, event_time）这样一个三元组。而 AssignWindows 要做的，就是把这个三元组，根据我们的处理逻辑，变成（key, value, event_time, window）这样的四元组。</p>
+<p>需要注意的是，在窗口分配过程中，滑动窗口中存在区间重合的情况，那么在为事件分配窗口的过程中，按照上文四元组的定义，可能一个事件会变成多个事件；</p>
+<p><img src="/assets/img/dataflow-window-assign.svg" alt="dataflow-window-assign"></p>
+<h4 id="窗口合并">窗口合并</h4>
+<p><img src="/assets/img/dataflow-assign-merge-window.svg" alt="dataflow-assign-merge-window"></p>
+<p>Dataflow 里，通过 <code>AssignWindows+MergeWindows</code> 的组合，来进行相应的数据统计。我们还是以前面会话窗口中的案例：客户 30 分钟没有互动就算作超时。</p>
+<p>因为要根据同一个用户的行为进行分析，所以 Key 是用户 ID 。那么对应的 Value 里，可以记录消息发送方，以及对应的消息内容。而 <code>event_time</code>，则是实际消息发送的时间。对于每一个事件，我们进行    <code>AssignWindows</code> 的时候，都是把对应的时间窗口，设置成 <code>[eventt​ime,eventt​ime+30)</code>。也就是事件发生之后的 30 分钟超时时间之内，都是这个事件对应会话的时间窗口。而在同一个 Key 的多个事件，我们可以把这些窗口合并。对于会话窗口，如果两个事件的窗口之间有重合部分，我们就可以把它们合并成一个更大的时间窗口。而如果不同事件之间的窗口没有重合，那么这两个事件就还是两个各自独立的时间窗口。</p>
+<p>例如同一个用户下，有三个事件，发生的时间分别是 <code>13:02</code>、<code>13:14</code>、<code>13:57</code>。那么分配窗口的时候，三个窗口会是 <code>[13:02,13:32)</code>，<code>[13:14,13:44)</code> 以及 <code>[13:57,14:27)</code>。前两个时间窗口是有重叠部分的，但是第三个时间窗口并没有重叠，对应的窗口会合并成 <code>[13:02,13:44)</code> 以及 <code>[13:57,14:27)</code> 这样两个时间窗口。</p>
+<p>窗口的分配和合并功能，就使得 Dataflow 可以处理乱序数据。相同的数据以不同的顺序到达我们的计算节点，计算的结果仍然是相同的。并且在这个过程里，我们可以把上一次计算完的结果作为状态持久化下来，然后每一个新进入的事件，都按照 <code>AssignWindows</code> 和 <code>MergeWindows</code> 的方式不断对数据进行化简。</p>
+<h2 id="触发器和增量处理">触发器和增量处理</h2>
+<p>基于 <code>watermark</code> 处理迟到数据必然会面临以下两个问题：</p>
+<ol>
+<li>在 <code>watermark</code> 之后的事件如何处理？</li>
+<li>为了数据准确性而设置过长的 <code>watermark</code> ，会导致没有迟到数据也会等待过长时间，从而失去时效性。</li>
+</ol>
+<p>在 Dataflow 中给出如下思路：</p>
+<p>基于 lambda 架构的思想，尽快给出一个计算结果，然后在后续的事件处理过程中，去不断修正计算结果，在 Dataflow 中体现为 <strong>触发器（Trigger）</strong> 机制；</p>
+<p>触发器除了定义数据何时计算，还可以定义触发之后的输出策略：</p>
+<ul>
+<li>抛弃（Discarding）策略，也就是触发之后，对应窗口内的数据就被抛弃掉了。这意味着后续如果有窗口内的数据到达，也没法和上一次触发时候的结果进行合并计算。但这样做的好处是，每个计算节点的存储空间占用不会太大。一旦触发向下游输出计算结果了，现有的数据我们也就不需要了。比如，一个监控系统，根据本地时间去统计错误日志的数量并告警，使用这种策略就会比较合适。</li>
+<li>累积（Accumulating）策略，也就是触发之后，对应窗口内的数据，仍然会持久化作为状态保存下来。当有新的日志过来，我们仍然会计算新的计算结果，并且我们可以再次触发，向下游发送新的计算结果，而下游也会用新的计算结果来覆盖掉老的计算结果。</li>
+<li>累积并撤回（Accumulating &amp; Retracting）策略，也就是我们除了“修正”计算结果之外，可能还要“撤回”计算结果。在进行累积语义的基础上，计算结果的一份复制也被保留到持久化状态中。当窗口将来再次触发时，上一次的结果值先下发做撤回处理，然后新的结果作为正常数据下发；
+<ul>
+<li>
+<p>以前面的客服会话为例：原本先收到了三个事件，<code>13:02</code>、<code>13:14</code>、<code>13:57</code>，根据 30 分钟的会话窗口，经过合并后，窗口就变成了 <code>[13:02,13:44)</code> 以及 <code>[13:57,14:27)</code> 这样两个时间窗口。并且，这两个会话分别作为两条记录，向下游的不同计算节点下发了。这个时候，我们又接收到了一条姗姗来迟的新日志，日志的时间是 <code>13:40</code>，这个用户其实只有一个会话 <code>[13:02,14:27)</code>。所以，我们不仅要向下游发送一个新会话出去，还需要能够“撤回”之前已经发送的两个错误的会话。</p>
+<p><img src="/assets/img/dataflow-rollback.svg" alt="dataflow-rollback"></p>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="参考">参考</h2>
+<ul>
+<li><a href="https://static.googleusercontent.com/media/research.google.com/zh-CN//pubs/archive/43864.pdf">43864.pdf</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/59876058#:~:text=%E3%80%90%E8%AE%BA%E6%96%87%E3%80%91Dataflow,%E6%A8%A1%E5%9E%8B%EF%BC%9A%E4%B8%80%E7%A7%8D%E8%83%BD%E5%B9%B3%E8%A1%A1%E5%87%86%E7%A1%AE%E6%80%A7%E3%80%81%E5%BB%B6%E8%BF%9F%E3%80%81%E6%88%90%E6%9C%AC%E7%9A%84%E5%A4%A7%E8%A7%84%E6%A8%A1%E3%80%81%E6%97%A0%E9%99%90%E3%80%81%E4%B9%B1%E5%BA%8F%E7%9A%84%E6%95%B0%E6%8D%AE%E5%A4%84%E7%90%86%E7%9A%84%E5%AE%9E%E8%B7%B5%E6%96%B9%E6%B3%95">论文-Dataflow 模型</a></li>
+<li><a href="https://developer.aliyun.com/article/64911">https://developer.aliyun.com/article/64911</a></li>
+</ul>
+
+                    
+                    <HR width="100%" id="EOF">
+		    <p style="color:#777;">Last modified on 2024-01-24</p>
+                    
+                </div>
+            </div>
+            
+            
+            <nav class="post-pagination">
+
+                
+                <a class="newer-posts" href="/post/2023-04-03-java%E8%BF%9B%E7%A8%8B%E5%88%86%E6%9E%90%E5%B7%A5%E5%85%B7/">
+			Next<br>Java进程分析工具
+                </a>
+                
+                
+                
+                <a class="older-posts" href="/post/2023-05-12-%E5%A0%86%E5%92%8C%E5%A0%86%E6%8E%92%E5%BA%8F/">
+			Previous<br>堆和堆排序
+                </a>
+                
+            </nav>
+            <div class="post-comment-wrapper">
+                
+
+
+<div id="gitalk-container"></div>
+
+
+
+
+
+
+
+
+
+
+
+            </div>
+        </div>
+    </div>
+
+
+                    </div>
+            </div><div id="sideContainer" class="side-container">
+    
+    <a class="a-block nav-head false" href="http://localhost:1313/">
+    
+        <div class="nav-title">
+            MeiK&#39;s blog
+        </div>
+        
+    </a>
+
+    <div class="nav-link-list">
+        
+        
+    </div>
+
+    
+
+    <div class="nav-footer">
+        
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://risehere.net/">Rise</a>
+<br>
+Ported from <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	2024 MeiK&#39;s blog
+	
+
+    </div>
+    
+</div><div id="extraContainer" class="extra-container">
+    <div class="toc-wrapper">
+        
+
+        
+        <div class="toc">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- CATALOG -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#dataflow-%e8%ae%a1%e7%ae%97%e6%a8%a1%e5%9e%8b" class="nav-dataflow-计算模型">
+									Dataflow 计算模型
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#pardo" class="nav-pardo">
+									ParDo
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#groupbykey" class="nav-groupbykey">
+									GroupByKey
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e7%aa%97%e5%8f%a3" class="nav-窗口">
+									窗口
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e6%97%b6%e9%97%b4%e8%af%ad%e4%b9%89" class="nav-时间语义">
+									时间语义
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e7%aa%97%e5%8f%a3%e5%88%86%e7%b1%bb" class="nav-窗口分类">
+									窗口分类
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e7%aa%97%e5%8f%a3%e5%88%86%e9%85%8d%e4%b8%8e%e5%90%88%e5%b9%b6" class="nav-窗口分配与合并">
+									窗口分配与合并
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e7%aa%97%e5%8f%a3%e5%88%86%e9%85%8d" class="nav-窗口分配">
+									窗口分配
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e7%aa%97%e5%8f%a3%e5%90%88%e5%b9%b6" class="nav-窗口合并">
+									窗口合并
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e8%a7%a6%e5%8f%91%e5%99%a8%e5%92%8c%e5%a2%9e%e9%87%8f%e5%a4%84%e7%90%86" class="nav-触发器和增量处理">
+									触发器和增量处理
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%8f%82%e8%80%83" class="nav-参考">
+									参考
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+        
+    </div>
+    <div class="pagination">
+        <a id="globalBackToTop" class="pagination-action animated-visibility" href="#top"
+            :class="{ invisible: scrollY == 0 }">
+            <i class="material-icons pagination-action-icon">
+                keyboard_arrow_up
+            </i>
+        </a>
+        
+        <a type="button" class="pagination-action" id="darkModeToggleButton">
+            <span class="material-icons pagination-action-icon" id="darkModeToggleIcon">
+                dark_mode
+            </span>
+        </a>
+        
+        
+    </div>
+</div>
+
+<div id="single-column-footer">
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://risehere.net/">Rise</a>
+<br>
+Ported from <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	2024 MeiK&#39;s blog
+	
+</div>
+            </div>
+    
+    <script src="/js/journal.js"></script></body>
+</html>

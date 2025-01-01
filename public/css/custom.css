@@ -1,3 +1,7 @@
+/**
+ * VS theme by Andrew Lock (https://andrewlock.net)
+ * Inspired by Visual Studio syntax coloring
+ */
 body,
 button,
 input,
@@ -43,20 +47,3 @@ pre {
     outline: none;
     box-shadow: inset 0 0 0 0px;
 }
-
-/* #menu-search a{
-    display: none;
-} */
-
-/* .site-header .header-info {
-    display: none;
-} */
-
-/* .logo {
-    display: none;
-}
-
-
-::-webkit-scrollbar {
-    display: none;
-} */

@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="en"><head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+<title>Docker入门</title>
+
+
+
+
+<meta charset="utf-8">
+<meta name="X-UA-Compatible" content="IE=edge">
+<meta name="google-site-verification" content="UA-123456-789">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=5, user-scalable=5" name="viewport">
+<meta content="telephone=no" name="format-detection">
+<meta name="description" content="">
+<meta name="renderer" content="webkit">
+<meta name="theme-color" content="#ffffff">
+
+
+
+
+
+
+
+
+
+
+
+  
+    
+      
+    
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+<link rel="icon" href="http://localhost:1313/images/github.png">
+
+
+
+      <script src="/js/toc.js"></script>
+    
+    <link type="text/css" rel="stylesheet" href="/vendor/css/bootstrap.min.css">
+
+<link rel="stylesheet" href="/scss/dark-mode.min.cb53f1bee2b8900cb4f082afbf00175d6618f281cf9a2fe8619e3b52d20b5721.css" integrity="sha256-y1PxvuK4kAy08IKvvwAXXWYY8oHPmi/oYZ47UtILVyE=" media="screen">
+
+
+<link rel="stylesheet"
+          href="https://fonts.googleapis.com/css?family=Material+Icons">
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+<script src="/vendor/js/md5.min.js"></script><script>
+  var gitalk = new Gitalk({
+  clientID: '',
+  clientSecret: '',
+  repo: '',
+  owner: '',
+  admin: [''],
+  id: md5(location.pathname),
+  distractionFreeMode: 'false'
+  });
+  window.onload = function () {
+        gitalk.render('gitalk-container')
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body>
+    	<div id="app"><div class="single-column-drawer-container" id="drawer"
+     v-bind:class="{ 'single-column-drawer-container-active': isDrawerOpen }">
+    <div class="drawer-content">
+        <div class="drawer-menu">
+            
+            
+            
+            
+            <div class="toc">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- CATALOG -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e8%bf%90%e8%a1%8chello-world%e5%ae%b9%e5%99%a8" class="nav-运行hello-world容器">
+									运行hello world容器
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e9%95%9c%e5%83%8f" class="nav-镜像">
+									镜像
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e9%95%9c%e5%83%8f%e5%b8%b8%e7%94%a8%e5%91%bd%e4%bb%a4" class="nav-镜像常用命令">
+									镜像常用命令
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e5%ae%b9%e5%99%a8" class="nav-容器">
+									容器
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%ae%b9%e5%99%a8%e5%b8%b8%e7%94%a8%e5%91%bd%e4%bb%a4" class="nav-容器常用命令">
+									容器常用命令
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+            
+        </div>
+    </div>
+</div>
+<transition name="fade">
+    <div id="drawer-mask" v-bind:class="{ 'single-column-drawer-mask': mounted }" v-if="isDrawerOpen" v-on:click="toggleDrawer"></div>
+</transition>
+<nav id="navBar" class="navbar sticky-top navbar-light single-column-nav-container">
+    <div id="navBackground" class="nav-background"></div>
+    <div class="container container-narrow nav-content">
+        <button id="nav_dropdown_btn" class="nav-dropdown-toggle" type="button" v-on:click="toggleDrawer">
+            <i class="material-icons">
+                menu
+            </i>
+        </button>
+        <a id="navTitle" class="navbar-brand" href="http://localhost:1313/">
+            MeiK&#39;s blog
+        </a>
+        
+        <button type="button" class="nav-darkmode-toggle" id="darkModeToggleButton2">
+            <i class="material-icons" id="darkModeToggleIcon2">
+                dark_mode
+            </i>
+        </button>
+        
+    </div>
+</nav>
+<div class="single-column-header-container" id="pageHead"
+     v-bind:style="{ transform: 'translateZ(0px) translateY('+.3*scrollY+'px)', opacity: 1-navOpacity }">
+    <a href="http://localhost:1313/">
+        <div class="single-column-header-title">MeiK&#39;s blog</div>
+        
+
+    </a>
+</div>
+
+            <div id="content">
+                <div id="streamContainer" class="stream-container">
+
+    <div class="post-list-container post-list-container-shadow">
+        <div class="post">
+            
+            
+            
+
+            <div class="post-head-wrapper-text-only"
+                
+            >
+                <div class="post-title">
+                    Docker入门
+                    
+                    <div class="post-meta">
+                        
+                        <time itemprop="datePublished">
+                            2021-06-21 10:18
+                        </time>
+                        
+
+                        
+
+                        
+                            <i class="material-icons" style="">label</i>
+                            
+                                <a href="/tags/docker">Docker</a>
+                                &nbsp;
+                            
+                        
+                        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="post-body-wrapper">
+                
+                <div class="post-body" v-pre>
+                
+                    <p>摘要：Docker简单使用。</p>
+<hr>
+<p>Docker 是一个开源的应用容器引擎，基于 Go 语言开发，并遵从 Apache2.0 协议开源。
+Docker 可以让开发者打包他们的应用以及依赖包到一个轻量级、可移植的容器中，然后发布到任何流行的 Linux 机器上，也可以实现虚拟化。
+容器是完全使用沙箱机制，相互之间不会有任何接口（类似 iPhone 的 app）,更重要的是容器性能开销极低。</p>
+<p>Docker下载地址：<a href="https://www.docker.com/get-started">https://www.docker.com/get-started</a></p>
+<p>安装完成后，才可以执行docker的相关命令。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">$ docker system info
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Client:
+</span></span><span class="line"><span class="cl"> Context:    default
+</span></span><span class="line"><span class="cl"> Debug Mode: <span class="nb">false</span>
+</span></span><span class="line"><span class="cl"> Plugins:
+</span></span><span class="line"><span class="cl">  buildx: Build with BuildKit <span class="o">(</span>Docker Inc., v0.5.1-docker<span class="o">)</span>
+</span></span><span class="line"><span class="cl">  compose: Docker Compose <span class="o">(</span>Docker Inc., 2.0.0-beta.3<span class="o">)</span>
+</span></span><span class="line"><span class="cl">  scan: Docker Scan <span class="o">(</span>Docker Inc., v0.8.0<span class="o">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Server:
+</span></span><span class="line"><span class="cl"> Containers: <span class="m">0</span>
+</span></span><span class="line"><span class="cl">  Running: <span class="m">0</span>
+</span></span><span class="line"><span class="cl">  Paused: <span class="m">0</span>
+</span></span><span class="line"><span class="cl">  Stopped: <span class="m">0</span>
+</span></span><span class="line"><span class="cl"> Images: <span class="m">0</span>
+</span></span><span class="line"><span class="cl"> Server Version: 20.10.7
+</span></span><span class="line"><span class="cl"> Storage Driver: overlay2
+</span></span><span class="line"><span class="cl">  Backing Filesystem: extfs
+</span></span><span class="line"><span class="cl">  Supports d_type: <span class="nb">true</span>
+</span></span><span class="line"><span class="cl">  Native Overlay Diff: <span class="nb">true</span>
+</span></span><span class="line"><span class="cl">  userxattr: <span class="nb">false</span>
+</span></span><span class="line"><span class="cl"> Logging Driver: json-file
+</span></span><span class="line"><span class="cl"> Cgroup Driver: cgroupfs
+</span></span><span class="line"><span class="cl"> Cgroup Version: <span class="m">1</span>
+</span></span><span class="line"><span class="cl"> Plugins:
+</span></span><span class="line"><span class="cl">  Volume: <span class="nb">local</span>
+</span></span><span class="line"><span class="cl">  Network: bridge host ipvlan macvlan null overlay
+</span></span><span class="line"><span class="cl">  Log: awslogs fluentd gcplogs gelf journald json-file <span class="nb">local</span> logentries splunk syslog
+</span></span><span class="line"><span class="cl"> Swarm: inactive
+</span></span><span class="line"><span class="cl"> Runtimes: runc io.containerd.runc.v2 io.containerd.runtime.v1.linux
+</span></span><span class="line"><span class="cl"> Default Runtime: runc
+</span></span><span class="line"><span class="cl"> Init Binary: docker-init
+</span></span><span class="line"><span class="cl"> containerd version: d71fcd7d8303cbf684402823e425e9dd2e99285d
+</span></span><span class="line"><span class="cl"> runc version: b9ee9c6314599f1b4a7f497e1f1f856fe433d3b7
+</span></span><span class="line"><span class="cl"> init version: de40ad0
+</span></span><span class="line"><span class="cl"> Security Options:
+</span></span><span class="line"><span class="cl">  seccomp
+</span></span><span class="line"><span class="cl">   Profile: default
+</span></span><span class="line"><span class="cl"> Kernel Version: 5.10.25-linuxkit
+</span></span><span class="line"><span class="cl"> Operating System: Docker Desktop
+</span></span><span class="line"><span class="cl"> OSType: linux
+</span></span><span class="line"><span class="cl"> Architecture: x86_64
+</span></span><span class="line"><span class="cl"> CPUs: <span class="m">6</span>
+</span></span><span class="line"><span class="cl"> Total Memory: 1.941GiB
+</span></span><span class="line"><span class="cl"> Name: docker-desktop
+</span></span><span class="line"><span class="cl"> ID: TA2L:IL5R:BGA2:7NS2:RE5C:LOZ6:7RHP:275V:F5OQ:KAJP:QHWN:VOQU
+</span></span><span class="line"><span class="cl"> Docker Root Dir: /var/lib/docker
+</span></span><span class="line"><span class="cl"> Debug Mode: <span class="nb">false</span>
+</span></span><span class="line"><span class="cl"> HTTP Proxy: http.docker.internal:3128
+</span></span><span class="line"><span class="cl"> HTTPS Proxy: http.docker.internal:3128
+</span></span><span class="line"><span class="cl"> Registry: https://index.docker.io/v1/
+</span></span><span class="line"><span class="cl"> Labels:
+</span></span><span class="line"><span class="cl"> Experimental: <span class="nb">false</span>
+</span></span><span class="line"><span class="cl"> Insecure Registries:
+</span></span><span class="line"><span class="cl">  127.0.0.0/8
+</span></span><span class="line"><span class="cl"> Live Restore Enabled: <span class="nb">false</span>
+</span></span></code></pre></div><p>mac上停止docker服务：</p>
+<pre tabindex="0"><code>⇒  launchctl list |grep docker
+-	0	com.docker.helper
+11963	0	application.com.docker.docker.10740542.10740926
+
+⇒  launchctl stop application.com.docker.docker.10740542.10740926
+</code></pre><h2 id="运行hello-world容器">运行hello world容器</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">$ docker run busybox <span class="nb">echo</span> <span class="s2">&#34;hello world&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Unable to find image <span class="s1">&#39;busybox:latest&#39;</span> locally
+</span></span><span class="line"><span class="cl">latest: Pulling from library/busybox
+</span></span><span class="line"><span class="cl">b71f96345d44: Pull <span class="nb">complete</span>
+</span></span><span class="line"><span class="cl">Digest: sha256:930490f97e5b921535c153e0e7110d251134cc4b72bbb8133c6a5065cc68580d
+</span></span><span class="line"><span class="cl">Status: Downloaded newer image <span class="k">for</span> busybox:
+</span></span></code></pre></div><p><code>docker run busybox echo &quot;hello world&quot;</code> 这行命令启动了一个叫busybox的容器，并且执行了<code>echo &quot;hello world&quot;</code>。</p>
+<p>然后docker先在本地查询busybox，发现没有找到，然后就从远程拉取镜像，拉取完成后启动镜像。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">⇒  docker image ls
+</span></span><span class="line"><span class="cl">REPOSITORY   TAG       IMAGE ID       CREATED       SIZE
+</span></span><span class="line"><span class="cl">busybox      latest    69593048aa3a   <span class="m">13</span> days ago   1.24MB
+</span></span></code></pre></div><p>可以发现本地多了一个busybox的镜像。</p>
+<h2 id="镜像">镜像</h2>
+<p><code>docker image ls</code> 可以列出本地的所有镜像，然后具体看看镜像信息。</p>
+<pre tabindex="0"><code>REPOSITORY   TAG       IMAGE ID       CREATED       SIZE
+busybox      latest    69593048aa3a   13 days ago   1.24MB
+</code></pre><p>各个选项说明:</p>
+<ul>
+<li>REPOSITORY：表示镜像的仓库源</li>
+<li>TAG：镜像的标签</li>
+<li>IMAGE ID：镜像ID</li>
+<li>CREATED：镜像创建时间</li>
+<li>SIZE：镜像大小
+同一仓库源可以有多个TAG，代表这个仓库源的不同个版本，如 ubuntu 仓库源里，有 15.10、14.04 等多个不同的版本，我们使用 REPOSITORY:TAG 来定义不同的镜像。</li>
+</ul>
+<p>当镜像没有显式指定TAG时，Docker会默认指定为latest。例如上述的镜像。</p>
+<p>如果想run指定版本的镜像：</p>
+<pre tabindex="0"><code>docker run &lt;image&gt;:&lt;tag&gt;
+</code></pre><h3 id="镜像常用命令">镜像常用命令</h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">$  docker images <span class="c1"># 镜像列表 等价于 docker image ls</span>
+</span></span><span class="line"><span class="cl">$  docker search httpd <span class="c1"># 查找镜像</span>
+</span></span><span class="line"><span class="cl">$  docker pull httpd <span class="c1"># 拉取镜像</span>
+</span></span><span class="line"><span class="cl">$  docker push httpd <span class="c1"># 向镜像仓库推送镜像</span>
+</span></span><span class="line"><span class="cl">$  docker run httpd <span class="c1"># 运行镜像</span>
+</span></span><span class="line"><span class="cl">$  docker rmi httpd <span class="c1"># 删除镜像</span>
+</span></span><span class="line"><span class="cl">$  docker tag 860c279d2fec runoob/centos:dev
+</span></span><span class="line"><span class="cl">   <span class="c1">#执行这条命令不会得到新镜像，只会给之前的镜像加一个TAG：</span>
+</span></span><span class="line"><span class="cl">   <span class="c1">#REPOSITORY   TAG       IMAGE ID       CREATED       SIZE</span>
+</span></span><span class="line"><span class="cl">   <span class="c1">#busybox      latest    69593048aa3a   13 days ago   1.24MB</span>
+</span></span><span class="line"><span class="cl">   <span class="c1">#busybox      v1.0      69593048aa3a   13 days ago   1.24MB</span>
+</span></span><span class="line"><span class="cl">   
+</span></span><span class="line"><span class="cl">$  docker commit -m<span class="o">=</span><span class="s2">&#34;has update&#34;</span> -a<span class="o">=</span><span class="s2">&#34;Archie&#34;</span> ac68f5f16776 busybox:v2 <span class="c1"># 更新镜像，需要借助container</span>
+</span></span><span class="line"><span class="cl">   <span class="c1"># -m: 提交的描述信息；</span>
+</span></span><span class="line"><span class="cl">   <span class="c1"># -a: 指定镜像作者</span>
+</span></span><span class="line"><span class="cl">   <span class="c1"># ac68f5f16776：容器 ID</span>
+</span></span><span class="line"><span class="cl">   <span class="c1"># busybox:v2：指定要创建的目标镜像名以及TAG</span>
+</span></span><span class="line"><span class="cl">   
+</span></span><span class="line"><span class="cl">$  docker build -t go_http_server_demo .
+</span></span><span class="line"><span class="cl">   <span class="c1"># 构建镜像，前提是当前目录下有Dockerfile，-t go_http_server_demo 指定image的名称，. 基于当前目录构建。</span>
+</span></span></code></pre></div><h2 id="容器">容器</h2>
+<p>如果把镜像比作calss的话，那容器就是这个class的实例对象。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">⇒  docker  run --name busybox -it busybox
+</span></span><span class="line"><span class="cl">/ <span class="c1"># ls</span>
+</span></span><span class="line"><span class="cl">bin   dev   etc   home  proc  root  sys   tmp   usr   var
+</span></span><span class="line"><span class="cl">/ <span class="c1"># exit</span>
+</span></span></code></pre></div><p><code>docker  run</code> 命令从指定镜像运行容器，-i: 交互式操作；-t: 终端。要退出终端，直接输入 exit；&ndash;name busybox 指定容器的名称。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">docker run --name go_http_server_demo -p 8080:8080 -d go_http_server_demo
+</span></span></code></pre></div><p>&ndash;name 可以指定container的名称；-p 8080:8080 会将本地的端口8080映射到容器的8080端口； -d 表示这个容器会进入后台运行； 最后指定了镜像的名称。</p>
+<p><code>docker ps -a</code> 查看运行的所有容器。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">⇒  docker ps -a
+</span></span><span class="line"><span class="cl">CONTAINER ID   IMAGE     COMMAND                CREATED              STATUS                          PORTS     NAMES
+</span></span><span class="line"><span class="cl">33e3123ff520   busybox   <span class="s2">&#34;sh&#34;</span>                   <span class="m">17</span> seconds ago       Exited <span class="o">(</span>0<span class="o">)</span> <span class="m">2</span> seconds ago                  busybox
+</span></span></code></pre></div><p>如果指定&ndash;name，下次再执行run时，会出现如下错误：</p>
+<pre tabindex="0"><code>docker: Error response from daemon: Conflict. The container name &#34;/busybox&#34; is already in use by container &#34;33e3123ff520985d12eed46e31051bf2b393fe45fa0e353d5ffa16ab835e940c&#34;. You have to remove (or rename) that container to be able to reuse that name.
+</code></pre><p>因为已经指定过这个name，并且这个容器已经启动过，如果还想启动这个容器，那只需要再启动这个容器即可，无需执行run。</p>
+<h3 id="容器常用命令">容器常用命令</h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">$  docker  run --name busybox -it busybox <span class="c1"># 从镜像中启动一个容器</span>
+</span></span><span class="line"><span class="cl">$  docker ps -a <span class="c1"># 列出所有容器。包括已经停止的</span>
+</span></span><span class="line"><span class="cl">$  docker ps <span class="c1"># 列出正在运行的容器</span>
+</span></span><span class="line"><span class="cl">$  docker stop &lt;容器 ID&gt; <span class="c1"># 停止一个容器</span>
+</span></span><span class="line"><span class="cl">$  docker start &lt;容器 ID&gt; <span class="c1"># 启动一个已停止的容器</span>
+</span></span><span class="line"><span class="cl">$  docker restart &lt;容器 ID&gt; <span class="c1"># 重启容器</span>
+</span></span><span class="line"><span class="cl">$  docker attach f59fcdac1cc0 <span class="c1"># 进入容器，退出时会导致容器的退出</span>
+</span></span><span class="line"><span class="cl">$  docker <span class="nb">exec</span> -it 33e3123ff520 sh <span class="c1"># 进入容器，退出时不会导致容器的退出,sh 为run容器时指定的COMMAND</span>
+</span></span><span class="line"><span class="cl">$  docker container rm -f 33e3123ff520 <span class="c1"># 删除容器</span>
+</span></span></code></pre></div><hr>
+
+                    
+                    <HR width="100%" id="EOF">
+		    <p style="color:#777;">Last modified on 2024-01-24</p>
+                    
+                </div>
+            </div>
+            
+            
+            <nav class="post-pagination">
+
+                
+                <a class="newer-posts" href="/post/2021-06-23-docker%E6%9E%84%E5%BB%BAgo%E5%B7%A5%E7%A8%8B%E9%95%9C%E5%83%8F/">
+			Next<br>Docker构建Go工程镜像
+                </a>
+                
+                
+                
+                <a class="older-posts" href="/post/2021-06-21-kubernates%E7%BB%84%E4%BB%B6/">
+			Previous<br>Kubernates组件
+                </a>
+                
+            </nav>
+            <div class="post-comment-wrapper">
+                
+
+
+<div id="gitalk-container"></div>
+
+
+
+
+
+
+
+
+
+
+
+            </div>
+        </div>
+    </div>
+
+
+                    </div>
+            </div><div id="sideContainer" class="side-container">
+    
+    <a class="a-block nav-head false" href="http://localhost:1313/">
+    
+        <div class="nav-title">
+            MeiK&#39;s blog
+        </div>
+        
+    </a>
+
+    <div class="nav-link-list">
+        
+        
+    </div>
+
+    
+
+    <div class="nav-footer">
+        
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://risehere.net/">Rise</a>
+<br>
+Ported from <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	2024 MeiK&#39;s blog
+	
+
+    </div>
+    
+</div><div id="extraContainer" class="extra-container">
+    <div class="toc-wrapper">
+        
+
+        
+        <div class="toc">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- CATALOG -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e8%bf%90%e8%a1%8chello-world%e5%ae%b9%e5%99%a8" class="nav-运行hello-world容器">
+									运行hello world容器
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e9%95%9c%e5%83%8f" class="nav-镜像">
+									镜像
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e9%95%9c%e5%83%8f%e5%b8%b8%e7%94%a8%e5%91%bd%e4%bb%a4" class="nav-镜像常用命令">
+									镜像常用命令
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e5%ae%b9%e5%99%a8" class="nav-容器">
+									容器
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%ae%b9%e5%99%a8%e5%b8%b8%e7%94%a8%e5%91%bd%e4%bb%a4" class="nav-容器常用命令">
+									容器常用命令
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+        
+    </div>
+    <div class="pagination">
+        <a id="globalBackToTop" class="pagination-action animated-visibility" href="#top"
+            :class="{ invisible: scrollY == 0 }">
+            <i class="material-icons pagination-action-icon">
+                keyboard_arrow_up
+            </i>
+        </a>
+        
+        <a type="button" class="pagination-action" id="darkModeToggleButton">
+            <span class="material-icons pagination-action-icon" id="darkModeToggleIcon">
+                dark_mode
+            </span>
+        </a>
+        
+        
+    </div>
+</div>
+
+<div id="single-column-footer">
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://risehere.net/">Rise</a>
+<br>
+Ported from <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	2024 MeiK&#39;s blog
+	
+</div>
+            </div>
+    
+    <script src="/js/journal.js"></script></body>
+</html>

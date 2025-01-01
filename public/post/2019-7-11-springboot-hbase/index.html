@@ -1,0 +1,1406 @@
+<!DOCTYPE html>
+<html lang="en"><head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+<title>SpringBoot HBase</title>
+
+
+
+
+<meta charset="utf-8">
+<meta name="X-UA-Compatible" content="IE=edge">
+<meta name="google-site-verification" content="UA-123456-789">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=5, user-scalable=5" name="viewport">
+<meta content="telephone=no" name="format-detection">
+<meta name="description" content="">
+<meta name="renderer" content="webkit">
+<meta name="theme-color" content="#ffffff">
+
+
+
+
+
+
+
+
+
+
+
+  
+    
+      
+    
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+<link rel="icon" href="http://localhost:1313/images/github.png">
+
+
+
+      <script src="/js/toc.js"></script>
+    
+    <link type="text/css" rel="stylesheet" href="/vendor/css/bootstrap.min.css">
+
+<link rel="stylesheet" href="/scss/dark-mode.min.cb53f1bee2b8900cb4f082afbf00175d6618f281cf9a2fe8619e3b52d20b5721.css" integrity="sha256-y1PxvuK4kAy08IKvvwAXXWYY8oHPmi/oYZ47UtILVyE=" media="screen">
+
+
+<link rel="stylesheet"
+          href="https://fonts.googleapis.com/css?family=Material+Icons">
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+<script src="/vendor/js/md5.min.js"></script><script>
+  var gitalk = new Gitalk({
+  clientID: '',
+  clientSecret: '',
+  repo: '',
+  owner: '',
+  admin: [''],
+  id: md5(location.pathname),
+  distractionFreeMode: 'false'
+  });
+  window.onload = function () {
+        gitalk.render('gitalk-container')
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body>
+    	<div id="app"><div class="single-column-drawer-container" id="drawer"
+     v-bind:class="{ 'single-column-drawer-container-active': isDrawerOpen }">
+    <div class="drawer-content">
+        <div class="drawer-menu">
+            
+            
+            
+            
+            <div class="toc">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- CATALOG -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#hbase-%e7%bb%84%e4%bb%b6%e6%8e%a5%e5%8f%a3%e6%96%87%e6%a1%a3" class="nav-hbase-组件接口文档">
+									HBase 组件接口文档
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e4%bd%bf%e7%94%a8%e8%af%b4%e6%98%8e" class="nav-使用说明">
+									使用说明
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#hbase%e9%85%8d%e7%bd%ae" class="nav-hbase配置">
+									HBase配置
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%8f%82%e6%95%b0%e8%af%b4%e6%98%8e" class="nav-参数说明">
+									参数说明
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e7%ae%80%e5%8d%95%e7%a4%ba%e4%be%8b" class="nav-简单示例">
+									简单示例
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e8%a1%a8%e7%9a%84%e5%9f%ba%e6%9c%ac%e6%93%8d%e4%bd%9c" class="nav-表的基本操作">
+									表的基本操作
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e6%96%b0%e5%bb%ba%e8%a1%a8" class="nav-新建表">
+									新建表
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%88%a0%e9%99%a4%e8%a1%a8" class="nav-删除表">
+									删除表
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%88%a4%e6%96%ad%e8%a1%a8%e6%98%af%e5%90%a6%e5%ad%98%e5%9c%a8" class="nav-判断表是否存在">
+									判断表是否存在
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%96%b0%e5%a2%9e%e6%95%b0%e6%8d%ae" class="nav-新增数据">
+									新增数据
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e6%96%b0%e5%a2%9e%e4%b8%80%e6%9d%a1%e6%95%b0%e6%8d%ae" class="nav-新增一条数据">
+									新增一条数据
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%89%b9%e9%87%8f%e6%96%b0%e5%a2%9e%e6%95%b0%e6%8d%ae" class="nav-批量新增数据">
+									批量新增数据
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e5%88%a0%e9%99%a4%e6%95%b0%e6%8d%ae" class="nav-删除数据">
+									删除数据
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%88%a0%e9%99%a4%e4%b8%80%e6%9d%a1%e6%95%b0%e6%8d%ae" class="nav-删除一条数据">
+									删除一条数据
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%89%b9%e9%87%8f%e5%88%a0%e9%99%a4%e6%95%b0%e6%8d%ae" class="nav-批量删除数据">
+									批量删除数据
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e6%9f%a5%e8%af%a2" class="nav-查询">
+									查询
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%8d%95%e6%9d%a1%e7%bb%93%e6%9e%9c%e6%9f%a5%e8%af%a2" class="nav-单条结果查询">
+									单条结果查询
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%89%b9%e9%87%8f%e6%89%ab%e6%8f%8f" class="nav-批量扫描">
+									批量扫描
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%a4%9a%e8%bf%87%e6%bb%a4%e5%99%a8%e6%9f%a5%e8%af%a2" class="nav-多过滤器查询">
+									多过滤器查询
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e7%bb%93%e6%9e%9c%e9%9b%86%e7%9a%84%e6%98%a0%e5%b0%84" class="nav-结果集的映射">
+									结果集的映射
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+            
+        </div>
+    </div>
+</div>
+<transition name="fade">
+    <div id="drawer-mask" v-bind:class="{ 'single-column-drawer-mask': mounted }" v-if="isDrawerOpen" v-on:click="toggleDrawer"></div>
+</transition>
+<nav id="navBar" class="navbar sticky-top navbar-light single-column-nav-container">
+    <div id="navBackground" class="nav-background"></div>
+    <div class="container container-narrow nav-content">
+        <button id="nav_dropdown_btn" class="nav-dropdown-toggle" type="button" v-on:click="toggleDrawer">
+            <i class="material-icons">
+                menu
+            </i>
+        </button>
+        <a id="navTitle" class="navbar-brand" href="http://localhost:1313/">
+            MeiK&#39;s blog
+        </a>
+        
+        <button type="button" class="nav-darkmode-toggle" id="darkModeToggleButton2">
+            <i class="material-icons" id="darkModeToggleIcon2">
+                dark_mode
+            </i>
+        </button>
+        
+    </div>
+</nav>
+<div class="single-column-header-container" id="pageHead"
+     v-bind:style="{ transform: 'translateZ(0px) translateY('+.3*scrollY+'px)', opacity: 1-navOpacity }">
+    <a href="http://localhost:1313/">
+        <div class="single-column-header-title">MeiK&#39;s blog</div>
+        
+
+    </a>
+</div>
+
+            <div id="content">
+                <div id="streamContainer" class="stream-container">
+
+    <div class="post-list-container post-list-container-shadow">
+        <div class="post">
+            
+            
+            
+
+            <div class="post-head-wrapper-text-only"
+                
+            >
+                <div class="post-title">
+                    SpringBoot HBase
+                    
+                    <div class="post-meta">
+                        
+                        <time itemprop="datePublished">
+                            2019-07-11 00:18
+                        </time>
+                        
+
+                        
+
+                        
+                            <i class="material-icons" style="">label</i>
+                            
+                                <a href="/tags/springboot">SpringBoot</a>
+                                &nbsp;
+                            
+                                <a href="/tags/hbase">HBase</a>
+                                &nbsp;
+                            
+                        
+                        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="post-body-wrapper">
+                
+                <div class="post-body" v-pre>
+                
+                    <p>摘要:记录自己写的一个基于SpringBoot操作HBase的组件，支持kerberos认证方式访问，本文相当于API文档。</p>
+<h2 id="hbase-组件接口文档">HBase 组件接口文档</h2>
+<p>源码地址：<a href="https://github.com/YaoQi17/HBase-Component">https://github.com/YaoQi17/HBase-Component</a></p>
+<hr>
+<h2 id="使用说明">使用说明</h2>
+<p>基本概念</p>
+<p>table: 表</p>
+<p>columnFamily:列族，一个表下可以有多个列族，但是不建议设置多个列族，HBase建议设计长窄型的表而不是短宽型。</p>
+<p>qualifier:列，一个列族下可以有多列，一个表中的列可以是不对齐的，但是这样效率不高，同一张表中的列最好是相同的。</p>
+<p>cell:一列数据下的一个单元格，一个列下可以有多个单元格，根据版本号区分，默认每次读取最新版本的数据，cell下的存储是数据本身。</p>
+<p>row: 行，多列数据组成一行，一行中有多个qualifier。</p>
+<p>rowKey: 行健，用于唯一标识一行数据，一行下有多列，行健的设计直接关系到查询的效率。</p>
+<h3 id="hbase配置">HBase配置</h3>
+<p>以下配置为最基础配置，缺一不可。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yml" data-lang="yml"><span class="line"><span class="cl"><span class="nt">HBase</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">conf</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">quorum</span><span class="p">:</span><span class="w"> </span><span class="m">192.168.80.234</span><span class="p">:</span><span class="m">2181</span><span class="p">,</span><span class="m">192.168.80.235</span><span class="p">:</span><span class="m">2181</span><span class="p">,</span><span class="m">192.168.80.241</span><span class="p">:</span><span class="m">2181</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">znodeParent</span><span class="p">:</span><span class="w"> </span><span class="l">/hbase-unsecure</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c">#如果有更多配置，写在config下，例如：</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c">#config:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c">#  key: value</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c">#  key: value</span><span class="w">
+</span></span></span></code></pre></div><p>如果需要更多配置，需要在config中配置，以key-value的形式书写。</p>
+<h3 id="参数说明">参数说明</h3>
+<p>quorum是HBase中zookeeper的配置，znodeParent是HBase配置在zookeeper中的路径。</p>
+<h2 id="简单示例">简单示例</h2>
+<p>引入组件jar包：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="line"><span class="cl"><span class="nt">&lt;dependency&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;groupId&gt;</span>com.semptian.hbase.component<span class="nt">&lt;/groupId&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;artifactId&gt;</span>hbase-component<span class="nt">&lt;/artifactId&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;version&gt;</span>1.0.1-SNAPSHOT<span class="nt">&lt;/version&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;/dependency&gt;</span>
+</span></span></code></pre></div><p>在需要的地方注入HBaseOperations接口，该接口的实现类是HBaseTemplate，通过这个类来操作HBase。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="nd">@Autowired</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="n">HBaseOperations</span><span class="w"> </span><span class="n">hBaseDao</span><span class="p">;</span><span class="w">
+</span></span></span></code></pre></div><p>查询一条数据，通过rowKey查询：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">testQueryTable</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">Result</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">hBaseDao</span><span class="p">.</span><span class="na">queryByTableNameAndRowKey</span><span class="p">(</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="s">&#34;LBS&#34;</span><span class="p">,</span><span class="w"> </span><span class="n">9223372036854775803L</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="n">result</span><span class="p">.</span><span class="na">isEmpty</span><span class="p">());</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">result</span><span class="p">.</span><span class="na">listCells</span><span class="p">().</span><span class="na">forEach</span><span class="p">(</span><span class="n">cell</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="s">&#34;row:&#34;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">Bytes</span><span class="p">.</span><span class="na">toLong</span><span class="p">(</span><span class="n">CellUtil</span><span class="p">.</span><span class="na">cloneRow</span><span class="p">(</span><span class="n">cell</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w"> 
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="s">&#34;,family:&#34;</span><span class="o">+</span><span class="w"> </span><span class="n">Bytes</span><span class="p">.</span><span class="na">toString</span><span class="p">(</span><span class="n">CellUtil</span><span class="p">.</span><span class="na">cloneFamily</span><span class="p">(</span><span class="n">cell</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="s">&#34;, qualifier: &#34;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">Bytes</span><span class="p">.</span><span class="na">toString</span><span class="p">(</span><span class="n">CellUtil</span><span class="p">.</span><span class="na">cloneQualifier</span><span class="p">(</span><span class="n">cell</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="s">&#34;, value:&#34;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">Bytes</span><span class="p">.</span><span class="na">toString</span><span class="p">(</span><span class="n">CellUtil</span><span class="p">.</span><span class="na">cloneValue</span><span class="p">(</span><span class="n">cell</span><span class="p">)));</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">});</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><h2 id="表的基本操作">表的基本操作</h2>
+<h3 id="新建表">新建表</h3>
+<p>创建表通过HBaseTemplate就可以实现，HBaseTemplate类中带有这个方法。</p>
+<p>操作示例：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="n">hBaseDao</span><span class="p">.</span><span class="na">createTable</span><span class="p">(</span><span class="s">&#34;HBASE-COMPONENT_1&#34;</span><span class="p">,</span><span class="w"> </span><span class="s">&#34;CF1&#34;</span><span class="p">,</span><span class="w"> </span><span class="s">&#34;CF2&#34;</span><span class="p">);</span><span class="w">
+</span></span></span></code></pre></div><p>上述代码创建了一张表，HBASE-COMPONENT_1 是表名，CF1,CF2代表这个表有两个列族。</p>
+<p>如果有多个列族可以往后面加，列族不建议设置很多个。</p>
+<h3 id="删除表">删除表</h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="n">hBaseDao</span><span class="p">.</span><span class="na">dropTable</span><span class="p">(</span><span class="s">&#34;HBASE-COMPONENT_1&#34;</span><span class="p">);</span><span class="w">
+</span></span></span></code></pre></div><p>参数是表名，通过表名删除表。</p>
+<h3 id="判断表是否存在">判断表是否存在</h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="n">hBaseDao</span><span class="p">.</span><span class="na">tableExists</span><span class="p">(</span><span class="s">&#34;lbs&#34;</span><span class="p">);</span><span class="w">
+</span></span></span></code></pre></div><p>这里的表名是区分大小写的。返回值：boolean。</p>
+<h3 id="新增数据">新增数据</h3>
+<h4 id="新增一条数据">新增一条数据</h4>
+<p>需要注意的是在HBase中的存储的数据是不分格式的，都是以字节数组的形式存储，因此在存储一条数据时需要将数据都转化成字节数组。</p>
+<p>String格式的数据能直接转换为字节数组getBytes()，但是其他格式的数据需要借助工具作转换。</p>
+<p>这里需要格外注意rowKey的格式，用什么格式存就决定了用什么格式取。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="n">hBaseDao</span><span class="p">.</span><span class="na">put</span><span class="p">(</span><span class="s">&#34;HBase-component&#34;</span><span class="p">,</span><span class="w"> </span><span class="s">&#34;1534154424340&#34;</span><span class="p">,</span><span class="w"> </span><span class="s">&#34;CF1&#34;</span><span class="p">,</span><span class="w"> </span><span class="s">&#34;test_1&#34;</span><span class="p">,</span><span class="w"> </span><span class="n">Bytes</span><span class="p">.</span><span class="na">toBytes</span><span class="p">(</span><span class="s">&#34;testData&#34;</span><span class="p">));</span><span class="w">
+</span></span></span></code></pre></div><p>参数说明：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="p">(</span><span class="n">1</span><span class="p">)</span><span class="w"> </span><span class="n">tableName</span><span class="w">  </span><span class="nf">目标数据表</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">(</span><span class="n">2</span><span class="p">)</span><span class="w"> </span><span class="n">rowName</span><span class="w">    </span><span class="nf">rowKey</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">(</span><span class="n">3</span><span class="p">)</span><span class="w"> </span><span class="n">familyName</span><span class="w"> </span><span class="nf">列族名</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">(</span><span class="n">4</span><span class="p">)</span><span class="w"> </span><span class="n">qualifier</span><span class="w">  </span><span class="nf">列名</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">(</span><span class="n">5</span><span class="p">)</span><span class="w"> </span><span class="n">data</span><span class="w">       </span><span class="n">字节数组类型的数据</span><span class="w">
+</span></span></span></code></pre></div><p>这里新增一条数据是填充数据到一个cell中去。</p>
+<h4 id="批量新增数据">批量新增数据</h4>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="n">String</span><span class="w"> </span><span class="n">rowKey</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">String</span><span class="p">.</span><span class="na">valueOf</span><span class="p">(</span><span class="n">System</span><span class="p">.</span><span class="na">currentTimeMillis</span><span class="p">());</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">Put</span><span class="w"> </span><span class="n">put</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Put</span><span class="p">(</span><span class="n">rowKey</span><span class="p">.</span><span class="na">getBytes</span><span class="p">());</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">String</span><span class="w"> </span><span class="n">defaultColumn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&#34;CF1&#34;</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">String</span><span class="w"> </span><span class="n">column1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&#34;col1&#34;</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">String</span><span class="w"> </span><span class="n">column2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&#34;col2&#34;</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">String</span><span class="w"> </span><span class="n">column3</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&#34;col3&#34;</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">String</span><span class="w"> </span><span class="n">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&#34;test&#34;</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">put</span><span class="p">.</span><span class="na">addColumn</span><span class="p">(</span><span class="n">defaultColumn</span><span class="p">.</span><span class="na">getBytes</span><span class="p">(),</span><span class="w"> </span><span class="n">column1</span><span class="p">.</span><span class="na">getBytes</span><span class="p">(),</span><span class="w"> </span><span class="n">value</span><span class="p">.</span><span class="na">getBytes</span><span class="p">());</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">put</span><span class="p">.</span><span class="na">addColumn</span><span class="p">(</span><span class="n">defaultColumn</span><span class="p">.</span><span class="na">getBytes</span><span class="p">(),</span><span class="w"> </span><span class="n">column2</span><span class="p">.</span><span class="na">getBytes</span><span class="p">(),</span><span class="w"> </span><span class="n">value</span><span class="p">.</span><span class="na">getBytes</span><span class="p">());</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">put</span><span class="p">.</span><span class="na">addColumn</span><span class="p">(</span><span class="n">defaultColumn</span><span class="p">.</span><span class="na">getBytes</span><span class="p">(),</span><span class="w"> </span><span class="n">column3</span><span class="p">.</span><span class="na">getBytes</span><span class="p">(),</span><span class="w"> </span><span class="n">value</span><span class="p">.</span><span class="na">getBytes</span><span class="p">());</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">List</span><span class="o">&lt;</span><span class="n">Put</span><span class="o">&gt;</span><span class="w"> </span><span class="n">putList</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">ArrayList</span><span class="o">&lt;&gt;</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">putList</span><span class="p">.</span><span class="na">add</span><span class="p">(</span><span class="n">put</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">putList</span><span class="p">.</span><span class="na">add</span><span class="p">(</span><span class="n">put</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">putList</span><span class="p">.</span><span class="na">add</span><span class="p">(</span><span class="n">put</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">putList</span><span class="p">.</span><span class="na">add</span><span class="p">(</span><span class="n">put</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">putList</span><span class="p">.</span><span class="na">add</span><span class="p">(</span><span class="n">put</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">hBaseDao</span><span class="p">.</span><span class="na">putBatch</span><span class="p">(</span><span class="s">&#34;HBase-component&#34;</span><span class="p">,</span><span class="w"> </span><span class="n">putList</span><span class="p">);</span><span class="w">
+</span></span></span></code></pre></div><p>批量插入数据就是使用多个Put对象，putBatch(&hellip;)方法的参数：表名，putList(多个put的集合)。
+注意批量插入数据也都是插入字节数组格式的数据。</p>
+<h3 id="删除数据">删除数据</h3>
+<h4 id="删除一条数据">删除一条数据</h4>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="n">hBaseDao</span><span class="p">.</span><span class="na">delete</span><span class="p">(</span><span class="s">&#34;HBase-component&#34;</span><span class="p">,</span><span class="w"> </span><span class="s">&#34;1534210201115&#34;</span><span class="p">,</span><span class="w"> </span><span class="s">&#34;CF1&#34;</span><span class="p">,</span><span class="w"> </span><span class="s">&#34;col2&#34;</span><span class="p">);</span><span class="w">
+</span></span></span></code></pre></div><p>参数说明：</p>
+<p>(1) 表名</p>
+<p>(2) rowKey</p>
+<p>(3) 列族名</p>
+<p>(4) 列名</p>
+<p>这里删除是删除一个cell下的数据</p>
+<h4 id="批量删除数据">批量删除数据</h4>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="n">String</span><span class="w"> </span><span class="n">tableName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&#34;HBase-component&#34;</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">String</span><span class="w"> </span><span class="n">rowKey1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&#34;1534164113922&#34;</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">String</span><span class="w"> </span><span class="n">rowKey2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&#34;1534168248328&#34;</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">List</span><span class="o">&lt;</span><span class="n">Delete</span><span class="o">&gt;</span><span class="w"> </span><span class="n">deleteList</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">ArrayList</span><span class="o">&lt;&gt;</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">Delete</span><span class="w"> </span><span class="n">delete</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Delete</span><span class="p">(</span><span class="n">rowKey1</span><span class="p">.</span><span class="na">getBytes</span><span class="p">());</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">Delete</span><span class="w"> </span><span class="n">delete1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Delete</span><span class="p">(</span><span class="n">rowKey2</span><span class="p">.</span><span class="na">getBytes</span><span class="p">());</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">deleteList</span><span class="p">.</span><span class="na">add</span><span class="p">(</span><span class="n">delete</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">deleteList</span><span class="p">.</span><span class="na">add</span><span class="p">(</span><span class="n">delete1</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">hBaseDao</span><span class="p">.</span><span class="na">deleteBatch</span><span class="p">(</span><span class="n">tableName</span><span class="p">,</span><span class="w"> </span><span class="n">deleteList</span><span class="p">);</span><span class="w">
+</span></span></span></code></pre></div><p>批量删除需要借助Delete对象。</p>
+<h3 id="查询">查询</h3>
+<h3 id="单条结果查询">单条结果查询</h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="n">Result</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">hBaseDao</span><span class="p">.</span><span class="na">queryByTableNameAndRowKey</span><span class="p">(</span><span class="s">&#34;LBS&#34;</span><span class="p">,</span><span class="w"> </span><span class="n">9223372036854775803L</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="n">result</span><span class="p">.</span><span class="na">isEmpty</span><span class="p">());</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">result</span><span class="p">.</span><span class="na">listCells</span><span class="p">().</span><span class="na">forEach</span><span class="p">(</span><span class="n">cell</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="s">&#34; row:&#34;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">Bytes</span><span class="p">.</span><span class="na">toLong</span><span class="p">(</span><span class="n">CellUtil</span><span class="p">.</span><span class="na">cloneRow</span><span class="p">(</span><span class="n">cell</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w"> 
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="s">&#34; family:&#34;</span><span class="o">+</span><span class="w"> </span><span class="n">Bytes</span><span class="p">.</span><span class="na">toString</span><span class="p">(</span><span class="n">CellUtil</span><span class="p">.</span><span class="na">cloneFamily</span><span class="p">(</span><span class="n">cell</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w"> 
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="s">&#34; qualifier: &#34;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">Bytes</span><span class="p">.</span><span class="na">toString</span><span class="p">(</span><span class="n">CellUtil</span><span class="p">.</span><span class="na">cloneQualifier</span><span class="p">(</span><span class="n">cell</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w"> 
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="s">&#34; value:&#34;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">Bytes</span><span class="p">.</span><span class="na">toString</span><span class="p">(</span><span class="n">CellUtil</span><span class="p">.</span><span class="na">cloneValue</span><span class="p">(</span><span class="n">cell</span><span class="p">)));</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">});</span><span class="w">
+</span></span></span></code></pre></div><p>queryByTableNameAndRowKey()该方法是通过表名和rowKey查询数据，这里的rowKey支持多种类型，Long，double，Integer几种类型。
+至于这里传什么类型的参数，取决于插入数据时rowKey的类型，虽然HBase里存储的都是字节数组，但是对类型是敏感的，如果类型对不上可能会出错。</p>
+<h3 id="批量扫描">批量扫描</h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="c1">// 构建scan</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">Scan</span><span class="w"> </span><span class="n">scan</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Scan</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c1">// 设置时间戳,计算时间差</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">Long</span><span class="w"> </span><span class="n">timeDifference</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">2L</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">30L</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">24L</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">60L</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">60L</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">1000L</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">Long</span><span class="w"> </span><span class="n">endTime</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">System</span><span class="p">.</span><span class="na">currentTimeMillis</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">Long</span><span class="w"> </span><span class="n">fromTime</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">endTime</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">timeDifference</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c1">// 设置时间过滤器</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">FilterList</span><span class="w"> </span><span class="n">filterList</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">FilterList</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">Filter</span><span class="w"> </span><span class="n">startTimeFilter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">SingleColumnValueFilter</span><span class="p">(</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">DEFAULT_COLUMN_FAMILY</span><span class="p">.</span><span class="na">getBytes</span><span class="p">(),</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">DATA_CREATE_TIME</span><span class="p">.</span><span class="na">getBytes</span><span class="p">(),</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">CompareFilter</span><span class="p">.</span><span class="na">CompareOp</span><span class="p">.</span><span class="na">GREATER</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">Bytes</span><span class="p">.</span><span class="na">toBytes</span><span class="p">(</span><span class="n">fromTime</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">Filter</span><span class="w"> </span><span class="n">endTimeFilter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">SingleColumnValueFilter</span><span class="p">(</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">DEFAULT_COLUMN_FAMILY</span><span class="p">.</span><span class="na">getBytes</span><span class="p">(),</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">DATA_CREATE_TIME</span><span class="p">.</span><span class="na">getBytes</span><span class="p">(),</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">CompareFilter</span><span class="p">.</span><span class="na">CompareOp</span><span class="p">.</span><span class="na">LESS</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">Bytes</span><span class="p">.</span><span class="na">toBytes</span><span class="p">(</span><span class="n">endTime</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">filterList</span><span class="p">.</span><span class="na">addFilter</span><span class="p">(</span><span class="n">startTimeFilter</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">filterList</span><span class="p">.</span><span class="na">addFilter</span><span class="p">(</span><span class="n">endTimeFilter</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">scan</span><span class="p">.</span><span class="na">setFilter</span><span class="p">(</span><span class="n">filterList</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c1">// 获取结果集</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">ResultScanner</span><span class="w"> </span><span class="n">resultScanner</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">hBaseTemplate</span><span class="p">.</span><span class="na">queryByScan</span><span class="p">(</span><span class="n">TABLE_NAME</span><span class="p">,</span><span class="w"> </span><span class="n">scan</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c1">// 遍历结果集</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">try</span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">resultScanner</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">null</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">resultScanner</span><span class="p">.</span><span class="na">forEach</span><span class="p">(</span><span class="n">result</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">List</span><span class="o">&lt;</span><span class="n">Cell</span><span class="o">&gt;</span><span class="w"> </span><span class="n">cellList</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">result</span><span class="p">.</span><span class="na">listCells</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="p">...</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="k">finally</span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">resultScanner</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">null</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">resultScanner</span><span class="p">.</span><span class="na">close</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>批量查询可以通过queryByScan()方法实现，第一个参数是表名，第二个参数是scan，通过构建不同的scan来查询，过滤器也是在构建scan对象是添加的，可以添加多个过滤器。</p>
+<p><em>需要注意的是这里的ResultScanner类，在遍历结果集时需要使用try-finally结构，在使用完resultScanner对象之后关闭该对象。HBase官方文档上强调了这一点。因此在使用ResultScanner对象时需要格外注意。</em></p>
+<p>常见过滤器：</p>
+<p>行健过滤器：RowFilter</p>
+<p>列族过滤器：FamilyFilter</p>
+<p>值过滤器：ValueFilter</p>
+<p>列过滤器：QualifierFilter</p>
+<p>单列值过滤器：SingleColumnValueFilter(会返回满足条件的行)</p>
+<p>单列值排除过滤器：SingleColumnExcludeFilter(返回排除了该列的结果，与单列值过滤器相反)</p>
+<p>前缀过滤器：PrefixFilter(这个过滤器是针对行健的，在构造方法中传入字节数组形式的内容，过滤器会去匹配行健)</p>
+<p>页数过滤器：PageFilter(使用pageFilter过滤器的时候需要注意，并不是设置了页数大小就能返回相应数目的结果)</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="n">String</span><span class="w"> </span><span class="n">tableName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&#34;RECOMMEND_ENGINE_DATA_MODEL&#34;</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">Scan</span><span class="w"> </span><span class="n">scan</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Scan</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">PageFilter</span><span class="w"> </span><span class="n">pageFilter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">PageFilter</span><span class="p">(</span><span class="n">1</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">scan</span><span class="p">.</span><span class="na">setFilter</span><span class="p">(</span><span class="n">pageFilter</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">ResultScanner</span><span class="w"> </span><span class="n">resultScanner</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">hBaseDao</span><span class="p">.</span><span class="na">queryByScan</span><span class="p">(</span><span class="n">tableName</span><span class="p">,</span><span class="w"> </span><span class="n">scan</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">try</span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">resultScanner</span><span class="p">.</span><span class="na">forEach</span><span class="p">(</span><span class="n">result</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="n">result</span><span class="p">.</span><span class="na">listCells</span><span class="p">().</span><span class="na">forEach</span><span class="p">(</span><span class="n">cell</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="c1">// process</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="p">});</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="k">finally</span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">resultScanner</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">null</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="n">resultScanner</span><span class="p">.</span><span class="na">close</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>上面这段代码中设置了页面大小为1，预期是返回一条数据，但是结果会返回两条数据，这时返回的结果数会取决于regionServer的数量。</p>
+<p>如果是FilterList，FilterList的顺序会影响PageFilter的效果。</p>
+<p>一般比较型过滤器，需要用CompareFilter.CompareOp中的比较运算符。所有的过滤器都是用Scan对象去设置。</p>
+<h4 id="多过滤器查询">多过滤器查询</h4>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="n">String</span><span class="w"> </span><span class="n">tableName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&#34;HBase-component&#34;</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">Scan</span><span class="w"> </span><span class="n">scan</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Scan</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">PageFilter</span><span class="w"> </span><span class="n">pageFilter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">PageFilter</span><span class="p">(</span><span class="n">1</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">SingleColumnValueFilter</span><span class="w"> </span><span class="n">singleColumnValueFilter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">SingleColumnValueFilter</span><span class="p">(</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">           </span><span class="s">&#34;CF1&#34;</span><span class="p">.</span><span class="na">getBytes</span><span class="p">(),</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">           </span><span class="s">&#34;col1&#34;</span><span class="p">.</span><span class="na">getBytes</span><span class="p">(),</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">           </span><span class="n">CompareFilter</span><span class="p">.</span><span class="na">CompareOp</span><span class="p">.</span><span class="na">EQUAL</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">           </span><span class="k">new</span><span class="w"> </span><span class="n">SubstringComparator</span><span class="p">(</span><span class="s">&#34;group&#34;</span><span class="p">));</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">singleColumnValueFilter</span><span class="p">.</span><span class="na">setFilterIfMissing</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">FilterList</span><span class="w"> </span><span class="n">filterList</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">FilterList</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">filterList</span><span class="p">.</span><span class="na">addFilter</span><span class="p">(</span><span class="n">singleColumnValueFilter</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">filterList</span><span class="p">.</span><span class="na">addFilter</span><span class="p">(</span><span class="n">pageFilter</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">scan</span><span class="p">.</span><span class="na">setFilter</span><span class="p">(</span><span class="n">filterList</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">ResultScanner</span><span class="w"> </span><span class="n">resultScanner</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">hBaseDao</span><span class="p">.</span><span class="na">queryByScan</span><span class="p">(</span><span class="n">tableName</span><span class="p">,</span><span class="w"> </span><span class="n">scan</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">try</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">       </span><span class="n">resultScanner</span><span class="p">.</span><span class="na">forEach</span><span class="p">(</span><span class="n">result</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">       </span><span class="n">result</span><span class="p">.</span><span class="na">listCells</span><span class="p">().</span><span class="na">forEach</span><span class="p">(</span><span class="n">cell</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">              </span><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                  </span><span class="s">&#34; row:&#34;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">Bytes</span><span class="p">.</span><span class="na">toString</span><span class="p">(</span><span class="n">CellUtil</span><span class="p">.</span><span class="na">cloneRow</span><span class="p">(</span><span class="n">cell</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w"> 
+</span></span></span><span class="line"><span class="cl"><span class="w">                  </span><span class="s">&#34; family:&#34;</span><span class="o">+</span><span class="w"> </span><span class="n">Bytes</span><span class="p">.</span><span class="na">toString</span><span class="p">(</span><span class="n">CellUtil</span><span class="p">.</span><span class="na">cloneFamily</span><span class="p">(</span><span class="n">cell</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w"> 
+</span></span></span><span class="line"><span class="cl"><span class="w">                  </span><span class="s">&#34; qualifier: &#34;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">Bytes</span><span class="p">.</span><span class="na">toString</span><span class="p">(</span><span class="n">CellUtil</span><span class="p">.</span><span class="na">cloneQualifier</span><span class="p">(</span><span class="n">cell</span><span class="p">))</span><span class="o">+</span><span class="w"> 
+</span></span></span><span class="line"><span class="cl"><span class="w">                  </span><span class="s">&#34; value:&#34;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">Bytes</span><span class="p">.</span><span class="na">toString</span><span class="p">(</span><span class="n">CellUtil</span><span class="p">.</span><span class="na">cloneValue</span><span class="p">(</span><span class="n">cell</span><span class="p">)));</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="p">});</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="p">});</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">finally</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">         </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">resultScanner</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">null</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">             </span><span class="n">resultScanner</span><span class="p">.</span><span class="na">close</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">         </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>多过滤器需要用到FilterList，也是直接设置到Scan对象中。多过滤器的时候需要注意过滤器的顺序问题，例如上面代码中如果将两个过滤器调换顺序，查询的结果也是不一样的。</p>
+<h3 id="结果集的映射">结果集的映射</h3>
+<p>在HBase中，默认所有的顺序都是按照字母序排列，例如CF1列族下有多个列：col1、col2、col3，那么在遍历结果集时，listCells()中的cell的顺序总是按照列名的字母序来排列的。</p>
+<p>所以cellList.get(0)就是对应col1中的数据，cellList.get(1)就是对应col2中的数据，cellList.get(2)就是对应col3中的数据。</p>
+<p>如果列名为a、b、c那分别对应的下标为cellList.get(0)、cellList.get(1)、cellList.get(2)</p>
+<hr>
+
+                    
+                    <HR width="100%" id="EOF">
+		    <p style="color:#777;">Last modified on 2024-01-24</p>
+                    
+                </div>
+            </div>
+            
+            
+            <nav class="post-pagination">
+
+                
+                <a class="newer-posts" href="/post/2019-7-27-spark%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-rdd%E5%9F%BA%E7%A1%80%E7%AE%97%E5%AD%90/">
+			Next<br>spark学习笔记-RDD基础算子
+                </a>
+                
+                
+                
+                <a class="older-posts" href="/post/2019-7-11-%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F/">
+			Previous<br>工厂模式
+                </a>
+                
+            </nav>
+            <div class="post-comment-wrapper">
+                
+
+
+<div id="gitalk-container"></div>
+
+
+
+
+
+
+
+
+
+
+
+            </div>
+        </div>
+    </div>
+
+
+                    </div>
+            </div><div id="sideContainer" class="side-container">
+    
+    <a class="a-block nav-head false" href="http://localhost:1313/">
+    
+        <div class="nav-title">
+            MeiK&#39;s blog
+        </div>
+        
+    </a>
+
+    <div class="nav-link-list">
+        
+        
+    </div>
+
+    
+
+    <div class="nav-footer">
+        
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://risehere.net/">Rise</a>
+<br>
+Ported from <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	2024 MeiK&#39;s blog
+	
+
+    </div>
+    
+</div><div id="extraContainer" class="extra-container">
+    <div class="toc-wrapper">
+        
+
+        
+        <div class="toc">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- CATALOG -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#hbase-%e7%bb%84%e4%bb%b6%e6%8e%a5%e5%8f%a3%e6%96%87%e6%a1%a3" class="nav-hbase-组件接口文档">
+									HBase 组件接口文档
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e4%bd%bf%e7%94%a8%e8%af%b4%e6%98%8e" class="nav-使用说明">
+									使用说明
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#hbase%e9%85%8d%e7%bd%ae" class="nav-hbase配置">
+									HBase配置
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%8f%82%e6%95%b0%e8%af%b4%e6%98%8e" class="nav-参数说明">
+									参数说明
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e7%ae%80%e5%8d%95%e7%a4%ba%e4%be%8b" class="nav-简单示例">
+									简单示例
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e8%a1%a8%e7%9a%84%e5%9f%ba%e6%9c%ac%e6%93%8d%e4%bd%9c" class="nav-表的基本操作">
+									表的基本操作
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e6%96%b0%e5%bb%ba%e8%a1%a8" class="nav-新建表">
+									新建表
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%88%a0%e9%99%a4%e8%a1%a8" class="nav-删除表">
+									删除表
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%88%a4%e6%96%ad%e8%a1%a8%e6%98%af%e5%90%a6%e5%ad%98%e5%9c%a8" class="nav-判断表是否存在">
+									判断表是否存在
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%96%b0%e5%a2%9e%e6%95%b0%e6%8d%ae" class="nav-新增数据">
+									新增数据
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e6%96%b0%e5%a2%9e%e4%b8%80%e6%9d%a1%e6%95%b0%e6%8d%ae" class="nav-新增一条数据">
+									新增一条数据
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%89%b9%e9%87%8f%e6%96%b0%e5%a2%9e%e6%95%b0%e6%8d%ae" class="nav-批量新增数据">
+									批量新增数据
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e5%88%a0%e9%99%a4%e6%95%b0%e6%8d%ae" class="nav-删除数据">
+									删除数据
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%88%a0%e9%99%a4%e4%b8%80%e6%9d%a1%e6%95%b0%e6%8d%ae" class="nav-删除一条数据">
+									删除一条数据
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%89%b9%e9%87%8f%e5%88%a0%e9%99%a4%e6%95%b0%e6%8d%ae" class="nav-批量删除数据">
+									批量删除数据
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e6%9f%a5%e8%af%a2" class="nav-查询">
+									查询
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%8d%95%e6%9d%a1%e7%bb%93%e6%9e%9c%e6%9f%a5%e8%af%a2" class="nav-单条结果查询">
+									单条结果查询
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%89%b9%e9%87%8f%e6%89%ab%e6%8f%8f" class="nav-批量扫描">
+									批量扫描
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e5%a4%9a%e8%bf%87%e6%bb%a4%e5%99%a8%e6%9f%a5%e8%af%a2" class="nav-多过滤器查询">
+									多过滤器查询
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+							
+								</ul>
+							
+						
+						
+						
+							<li>
+								<a href="#%e7%bb%93%e6%9e%9c%e9%9b%86%e7%9a%84%e6%98%a0%e5%b0%84" class="nav-结果集的映射">
+									结果集的映射
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+        
+    </div>
+    <div class="pagination">
+        <a id="globalBackToTop" class="pagination-action animated-visibility" href="#top"
+            :class="{ invisible: scrollY == 0 }">
+            <i class="material-icons pagination-action-icon">
+                keyboard_arrow_up
+            </i>
+        </a>
+        
+        <a type="button" class="pagination-action" id="darkModeToggleButton">
+            <span class="material-icons pagination-action-icon" id="darkModeToggleIcon">
+                dark_mode
+            </span>
+        </a>
+        
+        
+    </div>
+</div>
+
+<div id="single-column-footer">
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://risehere.net/">Rise</a>
+<br>
+Ported from <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	2024 MeiK&#39;s blog
+	
+</div>
+            </div>
+    
+    <script src="/js/journal.js"></script></body>
+</html>

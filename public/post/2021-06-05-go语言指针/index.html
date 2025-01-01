@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="en"><head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+<title>Go语言指针</title>
+
+
+
+
+<meta charset="utf-8">
+<meta name="X-UA-Compatible" content="IE=edge">
+<meta name="google-site-verification" content="UA-123456-789">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=5, user-scalable=5" name="viewport">
+<meta content="telephone=no" name="format-detection">
+<meta name="description" content="">
+<meta name="renderer" content="webkit">
+<meta name="theme-color" content="#ffffff">
+
+
+
+
+
+
+
+
+
+
+
+  
+    
+      
+    
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+<link rel="icon" href="http://localhost:1313/images/github.png">
+
+
+
+      <script src="/js/toc.js"></script>
+    
+    <link type="text/css" rel="stylesheet" href="/vendor/css/bootstrap.min.css">
+
+<link rel="stylesheet" href="/scss/dark-mode.min.cb53f1bee2b8900cb4f082afbf00175d6618f281cf9a2fe8619e3b52d20b5721.css" integrity="sha256-y1PxvuK4kAy08IKvvwAXXWYY8oHPmi/oYZ47UtILVyE=" media="screen">
+
+
+<link rel="stylesheet"
+          href="https://fonts.googleapis.com/css?family=Material+Icons">
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+<script src="/vendor/js/md5.min.js"></script><script>
+  var gitalk = new Gitalk({
+  clientID: '',
+  clientSecret: '',
+  repo: '',
+  owner: '',
+  admin: [''],
+  id: md5(location.pathname),
+  distractionFreeMode: 'false'
+  });
+  window.onload = function () {
+        gitalk.render('gitalk-container')
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body>
+    	<div id="app"><div class="single-column-drawer-container" id="drawer"
+     v-bind:class="{ 'single-column-drawer-container-active': isDrawerOpen }">
+    <div class="drawer-content">
+        <div class="drawer-menu">
+            
+            
+            
+            
+            <div class="toc">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- CATALOG -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e9%80%9a%e8%bf%87new%e5%88%9b%e5%bb%ba%e6%8c%87%e9%92%88" class="nav-通过new创建指针">
+									通过New()创建指针
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%95%b0%e7%bb%84%e6%8c%87%e9%92%88" class="nav-数组指针">
+									数组指针
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%8c%87%e9%92%88%e7%9a%84%e6%8c%87%e9%92%88" class="nav-指针的指针">
+									指针的指针
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%87%bd%e6%95%b0%e6%8c%87%e9%92%88" class="nav-函数指针">
+									函数指针
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e7%a9%ba%e6%8c%87%e9%92%88" class="nav-空指针">
+									空指针
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+            
+        </div>
+    </div>
+</div>
+<transition name="fade">
+    <div id="drawer-mask" v-bind:class="{ 'single-column-drawer-mask': mounted }" v-if="isDrawerOpen" v-on:click="toggleDrawer"></div>
+</transition>
+<nav id="navBar" class="navbar sticky-top navbar-light single-column-nav-container">
+    <div id="navBackground" class="nav-background"></div>
+    <div class="container container-narrow nav-content">
+        <button id="nav_dropdown_btn" class="nav-dropdown-toggle" type="button" v-on:click="toggleDrawer">
+            <i class="material-icons">
+                menu
+            </i>
+        </button>
+        <a id="navTitle" class="navbar-brand" href="http://localhost:1313/">
+            MeiK&#39;s blog
+        </a>
+        
+        <button type="button" class="nav-darkmode-toggle" id="darkModeToggleButton2">
+            <i class="material-icons" id="darkModeToggleIcon2">
+                dark_mode
+            </i>
+        </button>
+        
+    </div>
+</nav>
+<div class="single-column-header-container" id="pageHead"
+     v-bind:style="{ transform: 'translateZ(0px) translateY('+.3*scrollY+'px)', opacity: 1-navOpacity }">
+    <a href="http://localhost:1313/">
+        <div class="single-column-header-title">MeiK&#39;s blog</div>
+        
+
+    </a>
+</div>
+
+            <div id="content">
+                <div id="streamContainer" class="stream-container">
+
+    <div class="post-list-container post-list-container-shadow">
+        <div class="post">
+            
+            
+            
+
+            <div class="post-head-wrapper-text-only"
+                
+            >
+                <div class="post-title">
+                    Go语言指针
+                    
+                    <div class="post-meta">
+                        
+                        <time itemprop="datePublished">
+                            2021-06-05 21:18
+                        </time>
+                        
+
+                        
+
+                        
+                            <i class="material-icons" style="">label</i>
+                            
+                                <a href="/tags/go">Go</a>
+                                &nbsp;
+                            
+                        
+                        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="post-body-wrapper">
+                
+                <div class="post-body" v-pre>
+                
+                    <p>摘要：Go支持指针，允许在程序中通过引用传递值或者数据结构。</p>
+<hr>
+<p>go语言中的指针和C语言中的指针类似，但比C语言中的指针更简单。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// Go语言取地址符号是&amp;，放到变量前会返回对应变量的内存地址
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">var</span> <span class="nx">i1</span> <span class="kt">int</span> <span class="p">=</span> <span class="mi">1</span>
+</span></span><span class="line"><span class="cl"><span class="kd">var</span> <span class="nx">j</span> <span class="p">=</span> <span class="nx">i1</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">i1</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">j</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// 定义指针变量 var var_name *var_type
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nx">s</span> <span class="o">:=</span> <span class="s">&#34;sss&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nx">p</span> <span class="o">:=</span> <span class="mi">2181</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">var</span> <span class="nx">ip</span> <span class="o">*</span><span class="kt">string</span> <span class="p">=</span> <span class="o">&amp;</span><span class="nx">s</span>
+</span></span><span class="line"><span class="cl"><span class="kd">var</span> <span class="nx">port</span> <span class="o">*</span><span class="kt">int</span> <span class="p">=</span> <span class="o">&amp;</span><span class="nx">p</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="o">*</span><span class="nx">ip</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="o">*</span><span class="nx">port</span><span class="p">)</span>
+</span></span></code></pre></div><p>变量、指针和地址三者的关系是，每个变量都拥有地址，指针的值就是地址。</p>
+<p>通过<code>&amp;</code> 获取对应变量的内存地址。 通过<code>*</code> 获取指针的值，也就是指针取值。取地址操作符 <code>&amp;</code> 和取值操作符 <code>*</code> 是一对互补操作符，<code>&amp;</code> 取出地址，<code>*</code> 根据地址取出地址指向的值。</p>
+<p>变量、指针地址、指针变量、取地址、取值的相互关系和特性如下：</p>
+<ul>
+<li>对变量进行取地址操作使用&amp;操作符，可以获得这个变量的指针变量。</li>
+<li>指针变量的值是指针地址。</li>
+<li>对指针变量进行取值操作使用*操作符，可以获得指针变量指向的原变量的值。</li>
+</ul>
+<h2 id="通过new创建指针">通过New()创建指针</h2>
+<p>Go语言还提供了另外一种方法来创建指针变量，格式如下：
+new(type) 这个type可以为int。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// create ptr by new()
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">func</span> <span class="nf">createPtr</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">str</span> <span class="o">:=</span> <span class="nb">new</span><span class="p">(</span><span class="kt">string</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="o">*</span><span class="nx">str</span> <span class="p">=</span> <span class="s">&#34;ssss&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;str is : &#34;</span><span class="p">,</span> <span class="nx">str</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;*str is : &#34;</span><span class="p">,</span> <span class="o">*</span><span class="nx">str</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="c1">// str is :  0xc000116050
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="c1">// *str is :  ssss
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span>
+</span></span></code></pre></div><p>new() 函数可以创建一个对应类型的指针，创建过程会分配内存，被创建的指针指向默认值。</p>
+<h2 id="数组指针">数组指针</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">const</span> <span class="nx">numlen</span> <span class="p">=</span> <span class="mi">4</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// 数组指针
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nx">nums</span> <span class="o">:=</span> <span class="p">[]</span><span class="kt">int</span><span class="p">{</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// 指针数组的长度必须等与数组长度
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">var</span> <span class="nx">ptr</span> <span class="p">[</span><span class="nx">numlen</span><span class="p">]</span><span class="o">*</span><span class="kt">int</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">for</span> <span class="nx">i2</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">nums</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">ptr</span><span class="p">[</span><span class="nx">i2</span><span class="p">]</span> <span class="p">=</span> <span class="o">&amp;</span><span class="nx">nums</span><span class="p">[</span><span class="nx">i2</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="p">&lt;</span> <span class="nx">numlen</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="o">*</span><span class="nx">ptr</span><span class="p">[</span><span class="nx">i</span><span class="p">])</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><h2 id="指针的指针">指针的指针</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// 指针的指针
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nx">pp</span> <span class="o">:=</span> <span class="mi">12</span>
+</span></span><span class="line"><span class="cl"><span class="nx">p1</span> <span class="o">:=</span> <span class="o">&amp;</span><span class="nx">pp</span>	
+</span></span><span class="line"><span class="cl"><span class="nx">p2</span> <span class="o">:=</span> <span class="o">&amp;</span><span class="nx">p1</span>
+</span></span><span class="line"><span class="cl"><span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;pp: &#34;</span><span class="p">,</span> <span class="nx">pp</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;p1: &#34;</span><span class="p">,</span> <span class="o">*</span><span class="nx">p1</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;p2: &#34;</span><span class="p">,</span> <span class="o">**</span><span class="nx">p2</span><span class="p">)</span>
+</span></span></code></pre></div><h2 id="函数指针">函数指针</h2>
+<p>谈到函数指针，就不得不提到值传递和引用传递了。函数的参数中，如果是值传递，在函数体内部得到的是参数的拷贝，对参数修改不会影响原始参数；如果是引用传递，在函数体内部的到的就是参数的内存地址，对参数的修改会影响原始参数本身。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// 值传递
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">func</span> <span class="nf">zeroval</span><span class="p">(</span><span class="nx">ival</span> <span class="kt">int</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">ival</span> <span class="p">=</span> <span class="mi">0</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// 引用传递
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">func</span> <span class="nf">zeroptr</span><span class="p">(</span><span class="nx">iptr</span> <span class="o">*</span><span class="kt">int</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="o">*</span><span class="nx">iptr</span> <span class="p">=</span> <span class="mi">0</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>zeroval 有一个 int 型参数，所以使用值传递。zeroval函数将从调用方得到一个ival形参的拷贝。</p>
+<p>zeroptr 有一和上面不同的 *int 参数，意味着它用了一个 int指针。函数体内的 *iptr 引用这个指针，从它内存地址得到这个地址对应的当前值。对一个引用的指针赋值将会改变这个指针引用的真实地址的值。</p>
+<p>通过函数指针可以优雅地实现两值交换。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// 函数指针参数
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nx">x</span> <span class="o">:=</span> <span class="mi">100</span>
+</span></span><span class="line"><span class="cl"><span class="nx">y</span> <span class="o">:=</span> <span class="mi">200</span>
+</span></span><span class="line"><span class="cl"><span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;x : &#34;</span><span class="p">,</span> <span class="nx">x</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;y : &#34;</span><span class="p">,</span> <span class="nx">y</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nf">swap</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">x</span><span class="p">,</span> <span class="o">&amp;</span><span class="nx">y</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;x : &#34;</span><span class="p">,</span> <span class="nx">x</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;y : &#34;</span><span class="p">,</span> <span class="nx">y</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">//---
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">swap</span><span class="p">(</span><span class="nx">x</span> <span class="o">*</span><span class="kt">int</span><span class="p">,</span> <span class="nx">y</span> <span class="o">*</span><span class="kt">int</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="c1">// 优雅的写法
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="o">*</span><span class="nx">x</span><span class="p">,</span> <span class="o">*</span><span class="nx">y</span> <span class="p">=</span> <span class="o">*</span><span class="nx">y</span><span class="p">,</span> <span class="o">*</span><span class="nx">x</span>
+</span></span><span class="line"><span class="cl">	<span class="c1">//tmp := *x
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="c1">//*x = *y
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="c1">//*y = tmp
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span>
+</span></span></code></pre></div><p>优雅地实现swap就是通过指针交换两值，如果说交换指针会怎么样呢？</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// swap ptr
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">func</span> <span class="nf">swap1</span><span class="p">(</span><span class="nx">x</span><span class="p">,</span> <span class="nx">y</span> <span class="o">*</span><span class="kt">int</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">x</span><span class="p">,</span> <span class="nx">y</span> <span class="p">=</span> <span class="nx">y</span><span class="p">,</span> <span class="nx">x</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// main()
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nx">aa</span> <span class="o">:=</span> <span class="mi">1</span>
+</span></span><span class="line"><span class="cl"><span class="nx">bb</span> <span class="o">:=</span> <span class="mi">3</span>
+</span></span><span class="line"><span class="cl"><span class="nf">swap1</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">aa</span><span class="p">,</span> <span class="o">&amp;</span><span class="nx">bb</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;aa: &#34;</span><span class="p">,</span> <span class="nx">aa</span><span class="p">,</span> <span class="s">&#34; bb: &#34;</span><span class="p">,</span> <span class="nx">bb</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// 结果：
+</span></span></span><span class="line"><span class="cl"><span class="c1">// aa:  1  bb:  3
+</span></span></span></code></pre></div><p>结果表明，交换是不成功的。上面代码中的 swap1() 函数交换的是 aa 和 bb 的地址，在交换完毕后，aa 和 bb 的变量值确实被交换。但和 aa、bb 关联的两个变量并没有实际关联。这就像写有两座房子的卡片放在桌上一字摊开，交换两座房子的卡片后并不会对两座房子有任何影响。</p>
+<h2 id="空指针">空指针</h2>
+<p>当一个指针被定义后没有分配到任何变量时，它的值为 nil。</p>
+<p>nil 指针也称为空指针。</p>
+<p>nil在概念上和其它语言的null、None、nil、NULL一样，都指代空值。</p>
+<p>一个指针变量通常缩写为 ptr。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// nilPtr
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">func</span> <span class="nf">nilPtr</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="kd">var</span> <span class="nx">ptr</span> <span class="o">*</span><span class="kt">int</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;ptr val is : &#34;</span><span class="p">,</span> <span class="nx">ptr</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// 输出：
+</span></span></span><span class="line"><span class="cl"><span class="c1">// ptr val is :  &lt;nil&gt;
+</span></span></span></code></pre></div>
+                    
+                    <HR width="100%" id="EOF">
+		    <p style="color:#777;">Last modified on 2024-01-24</p>
+                    
+                </div>
+            </div>
+            
+            
+            <nav class="post-pagination">
+
+                
+                <a class="newer-posts" href="/post/2021-06-09-go%E8%AF%AD%E8%A8%80%E9%80%9A%E9%81%93channel/">
+			Next<br>Go语言channel
+                </a>
+                
+                
+                
+                <a class="older-posts" href="/post/2021-06-05-go%E8%AF%AD%E8%A8%80%E6%8E%A5%E5%8F%A3/">
+			Previous<br>Go语言接口
+                </a>
+                
+            </nav>
+            <div class="post-comment-wrapper">
+                
+
+
+<div id="gitalk-container"></div>
+
+
+
+
+
+
+
+
+
+
+
+            </div>
+        </div>
+    </div>
+
+
+                    </div>
+            </div><div id="sideContainer" class="side-container">
+    
+    <a class="a-block nav-head false" href="http://localhost:1313/">
+    
+        <div class="nav-title">
+            MeiK&#39;s blog
+        </div>
+        
+    </a>
+
+    <div class="nav-link-list">
+        
+        
+    </div>
+
+    
+
+    <div class="nav-footer">
+        
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://risehere.net/">Rise</a>
+<br>
+Ported from <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	2024 MeiK&#39;s blog
+	
+
+    </div>
+    
+</div><div id="extraContainer" class="extra-container">
+    <div class="toc-wrapper">
+        
+
+        
+        <div class="toc">
+
+
+	<div class="toc-content">
+	
+		
+		
+		
+		<center>- CATALOG -</center>
+		
+		
+		<ul>
+			
+				
+				
+					
+						
+						
+						
+						
+							
+								
+									<ul>
+								
+							
+						
+						
+							<li>
+								<a href="#%e9%80%9a%e8%bf%87new%e5%88%9b%e5%bb%ba%e6%8c%87%e9%92%88" class="nav-通过new创建指针">
+									通过New()创建指针
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%95%b0%e7%bb%84%e6%8c%87%e9%92%88" class="nav-数组指针">
+									数组指针
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e6%8c%87%e9%92%88%e7%9a%84%e6%8c%87%e9%92%88" class="nav-指针的指针">
+									指针的指针
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e5%87%bd%e6%95%b0%e6%8c%87%e9%92%88" class="nav-函数指针">
+									函数指针
+								</a>
+							</li>
+						
+						
+					
+				
+			
+				
+				
+					
+						
+						
+						
+						
+						
+							<li>
+								<a href="#%e7%a9%ba%e6%8c%87%e9%92%88" class="nav-空指针">
+									空指针
+								</a>
+							</li>
+						
+						
+					
+				
+			
+		</ul>
+	</div>
+
+</div>
+        
+    </div>
+    <div class="pagination">
+        <a id="globalBackToTop" class="pagination-action animated-visibility" href="#top"
+            :class="{ invisible: scrollY == 0 }">
+            <i class="material-icons pagination-action-icon">
+                keyboard_arrow_up
+            </i>
+        </a>
+        
+        <a type="button" class="pagination-action" id="darkModeToggleButton">
+            <span class="material-icons pagination-action-icon" id="darkModeToggleIcon">
+                dark_mode
+            </span>
+        </a>
+        
+        
+    </div>
+</div>
+
+<div id="single-column-footer">
+Hugo Theme <a href="https://github.com/amazingrise/hugo-theme-diary">Diary</a> by <a href="https://risehere.net/">Rise</a>
+<br>
+Ported from <a href="https://mak1t0.cc/" target="_blank" rel="noreferrer noopener">Makito</a>'s <a href="https://github.com/SumiMakito/hexo-theme-journal/" target="_blank" rel="noreferrer noopener">Journal.</a> <br>
+<br>
+
+&copy;
+	
+	2024 MeiK&#39;s blog
+	
+</div>
+            </div>
+    
+    <script src="/js/journal.js"></script></body>
+</html>
