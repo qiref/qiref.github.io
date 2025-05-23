@@ -69,6 +69,33 @@
     <tr>
     <td>
     
+    <h1><a href="/post/2023/05/16/the-dataflow-model-%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/">The Dataflow Model 阅读笔记</a></h1>
+    <div>
+      <span>2023-05-16</span>
+      
+    </div>
+    <div class="summary">
+      
+      
+      
+      
+      &Dopf;ataflow 的核心计算模型非常简单，它只有两个概念，一个叫做 ParDo，就是并行处理的意思；另一个叫做 GroupByKey，也就是按照 Key 进行分组。
+[&hellip;] ParDo 用来进行通用的并行化处理。每个输入元素（这个元素本身有可能是一个有限的集合）都会使用一个 UDF 进行处理（在Dataflow中叫做DoFn），输出是0或多个输出元素。这个例子是把键的前缀进行展开，然 &hellip;
+      <a href="/post/2023/05/16/the-dataflow-model-%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/" class="more" title=阅读全文>阅读全文 &rarr;</a>
+    </div>
+    </td>
+    
+    </tr>
+    </tbody>
+    </table>
+  </section>
+
+  <section class="article-list post-card">
+    <table>
+    <tbody>
+    <tr>
+    <td>
+    
     <h1><a href="/post/2023/05/12/%E5%A0%86%E5%92%8C%E5%A0%86%E6%8E%92%E5%BA%8F/">堆和堆排序</a></h1>
     <div>
       <span>2023-05-12</span>
@@ -297,33 +324,6 @@
       
       &topf;ype singleton struct {} var instance *singleton func GetInstance() *singleton { if instance == nil { instance = &amp;singleton{} // 不是并发安全的 } return instance } 不优雅示例 func GetInstance() *singleton { &hellip;
       <a href="/post/2023/03/24/go%E8%AF%AD%E8%A8%80%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/" class="more" title=阅读全文>阅读全文 &rarr;</a>
-    </div>
-    </td>
-    
-    </tr>
-    </tbody>
-    </table>
-  </section>
-
-  <section class="article-list post-card">
-    <table>
-    <tbody>
-    <tr>
-    <td>
-    
-    <h1><a href="/post/2023/03/23/flink%E5%8F%8D%E5%8E%8B/">Flink反压</a></h1>
-    <div>
-      <span>2023-03-23</span>
-      
-    </div>
-    <div class="summary">
-      
-      
-      
-      
-      如果你看到一个 Task 发生 反压警告（例如： High），意味着它生产数据的速率比下游 Task 消费数据的速率要快。 在工作流中数据记录是从上游向下游流动的（例如：从 Source 到 Sink）。反压沿着相反的方向传播，沿着数据流向上游传播。
-以一个简单的 Source -&gt; Sink Job 为例。如果看到 Source 发生了警告，意味着 Sink 消费数据的速率比 Source &hellip;
-      <a href="/post/2023/03/23/flink%E5%8F%8D%E5%8E%8B/" class="more" title=阅读全文>阅读全文 &rarr;</a>
     </div>
     </td>
     

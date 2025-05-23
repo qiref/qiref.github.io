@@ -6,8 +6,22 @@
     <description>Recent content in Tags on 大道至简</description>
     <generator>Hugo</generator>
     <language>cn-zh</language>
-    <lastBuildDate>Thu, 25 Jul 2024 20:57:06 +0800</lastBuildDate>
+    <lastBuildDate>Wed, 01 Jan 2025 16:29:06 +0800</lastBuildDate>
     <atom:link href="http://localhost:1313/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Paxos</title>
+      <link>http://localhost:1313/tags/paxos/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/tags/paxos/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>分布式</title>
+      <link>http://localhost:1313/tags/%E5%88%86%E5%B8%83%E5%BC%8F/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/tags/%E5%88%86%E5%B8%83%E5%BC%8F/</guid>
+      <description></description>
+    </item>
     <item>
       <title>分布式共识问题</title>
       <link>http://localhost:1313/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E5%85%B1%E8%AF%86%E9%97%AE%E9%A2%98/</link>

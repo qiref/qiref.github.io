@@ -70,6 +70,37 @@
     <tr>
     <td>
     
+    <h1><a href="/post/2025/01/01/paxos%E6%8E%A8%E5%AF%BC%E8%BF%87%E7%A8%8B/">Paxos推导过程</a></h1>
+    <div>
+      <span>2025-01-01</span>
+      
+    </div>
+    <div class="summary">
+      
+      
+      
+      
+      &popf;axos 是一个分布式共识算法, 就是用来解决分布式系统中, 多副本数据如何保证读写一致性的问题.
+[&hellip;] 假设我们有个分布式存储系统, 数据在写入时, 需要把数据写入到其他节点: 副本数据从一个节点复制到其他节点, 有几种复制办法:
+[&hellip;] # node1, node2, node3 a=x --&gt; node1 --&gt; node2 ------&gt; &hellip;
+      <a href="/post/2025/01/01/paxos%E6%8E%A8%E5%AF%BC%E8%BF%87%E7%A8%8B/" class="more" title=阅读全文>阅读全文 &rarr;</a>
+    </div>
+    </td>
+    
+    <td class="spacer spacer-right"></td>
+    <td class="side-title"><h1><a href="/post/">post</a></h1></td>
+    
+    </tr>
+    </tbody>
+    </table>
+  </section>
+
+  <section class="article-list post-card">
+    <table>
+    <tbody>
+    <tr>
+    <td>
+    
     <h1><a href="/post/2024/07/25/%E4%B8%A4%E9%98%B6%E6%AE%B5%E6%8F%90%E4%BA%A4%E5%92%8C%E4%B8%89%E9%98%B6%E6%AE%B5%E6%8F%90%E4%BA%A4/">两阶段提交和三阶段提交</a></h1>
     <div>
       <span>2024-07-25</span>
@@ -324,36 +355,6 @@ import ( &quot;net/http&quot; _ &quot;net/http/pprof&quot; &quot;strconv&quot; )
 还可以通过 -XX:NewRatio=&lt;int&gt; 来设置老年代与新生代内存的比值。比如以下参数就是设置老年代与新生代内存的比值为 1。也就是说老年代和新生代所占比值为 1：1，新生代占整个堆栈的 1/2。
 -XX:NewRatio=1 JDK 1.8 ，方 &hellip;
       <a href="/post/2023/06/26/java%E8%BF%9B%E7%A8%8B%E5%88%86%E6%9E%90%E5%B7%A5%E5%85%B7/" class="more" title=阅读全文>阅读全文 &rarr;</a>
-    </div>
-    </td>
-    
-    <td class="spacer spacer-right"></td>
-    <td class="side-title"><h1><a href="/post/">post</a></h1></td>
-    
-    </tr>
-    </tbody>
-    </table>
-  </section>
-
-  <section class="article-list post-card">
-    <table>
-    <tbody>
-    <tr>
-    <td>
-    
-    <h1><a href="/post/2023/05/16/the-dataflow-model-%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/">The Dataflow Model 阅读笔记</a></h1>
-    <div>
-      <span>2023-05-16</span>
-      
-    </div>
-    <div class="summary">
-      
-      
-      
-      
-      &Dopf;ataflow 的核心计算模型非常简单，它只有两个概念，一个叫做 ParDo，就是并行处理的意思；另一个叫做 GroupByKey，也就是按照 Key 进行分组。
-[&hellip;] ParDo 用来进行通用的并行化处理。每个输入元素（这个元素本身有可能是一个有限的集合）都会使用一个 UDF 进行处理（在Dataflow中叫做DoFn），输出是0或多个输出元素。这个例子是把键的前缀进行展开，然 &hellip;
-      <a href="/post/2023/05/16/the-dataflow-model-%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/" class="more" title=阅读全文>阅读全文 &rarr;</a>
     </div>
     </td>
     

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Paxos on 大道至简</title>
+    <link>http://localhost:1313/tags/paxos/</link>
+    <description>Recent content in Paxos on 大道至简</description>
+    <generator>Hugo</generator>
+    <language>cn-zh</language>
+    <lastBuildDate>Wed, 01 Jan 2025 16:29:06 +0800</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/paxos/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Paxos推导过程</title>
+      <link>http://localhost:1313/post/2025/01/01/paxos%E6%8E%A8%E5%AF%BC%E8%BF%87%E7%A8%8B/</link>
+      <pubDate>Wed, 01 Jan 2025 16:29:06 +0800</pubDate>
+      <guid>http://localhost:1313/post/2025/01/01/paxos%E6%8E%A8%E5%AF%BC%E8%BF%87%E7%A8%8B/</guid>
+      <description>paxos 是一个分布式共识算法, 就是用来解决分布式系统中, 多副本数据如何保证读写一致性的问题.&#xA;不完美的副本数据同步机制 假设我们有个分布式存储系统, 数据在写入时, 需要把数据写入到其他节点: 副本数据从一个节点复制到其他节点, 有几种复制办法:&#xA;同步复制 异步复制 半同步复制 同步复制 # node1, node2, node3 a=x --&amp;gt; node1 --&amp;gt; node2 ---&amp;gt; node3 --&amp;gt; done 数据在一次写入时, 需要同时写入 node1, node2, node3 三个节点, 写入完成才算是一次写入成功;&#xA;同步复制有什么问题:&#xA;性能低下; 写入性能会受制于节点数量; 没有容错, 任何一个节点写入失败, 则系统不可用; 异步复制 a=x --&amp;gt; node1 --&amp;gt; done async( node1 --&amp;gt; node2 ; node1 --&amp;gt; node3 ) 数据在一次写入时, 只要写入一个节点, 则认定写入成功, node1 写入 node2; node1 写入 node3 是异步复制, 不影响整体写入结果;&#xA;异步复制有什么问题:&#xA;数据可能存在不一致, 当 async( node1 &amp;ndash;&amp;gt; node2) 写入失败时, node2 和 node1 上的数据就不一致; 半同步复制 数据在一次写入时, 数据必须写入一定量的副本(不是全部), 这样多副本则提供了较高的可靠性;</description>
+    </item>
+  </channel>
+</rss>
