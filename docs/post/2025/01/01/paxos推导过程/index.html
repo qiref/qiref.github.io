@@ -264,12 +264,14 @@ p1 &lt;-----------    node1,  node2,  node3                      # t3.1 时刻, 
 </ul>
 <p><code>max_received_n</code> 是算法的核心机制，首先，其必须为单调递增，保证在多个提案中，总有一个最大的，也就是 Acceptor 只保留最大的提案号，并拒绝比本地记录小的提案，当一个提案被拒绝时，说明此时的提案号已经不是最新的了，需要重新生成提案；</p>
 <p>在Accept阶段，读取提案的数据时，也需要读取 max_accepted_n 最大版本的数据 value ，保证数据是最新的；Acceptor 在此阶段接受到Accept请求时，也判断 n ≥ max_received_n，并且拒绝掉更小编号的提案，这就意味着在两个提案同时发生时，可能会有一个被拒绝：</p>
-<p>Proposer A 发起提案n=5，进入Accept阶段。
-Proposer B 发起提案n=6：
-在Prepare阶段，Acceptor承诺n=6。
-Proposer B 发现大多数Acceptor承诺了n=6，进入Accept阶段。
-Proposer A 的Accept请求因n=5 &lt; 6被拒绝，需重新发起更高编号的提案（如n=7）。
-结果：提案n=6成功取代n=5。</p>
+<ol>
+<li>Proposer A 发起提案n=5，进入Accept阶段。</li>
+<li>Proposer B 发起提案n=6：</li>
+<li>在Prepare阶段，Acceptor承诺n=6。</li>
+<li>Proposer B 发现大多数Acceptor承诺了n=6，进入Accept阶段。</li>
+<li>Proposer A 的Accept请求因n=5 &lt; 6被拒绝，需重新发起更高编号的提案（如n=7）。</li>
+<li>结果：提案n=6成功取代n=5。</li>
+</ol>
 
 </div>
 </main>
