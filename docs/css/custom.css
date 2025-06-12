@@ -28,10 +28,15 @@ input {
 
 .single main{
     padding: 1.5rem;
+    border-radius: 5px;
 }
 /* * {
     border-radius: 5px;
 } */
+
+.single .appendix{
+    border-radius: 5px;
+}
 
 footer {
     border-radius: 0px;
@@ -41,6 +46,10 @@ pre {
     tab-size: 4;
     line-height: 1.6;
     border-radius: 2px;
+}
+
+pre code{
+     border-radius: 5px;
 }
 
 .search input:focus {

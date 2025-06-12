@@ -16,8 +16,8 @@ Go 语言的 defer 会在当前函数返回前执行传入的函数，它会经�
 
 ``` go
 func DeferDemo() {
-	defer fmt.Println("this is defer println")
-	fmt.Println("this is println")
+    defer fmt.Println("this is defer println")
+    fmt.Println("this is println")
 }
 // 输出
 // this is println
@@ -30,9 +30,9 @@ func DeferDemo() {
 
 ``` go
 func MultiDeferDemo() {
-	for i := 0; i < 5; i++ {
-		defer fmt.Println(" defer ", i)
-	}
+    for i := 0; i < 5; i++ {
+        defer fmt.Println(" defer ", i)
+    }
 }
 // 输出
 // defer  4
@@ -50,9 +50,9 @@ defer的值传递问题。
 
 ``` go
 func MethodElapsedTime() {
-	start := time.Now()
-	defer fmt.Println("elapsed ", time.Since(start))
-	time.Sleep(time.Second * 2)
+    start := time.Now()
+    defer fmt.Println("elapsed ", time.Since(start))
+    time.Sleep(time.Second * 2)
 }
 // 输出
 // elapsed  169ns
@@ -64,11 +64,11 @@ func MethodElapsedTime() {
 
 ``` go
 func MethodElapsedTime1() {
-	start := time.Now()
-	defer func() {
-		fmt.Println("elapsed ", time.Since(start))
-	}()
-	time.Sleep(time.Second * 2)
+    start := time.Now()
+    defer func() {
+        fmt.Println("elapsed ", time.Since(start))
+    }()
+    time.Sleep(time.Second * 2)
 }
 // 输出
 // elapsed  2.001068253s
@@ -85,12 +85,12 @@ When youpanicin Go, you’re freaking out, it’s not someone elses problem, it�
 
 ``` go
 func PanicDemo() {
-	defer fmt.Println("defer println")
-	go func() {
-		defer fmt.Println("goroutine defer println")
-		panic("")
-	}()
-	time.Sleep(time.Second * 2)
+    defer fmt.Println("defer println")
+    go func() {
+        defer fmt.Println("goroutine defer println")
+        panic("")
+    }()
+    time.Sleep(time.Second * 2)
 }
 
 // 运行结果
@@ -99,9 +99,9 @@ func PanicDemo() {
 // 
 //goroutine 7 [running]:
 // archieyao.github.com/base/src/panic_demo.PanicDemo.func1()
-//	 /Users/archieyao/GoProjects/GoMod/base/src/panic_demo/panic_demo.go:16 +0x95
+//     /Users/archieyao/GoProjects/GoMod/base/src/panic_demo/panic_demo.go:16 +0x95
 // created by archieyao.github.com/base/src/panic_demo.PanicDemo
-//	 /Users/archieyao/GoProjects/GoMod/base/src/panic_demo/panic_demo.go:14 +0x98
+//     /Users/archieyao/GoProjects/GoMod/base/src/panic_demo/panic_demo.go:14 +0x98
 ```
 
 以上示例可以很好演示Panic的运行流程，在运行goroutine的匿名函数时，遇到了Panic，此时程序会先运行goroutine内的defer修饰的代码，然后输出崩溃日志，其中，最外层的 `defer fmt.Println("defer println")` 并未执行。
@@ -110,9 +110,9 @@ func PanicDemo() {
 
 ``` go
 func PanicDemo1() {
-	defer fmt.Println("defer println 1")
-	panic("panic")
-	defer fmt.Println("defer println 2")
+    defer fmt.Println("defer println 1")
+    panic("panic")
+    defer fmt.Println("defer println 2")
 }
 ```
 此时程序运行的结果，会运行Panic前的defer，并且会运行Panic前的所有defer。
@@ -121,19 +121,19 @@ func PanicDemo1() {
 
 ``` go
 func panicDemo2() {
-	defer func() {
-		defer func() {
-			panic("panic 3")
-		}()
-		panic("panic 2")
-	}()
-	panic("panic 1")
+    defer func() {
+        defer func() {
+            panic("panic 3")
+        }()
+        panic("panic 2")
+    }()
+    panic("panic 1")
 }
 
 // panic: panic 1
-//	panic: panic 2
-//	panic: panic 3 [recovered]
-//	panic: panic 3
+//    panic: panic 2
+//    panic: panic 3 [recovered]
+//    panic: panic 3
 ```
 
 当多个Panic嵌套时，如果Panic都需要被执行的defer中，那每个Panic都会执行。
@@ -145,18 +145,18 @@ recover一般都是用于恢复Panic，让程序崩溃后继续运行，类似�
 
 ``` go
 func recoverDemo1() {
-	catchErr()
-	fmt.Println("after recover println")
+    catchErr()
+    fmt.Println("after recover println")
 }
 
 func catchErr() {
-	defer fmt.Println("defer println")
-	defer func() {
-		if err := recover(); err != nil {
-			fmt.Println("recover")
-		}
-	}()
-	panic("panic")
+    defer fmt.Println("defer println")
+    defer func() {
+        if err := recover(); err != nil {
+            fmt.Println("recover")
+        }
+    }()
+    panic("panic")
 }
 
 // 运行结果
@@ -169,15 +169,15 @@ recover一般都是在defer中运行，常用写法如下：
 
 ``` go
 func simpleRecover() {
-	defer func() {
-		if r := recover(); r != nil {
-			fmt.Println("recover")
-		}
-	}()
-	panic("panic")
+    defer func() {
+        if r := recover(); r != nil {
+            fmt.Println("recover")
+        }
+    }()
+    panic("panic")
 
     // 注意 这行不会执行
-	fmt.Println("bala")
+    fmt.Println("bala")
 }
 ```
 
@@ -187,17 +187,17 @@ recover() 的作用范围仅限于当前的所属 goroutine。发生 panic 时�
 
 ``` go
 func simpleRecover() {
-	defer func() {
-		if r := recover(); r != nil {
-			fmt.Println("recover")
-		}
-	}()
-	go func() {
-		panic("panic")
-	}()
+    defer func() {
+        if r := recover(); r != nil {
+            fmt.Println("recover")
+        }
+    }()
+    go func() {
+        panic("panic")
+    }()
 
-	time.Sleep(time.Second*2)
-	fmt.Println("bala")
+    time.Sleep(time.Second*2)
+    fmt.Println("bala")
 }
 ```
 
@@ -205,17 +205,17 @@ func simpleRecover() {
 
 ``` go
 func simpleRecover() {
-	go func() {
-		defer func() {
-			if r := recover(); r != nil {
-				fmt.Println("recover")
-			}
-		}()
-		panic("panic")
-	}()
+    go func() {
+        defer func() {
+            if r := recover(); r != nil {
+                fmt.Println("recover")
+            }
+        }()
+        panic("panic")
+    }()
 
-	time.Sleep(time.Second*2)
-	fmt.Println("bala")
+    time.Sleep(time.Second*2)
+    fmt.Println("bala")
 }
 ```
 如果把defer也放到新开启的goroutine中，就可以正常recover这个panic。此时代码也会正常往后运行，`fmt.Println("bala")` 这行也会输出，因为goroutine中panic已经恢复，不会跳过外层函数的代码。

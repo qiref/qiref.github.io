@@ -3,85 +3,56 @@ languageCode: "cn-zh"
 # defaultContentLanguage: "en"
 defaultContentLanguage: "zh"
 title: "大道至简"
-theme: "hugo-prose"
+theme: "hugo-xmin"
 googleAnalytics: "G-PGMJFXZJRT"
-disqusShortname: ""
+disqusShortname: "qiref"
 ignoreFiles: ["\\.Rmd$", "\\.Rmarkdown$", "_cache$"]
 
 footnotereturnlinkcontents: "↩"
 paginate: 10
 enableEmoji: true
+footnotereturnlinkcontents: "↩"
+
 permalinks:
+  note: "/note/:year/:month/:day/:slug/"
   post: "/post/:year/:month/:day/:slug/"
 
-outputs:
-  home: [html, rss, json]
-
-# some menu items were added via the `menu` option in YAML in posts
 menu:
-  header:
-    - name: Posts
-      url: "post/"
-      weight: 2
-      pre: ""
+  main:
+    - name: Home
+      url: ""
+      weight: 1
+    # - name: Categories
+    #   url: "categories/"
+      # weight: 3
     - name: Tags
       url: "tags/"
-      weight: 3
-      pre: ""
-    - name: Search
-      url: "#"
-      identifier: menu-search
-    # - name: Search
-    #   url: "#"
-    #   identifier: menu-search
-    # - name: Subscribe
-    #   url: "index.xml"
-  footer:
-    # - name: Contact
-    #   url: "404.html"
-    #   weight: 1
-    - name: Posts
-      url: "post/"
       weight: 2
-      pre: "optional"
-    - name: Tags
-      url: "tags/"
+    - name: About
+      url: "about/"
       weight: 3
-      pre: "optional"
-    - name: Suggest an edit
-      url: "#"
-      weight: 4
-      identifier: "menu-edit"
-    - name: Back to top
-      url: "#"
+    - name: Subscribe
+      url: "index.xml"
 
 params:
-  homePosts: 10
-  mainSections: ["post", "work"]
-  editLink: "https://github.com/qiref/qiref.github.io/tree/master/content/"
-  authorDelimiter: " / "
-  stickyMenu: false
-  disable_highlight: true
-  description: >
-    A website built through Hugo and blogdown with the hugo-prose theme.
-  # footer: >
-  #   &copy; [Lucius Annaeus Seneca](https://en.wikipedia.org/wiki/Seneca_the_Younger)
-  #   4 BC -- AD 65
-  license: >
-    Text and figures are licensed under [Creative Commons Attribution CC BY
-    4.0](https://creativecommons.org/licenses/by/4.0/). The source code is
-    licensed under MIT. The full source is available at
-    https://github.com/qiref/qiref.github.io.
+  description: "A website built through Hugo and blogdown."
+  footer: "&copy; powered by [Hugo](https://gohugo.io/) & [Xmin](https://github.com/yihui/hugo-xmin)  2017 -- {Year} | [Github](https://github.com/qiref) "
 
 markup:
   highlight:
     codeFences: false
-    style: catppuccin-latte
   goldmark:
     renderer:
       unsafe: true
-
-sitemap:
-  changeFreq: "daily"
-  filename: sitemap.xml
-  priority: -1
+    extensions:
+      passthrough:
+        enable: true
+        delimiters:
+          block:
+          - - \[
+            - \]
+          - - $$
+            - $$
+          inline:
+          - - \(
+            - \)

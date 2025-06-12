@@ -16,24 +16,24 @@ title: Go语言channel
 
 ``` go
 func Ping(c *chan string, s string) {
-	*c <- s
+    *c <- s
 }
 
 func Pong(c *chan string) string {
-	return <-*c
+    return <-*c
 }
 
 // main
 func main() {
 
-	c := make(chan string)
-	go Ping(&c, "ping")
-	go func() {
-		pong := Pong(&c)
-		fmt.Println(pong)
-	}()
+    c := make(chan string)
+    go Ping(&c, "ping")
+    go func() {
+        pong := Pong(&c)
+        fmt.Println(pong)
+    }()
 
-	time.Sleep(time.Second * 2)
+    time.Sleep(time.Second * 2)
 }
 
 // 结果
@@ -47,8 +47,8 @@ func main() {
 c := make(chan string)
 Ping(&c, "ping")
 //go func() {
-//	pong := Pong(&c)
-//	fmt.Println(pong)
+//    pong := Pong(&c)
+//    fmt.Println(pong)
 //}()
 
 time.Sleep(time.Second * 2)
@@ -60,8 +60,8 @@ time.Sleep(time.Second * 2)
 
 ``` go
 func pong(ping <-chan string, pong chan<- string) {
-	msg := <-ping
-	pong <- msg
+    msg := <-ping
+    pong <- msg
 }
 ```
 
@@ -85,11 +85,11 @@ make 构建一个channel时，可以指定缓冲区大小，当channel中超过2
 
 ``` go
 func work(done chan bool) {
-	fmt.Println("working ...")
-	time.Sleep(time.Second * 3)
-	fmt.Println("done")
+    fmt.Println("working ...")
+    time.Sleep(time.Second * 3)
+    fmt.Println("done")
 
-	done <- true
+    done <- true
 }
 
 // main
@@ -109,11 +109,11 @@ for 和 range为基本的数据结构提供了迭代的功能。我们也可以�
 
 ``` go
 func loop(c chan string) {
-	fmt.Println("range over chan start.")
-	for s := range c {
-		fmt.Println(s)
-	}
-	fmt.Println("range over chan end.")
+    fmt.Println("range over chan start.")
+    for s := range c {
+        fmt.Println(s)
+    }
+    fmt.Println("range over chan end.")
 }
 
 // main
@@ -146,24 +146,24 @@ c1 := make(chan string)
 c2 := make(chan string)
 
 go func() {
-	time.Sleep(time.Second * 1)
-	c1 <- "1"
+    time.Sleep(time.Second * 1)
+    c1 <- "1"
 }()
 
 go func() {
-	time.Sleep(time.Second * 1)
-	c2 <- "2"
+    time.Sleep(time.Second * 1)
+    c2 <- "2"
 }()
 
 for i := 0; i < 2; i++ {
-	select {
-	case msg1 := <-c1:
-		fmt.Println(i)
-		fmt.Println("receive msg1 : ", msg1)
-	case msg2 := <-c2:
-    	fmt.Println(i)
-		fmt.Println("receive msg2 : ", msg2)
-	}
+    select {
+    case msg1 := <-c1:
+        fmt.Println(i)
+        fmt.Println("receive msg1 : ", msg1)
+    case msg2 := <-c2:
+        fmt.Println(i)
+        fmt.Println("receive msg2 : ", msg2)
+    }
 }
 
 // 运行结果：
@@ -178,16 +178,16 @@ for i := 0; i < 2; i++ {
 
 ``` go
 for i := 0; i < 5; i++ {
-	select {
-	case msg1 := <-c1:
-		fmt.Println(i)
-		fmt.Println("receive msg1 : ", msg1)
-	case msg2 := <-c2:
-		fmt.Println(i)
-		fmt.Println("receive msg2 : ", msg2)
-	default:
-		fmt.Println("default")
-	}
+    select {
+    case msg1 := <-c1:
+        fmt.Println(i)
+        fmt.Println("receive msg1 : ", msg1)
+    case msg2 := <-c2:
+        fmt.Println(i)
+        fmt.Println("receive msg2 : ", msg2)
+    default:
+        fmt.Println("default")
+    }
 }
 ```
 
@@ -197,39 +197,39 @@ select配上default之后，当case条件不满足时，select就不会陷入阻
 
 ``` go
 import (
-	"fmt"
-	"sync"
-	"testing"
-	"time"
+    "fmt"
+    "sync"
+    "testing"
+    "time"
 )
 
 func TestMain(t *testing.T) {
-	rstChan := make(chan map[string]int, 5) // 这里必须指定 chan 的容量
-	var wg sync.WaitGroup
-	for i := 0; i < 5; i++ {
-		i := i
-		wg.Add(1)
-		go func() { // 模拟执行任务
-			defer wg.Done()
-			if i%2 == 0 { // 模拟任务执行失败的场景, 会出现不往 rstChan 写入消息的情况
-				m := make(map[string]int)
-				m[fmt.Sprintf("%d", i)] = i
-				time.Sleep(time.Second * 3)
-				rstChan <- m
-			}
-		}()
-	}
-	fmt.Println("wait")
-	wg.Wait()
-	fmt.Println("wait finish")
+    rstChan := make(chan map[string]int, 5) // 这里必须指定 chan 的容量
+    var wg sync.WaitGroup
+    for i := 0; i < 5; i++ {
+        i := i
+        wg.Add(1)
+        go func() { // 模拟执行任务
+            defer wg.Done()
+            if i%2 == 0 { // 模拟任务执行失败的场景, 会出现不往 rstChan 写入消息的情况
+                m := make(map[string]int)
+                m[fmt.Sprintf("%d", i)] = i
+                time.Sleep(time.Second * 3)
+                rstChan <- m
+            }
+        }()
+    }
+    fmt.Println("wait")
+    wg.Wait()
+    fmt.Println("wait finish")
 
-	size := len(rstChan) // 提前读取 rstChan size, 消费数据 len(rstChan) 会改变
-	for j := 0; j < size; j++ {
-		item := <-rstChan
-		fmt.Println(item)
-	}
-	defer close(rstChan)
-	fmt.Println("done")
+    size := len(rstChan) // 提前读取 rstChan size, 消费数据 len(rstChan) 会改变
+    for j := 0; j < size; j++ {
+        item := <-rstChan
+        fmt.Println(item)
+    }
+    defer close(rstChan)
+    fmt.Println("done")
 }
 
 // 输出
@@ -242,5 +242,5 @@ map[0:0]
 done
 --- PASS: TestMain (3.00s)
 PASS
-ok  	awesome-test/src/main	3.002s
+ok      awesome-test/src/main    3.002s
 ```

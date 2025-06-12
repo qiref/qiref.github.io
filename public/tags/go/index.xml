@@ -90,7 +90,7 @@
       <link>http://localhost:1313/post/2021/06/09/go%E8%AF%AD%E8%A8%80channel/</link>
       <pubDate>Wed, 09 Jun 2021 21:18:23 +0000</pubDate>
       <guid>http://localhost:1313/post/2021/06/09/go%E8%AF%AD%E8%A8%80channel/</guid>
-      <description>摘要：Go语言中，协程之间通过channel相互通信，可以从一个Go协程将值发送到通道，然后在别的协程中接收。&#xA;channel 定义 定义channel的语法为：make(chan val-type)，val-type就是需要传递值的类型。 chan1 &amp;lt;- val 表示将val发送到channel chann1中， r := &amp;lt;- chann1表示从chann1中读取消息。&#xA;func Ping(c *chan string, s string) { *c &amp;lt;- s } func Pong(c *chan string) string { return &amp;lt;-*c } // main func main() { c := make(chan string) go Ping(&amp;amp;c, &amp;quot;ping&amp;quot;) go func() { pong := Pong(&amp;amp;c) fmt.Println(pong) }() time.Sleep(time.Second * 2) } // 结果 // ping 需要注意的是，向通道中发送消息和从通道中接收消息，都是阻塞的，如果发送和接收不是成对出现，就会发生错误。 将上文中代码改成这样：&#xA;c := make(chan string) Ping(&amp;amp;c, &amp;quot;ping&amp;quot;) //go func() { //&#x9;pong := Pong(&amp;amp;c) //&#x9;fmt.</description>
+      <description>摘要：Go语言中，协程之间通过channel相互通信，可以从一个Go协程将值发送到通道，然后在别的协程中接收。&#xA;channel 定义 定义channel的语法为：make(chan val-type)，val-type就是需要传递值的类型。 chan1 &amp;lt;- val 表示将val发送到channel chann1中， r := &amp;lt;- chann1表示从chann1中读取消息。&#xA;func Ping(c *chan string, s string) { *c &amp;lt;- s } func Pong(c *chan string) string { return &amp;lt;-*c } // main func main() { c := make(chan string) go Ping(&amp;amp;c, &amp;quot;ping&amp;quot;) go func() { pong := Pong(&amp;amp;c) fmt.Println(pong) }() time.Sleep(time.Second * 2) } // 结果 // ping 需要注意的是，向通道中发送消息和从通道中接收消息，都是阻塞的，如果发送和接收不是成对出现，就会发生错误。 将上文中代码改成这样：&#xA;c := make(chan string) Ping(&amp;amp;c, &amp;quot;ping&amp;quot;) //go func() { // pong := Pong(&amp;amp;c) // fmt.</description>
     </item>
     <item>
       <title>Go语言接口</title>

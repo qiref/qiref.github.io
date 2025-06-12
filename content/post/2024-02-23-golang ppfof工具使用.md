@@ -19,23 +19,23 @@ pprof 是用于可视化和分析性能分析数据的工具;
 ```go
 
 import (
-	"net/http"
-	_ "net/http/pprof"
-	"strconv"
+    "net/http"
+    _ "net/http/pprof"
+    "strconv"
 )
 
 type ProfileServer struct {
 }
 
 func (this *ProfileServer) DoProfile(port int) {
-	go func() {
-		err := http.ListenAndServe(":"+strconv.FormatInt(int64(port), 10), nil)
-		if err != nil {
-			log.Errorf("Failed to do profile on port: %d", port)
-		} else {
-			log.Infof("pprof start successfully on port %d", port)
-		}
-	}()
+    go func() {
+        err := http.ListenAndServe(":"+strconv.FormatInt(int64(port), 10), nil)
+        if err != nil {
+            log.Errorf("Failed to do profile on port: %d", port)
+        } else {
+            log.Infof("pprof start successfully on port %d", port)
+        }
+    }()
 }
   
 ```

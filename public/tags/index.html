@@ -1,19 +1,23 @@
 <!DOCTYPE html>
 <html lang="cn-zh">
   <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <title> Tags | 大道至简</title>
-    
-    
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@xiee/utils@v1.13.54/css/article.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@xiee/utils/css/heading-anchor.min.css">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Tags | 大道至简</title>
     <link rel="stylesheet" href="/css/style.css" />
     <link rel="stylesheet" href="/css/fonts.css" />
-    <link rel="stylesheet" href="/css/custom.css" />
     
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-PGMJFXZJRT"></script>
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+
+<script>
+hljs.configure({languages: []});
+hljs.initHighlightingOnLoad();
+</script>
+
+<link href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/github.min.css"  rel="stylesheet">
+
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
@@ -24,176 +28,195 @@
   </head>
 
   <body>
-
-    <nav class="menu">
-    <ul>
-      <li class="left">
-        <a href="/"><span>大道至简</span></a>
-      </li>
+    <nav>
+    <ul class="menu">
       
-      <li>
-        <a href="/post/">Posts</a>
-      </li>
+      <li><a href="/">Home</a></li>
       
-      <li>
-        <a href="/tags/">Tags</a>
-      </li>
+      <li><a href="/tags/">Tags</a></li>
       
-      <li id="menu-search">
-        <a href="/#">Search</a>
-      </li>
+      <li><a href="/about/">About</a></li>
+      
+      <li><a href="/index.xml">Subscribe</a></li>
       
     </ul>
+    <hr/>
     </nav>
 
 
-<main class="container">
 <h1>Tags</h1>
 
 <ul class="terms">
   
-  <li><a href="/tags/algorithm/">Algorithm <span class="bg-number">11</span></a></li>
+  <li>
+    <a href="/tags/paxos/">Paxos</a> (1)
+  </li>
   
-  <li><a href="/tags/arthas/">Arthas <span class="bg-number">1</span></a></li>
+  <li>
+    <a href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F/">分布式</a> (1)
+  </li>
   
-  <li><a href="/tags/b&#43;%E6%A0%91/">B&#43;树 <span class="bg-number">1</span></a></li>
+  <li>
+    <a href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E5%85%B1%E8%AF%86%E9%97%AE%E9%A2%98/">分布式共识问题</a> (2)
+  </li>
   
-  <li><a href="/tags/b%E6%A0%91/">B树 <span class="bg-number">1</span></a></li>
+  <li>
+    <a href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/">分布式事务</a> (1)
+  </li>
   
-  <li><a href="/tags/cas/">CAS <span class="bg-number">1</span></a></li>
+  <li>
+    <a href="/tags/%E4%B8%A4%E9%98%B6%E6%AE%B5%E6%8F%90%E4%BA%A4/">两阶段提交</a> (1)
+  </li>
   
-  <li><a href="/tags/dblog/">DBLog <span class="bg-number">1</span></a></li>
+  <li>
+    <a href="/tags/%E4%B8%89%E9%98%B6%E6%AE%B5%E6%8F%90%E4%BA%A4/">三阶段提交</a> (1)
+  </li>
   
-  <li><a href="/tags/designpatterns/">DesignPatterns <span class="bg-number">1</span></a></li>
+  <li>
+    <a href="/tags/lock/">Lock</a> (2)
+  </li>
   
-  <li><a href="/tags/docker/">Docker <span class="bg-number">2</span></a></li>
+  <li>
+    <a href="/tags/redis/">Redis</a> (1)
+  </li>
   
-  <li><a href="/tags/flink/">Flink <span class="bg-number">8</span></a></li>
+  <li>
+    <a href="/tags/redlock/">Redlock</a> (1)
+  </li>
   
-  <li><a href="/tags/git/">Git <span class="bg-number">3</span></a></li>
+  <li>
+    <a href="/tags/zookeeper/">Zookeeper</a> (1)
+  </li>
   
-  <li><a href="/tags/go/">Go <span class="bg-number">17</span></a></li>
+  <li>
+    <a href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81/">分布式锁</a> (1)
+  </li>
   
-  <li><a href="/tags/hbase/">HBase <span class="bg-number">1</span></a></li>
+  <li>
+    <a href="/tags/cas/">CAS</a> (1)
+  </li>
   
-  <li><a href="/tags/java/">Java <span class="bg-number">3</span></a></li>
+  <li>
+    <a href="/tags/go/">Go</a> (17)
+  </li>
   
-  <li><a href="/tags/jvm/">JVM <span class="bg-number">1</span></a></li>
+  <li>
+    <a href="/tags/mutex/">Mutex</a> (1)
+  </li>
   
-  <li><a href="/tags/kubernates/">Kubernates <span class="bg-number">2</span></a></li>
+  <li>
+    <a href="/tags/pprof/">Pprof</a> (1)
+  </li>
   
-  <li><a href="/tags/linux/">Linux <span class="bg-number">1</span></a></li>
+  <li>
+    <a href="/tags/algorithm/">Algorithm</a> (11)
+  </li>
   
-  <li><a href="/tags/lock/">Lock <span class="bg-number">2</span></a></li>
+  <li>
+    <a href="/tags/b&#43;%E6%A0%91/">B&#43;树</a> (1)
+  </li>
   
-  <li><a href="/tags/log4j/">Log4j <span class="bg-number">1</span></a></li>
+  <li>
+    <a href="/tags/b%E6%A0%91/">B树</a> (1)
+  </li>
   
-  <li><a href="/tags/lsm-tree/">LSM Tree <span class="bg-number">1</span></a></li>
+  <li>
+    <a href="/tags/lsm-tree/">LSM Tree</a> (1)
+  </li>
   
-  <li><a href="/tags/mutex/">Mutex <span class="bg-number">1</span></a></li>
+  <li>
+    <a href="/tags/paper/">Paper</a> (5)
+  </li>
   
-  <li><a href="/tags/mysql/">MySQL <span class="bg-number">1</span></a></li>
+  <li>
+    <a href="/tags/sstable/">SSTable</a> (1)
+  </li>
   
-  <li><a href="/tags/paper/">Paper <span class="bg-number">5</span></a></li>
+  <li>
+    <a href="/tags/wal/">WAL</a> (1)
+  </li>
   
-  <li><a href="/tags/paxos/">Paxos <span class="bg-number">1</span></a></li>
+  <li>
+    <a href="/tags/skip-lists/">Skip Lists</a> (1)
+  </li>
   
-  <li><a href="/tags/pprof/">Pprof <span class="bg-number">1</span></a></li>
+  <li>
+    <a href="/tags/dblog/">DBLog</a> (1)
+  </li>
   
-  <li><a href="/tags/protobuf/">ProtoBuf <span class="bg-number">1</span></a></li>
+  <li>
+    <a href="/tags/java/">Java</a> (3)
+  </li>
   
-  <li><a href="/tags/redis/">Redis <span class="bg-number">1</span></a></li>
+  <li>
+    <a href="/tags/jvm/">JVM</a> (1)
+  </li>
   
-  <li><a href="/tags/redlock/">Redlock <span class="bg-number">1</span></a></li>
+  <li>
+    <a href="/tags/flink/">Flink</a> (8)
+  </li>
   
-  <li><a href="/tags/skip-lists/">Skip Lists <span class="bg-number">1</span></a></li>
+  <li>
+    <a href="/tags/arthas/">Arthas</a> (1)
+  </li>
   
-  <li><a href="/tags/spark/">Spark <span class="bg-number">1</span></a></li>
+  <li>
+    <a href="/tags/protobuf/">ProtoBuf</a> (1)
+  </li>
   
-  <li><a href="/tags/springboot/">SpringBoot <span class="bg-number">1</span></a></li>
+  <li>
+    <a href="/tags/log4j/">Log4j</a> (1)
+  </li>
   
-  <li><a href="/tags/sstable/">SSTable <span class="bg-number">1</span></a></li>
+  <li>
+    <a href="/tags/git/">Git</a> (3)
+  </li>
   
-  <li><a href="/tags/wal/">WAL <span class="bg-number">1</span></a></li>
+  <li>
+    <a href="/tags/kubernates/">Kubernates</a> (2)
+  </li>
   
-  <li><a href="/tags/zookeeper/">Zookeeper <span class="bg-number">1</span></a></li>
+  <li>
+    <a href="/tags/docker/">Docker</a> (2)
+  </li>
   
-  <li><a href="/tags/%E4%B8%89%E9%98%B6%E6%AE%B5%E6%8F%90%E4%BA%A4/">三阶段提交 <span class="bg-number">1</span></a></li>
+  <li>
+    <a href="/tags/mysql/">MySQL</a> (1)
+  </li>
   
-  <li><a href="/tags/%E4%B8%A4%E9%98%B6%E6%AE%B5%E6%8F%90%E4%BA%A4/">两阶段提交 <span class="bg-number">1</span></a></li>
+  <li>
+    <a href="/tags/linux/">Linux</a> (1)
+  </li>
   
-  <li><a href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F/">分布式 <span class="bg-number">1</span></a></li>
+  <li>
+    <a href="/tags/spark/">Spark</a> (1)
+  </li>
   
-  <li><a href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/">分布式事务 <span class="bg-number">1</span></a></li>
+  <li>
+    <a href="/tags/designpatterns/">DesignPatterns</a> (1)
+  </li>
   
-  <li><a href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E5%85%B1%E8%AF%86%E9%97%AE%E9%A2%98/">分布式共识问题 <span class="bg-number">2</span></a></li>
+  <li>
+    <a href="/tags/hbase/">HBase</a> (1)
+  </li>
   
-  <li><a href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81/">分布式锁 <span class="bg-number">1</span></a></li>
+  <li>
+    <a href="/tags/springboot/">SpringBoot</a> (1)
+  </li>
+  
+  <li>
+    <a href="/tags/tutorial/">Tutorial</a> (1)
+  </li>
   
 </ul>
-</main>
 
   <footer>
   
-
-
-
-
   
-    
-      <script async src="https://www.googletagmanager.com/gtag/js?id=G-PGMJFXZJRT"></script>
-      <script>
-        var doNotTrack = false;
-        if ( false ) {
-          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
-          var doNotTrack = (dnt == "1" || dnt == "yes");
-        }
-        if (!doNotTrack) {
-          window.dataLayer = window.dataLayer || [];
-          function gtag(){dataLayer.push(arguments);}
-          gtag('js', new Date());
-          gtag('config', 'G-PGMJFXZJRT');
-        }
-      </script>
-    
-  
-
-
-
-
-
-
-
-  <div class="footer">
-  
-  <ul>
-    
-    <li class="optional">
-      <a href="/post/">Posts</a>
-    </li>
-    
-    <li class="optional">
-      <a href="/tags/">Tags</a>
-    </li>
-    
-    <li id="menu-edit">
-      <a href="#">Suggest an edit</a>
-    </li>
-    
-    <li>
-      <a href="#">Back to top</a>
-    </li>
-    
-  </ul>
-  </div>
-  
-  <div class="footer hidden">
-  
-
-  </div>
+  <hr/>
+  © powered by <a href="https://gohugo.io/">Hugo</a> &amp; <a href="https://github.com/yihui/hugo-xmin">Xmin</a>  2017 &ndash; 2025 | <a href="https://github.com/qiref">Github</a>
   
   </footer>
-  <script src="/js/features.js" defer></script>
   </body>
 </html>
 

@@ -1,19 +1,23 @@
 <!DOCTYPE html>
 <html lang="cn-zh">
   <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <title> Skip Lists 阅读笔记 | 大道至简</title>
-    
-    
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@xiee/utils@v1.13.54/css/article.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@xiee/utils/css/heading-anchor.min.css">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Skip Lists 阅读笔记 | 大道至简</title>
     <link rel="stylesheet" href="/css/style.css" />
     <link rel="stylesheet" href="/css/fonts.css" />
-    <link rel="stylesheet" href="/css/custom.css" />
     
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-PGMJFXZJRT"></script>
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+
+<script>
+hljs.configure({languages: []});
+hljs.initHighlightingOnLoad();
+</script>
+
+<link href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/github.min.css"  rel="stylesheet">
+
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
@@ -24,36 +28,25 @@
   </head>
 
   <body>
-
-    <nav class="menu">
-    <ul>
-      <li class="left">
-        <a href="/"><span>大道至简</span></a>
-      </li>
+    <nav>
+    <ul class="menu">
       
-      <li>
-        <a href="/post/">Posts</a>
-      </li>
+      <li><a href="/">Home</a></li>
       
-      <li>
-        <a href="/tags/">Tags</a>
-      </li>
+      <li><a href="/tags/">Tags</a></li>
       
-      <li id="menu-search">
-        <a href="/#">Search</a>
-      </li>
+      <li><a href="/about/">About</a></li>
+      
+      <li><a href="/index.xml">Subscribe</a></li>
       
     </ul>
+    <hr/>
     </nav>
-
-
-<div class="container single">
-<main>
 
 <div class="article-meta">
 <h1><span class="title">Skip Lists 阅读笔记</span></h1>
 
-<h3 class="date">2023-10-01</h3>
+<h2 class="date">2023/10/01</h2>
 <p class="terms">
   
   
@@ -65,7 +58,9 @@
 </p>
 </div>
 
-<div class="article">
+
+
+<main>
 <h2 id="算法介绍">算法介绍</h2>
 <p>《Skip Lists: A Probabilistic Alternative to Balanced Trees》 论文标题翻译就是 跳表: 平衡树的概率性替代方案; 跳表是一种可以用来代替平衡树的数据结构。跳表使用概率平衡而不是严格强制的平衡，因此跳跃列表中的插入和删除算法比平衡树的等效算法要简单得多并且速度明显更快。</p>
 <p>从论文的标题和介绍, 基本上就能知道跳表是一种怎么样的数据结构, 为了解决平衡树实现的复杂性, 提供一种概率性平衡的数据结构,作为平衡树的平替数据结构, 查询和插入时间复杂度是 <code>O(log n)</code>.</p>
@@ -135,36 +130,36 @@
     else // 没找到的情况, 需要新增节点
         lvl := randomLevel()
         if lvl &gt; list→level then
-			// 如果新生成的层级比当前跳表层级还高的话, 需要更新跳表的层级 level, 并且新的层级update[i]需要指向header
+            // 如果新生成的层级比当前跳表层级还高的话, 需要更新跳表的层级 level, 并且新的层级update[i]需要指向header
             for i := list→level + 1 to lvl do
                 update[i] := list→header
             list→level := lvl
-		// 创建新节点
+        // 创建新节点
         x := makeNode(lvl, searchKey, value)
         for i := 1 to level do
-			// update[i] 指向的是新节点的前一个节点
+            // update[i] 指向的是新节点的前一个节点
             x→forward[i] := update[i]→forward[i]
             update[i]→forward[i] := x
 </code></pre>
 <h3 id="删除">删除</h3>
 <pre><code class="language-go">Delete(list, searchKey)
     local update[1..MaxLevel]
-	// 执行查找动作, 并且找到被更新节点的前一个节点 update[n]
+    // 执行查找动作, 并且找到被更新节点的前一个节点 update[n]
     x := list→header
     for i := list→level downto 1 do
         while x→forward[i]→key &lt; searchKey do
             x := x→forward[i]
         update[i] := x
-	// 找到需要删除的目标节点的最下层级元素
+    // 找到需要删除的目标节点的最下层级元素
     x := x→forward[1]
     if x→key = searchKey then
         for i := 1 to list→level do
-			// 判断update[n]的下一个节点是不是 x ; 如果是x,则删除x
+            // 判断update[n]的下一个节点是不是 x ; 如果是x,则删除x
             if update[i]→forward[i] ≠ x then 
                 break
             update[i]→forward[i] := x→forward[i]
         free(x)
-		// 判断最顶层是不是为空, 为空则跳表降级
+        // 判断最顶层是不是为空, 为空则跳表降级
         while list→level &gt; 1 and list→header→forward[list→level] = NIL do
             list→level := list→level – 1
 </code></pre>
@@ -271,121 +266,36 @@ func max(a, b int) int {
 <p><a href="https://15721.courses.cs.cmu.edu/spring2018/papers/08-oltpindexes1/pugh-skiplists-cacm1990.pdf">https://15721.courses.cs.cmu.edu/spring2018/papers/08-oltpindexes1/pugh-skiplists-cacm1990.pdf</a></p>
 <p><a href="https://leetcode.cn/problems/design-skiplist/solutions/1696545/she-ji-tiao-biao-by-leetcode-solution-e8yh/">https://leetcode.cn/problems/design-skiplist/solutions/1696545/she-ji-tiao-biao-by-leetcode-solution-e8yh/</a></p>
 
-</div>
 </main>
-
-<section class="appendix">
-
-
-
-
-
-<div>
-  <div class="side side-left"><h3>重复使用</h3></div>
-  Text and figures are licensed under <a href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution CC BY 4.0</a>. The source code is licensed under MIT. The full source is available at <a href="https://github.com/qiref/qiref.github.io">https://github.com/qiref/qiref.github.io</a>.
-</div>
-
-
-
-<div>
-  <div class="side side-left"><h3>欢迎修订</h3></div>
-  
-  
-  
-    
-    
-  
-  如果您发现本文里含有任何错误（包括错别字和标点符号），欢迎<a href="https://github.com/qiref/qiref.github.io/tree/master/content/post/2023-10-01-Skip%20List%20%e9%98%85%e8%af%bb%e7%ac%94%e8%ae%b0.md" id="edit-link">在本站的 GitHub 项目里提交修订意见。</a>
-</div>
-
-
-
-
-</section>
-
-
-
-<nav class="post-nav">
-  <span class="nav-next">&larr; <a href="/post/2023/08/09/dblog-%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/" title=下一篇&#32;(旧)>DBLog 阅读笔记</a></span>
-  &hercon;
-  <span class="nav-prev"><a href="/post/2023/10/13/log-structured-merge-tree/" title=上一篇&#32;(新)>Log Structured Merge Tree</a> &rarr;</span>
-</nav>
-
-
-<script src="https://utteranc.es/client.js"
-        repo="qiref/qiref.github.io"
-        issue-term="pathname"
-        label="Comment"
-        theme="github-light"
-        crossorigin="anonymous"
-        async>
-</script>
-
-</div>
-
 
   <footer>
   
-
-
-
-
-  
+  <div id="disqus_thread"></div>
+<script>
+    window.disqus_config = function () {
     
-      <script async src="https://www.googletagmanager.com/gtag/js?id=G-PGMJFXZJRT"></script>
-      <script>
-        var doNotTrack = false;
-        if ( false ) {
-          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
-          var doNotTrack = (dnt == "1" || dnt == "yes");
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
         }
-        if (!doNotTrack) {
-          window.dataLayer = window.dataLayer || [];
-          function gtag(){dataLayer.push(arguments);}
-          gtag('js', new Date());
-          gtag('config', 'G-PGMJFXZJRT');
-        }
-      </script>
-    
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "qiref" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
   
-
-
-
-
-<script src="https://cdn.jsdelivr.net/combine/npm/@xiee/utils/js/number-sections.min.js,npm/@xiee/utils/js/toc.min.js,npm/@xiee/utils/js/toc-highlight.min.js,npm/@xiee/utils/js/sidenotes.min.js,npm/@xiee/utils/js/right-quote.min.js,npm/@xiee/utils/js/center-img.min.js,npm/@xiee/utils/js/fix-pandoc.min.js,npm/@xiee/utils/js/heading-anchor.min.js" defer></script>
-
-
-
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@xiee/utils/css/prism-xcode.min.css">
-<script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-core.min.js" defer></script>
-<script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/autoloader/prism-autoloader.min.js" defer></script>
-
-
-  <div class="footer">
-  
-  <ul>
-    
-    <li class="optional">
-      <a href="/post/">Posts</a>
-    </li>
-    
-    <li class="optional">
-      <a href="/tags/">Tags</a>
-    </li>
-    
-    <li id="menu-edit">
-      <a href="#">Suggest an edit</a>
-    </li>
-    
-    <li>
-      <a href="#">Back to top</a>
-    </li>
-    
-  </ul>
-  </div>
+  <hr/>
+  © powered by <a href="https://gohugo.io/">Hugo</a> &amp; <a href="https://github.com/yihui/hugo-xmin">Xmin</a>  2017 &ndash; 2025 | <a href="https://github.com/qiref">Github</a>
   
   </footer>
-  <script src="/js/features.js" defer></script>
   </body>
 </html>
 

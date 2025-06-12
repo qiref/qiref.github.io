@@ -1,19 +1,23 @@
 <!DOCTYPE html>
 <html lang="cn-zh">
   <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <title> Posts | 大道至简</title>
-    
-    
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@xiee/utils@v1.13.54/css/article.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@xiee/utils/css/heading-anchor.min.css">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Posts | 大道至简</title>
     <link rel="stylesheet" href="/css/style.css" />
     <link rel="stylesheet" href="/css/fonts.css" />
-    <link rel="stylesheet" href="/css/custom.css" />
     
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-PGMJFXZJRT"></script>
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+
+<script>
+hljs.configure({languages: []});
+hljs.initHighlightingOnLoad();
+</script>
+
+<link href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/github.min.css"  rel="stylesheet">
+
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
@@ -24,424 +28,337 @@
   </head>
 
   <body>
-
-    <nav class="menu">
-    <ul>
-      <li class="left">
-        <a href="/"><span>大道至简</span></a>
-      </li>
+    <nav>
+    <ul class="menu">
       
-      <li>
-        <a href="/post/">Posts</a>
-      </li>
+      <li><a href="/">Home</a></li>
       
-      <li>
-        <a href="/tags/">Tags</a>
-      </li>
+      <li><a href="/tags/">Tags</a></li>
       
-      <li id="menu-search">
-        <a href="/#">Search</a>
-      </li>
+      <li><a href="/about/">About</a></li>
+      
+      <li><a href="/index.xml">Subscribe</a></li>
       
     </ul>
+    <hr/>
     </nav>
 
 
-<div class="container list">
-<main>
 
 <h1>Posts</h1>
 
 
 
 
-
-
-
-
-
-
-
-
-  <section class="article-list post-card">
-    <table>
-    <tbody>
-    <tr>
-    <td>
-    
-    <h1><a href="/post/2025/01/01/paxos%E6%8E%A8%E5%AF%BC%E8%BF%87%E7%A8%8B/">Paxos推导过程</a></h1>
-    <div>
-      <span>2025-01-01</span>
-      
-    </div>
-    <div class="summary">
-      
-      
-      
-      
-      &popf;axos 是一个分布式共识算法, 就是用来解决分布式系统中, 多副本数据如何保证读写一致性的问题.
-[&hellip;] 假设我们有个分布式存储系统, 数据在写入时, 需要把数据写入到其他节点: 副本数据从一个节点复制到其他节点, 有几种复制办法:
-[&hellip;] # node1, node2, node3 a=x --&gt; node1 --&gt; node2 ---&gt; &hellip;
-      <a href="/post/2025/01/01/paxos%E6%8E%A8%E5%AF%BC%E8%BF%87%E7%A8%8B/" class="more" title=阅读全文>阅读全文 &rarr;</a>
-    </div>
-    </td>
-    
-    </tr>
-    </tbody>
-    </table>
-  </section>
-
-  <section class="article-list post-card">
-    <table>
-    <tbody>
-    <tr>
-    <td>
-    
-    <h1><a href="/post/2024/07/25/%E4%B8%A4%E9%98%B6%E6%AE%B5%E6%8F%90%E4%BA%A4%E5%92%8C%E4%B8%89%E9%98%B6%E6%AE%B5%E6%8F%90%E4%BA%A4/">两阶段提交和三阶段提交</a></h1>
-    <div>
-      <span>2024-07-25</span>
-      
-    </div>
-    <div class="summary">
-      
-      
-      
-      
-      分布式共识问题是指在分布式系统中，多个节点或参与者需要就某个共同的结果达成一致意见的问题。例如主从同步问题, 简单的主从同步可以借助两阶段提交和三阶段提交来解决,确保所有节点上的事务操作能够保持一致性，即要么全部提交，要么全部回滚。
-[&hellip;] 在主从同步的场景中, backup 需要从 master 同步数据, 从数据写入的场景来说, 假定主从节点是同步复制, 实际上就是一次分布式事 &hellip;
-      <a href="/post/2024/07/25/%E4%B8%A4%E9%98%B6%E6%AE%B5%E6%8F%90%E4%BA%A4%E5%92%8C%E4%B8%89%E9%98%B6%E6%AE%B5%E6%8F%90%E4%BA%A4/" class="more" title=阅读全文>阅读全文 &rarr;</a>
-    </div>
-    </td>
-    
-    </tr>
-    </tbody>
-    </table>
-  </section>
-
-  <section class="article-list post-card">
-    <table>
-    <tbody>
-    <tr>
-    <td>
-    
-    <h1><a href="/post/2024/05/21/%E5%85%B3%E4%BA%8E%E9%94%81%E7%9A%84%E6%80%9D%E8%80%83%E5%92%8C%E6%80%BB%E7%BB%93%E4%BA%8C/">关于锁的思考和总结(二)</a></h1>
-    <div>
-      <span>2024-05-21</span>
-      
-    </div>
-    <div class="summary">
-      
-      
-      
-      
-      书接上文, 在单机模式下, 可以借助操作系统能力, 使用原子指令去实现锁, 但是在分布式场景中, 这种方案就会无法实现, 因为要竞争锁的进程在不同的机器上, 分布式锁因此而诞生.
-[&hellip;] 举一个很常见的案例, 如果某个服务为了实现高可用而采用了多副本模式, 当服务中存在定时任务, 如何保证同时只有一个定时任务在运行呢? 从这里, 问题就开始变得复杂.
-很常规的思路就是借助数据库, 操 &hellip;
-      <a href="/post/2024/05/21/%E5%85%B3%E4%BA%8E%E9%94%81%E7%9A%84%E6%80%9D%E8%80%83%E5%92%8C%E6%80%BB%E7%BB%93%E4%BA%8C/" class="more" title=阅读全文>阅读全文 &rarr;</a>
-    </div>
-    </td>
-    
-    </tr>
-    </tbody>
-    </table>
-  </section>
-
-  <section class="article-list post-card">
-    <table>
-    <tbody>
-    <tr>
-    <td>
-    
-    <h1><a href="/post/2024/05/15/%E5%85%B3%E4%BA%8E%E9%94%81%E7%9A%84%E6%80%9D%E8%80%83%E5%92%8C%E6%80%BB%E7%BB%93%E4%B8%80/">关于锁的思考和总结(一)</a></h1>
-    <div>
-      <span>2024-05-15</span>
-      
-    </div>
-    <div class="summary">
-      
-      
-      
-      
-      &fopf;unc add (a *int) *int { *a++ // 线程不安全 return a } 这是一段很典型的线程不安全的代码示例, 在并发场景下, a 的结果是不确定的, 大概率会小于 1000, 原因是 a++ 并非原子操作, 会存在同时有两个协程读取到 a 的值是相同的情况, 执行 a++之后再重新回写时, a的值也是相同的, 想要变为线程安全, 就需要在操作临界资源之前加锁; &hellip;
-      <a href="/post/2024/05/15/%E5%85%B3%E4%BA%8E%E9%94%81%E7%9A%84%E6%80%9D%E8%80%83%E5%92%8C%E6%80%BB%E7%BB%93%E4%B8%80/" class="more" title=阅读全文>阅读全文 &rarr;</a>
-    </div>
-    </td>
-    
-    </tr>
-    </tbody>
-    </table>
-  </section>
-
-  <section class="article-list post-card">
-    <table>
-    <tbody>
-    <tr>
-    <td>
-    
-    <h1><a href="/post/2024/02/23/go-ppfof%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8/">Go ppfof工具使用</a></h1>
-    <div>
-      <span>2024-02-23</span>
-      
-    </div>
-    <div class="summary">
-      
-      
-      
-      
-      &popf;prof 是用于可视化和分析性能分析数据的工具;
-[&hellip;] 在main函数之前使用启动, DoProfile(6060)
-import ( &quot;net/http&quot; _ &quot;net/http/pprof&quot; &quot;strconv&quot; ) type ProfileServer struct { } func (this &hellip;
-      <a href="/post/2024/02/23/go-ppfof%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8/" class="more" title=阅读全文>阅读全文 &rarr;</a>
-    </div>
-    </td>
-    
-    </tr>
-    </tbody>
-    </table>
-  </section>
-
-  <section class="article-list post-card">
-    <table>
-    <tbody>
-    <tr>
-    <td>
-    
-    <h1><a href="/post/2023/12/05/b-%E6%A0%91/">B&#43;树</a></h1>
-    <div>
-      <span>2023-12-05</span>
-      
-    </div>
-    <div class="summary">
-      
-      
-      
-      
-      &Bopf;树（英语：B-tree），是一种在计算机科学自平衡的树，能够保持数据有序。这种数据结构能够让查找数据、顺序访问、插入数据及删除的动作，都在对数时间内完成。B树，概括来说是一个一般化的二叉搜索树（binary search tree）一个节点可以拥有2个以上的子节点。与自平衡二叉查找树不同，B树适用于读写相对大的数据块的存储系统，例如磁盘。B树减少定位记录时所经历的中间过程，从而加快访问速度。B树 &hellip;
-      <a href="/post/2023/12/05/b-%E6%A0%91/" class="more" title=阅读全文>阅读全文 &rarr;</a>
-    </div>
-    </td>
-    
-    </tr>
-    </tbody>
-    </table>
-  </section>
-
-  <section class="article-list post-card">
-    <table>
-    <tbody>
-    <tr>
-    <td>
-    
-    <h1><a href="/post/2023/10/13/log-structured-merge-tree/">Log Structured Merge Tree</a></h1>
-    <div>
-      <span>2023-10-13</span>
-      
-    </div>
-    <div class="summary">
-      
-      
-      
-      
-      &Lopf;og Structured Merge Tree, 其本质上是一种存储数据的方式,通常用于各种存储系统的底层数据结构,通过尽可能减少磁盘随机IO来提升写入性能, 适用于写多读少的场景.
-[&hellip;] 对于一个存储系统而言, 不可避免地需要写入文件到磁盘, 对于常规的写来说, 每来一条数据写一次文件, 数据可能是 add update delete, 需要频繁操作文件, 每一次写都是一次随 &hellip;
-      <a href="/post/2023/10/13/log-structured-merge-tree/" class="more" title=阅读全文>阅读全文 &rarr;</a>
-    </div>
-    </td>
-    
-    </tr>
-    </tbody>
-    </table>
-  </section>
-
-  <section class="article-list post-card">
-    <table>
-    <tbody>
-    <tr>
-    <td>
-    
-    <h1><a href="/post/2023/10/01/skip-lists-%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/">Skip Lists 阅读笔记</a></h1>
-    <div>
-      <span>2023-10-01</span>
-      
-    </div>
-    <div class="summary">
-      
-      
-      
-      
-      《Skip Lists: A Probabilistic Alternative to Balanced Trees》 论文标题翻译就是 跳表: 平衡树的概率性替代方案; 跳表是一种可以用来代替平衡树的数据结构。跳表使用概率平衡而不是严格强制的平衡，因此跳跃列表中的插入和删除算法比平衡树的等效算法要简单得多并且速度明显更快。
-从论文的标题和介绍, 基本上就能知道跳表是一种怎么样的数据结构, 为了解 &hellip;
-      <a href="/post/2023/10/01/skip-lists-%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/" class="more" title=阅读全文>阅读全文 &rarr;</a>
-    </div>
-    </td>
-    
-    </tr>
-    </tbody>
-    </table>
-  </section>
-
-  <section class="article-list post-card">
-    <table>
-    <tbody>
-    <tr>
-    <td>
-    
-    <h1><a href="/post/2023/08/09/dblog-%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/">DBLog 阅读笔记</a></h1>
-    <div>
-      <span>2023-08-09</span>
-      
-    </div>
-    <div class="summary">
-      
-      
-      
-      
-      论文原名: DBLog: A Watermark Based Change-Data-Capture Framework , 基于 Watermark 的 Change-Data-Capture(数据库实时捕获已提交的变更记录) 框架, 本质上是解决数据库同步(全量+增量)的框架, Watermark 是框架使用的一种手段, 在源表中创建表,生成唯一 uuid 并更新表数据, 在源表中就会生成一条 &hellip;
-      <a href="/post/2023/08/09/dblog-%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/" class="more" title=阅读全文>阅读全文 &rarr;</a>
-    </div>
-    </td>
-    
-    </tr>
-    </tbody>
-    </table>
-  </section>
-
-  <section class="article-list post-card">
-    <table>
-    <tbody>
-    <tr>
-    <td>
-    
-    <h1><a href="/post/2023/06/26/java%E8%BF%9B%E7%A8%8B%E5%88%86%E6%9E%90%E5%B7%A5%E5%85%B7/">Java进程分析工具</a></h1>
-    <div>
-      <span>2023-06-26</span>
-      
-    </div>
-    <div class="summary">
-      
-      
-      
-      
-      
-如果要为新生代分配 256m 的内存（NewSize 与 MaxNewSize 设为一致），参数应该这样来写：-Xmn256m;
-还可以通过 -XX:NewRatio=&lt;int&gt; 来设置老年代与新生代内存的比值。比如以下参数就是设置老年代与新生代内存的比值为 1。也就是说老年代和新生代所占比值为 1：1，新生代占整个堆栈的 1/2。
--XX:NewRatio=1 JDK 1.8 ，方 &hellip;
-      <a href="/post/2023/06/26/java%E8%BF%9B%E7%A8%8B%E5%88%86%E6%9E%90%E5%B7%A5%E5%85%B7/" class="more" title=阅读全文>阅读全文 &rarr;</a>
-    </div>
-    </td>
-    
-    </tr>
-    </tbody>
-    </table>
-  </section>
-
-
-
-
-    <ul class="pagination pagination-default">
-      <li class="page-item disabled">
-        <a aria-disabled="true" aria-label="First" class="page-link" role="button" tabindex="-1"><span aria-hidden="true">&laquo;&laquo;</span></a>
-      </li>
-      <li class="page-item disabled">
-        <a aria-disabled="true" aria-label="Previous" class="page-link" role="button" tabindex="-1"><span aria-hidden="true">&laquo;</span></a>
-      </li>
-      <li class="page-item active">
-        <a aria-current="page" aria-label="Page 1" class="page-link" role="button">1</a>
-      </li>
-      <li class="page-item">
-        <a href="/post/page/2/" aria-label="Page 2" class="page-link" role="button">2</a>
-      </li>
-      <li class="page-item">
-        <a href="/post/page/3/" aria-label="Page 3" class="page-link" role="button">3</a>
-      </li>
-      <li class="page-item">
-        <a href="/post/page/4/" aria-label="Page 4" class="page-link" role="button">4</a>
-      </li>
-      <li class="page-item">
-        <a href="/post/page/5/" aria-label="Page 5" class="page-link" role="button">5</a>
-      </li>
-      <li class="page-item">
-        <a href="/post/page/2/" aria-label="Next" class="page-link" role="button"><span aria-hidden="true">&raquo;</span></a>
-      </li>
-      <li class="page-item">
-        <a href="/post/page/6/" aria-label="Last" class="page-link" role="button"><span aria-hidden="true">&raquo;&raquo;</span></a>
-      </li>
-    </ul>
-
-
-<script src="https://utteranc.es/client.js"
-        repo="qiref/qiref.github.io"
-        issue-term="pathname"
-        label="Comment"
-        theme="github-light"
-        crossorigin="anonymous"
-        async>
-</script>
-
-</main>
-</div>
+<ul>
+  
+  
+  
+  <li>
+    <span class="date">2025/05/30</span>
+    <a href="/post/2025/05/30/%E5%AE%B9%E5%99%A8%E7%BD%91%E7%BB%9C%E5%8E%9F%E7%90%86%E5%88%86%E6%9E%90/">容器网络原理分析</a>
+  </li>
+  
+  <li>
+    <span class="date">2025/01/01</span>
+    <a href="/post/2025/01/01/paxos%E6%8E%A8%E5%AF%BC%E8%BF%87%E7%A8%8B/">Paxos推导过程</a>
+  </li>
+  
+  <li>
+    <span class="date">2024/07/25</span>
+    <a href="/post/2024/07/25/%E4%B8%A4%E9%98%B6%E6%AE%B5%E6%8F%90%E4%BA%A4%E5%92%8C%E4%B8%89%E9%98%B6%E6%AE%B5%E6%8F%90%E4%BA%A4/">两阶段提交和三阶段提交</a>
+  </li>
+  
+  <li>
+    <span class="date">2024/05/21</span>
+    <a href="/post/2024/05/21/%E5%85%B3%E4%BA%8E%E9%94%81%E7%9A%84%E6%80%9D%E8%80%83%E5%92%8C%E6%80%BB%E7%BB%93%E4%BA%8C/">关于锁的思考和总结(二)</a>
+  </li>
+  
+  <li>
+    <span class="date">2024/05/15</span>
+    <a href="/post/2024/05/15/%E5%85%B3%E4%BA%8E%E9%94%81%E7%9A%84%E6%80%9D%E8%80%83%E5%92%8C%E6%80%BB%E7%BB%93%E4%B8%80/">关于锁的思考和总结(一)</a>
+  </li>
+  
+  <li>
+    <span class="date">2024/02/23</span>
+    <a href="/post/2024/02/23/go-ppfof%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8/">Go ppfof工具使用</a>
+  </li>
+  
+  <li>
+    <span class="date">2023/12/05</span>
+    <a href="/post/2023/12/05/b-%E6%A0%91/">B+树</a>
+  </li>
+  
+  <li>
+    <span class="date">2023/10/13</span>
+    <a href="/post/2023/10/13/log-structured-merge-tree/">Log Structured Merge Tree</a>
+  </li>
+  
+  <li>
+    <span class="date">2023/10/01</span>
+    <a href="/post/2023/10/01/skip-lists-%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/">Skip Lists 阅读笔记</a>
+  </li>
+  
+  <li>
+    <span class="date">2023/08/09</span>
+    <a href="/post/2023/08/09/dblog-%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/">DBLog 阅读笔记</a>
+  </li>
+  
+  <li>
+    <span class="date">2023/06/26</span>
+    <a href="/post/2023/06/26/java%E8%BF%9B%E7%A8%8B%E5%88%86%E6%9E%90%E5%B7%A5%E5%85%B7/">Java进程分析工具</a>
+  </li>
+  
+  <li>
+    <span class="date">2023/05/16</span>
+    <a href="/post/2023/05/16/the-dataflow-model-%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/">The Dataflow Model 阅读笔记</a>
+  </li>
+  
+  <li>
+    <span class="date">2023/05/12</span>
+    <a href="/post/2023/05/12/%E5%A0%86%E5%92%8C%E5%A0%86%E6%8E%92%E5%BA%8F/">堆和堆排序</a>
+  </li>
+  
+  <li>
+    <span class="date">2023/05/08</span>
+    <a href="/post/2023/05/08/chandy-lamport-%E7%AE%97%E6%B3%95%E7%AC%94%E8%AE%B0/">Chandy-Lamport 算法笔记</a>
+  </li>
+  
+  <li>
+    <span class="date">2023/04/28</span>
+    <a href="/post/2023/04/28/go%E8%AF%AD%E8%A8%80%E7%94%9F%E4%BA%A7%E8%80%85%E6%B6%88%E8%B4%B9%E8%80%85%E6%A8%A1%E5%9E%8B/">Go语言生产者消费者模型</a>
+  </li>
+  
+  <li>
+    <span class="date">2023/04/28</span>
+    <a href="/post/2023/04/28/go%E8%AF%AD%E8%A8%80%E5%AE%9E%E7%8E%B0-bitmap/">Go语言实现 bitmap</a>
+  </li>
+  
+  <li>
+    <span class="date">2023/04/27</span>
+    <a href="/post/2023/04/27/go%E8%AF%AD%E8%A8%80%E5%AE%9E%E7%8E%B0-lru/">Go语言实现 LRU</a>
+  </li>
+  
+  <li>
+    <span class="date">2023/03/28</span>
+    <a href="/post/2023/03/28/flink%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B/">Flink内存模型</a>
+  </li>
+  
+  <li>
+    <span class="date">2023/03/24</span>
+    <a href="/post/2023/03/24/flink%E7%B1%BB%E5%8A%A0%E8%BD%BD%E6%9C%BA%E5%88%B6/">Flink类加载机制</a>
+  </li>
+  
+  <li>
+    <span class="date">2023/03/24</span>
+    <a href="/post/2023/03/24/java%E5%8F%8C%E4%BA%B2%E5%A7%94%E6%B4%BE/">Java双亲委派</a>
+  </li>
+  
+  <li>
+    <span class="date">2023/03/24</span>
+    <a href="/post/2023/03/24/go%E8%AF%AD%E8%A8%80%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/">Go语言单例模式</a>
+  </li>
+  
+  <li>
+    <span class="date">2023/03/23</span>
+    <a href="/post/2023/03/23/flink%E5%8F%8D%E5%8E%8B/">Flink反压</a>
+  </li>
+  
+  <li>
+    <span class="date">2023/03/22</span>
+    <a href="/post/2023/03/22/arthas%E7%81%AB%E7%84%B0%E5%9B%BE%E4%BD%BF%E7%94%A8/">Arthas火焰图使用</a>
+  </li>
+  
+  <li>
+    <span class="date">2022/03/13</span>
+    <a href="/post/2022/03/13/flink-append%E6%B5%81retract%E6%B5%81upsert%E6%B5%81/">Flink Append流、Retract流、Upsert流</a>
+  </li>
+  
+  <li>
+    <span class="date">2022/03/04</span>
+    <a href="/post/2022/03/04/flink-checkpoint%E6%9C%BA%E5%88%B6/">Flink Checkpoint机制</a>
+  </li>
+  
+  <li>
+    <span class="date">2022/02/25</span>
+    <a href="/post/2022/02/25/flink%E6%97%B6%E9%97%B4%E8%AF%AD%E4%B9%89/">Flink时间语义</a>
+  </li>
+  
+  <li>
+    <span class="date">2022/02/23</span>
+    <a href="/post/2022/02/23/flink%E5%9F%BA%E6%9C%AC%E6%9E%B6%E6%9E%84/">Flink基本架构</a>
+  </li>
+  
+  <li>
+    <span class="date">2022/02/22</span>
+    <a href="/post/2022/02/22/flink-wordcount/">Flink WordCount</a>
+  </li>
+  
+  <li>
+    <span class="date">2022/02/19</span>
+    <a href="/post/2022/02/19/go%E8%AF%AD%E8%A8%80cobra/">Go语言cobra</a>
+  </li>
+  
+  <li>
+    <span class="date">2022/01/11</span>
+    <a href="/post/2022/01/11/protobuf%E6%95%B0%E6%8D%AE%E5%8D%8F%E8%AE%AE/">ProtoBuf数据协议</a>
+  </li>
+  
+  <li>
+    <span class="date">2021/08/25</span>
+    <a href="/post/2021/08/25/log4j2%E6%8C%89%E7%85%A7%E6%97%B6%E9%97%B4%E5%92%8C%E6%97%A5%E5%BF%97%E5%A4%A7%E5%B0%8F%E6%BB%9A%E5%8A%A8/">Log4j2按照时间和日志大小滚动</a>
+  </li>
+  
+  <li>
+    <span class="date">2021/08/09</span>
+    <a href="/post/2021/08/09/git-rebase%E7%94%A8%E6%B3%95.md/">Git-rebase用法.md</a>
+  </li>
+  
+  <li>
+    <span class="date">2021/07/08</span>
+    <a href="/post/2021/07/08/git%E5%B7%A5%E7%A8%8B%E6%8B%86%E5%88%86/">Git工程拆分</a>
+  </li>
+  
+  <li>
+    <span class="date">2021/06/29</span>
+    <a href="/post/2021/06/29/kubernates%E4%B8%AD%E7%9A%84pod/">Kubernates中的pod</a>
+  </li>
+  
+  <li>
+    <span class="date">2021/06/23</span>
+    <a href="/post/2021/06/23/docker%E6%9E%84%E5%BB%BAgo%E5%B7%A5%E7%A8%8B%E9%95%9C%E5%83%8F/">Docker构建Go工程镜像</a>
+  </li>
+  
+  <li>
+    <span class="date">2021/06/21</span>
+    <a href="/post/2021/06/21/docker%E5%85%A5%E9%97%A8/">Docker入门</a>
+  </li>
+  
+  <li>
+    <span class="date">2021/06/21</span>
+    <a href="/post/2021/06/21/kubernates%E7%BB%84%E4%BB%B6/">Kubernates组件</a>
+  </li>
+  
+  <li>
+    <span class="date">2021/06/19</span>
+    <a href="/post/2021/06/19/go%E8%AF%AD%E8%A8%80%E5%AE%9E%E7%8E%B0httpserver/">Go语言实现httpServer</a>
+  </li>
+  
+  <li>
+    <span class="date">2021/06/17</span>
+    <a href="/post/2021/06/17/go%E8%AF%AD%E8%A8%80%E5%8F%8D%E5%B0%84/">Go语言反射</a>
+  </li>
+  
+  <li>
+    <span class="date">2021/06/15</span>
+    <a href="/post/2021/06/15/go%E8%AF%AD%E8%A8%80deferpanicrecover/">Go语言defer、panic、recover</a>
+  </li>
+  
+  <li>
+    <span class="date">2021/06/10</span>
+    <a href="/post/2021/06/10/go%E8%AF%AD%E8%A8%80%E5%8C%85%E7%AE%A1%E7%90%86/">Go语言包管理</a>
+  </li>
+  
+  <li>
+    <span class="date">2021/06/09</span>
+    <a href="/post/2021/06/09/go%E8%AF%AD%E8%A8%80channel/">Go语言channel</a>
+  </li>
+  
+  <li>
+    <span class="date">2021/06/05</span>
+    <a href="/post/2021/06/05/go%E8%AF%AD%E8%A8%80%E6%8E%A5%E5%8F%A3/">Go语言接口</a>
+  </li>
+  
+  <li>
+    <span class="date">2021/06/05</span>
+    <a href="/post/2021/06/05/go%E8%AF%AD%E8%A8%80%E6%8C%87%E9%92%88/">Go语言指针</a>
+  </li>
+  
+  <li>
+    <span class="date">2021/06/03</span>
+    <a href="/post/2021/06/03/go%E8%AF%AD%E8%A8%80goroutine/">Go语言goroutine</a>
+  </li>
+  
+  <li>
+    <span class="date">2021/06/01</span>
+    <a href="/post/2021/06/01/go%E8%AF%AD%E8%A8%80%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">Go语言基本数据结构</a>
+  </li>
+  
+  <li>
+    <span class="date">2021/05/31</span>
+    <a href="/post/2021/05/31/go%E8%AF%AD%E8%A8%80%E5%8F%98%E9%87%8F/">Go语言变量</a>
+  </li>
+  
+  <li>
+    <span class="date">2020/10/21</span>
+    <a href="/post/2020/10/21/mysql%E6%89%A7%E8%A1%8C%E8%AE%A1%E5%88%92/">MySQL执行计划</a>
+  </li>
+  
+  <li>
+    <span class="date">2019/12/14</span>
+    <a href="/post/2019/12/14/centos%E6%90%AD%E5%BB%BA%E5%85%AC%E5%85%B1yum%E6%BA%90/">Centos搭建公共yum源</a>
+  </li>
+  
+  <li>
+    <span class="date">2019/09/04</span>
+    <a href="/post/2019/09/04/%E9%80%86%E6%B3%A2%E5%85%B0%E8%A1%A8%E8%BE%BE%E5%BC%8F%E7%AE%97%E6%B3%95/">逆波兰表达式算法</a>
+  </li>
+  
+  <li>
+    <span class="date">2019/07/27</span>
+    <a href="/post/2019/07/27/spark%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-rdd%E5%9F%BA%E7%A1%80%E7%AE%97%E5%AD%90/">spark学习笔记-RDD基础算子</a>
+  </li>
+  
+  <li>
+    <span class="date">2019/07/11</span>
+    <a href="/post/2019/07/11/springboot-hbase/">SpringBoot HBase</a>
+  </li>
+  
+  <li>
+    <span class="date">2019/07/11</span>
+    <a href="/post/2019/07/11/%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F/">工厂模式</a>
+  </li>
+  
+  <li>
+    <span class="date">2019/06/16</span>
+    <a href="/post/2019/06/16/git%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">Git学习笔记</a>
+  </li>
+  
+  <li>
+    <span class="date">2019/06/16</span>
+    <a href="/post/2019/06/16/springboot%E4%B8%AD%E4%BD%BF%E7%94%A8aop/">SpringBoot中使用AOP</a>
+  </li>
+  
+</ul>
 
   <footer>
   
-
-
-
-
-  
+  <div id="disqus_thread"></div>
+<script>
+    window.disqus_config = function () {
     
-      <script async src="https://www.googletagmanager.com/gtag/js?id=G-PGMJFXZJRT"></script>
-      <script>
-        var doNotTrack = false;
-        if ( false ) {
-          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
-          var doNotTrack = (dnt == "1" || dnt == "yes");
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
         }
-        if (!doNotTrack) {
-          window.dataLayer = window.dataLayer || [];
-          function gtag(){dataLayer.push(arguments);}
-          gtag('js', new Date());
-          gtag('config', 'G-PGMJFXZJRT');
-        }
-      </script>
-    
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "qiref" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
   
-
-
-
-
-
-
-
-  <div class="footer">
-  
-  <ul>
-    
-    <li class="optional">
-      <a href="/post/">Posts</a>
-    </li>
-    
-    <li class="optional">
-      <a href="/tags/">Tags</a>
-    </li>
-    
-    <li id="menu-edit">
-      <a href="#">Suggest an edit</a>
-    </li>
-    
-    <li>
-      <a href="#">Back to top</a>
-    </li>
-    
-  </ul>
-  </div>
-  
-  <div class="footer hidden">
-  
-
-  </div>
+  <hr/>
+  © powered by <a href="https://gohugo.io/">Hugo</a> &amp; <a href="https://github.com/yihui/hugo-xmin">Xmin</a>  2017 &ndash; 2025 | <a href="https://github.com/qiref">Github</a>
   
   </footer>
-  <script src="/js/features.js" defer></script>
   </body>
 </html>
 

@@ -1,19 +1,23 @@
 <!DOCTYPE html>
 <html lang="cn-zh">
   <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <title> Spark | 大道至简</title>
-    
-    
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@xiee/utils@v1.13.54/css/article.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@xiee/utils/css/heading-anchor.min.css">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Spark | 大道至简</title>
     <link rel="stylesheet" href="/css/style.css" />
     <link rel="stylesheet" href="/css/fonts.css" />
-    <link rel="stylesheet" href="/css/custom.css" />
     
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-PGMJFXZJRT"></script>
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+
+<script>
+hljs.configure({languages: []});
+hljs.initHighlightingOnLoad();
+</script>
+
+<link href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/github.min.css"  rel="stylesheet">
+
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
@@ -24,151 +28,46 @@
   </head>
 
   <body>
-
-    <nav class="menu">
-    <ul>
-      <li class="left">
-        <a href="/"><span>大道至简</span></a>
-      </li>
+    <nav>
+    <ul class="menu">
       
-      <li>
-        <a href="/post/">Posts</a>
-      </li>
+      <li><a href="/">Home</a></li>
       
-      <li>
-        <a href="/tags/">Tags</a>
-      </li>
+      <li><a href="/tags/">Tags</a></li>
       
-      <li id="menu-search">
-        <a href="/#">Search</a>
-      </li>
+      <li><a href="/about/">About</a></li>
+      
+      <li><a href="/index.xml">Subscribe</a></li>
       
     </ul>
+    <hr/>
     </nav>
 
 
-<div class="container list">
-<main>
 
 <h1>Spark</h1>
 
 
 
 
-
-
-
-
-
-
-
-
-  <section class="article-list post-card">
-    <table>
-    <tbody>
-    <tr>
-    <td>
-    
-    <h1><a href="/post/2019/07/27/spark%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-rdd%E5%9F%BA%E7%A1%80%E7%AE%97%E5%AD%90/">spark学习笔记-RDD基础算子</a></h1>
-    <div>
-      <span>2019-07-27</span>
-      
-    </div>
-    <div class="summary">
-      
-      
-      
-      
-      摘要：学习spark过程中的笔记，记录spark中的基础算子，以及RDD的基本概念。
-[&hellip;] 源码地址：https://github.com/YaoQi17/sparkLearning/tree/master/sparkRDD
-[&hellip;] RDD(Resilient Distributed Dataset) 弹性分布式数据集，是一组分布式的数据集合，里面的元素可并行计算，可 &hellip;
-      <a href="/post/2019/07/27/spark%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-rdd%E5%9F%BA%E7%A1%80%E7%AE%97%E5%AD%90/" class="more" title=阅读全文>阅读全文 &rarr;</a>
-    </div>
-    </td>
-    
-    </tr>
-    </tbody>
-    </table>
-  </section>
-
-
-
-
-
-
-<script src="https://utteranc.es/client.js"
-        repo="qiref/qiref.github.io"
-        issue-term="pathname"
-        label="Comment"
-        theme="github-light"
-        crossorigin="anonymous"
-        async>
-</script>
-
-</main>
-</div>
+<ul>
+  
+  
+  
+  <li>
+    <span class="date">2019/07/27</span>
+    <a href="/post/2019/07/27/spark%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-rdd%E5%9F%BA%E7%A1%80%E7%AE%97%E5%AD%90/">spark学习笔记-RDD基础算子</a>
+  </li>
+  
+</ul>
 
   <footer>
   
-
-
-
-
   
-    
-      <script async src="https://www.googletagmanager.com/gtag/js?id=G-PGMJFXZJRT"></script>
-      <script>
-        var doNotTrack = false;
-        if ( false ) {
-          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
-          var doNotTrack = (dnt == "1" || dnt == "yes");
-        }
-        if (!doNotTrack) {
-          window.dataLayer = window.dataLayer || [];
-          function gtag(){dataLayer.push(arguments);}
-          gtag('js', new Date());
-          gtag('config', 'G-PGMJFXZJRT');
-        }
-      </script>
-    
-  
-
-
-
-
-
-
-
-  <div class="footer">
-  
-  <ul>
-    
-    <li class="optional">
-      <a href="/post/">Posts</a>
-    </li>
-    
-    <li class="optional">
-      <a href="/tags/">Tags</a>
-    </li>
-    
-    <li id="menu-edit">
-      <a href="#">Suggest an edit</a>
-    </li>
-    
-    <li>
-      <a href="#">Back to top</a>
-    </li>
-    
-  </ul>
-  </div>
-  
-  <div class="footer hidden">
-  
-
-  </div>
+  <hr/>
+  © powered by <a href="https://gohugo.io/">Hugo</a> &amp; <a href="https://github.com/yihui/hugo-xmin">Xmin</a>  2017 &ndash; 2025 | <a href="https://github.com/qiref">Github</a>
   
   </footer>
-  <script src="/js/features.js" defer></script>
   </body>
 </html>
 

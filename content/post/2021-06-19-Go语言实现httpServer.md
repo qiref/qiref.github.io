@@ -17,7 +17,7 @@ title: Go语言实现httpServer
 ``` go
 log.Println("start server")
 if err := http.ListenAndServe(":8080", nil); err != nil {
-	log.Println("start server on 8080")
+    log.Println("start server on 8080")
 }
 log.Fatal("start server failed.")
 ```
@@ -32,19 +32,19 @@ log.Fatal("start server failed.")
 
 ``` go
 func init() {
-	log.Println("start server")
-	http.HandleFunc("/hello_world", HelloWorld)
-	if err := http.ListenAndServe(":8080", nil); err != nil {
-		log.Println("start server on 8080")
-	}
-	log.Fatal("start server failed.")
+    log.Println("start server")
+    http.HandleFunc("/hello_world", HelloWorld)
+    if err := http.ListenAndServe(":8080", nil); err != nil {
+        log.Println("start server on 8080")
+    }
+    log.Fatal("start server failed.")
 }
 
 func HelloWorld(w http.ResponseWriter, r *http.Request) {
-	_, err := w.Write([]byte("hello world"))
-	if err != nil {
-		log.Println(err)
-	}
+    _, err := w.Write([]byte("hello world"))
+    if err != nil {
+        log.Println(err)
+    }
 }
 ```
 
@@ -54,25 +54,25 @@ func HelloWorld(w http.ResponseWriter, r *http.Request) {
 
 ``` go
 func init() {
-	log.Println("start server")
-	http.HandleFunc("/hello_world", HelloWorld)
-	http.Handle("/test_handle", &TestHandleStruct{content: "test handle"})
-	if err := http.ListenAndServe(":8080", nil); err != nil {
-		log.Println("start server on 8080")
-	}
-	log.Fatal("start server failed.")
+    log.Println("start server")
+    http.HandleFunc("/hello_world", HelloWorld)
+    http.Handle("/test_handle", &TestHandleStruct{content: "test handle"})
+    if err := http.ListenAndServe(":8080", nil); err != nil {
+        log.Println("start server on 8080")
+    }
+    log.Fatal("start server failed.")
 }
 
 type TestHandleStruct struct {
-	content string
+    content string
 }
 
 // 实现 Handler interface
 func (handle *TestHandleStruct) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	_, err := fmt.Fprintf(w, handle.content)
-	if err != nil {
-		log.Fatal("response failed")
-	}
+    _, err := fmt.Fprintf(w, handle.content)
+    if err != nil {
+        log.Fatal("response failed")
+    }
 }
 ```
 
@@ -92,6 +92,6 @@ func Handle(pattern string, handler Handler) { DefaultServeMux.Handle(pattern, h
 // in the DefaultServeMux.
 // The documentation for ServeMux explains how patterns are matched.
 func HandleFunc(pattern string, handler func(ResponseWriter, *Request)) {
-	DefaultServeMux.HandleFunc(pattern, handler)
+    DefaultServeMux.HandleFunc(pattern, handler)
 }
 ```

@@ -27,7 +27,7 @@ title: SpringBoot中使用AOP
 public class UserService {
 
     public void getUser() {
-		//To do something
+        //To do something
         System.out.println("getUser() has been called");
         try {
             Thread.sleep(1000);
@@ -106,7 +106,7 @@ public class UserServiceTest {
 public Object getMethodExecuteTime(ProceedingJoinPoint point) throws Throwable {
     System.out.println("---------------getMethodExecuteTime------------------");
     long startTime = System.currentTimeMillis();
-	//调用目标方法
+    //调用目标方法
     Object result = point.proceed();
     long endTime = System.currentTimeMillis();
     long executeTime = endTime - startTime;

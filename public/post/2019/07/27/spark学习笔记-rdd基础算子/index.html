@@ -1,19 +1,23 @@
 <!DOCTYPE html>
 <html lang="cn-zh">
   <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <title> spark学习笔记-RDD基础算子 | 大道至简</title>
-    
-    
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@xiee/utils@v1.13.54/css/article.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@xiee/utils/css/heading-anchor.min.css">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>spark学习笔记-RDD基础算子 | 大道至简</title>
     <link rel="stylesheet" href="/css/style.css" />
     <link rel="stylesheet" href="/css/fonts.css" />
-    <link rel="stylesheet" href="/css/custom.css" />
     
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-PGMJFXZJRT"></script>
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+
+<script>
+hljs.configure({languages: []});
+hljs.initHighlightingOnLoad();
+</script>
+
+<link href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/github.min.css"  rel="stylesheet">
+
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
@@ -24,36 +28,25 @@
   </head>
 
   <body>
-
-    <nav class="menu">
-    <ul>
-      <li class="left">
-        <a href="/"><span>大道至简</span></a>
-      </li>
+    <nav>
+    <ul class="menu">
       
-      <li>
-        <a href="/post/">Posts</a>
-      </li>
+      <li><a href="/">Home</a></li>
       
-      <li>
-        <a href="/tags/">Tags</a>
-      </li>
+      <li><a href="/tags/">Tags</a></li>
       
-      <li id="menu-search">
-        <a href="/#">Search</a>
-      </li>
+      <li><a href="/about/">About</a></li>
+      
+      <li><a href="/index.xml">Subscribe</a></li>
       
     </ul>
+    <hr/>
     </nav>
-
-
-<div class="container single">
-<main>
 
 <div class="article-meta">
 <h1><span class="title">spark学习笔记-RDD基础算子</span></h1>
 
-<h3 class="date">2019-07-27</h3>
+<h2 class="date">2019/07/27</h2>
 <p class="terms">
   
   
@@ -65,7 +58,9 @@
 </p>
 </div>
 
-<div class="article">
+
+
+<main>
 <p>摘要：学习spark过程中的笔记，记录spark中的基础算子，以及RDD的基本概念。</p>
 <hr>
 <h2 id="spark-transform-operation">spark transform operation</h2>
@@ -327,121 +322,36 @@ rdd.foreach(x =&gt; counter += x)
 println(&quot;Counter value: &quot; + counter)
 </code></pre>
 
-</div>
 </main>
-
-<section class="appendix">
-
-
-
-
-
-<div>
-  <div class="side side-left"><h3>重复使用</h3></div>
-  Text and figures are licensed under <a href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution CC BY 4.0</a>. The source code is licensed under MIT. The full source is available at <a href="https://github.com/qiref/qiref.github.io">https://github.com/qiref/qiref.github.io</a>.
-</div>
-
-
-
-<div>
-  <div class="side side-left"><h3>欢迎修订</h3></div>
-  
-  
-  
-    
-    
-  
-  如果您发现本文里含有任何错误（包括错别字和标点符号），欢迎<a href="https://github.com/qiref/qiref.github.io/tree/master/content/post/2019-7-27-spark%e5%ad%a6%e4%b9%a0%e7%ac%94%e8%ae%b0-RDD%e5%9f%ba%e7%a1%80%e7%ae%97%e5%ad%90.md" id="edit-link">在本站的 GitHub 项目里提交修订意见。</a>
-</div>
-
-
-
-
-</section>
-
-
-
-<nav class="post-nav">
-  <span class="nav-next">&larr; <a href="/post/2019/07/11/springboot-hbase/" title=下一篇&#32;(旧)>SpringBoot HBase</a></span>
-  &hercon;
-  <span class="nav-prev"><a href="/post/2019/09/04/%E9%80%86%E6%B3%A2%E5%85%B0%E8%A1%A8%E8%BE%BE%E5%BC%8F%E7%AE%97%E6%B3%95/" title=上一篇&#32;(新)>逆波兰表达式算法</a> &rarr;</span>
-</nav>
-
-
-<script src="https://utteranc.es/client.js"
-        repo="qiref/qiref.github.io"
-        issue-term="pathname"
-        label="Comment"
-        theme="github-light"
-        crossorigin="anonymous"
-        async>
-</script>
-
-</div>
-
 
   <footer>
   
-
-
-
-
-  
+  <div id="disqus_thread"></div>
+<script>
+    window.disqus_config = function () {
     
-      <script async src="https://www.googletagmanager.com/gtag/js?id=G-PGMJFXZJRT"></script>
-      <script>
-        var doNotTrack = false;
-        if ( false ) {
-          var dnt = (navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack);
-          var doNotTrack = (dnt == "1" || dnt == "yes");
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
         }
-        if (!doNotTrack) {
-          window.dataLayer = window.dataLayer || [];
-          function gtag(){dataLayer.push(arguments);}
-          gtag('js', new Date());
-          gtag('config', 'G-PGMJFXZJRT');
-        }
-      </script>
-    
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "qiref" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
   
-
-
-
-
-<script src="https://cdn.jsdelivr.net/combine/npm/@xiee/utils/js/number-sections.min.js,npm/@xiee/utils/js/toc.min.js,npm/@xiee/utils/js/toc-highlight.min.js,npm/@xiee/utils/js/sidenotes.min.js,npm/@xiee/utils/js/right-quote.min.js,npm/@xiee/utils/js/center-img.min.js,npm/@xiee/utils/js/fix-pandoc.min.js,npm/@xiee/utils/js/heading-anchor.min.js" defer></script>
-
-
-
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@xiee/utils/css/prism-xcode.min.css">
-<script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-core.min.js" defer></script>
-<script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/autoloader/prism-autoloader.min.js" defer></script>
-
-
-  <div class="footer">
-  
-  <ul>
-    
-    <li class="optional">
-      <a href="/post/">Posts</a>
-    </li>
-    
-    <li class="optional">
-      <a href="/tags/">Tags</a>
-    </li>
-    
-    <li id="menu-edit">
-      <a href="#">Suggest an edit</a>
-    </li>
-    
-    <li>
-      <a href="#">Back to top</a>
-    </li>
-    
-  </ul>
-  </div>
+  <hr/>
+  © powered by <a href="https://gohugo.io/">Hugo</a> &amp; <a href="https://github.com/yihui/hugo-xmin">Xmin</a>  2017 &ndash; 2025 | <a href="https://github.com/qiref">Github</a>
   
   </footer>
-  <script src="/js/features.js" defer></script>
   </body>
 </html>
 

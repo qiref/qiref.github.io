@@ -1,12 +1,3 @@
 [submodule "themes/hugo-prose"]
 	path = themes/hugo-prose
 	url = git@github.com:yihui/hugo-prose.git
-[submodule "themes/github-style"]
-	path = themes/github-style
-	url = git@github.com:MeiK2333/github-style.git
-[submodule "themes/github-style-plus"]
-	path = themes/github-style-plus
-	url = git@github.com:kurt-liao/github-style-plus.git
-[submodule "themes/hugo-theme-diary"]
-	path = themes/hugo-theme-diary
-	url = git@github.com:AmazingRise/hugo-theme-diary.git

@@ -19,17 +19,17 @@ go语言中启动一个协程非常简单，只需要在执行函数前加上go�
 ``` go
 func main() {
 
-	// 使用匿名函数启用goroutine
-	go func() {
-		fmt.Println("goroutine")
-	}()
+    // 使用匿名函数启用goroutine
+    go func() {
+        fmt.Println("goroutine")
+    }()
 
-	// 调用函数启用goroutine
-	go func1()
+    // 调用函数启用goroutine
+    go func1()
 }
 
 func func1() {
-	fmt.Println("f1() was called.")
+    fmt.Println("f1() was called.")
 }
 
 ```
@@ -51,14 +51,14 @@ sleep肯定是不靠谱的，go语言中可以等待协程执行完成后再回�
 var WG = sync.WaitGroup{}
 
 func main() {
-	WG.Add(1)
-	go func1()
-	WG.Wait()
+    WG.Add(1)
+    go func1()
+    WG.Wait()
 }
 
 func func1() {
-	fmt.Println("f1() was called.")
-	WG.Done()
+    fmt.Println("f1() was called.")
+    WG.Done()
 }
 ```
 在调用func1()之前，调用全局变量WG.Add()方法，然后启用goroutine调用func1()，然后调用WG.Wait()函数进行等待，fun1()调用结束后，调用WG.Done()。
@@ -68,7 +68,7 @@ func func1() {
 ``` go
 // Done decrements the WaitGroup counter by one.
 func (wg *WaitGroup) Done() {
-	wg.Add(-1)
+    wg.Add(-1)
 }
 ```
 
@@ -76,18 +76,18 @@ func (wg *WaitGroup) Done() {
 
 ``` go
 func main() {
-	loop := 5
-	WG.Add(loop)
-	for i := 0; i < loop; i++ {
-		go func2(i)
-	}
-	WG.Wait()
+    loop := 5
+    WG.Add(loop)
+    for i := 0; i < loop; i++ {
+        go func2(i)
+    }
+    WG.Wait()
 }
 
 // define func2
 func func2(i int) {
-	fmt.Println("func2() was called. i is : ", i)
-	WG.Done()
+    fmt.Println("func2() was called. i is : ", i)
+    WG.Done()
 }
 
 // 运行结果：
@@ -104,18 +104,18 @@ func func2(i int) {
 
 ``` go
 func main() {
-	runtime.GOMAXPROCS(1)
-	fmt.Println(runtime.NumGoroutine())
-	for i := 0; i < 10; i++ {
-		go say("Hello World: " + strconv.Itoa(i))
-	}
-	fmt.Println(runtime.NumGoroutine())
-	for {
-	}
+    runtime.GOMAXPROCS(1)
+    fmt.Println(runtime.NumGoroutine())
+    for i := 0; i < 10; i++ {
+        go say("Hello World: " + strconv.Itoa(i))
+    }
+    fmt.Println(runtime.NumGoroutine())
+    for {
+    }
 }
 
 func say(s string) {
-	println(s)
+    println(s)
 }
 ```
 
