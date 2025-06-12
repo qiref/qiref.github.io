@@ -20,6 +20,11 @@ permalinks:
 outputs:
   home: [html, rss, json]
 
+sitemap:
+  changeFreq: "daily"
+  filename: sitemap.xml
+  priority: -1
+
 menu:
   main:
     - name: Home
