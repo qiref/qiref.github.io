@@ -1,0 +1,16 @@
+{{/* home.json */ -}}
+{
+  "version": "hugo-{{ hugo.Version }}",
+  "timestamp": "{{ now.Format "2006-01-02T15:04:05Z07:00" }}",
+  "pages": [
+    {{- $pages := where .Site.RegularPages "Type" "not in" (slice "search") -}}
+    {{- range $index, $page := $pages -}}
+    {
+      "title": {{ $page.Title | jsonify }},
+      "url": {{ $page.Permalink | jsonify }},
+      "content": {{ $page.Plain | jsonify }},
+      "summary": {{ $page.Summary | jsonify }}
+    }{{ if ne (add $index 1) (len $pages) }},{{ end }}
+    {{- end -}}
+  ]
+}

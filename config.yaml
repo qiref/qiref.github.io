@@ -18,7 +18,7 @@ permalinks:
   post: "/post/:year/:month/:day/:slug/"
 
 outputs:
-  home: [html, rss, json]
+  home: ["HTML", "RSS", "JSON"]
 
 sitemap:
   changeFreq: "daily"

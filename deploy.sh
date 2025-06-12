@@ -30,7 +30,8 @@ echo "--------------------------------------------------"
 echo deploy start
 echo "current dir is :" $CURRENT_DIR
 $(cd $CURRENT_DIR)
-hugo -d docs
+# hugo -d docs
+hugo --gc --cleanDestinationDir -d docs  --logLevel info
 # git status
 git add .
 git commit -m "[blog] $COMMIT_MSG"
