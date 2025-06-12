@@ -5,7 +5,7 @@ defaultContentLanguage: "zh"
 title: "大道至简"
 theme: "hugo-xmin"
 googleAnalytics: "G-PGMJFXZJRT"
-disqusShortname: "qiref"
+disqusShortname: ""
 ignoreFiles: ["\\.Rmd$", "\\.Rmarkdown$", "_cache$"]
 
 footnotereturnlinkcontents: "↩"
