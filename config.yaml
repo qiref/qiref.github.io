@@ -17,6 +17,9 @@ permalinks:
   note: "/note/:year/:month/:day/:slug/"
   post: "/post/:year/:month/:day/:slug/"
 
+outputs:
+  home: [html, rss, json]
+
 menu:
   main:
     - name: Home
