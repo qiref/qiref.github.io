@@ -1,26 +1,19 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Notes on 大道至简</title>
-    <link>https://qiref.github.io/note/</link>
-    <description>Recent content in Notes on 大道至简</description>
+    <title>English Learning on 大道至简</title>
+    <link>https://qiref.github.io/tags/english-learning/</link>
+    <description>Recent content in English Learning on 大道至简</description>
     <generator>Hugo</generator>
     <language>cn-zh</language>
     <lastBuildDate>Thu, 12 Jun 2025 21:19:25 +0800</lastBuildDate>
-    <atom:link href="https://qiref.github.io/note/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="https://qiref.github.io/tags/english-learning/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>20250612 English Learning Journal</title>
       <link>https://qiref.github.io/note/2025/06/12/20250612-english-learning-journal/</link>
       <pubDate>Thu, 12 Jun 2025 21:19:25 +0800</pubDate>
       <guid>https://qiref.github.io/note/2025/06/12/20250612-english-learning-journal/</guid>
       <description>Today, I begin to write my journal of English Learning. And this is the first one.&#xA;I will write my thoughts or some new words, phrase about my learning English every day. In theses days, I have listened POC ENGLISH video in the youtube, that&amp;rsquo;s is high quality video about English learning. I will pay more attention to the video. By the way , the POC ENGLISH has their own website, there is a lot of blogs in that website, all of them are pretty good .</description>
-    </item>
-    <item>
-      <title>Another Note on A blogdown Tutorial</title>
-      <link>https://qiref.github.io/note/2017/06/14/another-note/</link>
-      <pubDate>Wed, 14 Jun 2017 00:00:00 +0000</pubDate>
-      <guid>https://qiref.github.io/note/2017/06/14/another-note/</guid>
-      <description>I just discovered an awesome tutorial on blogdown written by Alison. I have to admit this is the best blogdown tutorial I have seen so far.</description>
     </item>
   </channel>
 </rss>

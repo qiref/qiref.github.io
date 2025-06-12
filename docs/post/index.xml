@@ -6,15 +6,8 @@
     <description>Recent content in Posts on 大道至简</description>
     <generator>Hugo</generator>
     <language>cn-zh</language>
-    <lastBuildDate>Fri, 30 May 2025 16:28:12 +0800</lastBuildDate>
+    <lastBuildDate>Wed, 01 Jan 2025 16:29:06 +0800</lastBuildDate>
     <atom:link href="https://qiref.github.io/post/index.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>容器网络原理分析</title>
-      <link>https://qiref.github.io/post/2025/05/30/%E5%AE%B9%E5%99%A8%E7%BD%91%E7%BB%9C%E5%8E%9F%E7%90%86%E5%88%86%E6%9E%90/</link>
-      <pubDate>Fri, 30 May 2025 16:28:12 +0800</pubDate>
-      <guid>https://qiref.github.io/post/2025/05/30/%E5%AE%B9%E5%99%A8%E7%BD%91%E7%BB%9C%E5%8E%9F%E7%90%86%E5%88%86%E6%9E%90/</guid>
-      <description>单主机容器通信 在容器环境中，启动两个container，C1，C2，默认情况下，C1 和 C2 网络是通的，但是在 C1 和 C2 中，都分配了自己的 IP；&#xA;# 启动两个容器环境 # 172.17.0.3 docker run -d --name containerA nginx:alpine # 172.17.0.2 docker run -d --name containerB nginx:alpine # 登录containerA ping containerB，网络能通 docker exec -it containerA sh # ping 172.17.0.2 PING 172.17.0.2 (172.17.0.2): 56 data bytes 64 bytes from 172.17.0.2: seq=0 ttl=64 time=0.076 ms 64 bytes from 172.17.0.2: seq=1 ttl=64 time=0.061 ms 64 bytes from 172.17.0.2: seq=2 ttl=64 time=0.062 ms 为什么在两个 container 中，网络都是互通的呢？</description>
-    </item>
     <item>
       <title>Paxos推导过程</title>
       <link>https://qiref.github.io/post/2025/01/01/paxos%E6%8E%A8%E5%AF%BC%E8%BF%87%E7%A8%8B/</link>
