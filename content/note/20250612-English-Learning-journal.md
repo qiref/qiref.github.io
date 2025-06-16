@@ -15,14 +15,14 @@ I will write my thoughts or some new words, phrase about my learning English eve
 --- 
 AI fixed:
 
-"Today, I begin documenting my English learning journey. ​​This is my first journal entry.​​
+"Today, I begin documenting my English learning journey. This is my first journal entry.
 
-​​I'll​​ record my thoughts, new vocabulary, and English phrases daily. Recently, I've ​​been watching​​ high-quality ​​videos​​ from ​​POC English​​ on YouTube and plan ​​to focus​​ more on their content.
+I'll record my thoughts, new vocabulary, and English phrases daily. Recently, I've been watching high-quality ​videos​​ from POC English on YouTube and plan to focus more on their content.
 
-​​By the way, POC English has its own website featuring​​ numerous excellent ​​blog articles​​."
+By the way, POC English has its own website featuring numerous excellent blog articles."
 
 
-原句​​	​​问题类型​​	​​修正建议​​
+原句  	问题类型    修正建议
 * the first one	冠词不当	my first journal entry
 * listened POC video	动词误用 + 无冠词	watched POC English videos
 * have listened	时态不自然	have been watching
