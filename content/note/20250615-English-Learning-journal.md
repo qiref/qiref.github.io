@@ -1,7 +1,7 @@
 ---
 title: "20250615 English Learning Journal"
 date: 2025-06-16T10:26:11+08:00
-draft: true
+draft: false
 tags:
   - English Learning
   - journal
@@ -71,4 +71,3 @@ Finally, he fell sound asleep with cookie crumbs around his mouth. I sat down, h
 4. **画面定格技巧**：
     
     结尾定格在 **“cookie crumbs around his mouth”** 的特写镜头，强化温馨感
-    
