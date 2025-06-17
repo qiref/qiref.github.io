@@ -1,4 +1,6 @@
 .DS_Store
+*.bkp
+*.dtmp
 static/assets/.DS_Store
 *.drawio.bkp
 public/
