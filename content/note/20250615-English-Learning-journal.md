@@ -1,6 +1,6 @@
 ---
 title: "20250615 English Learning Journal"
-date: 2025-06-16T10:26:11+08:00
+date: 2025-06-15T10:26:11+08:00
 draft: false
 tags:
   - English Learning

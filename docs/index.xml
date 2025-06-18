@@ -6,13 +6,13 @@
     <description>Recent content on 大道至简</description>
     <generator>Hugo</generator>
     <language>cn-zh</language>
-    <lastBuildDate>Wed, 18 Jun 2025 10:50:56 +0800</lastBuildDate>
+    <lastBuildDate>Tue, 17 Jun 2025 10:50:56 +0800</lastBuildDate>
     <atom:link href="https://qiref.github.io/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>20250617 English Learning Journal</title>
-      <link>https://qiref.github.io/note/2025/06/18/20250617-english-learning-journal/</link>
-      <pubDate>Wed, 18 Jun 2025 10:50:56 +0800</pubDate>
-      <guid>https://qiref.github.io/note/2025/06/18/20250617-english-learning-journal/</guid>
+      <link>https://qiref.github.io/note/2025/06/17/20250617-english-learning-journal/</link>
+      <pubDate>Tue, 17 Jun 2025 10:50:56 +0800</pubDate>
+      <guid>https://qiref.github.io/note/2025/06/17/20250617-english-learning-journal/</guid>
       <description>Today I watched a presentation of TED on youtube, and it said we human beings can make friends with stress. In someway, The stress is benefit to our bodies. It depends on how we consider it. If we think stress is bad for our life, yes , those who will often be anxious while being stressed. But ,on the other hand, If we are under stress, it means that we are ready to handle it, speed of heart is higher, so we can resolve the difficult situations, we’ll not be anxious about it.</description>
     </item>
     <item>
@@ -24,9 +24,9 @@
     </item>
     <item>
       <title>20250615 English Learning Journal</title>
-      <link>https://qiref.github.io/note/2025/06/16/20250615-english-learning-journal/</link>
-      <pubDate>Mon, 16 Jun 2025 10:26:11 +0800</pubDate>
-      <guid>https://qiref.github.io/note/2025/06/16/20250615-english-learning-journal/</guid>
+      <link>https://qiref.github.io/note/2025/06/15/20250615-english-learning-journal/</link>
+      <pubDate>Sun, 15 Jun 2025 10:26:11 +0800</pubDate>
+      <guid>https://qiref.github.io/note/2025/06/15/20250615-english-learning-journal/</guid>
       <description>This is weekend, As usaul , I went home after finished my work, My son ran to me and hugged me , I loved that moment!&#xA;The next day, After lunch, he looked so tired, and wanted to go sleep, but he was too young to sleep by himself, just a two years old baby. Then , I picked the baby up, he lay on my shoulder, and we hung out in the room, 5 min later, he felt asleep almostly, he saw a peice of cookie on the table, and wanted to eat it, Then， I gave the cookie to him, he slept while eating cookies, Wow, He looked so busy.</description>
     </item>
     <item>
@@ -420,13 +420,6 @@
       <pubDate>Sun, 16 Jun 2019 00:18:23 +0000</pubDate>
       <guid>https://qiref.github.io/post/2019/06/16/springboot%E4%B8%AD%E4%BD%BF%E7%94%A8aop/</guid>
       <description>摘要：Spring中如何使用注解实现面向切面编程，以及如何使用自定义注解。&#xA;场景 比如用户登录，每个请求发起之前都会判断用户是否登录，如果每个请求都去判断一次，那就重复地做了很多事情，只要是有重复的地方，就有优化的空间。现在就把重复的地方抽取出来，暂且称之为 &amp;quot; 拦截器 &amp;ldquo;，然后每次请求之前就先经过&amp;rdquo; 拦截器 &amp;ldquo;，这个编程的思想就可以称之为面向切面编程。AOP(Aspect Oriented Program)&#xA;最典型的应用就是事务管理和权限验证，还有日志统计，下文中的案例就是接口执行时间的统计。&#xA;spring中使用AOP（基于注解） 不得不说注解是个很巧妙的设计，使用很少量的信息描述数据，这类数据称之为元数据，描述数据的数据。关于注解的理解，这里有个传送门：http://www.importnew.com/10294.html&#xA;下面的案例是在springBoot中进行的，直观地感受一下如何使用注解完成AOP。&#xA;@Service public class UserService { public void getUser() { //To do something System.out.println(&amp;quot;getUser() has been called&amp;quot;); try { Thread.sleep(1000); } catch (InterruptedException e) { e.printStackTrace(); } } } 切面是这样定义的：&#xA;@Component @Aspect public class LoggerAspect { /** * getUser()执行之前执行 */ @Before(&amp;quot;execution(* com.springboot.demo.service.UserService.getUser(..))&amp;quot;) public void callBefore() { System.out.println(&amp;quot;before call method&amp;quot;); System.out.println(&amp;quot;begin........................&amp;quot;); } /** * getUser()执行之后执行 */ @After(&amp;quot;execution(* com.springboot.demo.service.UserService.getUser(..))&amp;quot;) public void callAfter() { System.</description>
-    </item>
-    <item>
-      <title>Another Note on A blogdown Tutorial</title>
-      <link>https://qiref.github.io/note/2017/06/14/another-note/</link>
-      <pubDate>Wed, 14 Jun 2017 00:00:00 +0000</pubDate>
-      <guid>https://qiref.github.io/note/2017/06/14/another-note/</guid>
-      <description>I just discovered an awesome tutorial on blogdown written by Alison. I have to admit this is the best blogdown tutorial I have seen so far.</description>
     </item>
     <item>
       <title>About Hugo XMin</title>

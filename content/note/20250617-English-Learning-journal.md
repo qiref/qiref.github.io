@@ -1,6 +1,6 @@
 ---
 title: "20250617 English Learning Journal"
-date: 2025-06-18T10:50:56+08:00
+date: 2025-06-17T10:50:56+08:00
 type: note
 tags: 
   - English Learning
