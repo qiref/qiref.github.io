@@ -7,7 +7,7 @@ tags:
   - journal
 ---
 
-Today, I didn’t know what to write. It was difficult to write English journal everyday. But that’s what matters. see it. that phrase I have been used yesterday. The best way is practicing constantly while learning English.
+Today, I didn’t know what to write. It was difficult to write English journal everyday. But that’s what matters. see it. that phrase I have used yesterday. The best way is practicing constantly while learning English.
 
 Let me see, what is the most impressive thing today. The first thing I can remember is  ….
 
@@ -16,7 +16,7 @@ Unfortunately, 10 min later, I still cannot know what to write.  😂😂
 I list some  alternatives to words amazing , this what I have learnt today. 
 
 - unimaginable. When something is unimaginable, it means you cannot even imagine it due to being too good or maybe too bad.
-- phenomenal**.** When something is phenomenal, it means it is great and amazing in an unusual or surprising way. For example, the company's success was phenomenal.
+- phenomenal. When something is phenomenal, it means it is great and amazing in an unusual or surprising way. For example, the company's success was phenomenal.
 - remarkable. When something is remarkable, it means it has a special feature, a special quality, that you cannot help but notice it. Graduating from college is a remarkable achievement.
 - breathtaking. it's so great that it takes your breath away. it make me cannot breath
 - spectacular. , it means it's very exciting to look at.For example, the Power of the Dog was a spectacular movie. We took a road trip through the spectacular mountains.
