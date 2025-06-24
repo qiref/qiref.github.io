@@ -13,7 +13,7 @@
 
 <script>
 hljs.configure({languages: []});
-hljs.initHighlightingOnLoad();
+hljs.highlightAll();
 </script>
 
 <link href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/github.min.css"  rel="stylesheet">
@@ -129,8 +129,7 @@ node3  a=x    a=x
 <h3 id="增加版本">增加版本</h3>
 <p>针对上述这种情况, 考虑 t1 时刻, t2 时刻 node 中的数据存在变化, 其实数据就自然而然带上了版本的概念, <em>在读取时, 需选取最高版本的数据;</em></p>
 <p>再来看一下 Quorum 的写入，假设有以下场景:</p>
-<pre><code>
-       t1      t2      t3
+<pre><code class="language-plaintext">       t1      t2      t3
 node1  a=x1    a=x2    a=x3
 node2  a=x1    a=x2    a=x3
 node3  a=x1    a=x1    [a=x3, a=x2]
@@ -173,14 +172,14 @@ p1 &lt;-----------    node1,  node2,  node3                      # t2.1 时刻, 
    (ok)            a=x1,   a=x2,   a=x2
                                      
                    node1,  node2,  node3      -----------&gt;p2  # t2.2 时刻, node record p2
-                    a=x1,   a=x2,   a=x2           (ok)
+                   a=x1,   a=x2,   a=x2           (ok)
 </code></pre>
 <p>t3 时刻, node 接受了 p2 的写请求, 对于 p1 的写入请求会拒绝, 最终一个 quorum 完成写入;</p>
 <pre><code>p1 -----------&gt;    node1,  node2,  node3                      # t3 时刻, p1 写入
    (write,a=x3)    a=x1,   a=x2,   a=x2           
  
 p1 &lt;-----------    node1,  node2,  node3                      # t3.1 时刻, reject p1
-   (reject)           a=x1,   a=x2,   a=x2
+   (reject)        a=x1,   a=x2,   a=x2
 
                    node1,  node2,  node3      &lt;-----------p2  # t3.2 时刻, p2 写入
                    a=y3,   a=y3,   a=x2        (write,a=y3)

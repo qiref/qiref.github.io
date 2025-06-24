@@ -25,7 +25,6 @@ I list some  alternatives to words amazing , this what I have learnt today.
 - Staggering.Something that is staggering is shocking and surprising because of being too large.
 - Majestic. Majestic means beautiful and powerful.When something is majestic, you just see it and say, wow. For example, we enjoyed the majestic mountain view.
 - Awe-inspiring. When something is awe-inspiring, it causes you to feel great respect or admiration for it, and say, wow.The building had an awe-inspiring design.
-- 
     
 > Last summer, I went on an unimaginable trip to the spectacular city of Rome.
 > Rome is a breathtaking city with majestic historical monuments.

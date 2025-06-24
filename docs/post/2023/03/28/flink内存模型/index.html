@@ -13,7 +13,7 @@
 
 <script>
 hljs.configure({languages: []});
-hljs.initHighlightingOnLoad();
+hljs.highlightAll();
 </script>
 
 <link href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/github.min.css"  rel="stylesheet">
@@ -83,7 +83,7 @@ public class OutHeapMem {
     }
 }
 </code></pre>
-<pre><code># 分配内存
+<pre><code class="language-diff"># 分配内存
 Memory                                  used         total        max           usage
 heap                                    21M          165M         3641M         0.59%
 ps_eden_space                           3M           64M          1344M         0.29%
@@ -93,10 +93,10 @@ nonheap                                 28M          28M          -1            
 code_cache                              5M           5M           240M          2.11%
 metaspace                               20M          21M          -1            97.00%
 compressed_class_space                  2M           2M           1024M         0.25%
-direct                                  1024M        1024M        -             100.00%
++direct                                 1024M        1024M        -             100.00%
 mapped                                  0K           0K           -             0.00% 
 </code></pre>
-<pre><code># 释放内存
+<pre><code class="language-diff"># 释放内存
 Memory                                  used         total        max           usage
 heap                                    21M          165M         3641M         0.60%
 ps_eden_space                           4M           64M          1344M         0.32%
@@ -106,7 +106,7 @@ nonheap                                 27M          28M          -1            
 code_cache                              5M           5M           240M          2.09%
 metaspace                               20M          21M          -1            97.03%
 compressed_class_space                  2M           2M           1024M         0.25%
-direct                                  0K           0K           -             0.00%
+-direct                                 0K           0K           -             0.00%
 mapped                                  0K           0K           -             0.00%
 </code></pre>
 <p>通过 arthas 分析，分配直接内存会在 direct 开辟内存空间，表明是在堆外分配的内存空间；虽然 byteBuffer 指向了 direct memory，但是这个对象引用还在 heap 中，当 byteBuffer 对象引用 被 GC 算法回收掉之后，byteBuffer 指向的内存空间也会被释放；</p>
