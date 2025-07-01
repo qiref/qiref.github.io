@@ -1,4 +1,4 @@
 /* 覆盖 highlight.js 代码块背景色 */
 .hljs, pre code.hljs, pre code {
-  background: #f8f8f8 !important;
+  background: #f6f8fa !important;
 }
