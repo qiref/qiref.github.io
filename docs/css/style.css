@@ -34,12 +34,12 @@ hr {
 
 /* code */
 pre {
-  border: 1px solid #ddd;
+  /*border: 1px solid #ddd;*/
   /*box-shadow: 5px 5px 5px #eee;*/
   /*padding: 1em;*/
   overflow-x: auto;
   border-radius: 5px;
-  line-height: 1.7;
+  line-height: 1.9;
 }
 
 /* misc elements */
