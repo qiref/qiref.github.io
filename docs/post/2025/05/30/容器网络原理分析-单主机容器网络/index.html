@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="cn-zh">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>容器网络原理分析-单主机容器网络 | 大道至简</title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/fonts.css" />
+    
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-PGMJFXZJRT"></script>
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+
+<script>
+hljs.configure({languages: []});
+hljs.highlightAll();
+</script>
+
+<link href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/github.min.css"  rel="stylesheet">
+
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-PGMJFXZJRT');
+</script>
+
+<link rel="stylesheet" href="/css/custom.css">
+  </head>
+
+  <body>
+    <nav>
+    <ul class="menu">
+      
+      <li><a href="/">Home</a></li>
+      
+      <li><a href="/tags/">Tags</a></li>
+      
+      <li><a href="/about/">About</a></li>
+      
+      <li><a href="/note/">Note</a></li>
+      
+      <li><a href="/index.xml">Subscribe</a></li>
+      
+    </ul>
+    <hr/>
+    </nav>
+
+<div class="article-meta">
+<h1><span class="title">容器网络原理分析-单主机容器网络</span></h1>
+
+<h2 class="date">2025/05/30</h2>
+<p class="terms">
+  
+  
+  
+  
+  Tags: <a href="/tags/%E5%AE%B9%E5%99%A8">容器</a> <a href="/tags/%E7%BD%91%E7%BB%9C">网络</a> 
+  
+  
+</p>
+</div>
+
+
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#单主机容器通信">单主机容器通信</a>
+      <ul>
+        <li><a href="#docker0">docker0</a></li>
+        <li><a href="#veth-pair">veth pair</a></li>
+        <li><a href="#再谈-docker0">再谈 docker0</a></li>
+        <li><a href="#创建路由规则设置网关为-docker0">创建路由规则，设置网关为 docker0</a></li>
+      </ul>
+    </li>
+    <li><a href="#总结">总结</a></li>
+  </ul>
+</nav>
+
+
+<main>
+<h2 id="单主机容器通信">单主机容器通信</h2>
+<p>在容器环境中，启动两个container，C1，C2，默认情况下，C1 和 C2 网络是通的，但是在 C1 和 C2 中，都分配了自己的 IP；</p>
+<pre><code class="language-bash"># 启动两个容器环境
+
+# 172.17.0.3
+docker run -d --name containerA nginx:alpine
+
+# 172.17.0.2
+docker run -d --name containerB nginx:alpine
+
+# 登录containerA ping containerB，网络能通
+docker exec -it containerA sh
+
+# ping 172.17.0.2
+PING 172.17.0.2 (172.17.0.2): 56 data bytes
+64 bytes from 172.17.0.2: seq=0 ttl=64 time=0.076 ms
+</code></pre>
+<p>为什么在两个 container 中，网络都是互通的呢？</p>
+<p>在 contaner 中，查看网络配置：</p>
+<pre><code class="language-bash">docker exec -it containerA sh
+ifconfig
+eth0      Link encap:Ethernet  HWaddr 02:42:AC:11:00:03
+          inet addr:172.17.0.3  Bcast:172.17.255.255  Mask:255.255.0.0
+          inet6 addr: fe80::42:acff:fe11:3/64 Scope:Link
+          inet6 addr: fd00:dead:beef:c0:0:242:ac11:3/80 Scope:Global
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+          RX packets:275 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:139 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:0
+          RX bytes:19546 (19.0 KiB)  TX bytes:9854 (9.6 KiB)
+
+lo        Link encap:Local Loopback
+          inet addr:127.0.0.1  Mask:255.0.0.0
+          inet6 addr: ::1/128 Scope:Host
+          UP LOOPBACK RUNNING  MTU:65536  Metric:1
+          RX packets:0 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:0 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:1000
+          RX bytes:0 (0.0 B)  TX bytes:0 (0.0 B)
+
+route -n
+Kernel IP routing table
+Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
+0.0.0.0         172.17.0.1      0.0.0.0         UG    0      0        0 eth0
+172.17.0.0      0.0.0.0         255.255.0.0     U     0      0        0 eth0
+</code></pre>
+<p>从容器中的配置来看：</p>
+<ol>
+<li>contaner 中所有的流量都会通过 eth0 走到 172.17.0.1 这个网关上；</li>
+<li>目标地址在 172.17.0.0/16 子网内的流量直接通过 eth0 接口发送，无需网关；</li>
+</ol>
+<h3 id="docker0">docker0</h3>
+<p>先来看 172.17.0.1 这个IP， 在宿主机上，查看本地网络配置，可以看到一个 docker0 的网卡， 地址就是 172.17.0.1;</p>
+<pre><code class="language-bash">ifconfig
+docker0: flags=4163&lt;UP,BROADCAST,RUNNING,MULTICAST&gt;  mtu 1500
+        inet 172.17.0.1  netmask 255.255.0.0  broadcast 172.17.255.255
+        inet6 fd00:dead:beef:c0::1  prefixlen 80  scopeid 0x0&lt;global&gt;
+        inet6 fe80::42:7fff:fe7c:680f  prefixlen 64  scopeid 0x20&lt;link&gt;
+        ether 02:42:7f:7c:68:0f  txqueuelen 0  (Ethernet)
+        RX packets 440  bytes 25146 (24.5 KiB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 22  bytes 2492 (2.4 KiB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+...
+</code></pre>
+<p>也就是说，在容器中，所有的地址都能经过这个网关，也就是容器的流量都经过了 docker0 网桥；</p>
+<p>通过在容器中，查看 ARP 缓存也能验证：</p>
+<pre><code class="language-bash">arp -n
+? (172.17.0.1) at 02:42:7f:7c:68:0f [ether]  on eth0 # 对应了docker0网桥的mac地址 02:42:7f:7c:68:0f
+</code></pre>
+<p>再回首看容器内的两条路由规则：</p>
+<pre><code class="language-bash">Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
+0.0.0.0         172.17.0.1      0.0.0.0         UG    0      0        0 eth0 
+172.17.0.0      0.0.0.0         255.255.0.0     U     0      0        0 eth0 
+</code></pre>
+<p>既然 docker0 已经接管了容器内的所有网络请求，为什么还需要第二条路由规则？而且第二条路由规则看上去好像还没经过 docker0 网桥！（Gateway: 0.0.0.0）</p>
+<p>先来分析一下第二条路由，访问的网络网段刚好跟docker0网桥的网段是一样的：<code>inet 172.17.0.1  netmask 255.255.0.0  broadcast 172.17.255.255</code></p>
+<p>那就是说，容器之间网络访问，不需要走网关 172.17.0.1；</p>
+<p>在 containerA 中访问 containerB：</p>
+<pre><code class="language-bash">docker exec -it containerA sh
+/ # ping 172.17.0.2 
+PING 172.17.0.2 (172.17.0.2): 56 data bytes
+64 bytes from 172.17.0.2: seq=0 ttl=64 time=0.054 ms
+64 bytes from 172.17.0.2: seq=1 ttl=64 time=0.063 ms
+</code></pre>
+<p>在没做任何配置的情况下，发现默认网络是通的，并且在containerA arp 缓存中，甚至能看到 containerB 的 mac 地址！</p>
+<pre><code class="language-bash">arp -n
+? (172.17.0.2) at 02:42:ac:11:00:02 [ether]  on eth0 # containerB 的地址
+? (172.17.0.1) at 02:42:7f:7c:68:0f [ether]  on eth0 # 对应了docker0网桥的mac地址 02:42:7f:7c:68:0f
+</code></pre>
+<p>那么肯定有类似于交换机的一个二层设备存在，连接了同一个宿主机下的容器网络；</p>
+<p>再去宿主机上看看网络：</p>
+<pre><code class="language-bash">ip a
+...
+# lo ..
+# eth0 ..
+...
+3: docker0: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc noqueue state UP group default
+    link/ether 02:42:7f:7c:68:0f brd ff:ff:ff:ff:ff:ff
+    inet 172.17.0.1/16 brd 172.17.255.255 scope global docker0
+       valid_lft forever preferred_lft forever
+    inet6 fd00:dead:beef:c0::1/80 scope global
+       valid_lft forever preferred_lft forever
+    inet6 fe80::42:7fff:fe7c:680f/64 scope link
+       valid_lft forever preferred_lft forever
+9: veth63935af@if8: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 
+    qdisc noqueue master docker0 state UP group default
+    link/ether be:4b:ea:af:8a:e5 brd ff:ff:ff:ff:ff:ff link-netnsid 0
+    inet6 fe80::bc4b:eaff:feaf:8ae5/64 scope link
+       valid_lft forever preferred_lft forever
+11: veth66c7042@if10: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 
+    qdisc noqueue master docker0 state UP group default
+    link/ether 3e:10:f6:aa:69:2d brd ff:ff:ff:ff:ff:ff link-netnsid 1
+    inet6 fe80::3c10:f6ff:feaa:692d/64 scope link
+       valid_lft forever preferred_lft forever
+</code></pre>
+<p>发现网络设备在启动容器之后有变化，veth63935af@if8 veth66c7042@if10 启动两个容器之后，多了这两个设备；</p>
+<p>抓包分析一下：</p>
+<pre><code class="language-bash">tcpdump -i veth63935af -nn -c 5
+tcpdump: verbose output suppressed, use -v[v]... for full protocol decode
+listening on veth63935af, link-type EN10MB (Ethernet), snapshot length 262144 bytes
+
+</code></pre>
+<p>分别尝试在containerA 和 containerB 中发起网络请求：</p>
+<pre><code class="language-bash"># 访问 172.17.0.0 网段，走第二条路由规则
+docker exec containerA ping 172.17.0.1
+docker exec containerB ping 172.17.0.1
+</code></pre>
+<p>在 containerB 中发起请求时，能得到如下网络请求：</p>
+<pre><code class="language-bash">tcpdump -i veth63935af -nn -c 5
+tcpdump: verbose output suppressed, use -v[v]... for full protocol decode
+listening on veth63935af, link-type EN10MB (Ethernet), snapshot length 262144 bytes
+
+21:06:31.563378 IP 172.17.0.2 &gt; 172.17.0.1: ICMP echo request, id 109, seq 0, length 64
+21:06:31.563436 IP 172.17.0.1 &gt; 172.17.0.2: ICMP echo reply, id 109, seq 0, length 64
+21:06:32.563537 IP 172.17.0.2 &gt; 172.17.0.1: ICMP echo request, id 109, seq 1, length 64
+21:06:32.563565 IP 172.17.0.1 &gt; 172.17.0.2: ICMP echo reply, id 109, seq 1, length 64
+21:06:33.563644 IP 172.17.0.2 &gt; 172.17.0.1: ICMP echo request, id 109, seq 2, length 64
+5 packets captured
+6 packets received by filter
+0 packets dropped by kernel
+</code></pre>
+<p>containerB 的 IP 就是 172.17.0.2 ，veth63935af 设备监听到 ICMP 网络请求，说明此设备就是作用于 containerB！</p>
+<h3 id="veth-pair">veth pair</h3>
+<p>veth pair 是什么？
+veth（Virtual Ethernet Device）是Linux内核提供的一种虚拟网络设备，总是成对出现，因此称为 veth pair。它们像一条网线的两端：</p>
+<p>一端发送数据，另一端立即接收。
+被用于连接两个不同的网络命名空间（network namespace），实现网络通信。</p>
+<p>进一步分析一下跟 containerB 相关 veth pair 设备，在宿主机上查看一下这个设备：</p>
+<pre><code class="language-bash">ip  link show veth63935af
+9: veth63935af@if8: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; 
+    mtu 1500 qdisc noqueue master docker0 state UP mode DEFAULT group default
+    link/ether be:4b:ea:af:8a:e5 brd ff:ff:ff:ff:ff:ff link-netnsid 0
+</code></pre>
+<p>在容器中，查看一下 eth0 设备：</p>
+<pre><code class="language-bash">ip  link show eth0
+8: eth0@if9: &lt;BROADCAST,MULTICAST,UP,LOWER_UP,M-DOWN&gt; mtu 1500 qdisc noqueue state UP
+    link/ether 02:42:ac:11:00:02 brd ff:ff:ff:ff:ff:ff
+</code></pre>
+<p>可以发现：宿主机中的 veth63935af 的一端对应的就是 containerB 中的 eth0 设备；</p>
+<ul>
+<li>9: veth63935af@if8</li>
+<li>8: eth0@if9</li>
+</ul>
+<p>基于 veth pair 的特性，总是成对出现，连接两个端点，一端在容器中的 eth0 ，还有一端的是连接到哪里了呢？ 通过查看宿主机上的设备信息，提到了 docker0，又是这个！</p>
+<p>查看一下 docker0 设备信息：</p>
+<p><code>brctl showstp</code> 是 Linux 网桥管理工具中的关键命令，用于显示网桥的 生成树协议（Spanning Tree Protocol, STP）状态信息。</p>
+<pre><code class="language-bash">brctl showstp docker0
+
+docker0
+ bridge id              8000.02427f7c680f
+ designated root        8000.02427f7c680f
+ root port              0            path cost           0
+ max age                20.00       bridge max age      20.00
+ hello time             2.00        bridge hello time    2.00
+ forward delay          15.00       bridge forward delay 15.00
+ ageing time            300.00
+ hello timer            0.00        tcn timer           0.00
+ topology change timer  0.00        gc timer            241.48
+ flags
+
+veth63935af (1)
+ port id                8001        state               forwarding
+ designated root        8000.02427f7c680f  path cost           2
+ designated bridge      8000.02427f7c680f  message age timer   0.00
+ designated port        8001        forward delay timer  0.00
+ designated cost        0           hold timer           0.00
+ flags
+
+veth66c7042 (2)
+ port id                8002        state               forwarding
+ designated root        8000.02427f7c680f  path cost           2
+ designated bridge      8000.02427f7c680f  message age timer   0.00
+ designated port        8002        forward delay timer  0.00
+ designated cost        0           hold timer           0.00
+ flags
+</code></pre>
+<p>有很明确的信息，docker0 网桥连接了 veth63935af veth66c7042 这两 个veth pair 设备。所以在第二条路由规则中，可以得出容器网络的拓扑图：</p>
+<p><img src="/assets/img/docker0-1.svg" alt="docker0 网桥拓扑"></p>
+<pre><code class="language-bash">brctl showmacs docker0
+port no    mac addr        is local?    ageing timer
+ 2    3e:10:f6:aa:69:2d    yes           0.00
+ 1    be:4b:ea:af:8a:e5    yes           0.00
+...
+
+
+ip -br link
+veth63935af@if8  UP  be:4b:ea:af:8a:e5 &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt;
+veth66c7042@if10 UP  3e:10:f6:aa:69:2d &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt;
+...
+</code></pre>
+<p>通过查看 docker0 网桥学习到的mac地址，也可以发现，docker0 保存了 veth pari 设备在宿主机上的 mac 地址，并且视为本地地址，也进一步验证了，veth pair 的一端连接到了 docker0 网桥。</p>
+<p>同时，以上信息也可以得出，连接了 veth pair 设备的 docker0 直接作用在二层网络，因为 docker0 中直接保存了 veth pair 的 mac 地址，相当于一个交换机，直连了容器网络中的各个容器；</p>
+<h4 id="创建-veth-pair-连接-docker0">创建 veth pair 连接 docker0</h4>
+<p>既然 veth pair 是 linux 内核提供的，那么是否能手动创建一个 veth pair 设备，手动绑定到 docker0 ，然后跟其他 veth pair 设备通信呢？</p>
+<pre><code class="language-bash"># 创建名为 ns1 的网络命名空间
+ip netns add ns1
+# 创建一对 veth 设备：veth-ns1（容器端）和 veth-host（主机端）
+ip link add veth-ns1 type veth peer name veth-host
+# 将 veth-ns1 放入 ns1 命名空间
+ip link set veth-ns1 netns ns1
+</code></pre>
+<p>到ns1中配置网络，将 IP 设置为 172.17.0.100/16</p>
+<pre><code class="language-bash"># 进入 ns1 命名空间配置网络
+ip netns exec ns1 /bin/bash
+
+# 启用回环接口
+ip link set lo up
+
+# 配置 veth-ns1 的 IP 地址（需在 docker0 网段）
+ip addr add 172.17.0.100/16 dev veth-ns1
+
+# 启用接口
+ip link set veth-ns1 up
+</code></pre>
+<p>到宿主机上，将 veth-host 接入 docker0 网桥</p>
+<pre><code class="language-bash"># 将 veth-host 接入 docker0 网桥
+brctl addif docker0 veth-host
+
+# 启用主机端接口
+ip link set veth-host up
+</code></pre>
+<p>验证网络连通性：</p>
+<pre><code class="language-bash"># 在 ns1 空间中，ping 其他 container
+ip netns exec ns1 ping 172.17.0.2
+PING 172.17.0.2 (172.17.0.2) 56(84) bytes of data.
+64 bytes from 172.17.0.2: icmp_seq=1 ttl=64 time=0.038 ms
+64 bytes from 172.17.0.2: icmp_seq=2 ttl=64 time=0.034 ms
+
+# 在主机上 ping ns1
+ping 172.17.0.100
+PING 172.17.0.100 (172.17.0.100) 56(84) bytes of data.
+64 bytes from 172.17.0.100: icmp_seq=1 ttl=64 time=0.036 ms
+64 bytes from 172.17.0.100: icmp_seq=2 ttl=64 time=0.038 ms
+</code></pre>
+<h3 id="再谈-docker0">再谈 docker0</h3>
+<p>再看容器中的路由规则：</p>
+<pre><code class="language-bash">Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
+0.0.0.0         172.17.0.1      0.0.0.0         UG    0      0        0 eth0 
+172.17.0.0      0.0.0.0         255.255.0.0     U     0      0        0 eth0 
+</code></pre>
+<p>containerA 中访问外网，例如 ping google.com</p>
+<pre><code class="language-bash">ping google.com
+PING google.com (142.251.175.138): 56 data bytes
+64 bytes from 142.251.175.138: seq=0 ttl=106 time=1.912 ms
+64 bytes from 142.251.175.138: seq=1 ttl=106 time=1.981 ms
+</code></pre>
+<p>可以发现容器网络中，对外网能直接访问，根据容器内的路由规则可知，docker0 网桥接管了流量，但是 docker0 网桥是如何处理这部分流量的呢？</p>
+<pre><code class="language-bash">iptables -t nat -L -n -v
+
+Chain POSTROUTING (policy ACCEPT 0 packets, 0 bytes)
+ pkts bytes target     prot opt in     out     source               destination
+   17  1210 MASQUERADE  0    --  *      !docker0  172.17.0.0/16        0.0.0.0/0
+</code></pre>
+<ul>
+<li>匹配源地址为 172.17.0.0/16 (Docker 容器默认网段)</li>
+<li>且出口接口不是 docker0（即访问外部网络）</li>
+<li>对符合条件的流量进行源地址转换（SNAT）</li>
+</ul>
+<p>可以在容器中 ping 公网IP，通过 conntrack 链路跟踪，查看 nat 转换情况：</p>
+<pre><code class="language-bash">docker exec -it containerA sh
+
+ping 8.8.8.8
+PING 8.8.8.8 (8.8.8.8): 56 data bytes
+64 bytes from 8.8.8.8: seq=0 ttl=116 time=1.392 ms
+64 bytes from 8.8.8.8: seq=1 ttl=116 time=1.371 ms
+</code></pre>
+<p>在宿主机中查看链路：</p>
+<pre><code class="language-bash">conntrack -L -d 8.8.8.8 -o extended
+ipv4     2 icmp     1 29 src=172.17.0.3 dst=8.8.8.8 type=8 
+    code=0 id=172 src=8.8.8.8 dst=10.3.8.0 type=0 code=0 id=172 mark=0 use=1
+</code></pre>
+<p>分析一下这个 conntrack 条目：
+原始方向（请求）：源IP 172.17.0.3（容器IP） -&gt; 目标IP 8.8.8.8
+回复方向（响应）：源IP 8.8.8.8 -&gt; 目标IP 10.3.8.6（宿主机的公网IP）</p>
+<p>这里的关键是，为什么响应包的目标IP是宿主机的公网IP，却最终被送到了容器内部？</p>
+<p>答案在于：在请求包离开宿主机的时候，做了SNAT（源地址转换），将容器IP（172.17.0.3）转换成了宿主机的公网IP（10.3.8.6）。同时，conntrack 模块记录了这个转换关系（即一个连接跟踪条目）。</p>
+<p>当响应包返回时（目标IP是10.3.8.6，目标端口是请求时随机选择的端口，对于ICMP则是id和seq），这个包到达宿主机，然后由 conntrack 模块根据连接跟踪条目的记录进行反向转换：将目标IP从宿主机的公网IP（10.3.8.6）转换回容器的IP（172.17.0.3）。然后通过宿主机内部的网络桥接（docker0）将包转发给容器。</p>
+<ol>
+<li>容器发起请求：容器内部：172.17.0.3 -&gt; 8.8.8.8 (ping) 这个包到达宿主机的docker0网桥。</li>
+<li>宿主机根据路由规则，判断目标8.8.8.8为非本地网络，需要从物理网卡（假设为eth0）出去。在从物理网卡出去之前，进入POSTROUTING链进行SNAT（源地址转换）。</li>
+<li>SNAT规则（通常为MASQUERADE）将源IP 172.17.0.3 改为宿主机的公网IP 10.3.8.0。同时，conntrack模块记录下这个转换（也就是我们看到的这个条目）。</li>
+<li>包发送到互联网，目标8.8.8.8收到后，回复给10.3.8.0（宿主机公网IP）。</li>
+<li>回复包到达宿主机的eth0网卡，进入PREROUTING链。在这里，conntrack模块发现这个包属于已有的连接跟踪条目（根据源IP:8.8.8.8，目标IP:10.3.8.0，协议类型，ICMP id等），然后进行目标地址的反向转换：将目标IP从10.3.8.0转换为172.17.0.3（原始请求的源IP）。这样就变成了一个目标地址为容器IP的包。</li>
+<li>然后根据宿主机内部的路由，这个包需要发送到docker0网桥（因为目标地址172.17.0.3是docker0的子网），然后docker0网桥将包转发到对应的容器。</li>
+</ol>
+<p>可以分别在宿主机的 eth0 和 docker0 上分别抓包验证：</p>
+<p>依然在容器中 ping 8.8.8.8</p>
+<pre><code class="language-bash">tcpdump -i eth0 -nn host 8.8.8.8
+tcpdump: verbose output suppressed, use -v[v]... for full protocol decode
+listening on eth0, link-type EN10MB (Ethernet), snapshot length 262144 bytes
+10:54:22.783838 IP 10.3.8.0 &gt; 8.8.8.8: ICMP echo request, id 180, seq 0, length 64
+10:54:22.785151 IP 8.8.8.8 &gt; 10.3.8.0: ICMP echo reply, id 180, seq 0, length 64
+</code></pre>
+<p>在 eth0 上抓包，发现网络包直接从本机到了 8.8.8.8，说明这个 IPCM 网络包经过了 eth0</p>
+<pre><code class="language-bash">tcpdump -i docker0 -nn host 8.8.8.8
+tcpdump: verbose output suppressed, use -v[v]... for full protocol decode
+listening on docker0, link-type EN10MB (Ethernet), snapshot length 262144 bytes
+10:54:22.783800 IP 172.17.0.3 &gt; 8.8.8.8: ICMP echo request, id 180, seq 0, length 64
+10:54:22.785169 IP 8.8.8.8 &gt; 172.17.0.3: ICMP echo reply, id 180, seq 0, length 64
+</code></pre>
+<p>而在 docker0 上抓包，发现容器网络经过了 docker0 到了外网，这说明 docker0 最终还是把网络交给了 eth0 处理。</p>
+<h3 id="创建路由规则设置网关为-docker0">创建路由规则，设置网关为 docker0</h3>
+<p>上文中，创建了 ns1 的空间，并且创建 veth pair 设备连接到docker0，此时，ns1 中的网络可以直连其他的docker容器；那么基于上文分析，docker0 还可以作为3层路由设备，那在 ns1 中指定路由，把 docker0 作为ns1 的网关，那么 ns1 也能借助 docker0 和外网通信：</p>
+<pre><code class="language-bash"># 进入 ns1 命名空间配置网络
+ip netns exec ns1 /bin/bash
+
+# 设置默认路由（网关指向 docker0 的 IP）
+ip route add default via 172.17.0.1
+
+# 查看路由规则
+ip route show
+default via 172.17.0.1 dev veth-ns1
+172.17.0.0/16 dev veth-ns1 proto kernel scope link src 172.17.0.100
+
+ping 8.8.8.8
+PING 8.8.8.8 (8.8.8.8) 56(84) bytes of data.
+64 bytes from 8.8.8.8: icmp_seq=1 ttl=116 time=1.34 ms
+64 bytes from 8.8.8.8: icmp_seq=2 ttl=116 time=1.31 ms
+</code></pre>
+<h2 id="总结">总结</h2>
+<p><img src="/assets/img/docker0-2.svg" alt="docker0 网桥拓扑1"></p>
+<p>在单宿主机中，容器网络可以总结为：</p>
+<ol>
+<li>对于容器之间的通信，docker0 充当交换机的二层设备，直连了各个容器；</li>
+<li>对于容器对外通信，docker0 充当了三层路由设备，借助 SNAT 实现出站连接，DNAT 实现入站访问，所有流量经过宿主机的 eth0；</li>
+</ol>
+
+</main>
+
+  <footer>
+  
+<script src="https://utteranc.es/client.js"
+        repo="qiref/qiref.github.io"
+        issue-term="pathname"
+        label="Comment"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script>
+
+  
+  <hr/>
+  © powered by <a href="https://gohugo.io/">Hugo</a> &amp; <a href="https://github.com/yihui/hugo-xmin">Xmin</a>  2017 &ndash; 2025 | <a href="https://github.com/qiref">Github</a>
+  
+  </footer>
+  </body>
+</html>
+

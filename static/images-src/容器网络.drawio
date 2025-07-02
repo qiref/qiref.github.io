@@ -1,4 +1,4 @@
-<mxfile host="Electron" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/27.0.5 Chrome/134.0.6998.205 Electron/35.3.0 Safari/537.36" version="27.0.5">
+<mxfile host="Electron" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/27.0.5 Chrome/134.0.6998.205 Electron/35.3.0 Safari/537.36" version="27.0.5" pages="3">
   <diagram name="第 1 页" id="ESzVbe0_x0UdH036YeSB">
     <mxGraphModel dx="778" dy="567" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
@@ -30,6 +30,264 @@
         </mxCell>
         <mxCell id="lhsQmtd-8HMAxkVs5M6T-9" value="containerA" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
           <mxGeometry x="355" y="250" width="80" height="30" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="caOqURoNePbEINSfGYqy" name="第 2 页">
+    <mxGraphModel dx="778" dy="567" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="5n9GWVVrKfNXIdiJBFR5-3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;startArrow=classic;startFill=1;" edge="1" parent="1" source="p7dqFzh0qTugSKjXSdB0-12" target="5n9GWVVrKfNXIdiJBFR5-2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="5n9GWVVrKfNXIdiJBFR5-1" value="容器流量" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="190" y="230" width="70" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="5n9GWVVrKfNXIdiJBFR5-5" value="" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="5n9GWVVrKfNXIdiJBFR5-2" target="5n9GWVVrKfNXIdiJBFR5-4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="p7dqFzh0qTugSKjXSdB0-11" value="ping 172.17.0.2" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=12;" vertex="1" connectable="0" parent="5n9GWVVrKfNXIdiJBFR5-5">
+          <mxGeometry x="-0.1824" relative="1" as="geometry">
+            <mxPoint x="-23" y="7" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="5n9GWVVrKfNXIdiJBFR5-7" value="" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="5n9GWVVrKfNXIdiJBFR5-2" target="5n9GWVVrKfNXIdiJBFR5-6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="p7dqFzh0qTugSKjXSdB0-10" value="ping 8.8.8.8" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=12;" vertex="1" connectable="0" parent="5n9GWVVrKfNXIdiJBFR5-7">
+          <mxGeometry x="-0.3407" y="3" relative="1" as="geometry">
+            <mxPoint x="4" y="13" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="5n9GWVVrKfNXIdiJBFR5-2" value="是否在docker0网段？&lt;br&gt;&lt;span style=&quot;caret-color: rgba(0, 0, 0, 0.9); color: rgba(0, 0, 0, 0.9); font-family: ui-monospace, SFMono-Regular, &amp;quot;SF Mono&amp;quot;, Menlo, Consolas, &amp;quot;Liberation Mono&amp;quot;, monospace; text-align: start; white-space-collapse: preserve; background-color: rgb(255, 255, 255);&quot;&gt;&lt;font&gt;172.17.0.0/16&lt;/font&gt;&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="155" y="359" width="140" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="p7dqFzh0qTugSKjXSdB0-17" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;curved=1;exitX=0.305;exitY=-0.1;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" parent="1" source="5n9GWVVrKfNXIdiJBFR5-4" target="p7dqFzh0qTugSKjXSdB0-12">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="71" y="315" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="5n9GWVVrKfNXIdiJBFR5-4" value="直接二层转发" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="40" y="500" width="100" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="5n9GWVVrKfNXIdiJBFR5-9" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="5n9GWVVrKfNXIdiJBFR5-6" target="5n9GWVVrKfNXIdiJBFR5-8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="5n9GWVVrKfNXIdiJBFR5-6" value="进入POSTROUTING 链" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="260" y="440" width="150" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="5n9GWVVrKfNXIdiJBFR5-11" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="5n9GWVVrKfNXIdiJBFR5-8" target="5n9GWVVrKfNXIdiJBFR5-10">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="5n9GWVVrKfNXIdiJBFR5-8" value="MASQUERADE 规则 SNAT&lt;br&gt;&lt;font&gt;&lt;span style=&quot;margin: 0px; padding: 0px; border: 0px; line-height: inherit; font-family: ui-monospace, SFMono-Regular, &amp;quot;SF Mono&amp;quot;, Menlo, Consolas, &amp;quot;Liberation Mono&amp;quot;, monospace; font-size-adjust: inherit; font-kerning: inherit; font-variant-alternates: inherit; font-variant-ligatures: inherit; font-variant-numeric: inherit; font-variant-east-asian: inherit; font-variant-position: inherit; font-variant-emoji: inherit; font-feature-settings: inherit; font-optical-sizing: inherit; font-variation-settings: inherit; vertical-align: baseline; color: rgb(152, 104, 1); text-align: start; white-space-collapse: preserve;&quot; class=&quot;hljs-number&quot;&gt;172.17&lt;/span&gt;&lt;span style=&quot;caret-color: rgba(0, 0, 0, 0.9); color: rgba(0, 0, 0, 0.9); font-family: ui-monospace, SFMono-Regular, &amp;quot;SF Mono&amp;quot;, Menlo, Consolas, &amp;quot;Liberation Mono&amp;quot;, monospace; text-align: start; white-space-collapse: preserve; background-color: rgb(255, 255, 255);&quot;&gt;.&lt;/span&gt;&lt;span style=&quot;margin: 0px; padding: 0px; border: 0px; line-height: inherit; font-family: ui-monospace, SFMono-Regular, &amp;quot;SF Mono&amp;quot;, Menlo, Consolas, &amp;quot;Liberation Mono&amp;quot;, monospace; font-size-adjust: inherit; font-kerning: inherit; font-variant-alternates: inherit; font-variant-ligatures: inherit; font-variant-numeric: inherit; font-variant-east-asian: inherit; font-variant-position: inherit; font-variant-emoji: inherit; font-feature-settings: inherit; font-optical-sizing: inherit; font-variation-settings: inherit; vertical-align: baseline; color: rgb(152, 104, 1); text-align: start; white-space-collapse: preserve;&quot; class=&quot;hljs-number&quot;&gt;0.3&lt;/span&gt;&lt;span style=&quot;caret-color: rgba(0, 0, 0, 0.9); color: rgba(0, 0, 0, 0.9); font-family: ui-monospace, SFMono-Regular, &amp;quot;SF Mono&amp;quot;, Menlo, Consolas, &amp;quot;Liberation Mono&amp;quot;, monospace; text-align: start; white-space-collapse: preserve; background-color: rgb(255, 255, 255);&quot;&gt; → &lt;/span&gt;&lt;span style=&quot;margin: 0px; padding: 0px; border: 0px; line-height: inherit; font-family: ui-monospace, SFMono-Regular, &amp;quot;SF Mono&amp;quot;, Menlo, Consolas, &amp;quot;Liberation Mono&amp;quot;, monospace; font-size-adjust: inherit; font-kerning: inherit; font-variant-alternates: inherit; font-variant-ligatures: inherit; font-variant-numeric: inherit; font-variant-east-asian: inherit; font-variant-position: inherit; font-variant-emoji: inherit; font-feature-settings: inherit; font-optical-sizing: inherit; font-variation-settings: inherit; vertical-align: baseline; color: rgb(152, 104, 1); text-align: start; white-space-collapse: preserve;&quot; class=&quot;hljs-number&quot;&gt;10.3&lt;/span&gt;&lt;span style=&quot;caret-color: rgba(0, 0, 0, 0.9); color: rgba(0, 0, 0, 0.9); font-family: ui-monospace, SFMono-Regular, &amp;quot;SF Mono&amp;quot;, Menlo, Consolas, &amp;quot;Liberation Mono&amp;quot;, monospace; text-align: start; white-space-collapse: preserve; background-color: rgb(255, 255, 255);&quot;&gt;.&lt;/span&gt;&lt;span style=&quot;margin: 0px; padding: 0px; border: 0px; line-height: inherit; font-family: ui-monospace, SFMono-Regular, &amp;quot;SF Mono&amp;quot;, Menlo, Consolas, &amp;quot;Liberation Mono&amp;quot;, monospace; font-size-adjust: inherit; font-kerning: inherit; font-variant-alternates: inherit; font-variant-ligatures: inherit; font-variant-numeric: inherit; font-variant-east-asian: inherit; font-variant-position: inherit; font-variant-emoji: inherit; font-feature-settings: inherit; font-optical-sizing: inherit; font-variation-settings: inherit; vertical-align: baseline; color: rgb(152, 104, 1); text-align: start; white-space-collapse: preserve;&quot; class=&quot;hljs-number&quot;&gt;8.6&lt;/span&gt;&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="245" y="495" width="180" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="5n9GWVVrKfNXIdiJBFR5-14" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="5n9GWVVrKfNXIdiJBFR5-10" target="5n9GWVVrKfNXIdiJBFR5-13">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="5n9GWVVrKfNXIdiJBFR5-10" value="源IP替换为宿主机IP" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="270" y="560" width="130" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="p7dqFzh0qTugSKjXSdB0-16" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;dashed=1;" edge="1" parent="1" source="5n9GWVVrKfNXIdiJBFR5-13" target="p7dqFzh0qTugSKjXSdB0-1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="5n9GWVVrKfNXIdiJBFR5-13" value="通过宿主机物理网卡发出" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="255" y="615" width="160" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="p7dqFzh0qTugSKjXSdB0-3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="p7dqFzh0qTugSKjXSdB0-1" target="p7dqFzh0qTugSKjXSdB0-2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="p7dqFzh0qTugSKjXSdB0-1" value="宿主机物理网卡回包" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="445" y="615" width="130" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="p7dqFzh0qTugSKjXSdB0-5" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="p7dqFzh0qTugSKjXSdB0-2" target="p7dqFzh0qTugSKjXSdB0-4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="p7dqFzh0qTugSKjXSdB0-2" value="进入POSTROUTING 链" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="435" y="560" width="150" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="p7dqFzh0qTugSKjXSdB0-7" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="p7dqFzh0qTugSKjXSdB0-4" target="p7dqFzh0qTugSKjXSdB0-6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="p7dqFzh0qTugSKjXSdB0-8" value="match" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=12;" vertex="1" connectable="0" parent="p7dqFzh0qTugSKjXSdB0-7">
+          <mxGeometry x="0.42" y="-1" relative="1" as="geometry">
+            <mxPoint x="-1" y="16" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="p7dqFzh0qTugSKjXSdB0-4" value="conntrack查找" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="460" y="500" width="100" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="p7dqFzh0qTugSKjXSdB0-6" value="DNAT&lt;br&gt;&lt;font&gt;&lt;span style=&quot;margin: 0px; padding: 0px; border: 0px; line-height: inherit; font-family: ui-monospace, SFMono-Regular, &amp;quot;SF Mono&amp;quot;, Menlo, Consolas, &amp;quot;Liberation Mono&amp;quot;, monospace; font-size-adjust: inherit; font-kerning: inherit; font-variant-alternates: inherit; font-variant-ligatures: inherit; font-variant-numeric: inherit; font-variant-east-asian: inherit; font-variant-position: inherit; font-variant-emoji: inherit; font-feature-settings: inherit; font-optical-sizing: inherit; font-variation-settings: inherit; vertical-align: baseline; color: rgb(152, 104, 1); text-align: start; white-space-collapse: preserve;&quot; class=&quot;hljs-number&quot;&gt;10.3&lt;/span&gt;&lt;span style=&quot;caret-color: rgba(0, 0, 0, 0.9); color: rgba(0, 0, 0, 0.9); font-family: ui-monospace, SFMono-Regular, &amp;quot;SF Mono&amp;quot;, Menlo, Consolas, &amp;quot;Liberation Mono&amp;quot;, monospace; text-align: start; white-space-collapse: preserve; background-color: rgb(255, 255, 255);&quot;&gt;.&lt;/span&gt;&lt;span style=&quot;margin: 0px; padding: 0px; border: 0px; line-height: inherit; font-family: ui-monospace, SFMono-Regular, &amp;quot;SF Mono&amp;quot;, Menlo, Consolas, &amp;quot;Liberation Mono&amp;quot;, monospace; font-size-adjust: inherit; font-kerning: inherit; font-variant-alternates: inherit; font-variant-ligatures: inherit; font-variant-numeric: inherit; font-variant-east-asian: inherit; font-variant-position: inherit; font-variant-emoji: inherit; font-feature-settings: inherit; font-optical-sizing: inherit; font-variation-settings: inherit; vertical-align: baseline; color: rgb(152, 104, 1); text-align: start; white-space-collapse: preserve;&quot; class=&quot;hljs-number&quot;&gt;8.6&lt;/span&gt;&lt;span style=&quot;caret-color: rgba(0, 0, 0, 0.9); color: rgba(0, 0, 0, 0.9); font-family: ui-monospace, SFMono-Regular, &amp;quot;SF Mono&amp;quot;, Menlo, Consolas, &amp;quot;Liberation Mono&amp;quot;, monospace; text-align: start; white-space-collapse: preserve; background-color: rgb(255, 255, 255);&quot;&gt; → &lt;/span&gt;&lt;span style=&quot;margin: 0px; padding: 0px; border: 0px; line-height: inherit; font-family: ui-monospace, SFMono-Regular, &amp;quot;SF Mono&amp;quot;, Menlo, Consolas, &amp;quot;Liberation Mono&amp;quot;, monospace; font-size-adjust: inherit; font-kerning: inherit; font-variant-alternates: inherit; font-variant-ligatures: inherit; font-variant-numeric: inherit; font-variant-east-asian: inherit; font-variant-position: inherit; font-variant-emoji: inherit; font-feature-settings: inherit; font-optical-sizing: inherit; font-variation-settings: inherit; vertical-align: baseline; color: rgb(152, 104, 1); text-align: start; white-space-collapse: preserve;&quot; class=&quot;hljs-number&quot;&gt;172.17&lt;/span&gt;&lt;span style=&quot;caret-color: rgba(0, 0, 0, 0.9); color: rgba(0, 0, 0, 0.9); font-family: ui-monospace, SFMono-Regular, &amp;quot;SF Mono&amp;quot;, Menlo, Consolas, &amp;quot;Liberation Mono&amp;quot;, monospace; text-align: start; white-space-collapse: preserve; background-color: rgb(255, 255, 255);&quot;&gt;.&lt;/span&gt;&lt;span style=&quot;margin: 0px; padding: 0px; border: 0px; line-height: inherit; font-family: ui-monospace, SFMono-Regular, &amp;quot;SF Mono&amp;quot;, Menlo, Consolas, &amp;quot;Liberation Mono&amp;quot;, monospace; font-size-adjust: inherit; font-kerning: inherit; font-variant-alternates: inherit; font-variant-ligatures: inherit; font-variant-numeric: inherit; font-variant-east-asian: inherit; font-variant-position: inherit; font-variant-emoji: inherit; font-feature-settings: inherit; font-optical-sizing: inherit; font-variation-settings: inherit; vertical-align: baseline; color: rgb(152, 104, 1); text-align: start; white-space-collapse: preserve;&quot; class=&quot;hljs-number&quot;&gt;0.3&lt;/span&gt;&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="420" y="415" width="180" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="p7dqFzh0qTugSKjXSdB0-13" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;startArrow=classic;startFill=1;" edge="1" parent="1" source="5n9GWVVrKfNXIdiJBFR5-1" target="p7dqFzh0qTugSKjXSdB0-12">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="225" y="320" as="sourcePoint" />
+            <mxPoint x="225" y="364" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="p7dqFzh0qTugSKjXSdB0-12" value="docker0" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="190" y="300" width="70" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="p7dqFzh0qTugSKjXSdB0-14" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;curved=1;" edge="1" parent="1" source="p7dqFzh0qTugSKjXSdB0-6" target="5n9GWVVrKfNXIdiJBFR5-2">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="500" y="380" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="zYy-konWNwnvSIFVfDYG-1" value="" style="shape=curlyBracket;whiteSpace=wrap;html=1;rounded=1;flipH=1;labelPosition=right;verticalLabelPosition=middle;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="610" y="440" width="20" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="zYy-konWNwnvSIFVfDYG-2" value="Linux kernel&amp;nbsp;&lt;span style=&quot;margin: 0px; padding: 0px; border: 0px; font-weight: 600; line-height: inherit; font-family: &amp;quot;PingFang SC&amp;quot;, -apple-system, BlinkMacSystemFont, &amp;quot;Segoe UI&amp;quot;, Roboto, Ubuntu, &amp;quot;Helvetica Neue&amp;quot;, Helvetica, Arial, &amp;quot;Hiragino Sans GB&amp;quot;, &amp;quot;Microsoft YaHei UI&amp;quot;, &amp;quot;Microsoft YaHei&amp;quot;, &amp;quot;Source Han Sans CN&amp;quot;, sans-serif; font-size-adjust: inherit; font-kerning: inherit; font-variant-alternates: inherit; font-variant-ligatures: inherit; font-variant-numeric: inherit; font-variant-east-asian: inherit; font-variant-position: inherit; font-variant-emoji: inherit; font-feature-settings: inherit; font-optical-sizing: inherit; font-variation-settings: inherit; vertical-align: baseline; caret-color: rgba(0, 0, 0, 0.9); color: rgba(0, 0, 0, 0.9); text-align: start; text-wrap-mode: wrap;&quot;&gt;&lt;font&gt;netfilter + iptables&lt;/font&gt;&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="595" y="505" width="200" height="30" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="iC9RbLHzFEMhpZUr2tZ9" name="第 3 页">
+    <mxGraphModel dx="1556" dy="1134" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="4zo-FUaJJZ_DBhvCG4tv-1" value="容器" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;container=1;dropTarget=0;collapsible=0;recursiveResize=0;outlineConnect=0;portConstraint=eastwest;newEdgeStyle={&quot;edgeStyle&quot;:&quot;elbowEdgeStyle&quot;,&quot;elbow&quot;:&quot;vertical&quot;,&quot;curved&quot;:0,&quot;rounded&quot;:0};size=65;" vertex="1" parent="1">
+          <mxGeometry x="20" y="20" width="150" height="1158" as="geometry" />
+        </mxCell>
+        <mxCell id="4zo-FUaJJZ_DBhvCG4tv-2" value="Docker网络栈" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;container=1;dropTarget=0;collapsible=0;recursiveResize=0;outlineConnect=0;portConstraint=eastwest;newEdgeStyle={&quot;edgeStyle&quot;:&quot;elbowEdgeStyle&quot;,&quot;elbow&quot;:&quot;vertical&quot;,&quot;curved&quot;:0,&quot;rounded&quot;:0};size=65;" vertex="1" parent="1">
+          <mxGeometry x="297" y="20" width="150" height="1158" as="geometry" />
+        </mxCell>
+        <mxCell id="4zo-FUaJJZ_DBhvCG4tv-3" value="conntrack" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;container=1;dropTarget=0;collapsible=0;recursiveResize=0;outlineConnect=0;portConstraint=eastwest;newEdgeStyle={&quot;edgeStyle&quot;:&quot;elbowEdgeStyle&quot;,&quot;elbow&quot;:&quot;vertical&quot;,&quot;curved&quot;:0,&quot;rounded&quot;:0};size=65;" vertex="1" parent="1">
+          <mxGeometry x="497" y="20" width="150" height="1158" as="geometry" />
+        </mxCell>
+        <mxCell id="4zo-FUaJJZ_DBhvCG4tv-4" value="路由模块" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;container=1;dropTarget=0;collapsible=0;recursiveResize=0;outlineConnect=0;portConstraint=eastwest;newEdgeStyle={&quot;edgeStyle&quot;:&quot;elbowEdgeStyle&quot;,&quot;elbow&quot;:&quot;vertical&quot;,&quot;curved&quot;:0,&quot;rounded&quot;:0};size=65;" vertex="1" parent="1">
+          <mxGeometry x="697" y="20" width="150" height="1158" as="geometry" />
+        </mxCell>
+        <mxCell id="4zo-FUaJJZ_DBhvCG4tv-5" value="netfilter" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;container=1;dropTarget=0;collapsible=0;recursiveResize=0;outlineConnect=0;portConstraint=eastwest;newEdgeStyle={&quot;edgeStyle&quot;:&quot;elbowEdgeStyle&quot;,&quot;elbow&quot;:&quot;vertical&quot;,&quot;curved&quot;:0,&quot;rounded&quot;:0};size=65;" vertex="1" parent="1">
+          <mxGeometry x="907" y="20" width="150" height="1158" as="geometry" />
+        </mxCell>
+        <mxCell id="4zo-FUaJJZ_DBhvCG4tv-6" value="物理网卡" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;container=1;dropTarget=0;collapsible=0;recursiveResize=0;outlineConnect=0;portConstraint=eastwest;newEdgeStyle={&quot;edgeStyle&quot;:&quot;elbowEdgeStyle&quot;,&quot;elbow&quot;:&quot;vertical&quot;,&quot;curved&quot;:0,&quot;rounded&quot;:0};size=65;" vertex="1" parent="1">
+          <mxGeometry x="1170" y="20" width="150" height="1158" as="geometry" />
+        </mxCell>
+        <mxCell id="4zo-FUaJJZ_DBhvCG4tv-7" value="发送请求:172.17.0.3→8.8.8.8" style="verticalAlign=bottom;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;endArrow=block;" edge="1" parent="1" source="4zo-FUaJJZ_DBhvCG4tv-1" target="4zo-FUaJJZ_DBhvCG4tv-2">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="242" y="131" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="4zo-FUaJJZ_DBhvCG4tv-8" value="创建连接跟踪项" style="verticalAlign=bottom;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;endArrow=block;" edge="1" parent="1" source="4zo-FUaJJZ_DBhvCG4tv-2" target="4zo-FUaJJZ_DBhvCG4tv-3">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="481" y="179" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="4zo-FUaJJZ_DBhvCG4tv-9" value="记录: 172.17.0.3↔8.8.8.8" style="curved=1;endArrow=block;rounded=0;" edge="1" parent="1" source="4zo-FUaJJZ_DBhvCG4tv-3" target="4zo-FUaJJZ_DBhvCG4tv-3">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="623" y="235" />
+              <mxPoint x="623" y="265" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="4zo-FUaJJZ_DBhvCG4tv-10" value="POSTROUTING链处理" style="verticalAlign=bottom;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;endArrow=block;" edge="1" parent="1" source="4zo-FUaJJZ_DBhvCG4tv-2" target="4zo-FUaJJZ_DBhvCG4tv-5">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="686" y="321" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="4zo-FUaJJZ_DBhvCG4tv-11" value="MASQUERADE: 172.17.0.3→10.3.8.6" style="curved=1;endArrow=block;rounded=0;" edge="1" parent="1" source="4zo-FUaJJZ_DBhvCG4tv-5" target="4zo-FUaJJZ_DBhvCG4tv-5">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1033" y="377" />
+              <mxPoint x="1033" y="407" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="4zo-FUaJJZ_DBhvCG4tv-12" value="更新连接跟踪项" style="verticalAlign=bottom;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;endArrow=block;" edge="1" parent="1" source="4zo-FUaJJZ_DBhvCG4tv-5" target="4zo-FUaJJZ_DBhvCG4tv-3">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="789" y="455" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="4zo-FUaJJZ_DBhvCG4tv-13" value="添加映射:10.3.8.6↔8.8.8.8" style="curved=1;endArrow=block;rounded=0;" edge="1" parent="1" source="4zo-FUaJJZ_DBhvCG4tv-3" target="4zo-FUaJJZ_DBhvCG4tv-3">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="623" y="511" />
+              <mxPoint x="623" y="541" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="4zo-FUaJJZ_DBhvCG4tv-14" value="发送:10.3.8.6→8.8.8.8" style="verticalAlign=bottom;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;endArrow=block;" edge="1" parent="1" source="4zo-FUaJJZ_DBhvCG4tv-5" target="4zo-FUaJJZ_DBhvCG4tv-6">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1122" y="597" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="4zo-FUaJJZ_DBhvCG4tv-15" value="接收回复:8.8.8.8→10.3.8.6" style="verticalAlign=bottom;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;endArrow=block;" edge="1" parent="1" source="4zo-FUaJJZ_DBhvCG4tv-6" target="4zo-FUaJJZ_DBhvCG4tv-5">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1125" y="653" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="4zo-FUaJJZ_DBhvCG4tv-16" value="PREROUTING链查询conntrack" style="verticalAlign=bottom;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;endArrow=block;" edge="1" parent="1" source="4zo-FUaJJZ_DBhvCG4tv-5" target="4zo-FUaJJZ_DBhvCG4tv-3">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="789" y="709" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="4zo-FUaJJZ_DBhvCG4tv-17" value="找到映射项" style="curved=1;endArrow=block;rounded=0;" edge="1" parent="1" source="4zo-FUaJJZ_DBhvCG4tv-3" target="4zo-FUaJJZ_DBhvCG4tv-3">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="623" y="757" />
+              <mxPoint x="623" y="787" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="4zo-FUaJJZ_DBhvCG4tv-18" value="执行反向DNAT:10.3.8.6→172.17.0.3" style="verticalAlign=bottom;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;endArrow=block;" edge="1" parent="1" source="4zo-FUaJJZ_DBhvCG4tv-3" target="4zo-FUaJJZ_DBhvCG4tv-5">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="786" y="843" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="4zo-FUaJJZ_DBhvCG4tv-19" value="路由决策:172.17.0.3" style="verticalAlign=bottom;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;endArrow=block;" edge="1" parent="1" source="4zo-FUaJJZ_DBhvCG4tv-5" target="4zo-FUaJJZ_DBhvCG4tv-4">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="889" y="899" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="4zo-FUaJJZ_DBhvCG4tv-20" value="匹配docker0路由" style="curved=1;endArrow=block;rounded=0;" edge="1" parent="1" source="4zo-FUaJJZ_DBhvCG4tv-4" target="4zo-FUaJJZ_DBhvCG4tv-4">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="823" y="947" />
+              <mxPoint x="823" y="977" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="4zo-FUaJJZ_DBhvCG4tv-21" value="转发到docker0" style="verticalAlign=bottom;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;endArrow=block;" edge="1" parent="1" source="4zo-FUaJJZ_DBhvCG4tv-4" target="4zo-FUaJJZ_DBhvCG4tv-2">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="584" y="1025" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="4zo-FUaJJZ_DBhvCG4tv-22" value="交付数据包" style="verticalAlign=bottom;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=0;endArrow=block;" edge="1" parent="1" source="4zo-FUaJJZ_DBhvCG4tv-2" target="4zo-FUaJJZ_DBhvCG4tv-1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="245" y="1073" />
+            </Array>
+          </mxGeometry>
         </mxCell>
       </root>
     </mxGraphModel>
