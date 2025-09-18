@@ -1,5 +1,5 @@
 ---
-title: "2025 07 18 Chuck Based 分布式定时任务调度"
+title: "Chuck Based 分布式定时任务调度"
 date: 2025-07-18T17:12:09+08:00
 draft: false
 ---
@@ -41,6 +41,7 @@ CREATE TABLE `locker` (
 受 DBLog 论文启发，可以提前对数据进行分片，不同分片交给不同的实例进行处理，从而提高吞吐量；
 
 具体思路如下:
+
 1. 先对 event 表数据作拆分，按照特定的 chuck size，拆分为不同 chuck，写入到 chuck 表：
   ``` sql
 CREATE TABLE `chuck` (
@@ -55,12 +56,14 @@ CREATE TABLE `chuck` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
   ```
+
 2. 多个 scheduler task 使用乐观锁竞争，从 chuck 表中读取一个分片，进行处理；处理完成后，修改分片状态，同时修改 event 表记录的状态；
   ``` sql
   select * FROM `chuck` where status=0
   update chuck set status=1,version=$version+1 where id = ? and version=?
   update chuck set status=2 where id = ?
   ```
+
 3. 容错处理，需要有单独的定时任务处理过期的 chuck ，执行一个分片的 scheduler task 有可能挂掉，需要有个过期时间，超过一定时间，需要重新把过期的分片状态重新改为待执行；
   ``` sql
   select * FROM `chuck` where status=1 and  now()>expired_time

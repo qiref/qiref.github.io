@@ -1,4 +1,9 @@
 /* 覆盖 highlight.js 代码块背景色 */
 .hljs, pre code.hljs, pre code {
   background: #f6f8fa !important;
+  font-family: ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, Liberation Mono, monospace;
+  font-feature-settings: normal;
+  font-variation-settings: normal;
+  /*line-height: 1.25rem;*/
+  font-size: 0.9em;
 }
