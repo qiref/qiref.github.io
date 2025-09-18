@@ -4,6 +4,9 @@
   font-family: ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, Liberation Mono, monospace;
   font-feature-settings: normal;
   font-variation-settings: normal;
-  /*line-height: 1.25rem;*/
   font-size: 0.9em;
+}
+
+body {
+    line-height: 2;
 }
