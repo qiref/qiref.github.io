@@ -68,46 +68,46 @@ hljs.highlightAll();
 <h2 id="flink-类加载配置说明">flink 类加载配置说明</h2>
 <p>Flink 作为基于 JVM 的框架，在 flink-conf.yaml 中提供了控制类加载策略的参数 classloader.resolve-order，可选项有 child-first（默认）和 parent-first。</p>
 <table>
-<thead>
-<tr>
-<th>Key</th>
-<th>Default</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>classloader.resolve-order</td>
-<td>&ldquo;child-first&rdquo;</td>
-<td>String</td>
-<td>Defines the class resolution strategy when loading classes from user code, meaning whether to first check the user code jar (&ldquo;child-first&rdquo;) or the application classpath (&ldquo;parent-first&rdquo;). The default settings indicate to load classes first from the user code jar, which means that user code jars can include and load different dependencies than Flink uses (transitively).</td>
-</tr>
-<tr>
-<td>classloader.parent-first-patterns.default</td>
-<td>&ldquo;java.&rdquo;;<br>&ldquo;scala.&rdquo;;<br>&ldquo;org.apache.flink.&rdquo;;<br>&ldquo;com.esotericsoftware.kryo&rdquo;;<br>&ldquo;org.apache.hadoop.&rdquo;;<br>&ldquo;javax.annotation.&rdquo;;<br>&ldquo;org.xml&rdquo;;<br>&ldquo;javax.xml&rdquo;;<br>&ldquo;org.apache.xerces&rdquo;;<br>&ldquo;org.w3c&rdquo;;<br>&ldquo;org.rocksdb.&rdquo;;<br>&ldquo;org.slf4j&rdquo;;<br>&ldquo;org.apache.log4j&rdquo;;<br>&ldquo;org.apache.logging&rdquo;;<br>&ldquo;org.apache.commons.logging&rdquo;;<br>&ldquo;ch.qos.logback&rdquo;</td>
-<td>List<String></td>
-<td>A (semicolon-separated) list of patterns that specifies which classes should always be resolved through the parent ClassLoader first. A pattern is a simple prefix that is checked against the fully qualified class name. This setting should generally not be modified. To add another pattern we recommend to use &ldquo;classloader.parent-first-patterns.additional&rdquo; instead.</td>
-</tr>
-<tr>
-<td>classloader.parent-first-patterns.additional</td>
-<td></td>
-<td>List<String></td>
-<td>A (semicolon-separated) list of patterns that specifies which classes should always be resolved through the parent ClassLoader first. A pattern is a simple prefix that is checked against the fully qualified class name. These patterns are appended to &ldquo;classloader.parent-first-patterns.default&rdquo;.</td>
-</tr>
-<tr>
-<td>classloader.fail-on-metaspace-oom-error</td>
-<td>true</td>
-<td>Boolean</td>
-<td>Fail Flink JVM processes if &lsquo;OutOfMemoryError: Metaspace&rsquo; is thrown while trying to load a user code class.</td>
-</tr>
-<tr>
-<td>classloader.check-leaked-classloader</td>
-<td>true</td>
-<td>Boolean</td>
-<td>Fails attempts at loading classes if the user classloader of a job is used after it has terminated. This is usually caused by the classloader being leaked by lingering threads or misbehaving libraries, which may also result in the classloader being used by other jobs. This check should only be disabled if such a leak prevents further jobs from running.</td>
-</tr>
-</tbody>
+  <thead>
+      <tr>
+          <th>Key</th>
+          <th>Default</th>
+          <th>Type</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>classloader.resolve-order</td>
+          <td>&ldquo;child-first&rdquo;</td>
+          <td>String</td>
+          <td>Defines the class resolution strategy when loading classes from user code, meaning whether to first check the user code jar (&ldquo;child-first&rdquo;) or the application classpath (&ldquo;parent-first&rdquo;). The default settings indicate to load classes first from the user code jar, which means that user code jars can include and load different dependencies than Flink uses (transitively).</td>
+      </tr>
+      <tr>
+          <td>classloader.parent-first-patterns.default</td>
+          <td>&ldquo;java.&rdquo;;<br>&ldquo;scala.&rdquo;;<br>&ldquo;org.apache.flink.&rdquo;;<br>&ldquo;com.esotericsoftware.kryo&rdquo;;<br>&ldquo;org.apache.hadoop.&rdquo;;<br>&ldquo;javax.annotation.&rdquo;;<br>&ldquo;org.xml&rdquo;;<br>&ldquo;javax.xml&rdquo;;<br>&ldquo;org.apache.xerces&rdquo;;<br>&ldquo;org.w3c&rdquo;;<br>&ldquo;org.rocksdb.&rdquo;;<br>&ldquo;org.slf4j&rdquo;;<br>&ldquo;org.apache.log4j&rdquo;;<br>&ldquo;org.apache.logging&rdquo;;<br>&ldquo;org.apache.commons.logging&rdquo;;<br>&ldquo;ch.qos.logback&rdquo;</td>
+          <td>List<String></td>
+          <td>A (semicolon-separated) list of patterns that specifies which classes should always be resolved through the parent ClassLoader first. A pattern is a simple prefix that is checked against the fully qualified class name. This setting should generally not be modified. To add another pattern we recommend to use &ldquo;classloader.parent-first-patterns.additional&rdquo; instead.</td>
+      </tr>
+      <tr>
+          <td>classloader.parent-first-patterns.additional</td>
+          <td></td>
+          <td>List<String></td>
+          <td>A (semicolon-separated) list of patterns that specifies which classes should always be resolved through the parent ClassLoader first. A pattern is a simple prefix that is checked against the fully qualified class name. These patterns are appended to &ldquo;classloader.parent-first-patterns.default&rdquo;.</td>
+      </tr>
+      <tr>
+          <td>classloader.fail-on-metaspace-oom-error</td>
+          <td>true</td>
+          <td>Boolean</td>
+          <td>Fail Flink JVM processes if &lsquo;OutOfMemoryError: Metaspace&rsquo; is thrown while trying to load a user code class.</td>
+      </tr>
+      <tr>
+          <td>classloader.check-leaked-classloader</td>
+          <td>true</td>
+          <td>Boolean</td>
+          <td>Fails attempts at loading classes if the user classloader of a job is used after it has terminated. This is usually caused by the classloader being leaked by lingering threads or misbehaving libraries, which may also result in the classloader being used by other jobs. This check should only be disabled if such a leak prevents further jobs from running.</td>
+      </tr>
+  </tbody>
 </table>
 <h2 id="parent-first-类加载策略">parent-first 类加载策略</h2>
 <p>ParentFirstClassLoader 和 ChildFirstClassLoader 类的父类均为 FlinkUserCodeClassLoader 抽象类：</p>
@@ -172,8 +172,7 @@ public abstract class FlinkUserCodeClassLoader extends URLClassLoader {
 </code></pre>
 <p>这样就相当于 ParentFirstClassLoader 直接调用了父加载器的 loadClass() 方法。之前已经讲过，JVM 中类加载器的层次关系和默认 loadClass() 方法的逻辑由双亲委派模型（parents delegation model）来体现：</p>
 <blockquote>
-<p>如果一个类加载器要加载一个类，它首先不会自己尝试加载这个类，而是把加载的请求委托给父加载器完成，所有的类加载请求最终都应该传递给最顶层的启动类加载器。只有当父加载器无法加载到这个类时，子加载器才会尝试自己加载。 <a href="https://archieyao.github.io/posts/2023-03-24-java%E5%8F%8C%E4%BA%B2%E5%A7%94%E6%B4%BE/">双亲委派模型</a></p>
-</blockquote>
+<p>如果一个类加载器要加载一个类，它首先不会自己尝试加载这个类，而是把加载的请求委托给父加载器完成，所有的类加载请求最终都应该传递给最顶层的启动类加载器。只有当父加载器无法加载到这个类时，子加载器才会尝试自己加载。 <a href="https://archieyao.github.io/posts/2023-03-24-java%E5%8F%8C%E4%BA%B2%E5%A7%94%E6%B4%BE/">双亲委派模型</a></p></blockquote>
 <p>可见，Flink 的 parent-first 类加载策略就是照搬双亲委派模型的。也就是说，用户代码的类加载器是 Custom ClassLoader，Flink 框架本身的类加载器是 Application ClassLoader。用户代码中的类先由 Flink 框架的类加载器加载，再由用户代码的类加载器加载。但是，Flink 默认并不采用 parent-first 策略，而是采用 child-first 策略。</p>
 <h2 id="child-first-类加载策略">child-first 类加载策略</h2>
 <p>双亲委派模型的好处就是类加载器的层次关系保证了被加载类的层次关系，从而保证了 Java 运行环境的安全性。但是在 Flink App 这种依赖纷繁复杂的环境中，双亲委派模型可能并不适用。例如，程序中引入的 Flink-Cassandra Connector 总是依赖于固定的 Cassandra 版本，用户代码中为了兼容实际使用的 Cassandra 版本，会引入一个更低或更高的依赖。而同一个组件不同版本的类定义有可能会不同（即使类的全限定名是相同的），如果仍然用双亲委派模型，就会因为 Flink 框架指定版本的类先加载，而出现莫名其妙的兼容性问题，如NoSuchMethodError、IllegalAccessError 等。</p>

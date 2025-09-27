@@ -2,6 +2,30 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
+    <loc>https://qiref.github.io/tags/note/</loc>
+    <lastmod>2025-09-25T10:24:40+08:00</lastmod>
+    <changefreq>daily</changefreq>
+  </url><url>
+    <loc>https://qiref.github.io/note/</loc>
+    <lastmod>2025-09-25T10:24:40+08:00</lastmod>
+    <changefreq>daily</changefreq>
+  </url><url>
+    <loc>https://qiref.github.io/tags/</loc>
+    <lastmod>2025-09-25T10:24:40+08:00</lastmod>
+    <changefreq>daily</changefreq>
+  </url><url>
+    <loc>https://qiref.github.io/</loc>
+    <lastmod>2025-09-25T10:24:40+08:00</lastmod>
+    <changefreq>daily</changefreq>
+  </url><url>
+    <loc>https://qiref.github.io/tags/%E7%BA%A2%E6%A5%BC%E6%A2%A6/</loc>
+    <lastmod>2025-09-25T10:24:40+08:00</lastmod>
+    <changefreq>daily</changefreq>
+  </url><url>
+    <loc>https://qiref.github.io/note/2025/09/25/%E7%BA%A2%E6%A5%BC%E6%A2%A6%E4%BA%BA%E7%89%A9%E5%85%B3%E7%B3%BB/</loc>
+    <lastmod>2025-09-25T10:24:40+08:00</lastmod>
+    <changefreq>daily</changefreq>
+  </url><url>
     <loc>https://qiref.github.io/note/2025/07/25/20250725-english-learning-journal/</loc>
     <lastmod>2025-07-25T10:24:40+08:00</lastmod>
     <changefreq>daily</changefreq>
@@ -11,18 +35,6 @@
     <changefreq>daily</changefreq>
   </url><url>
     <loc>https://qiref.github.io/tags/journal/</loc>
-    <lastmod>2025-07-25T10:24:40+08:00</lastmod>
-    <changefreq>daily</changefreq>
-  </url><url>
-    <loc>https://qiref.github.io/note/</loc>
-    <lastmod>2025-07-25T10:24:40+08:00</lastmod>
-    <changefreq>daily</changefreq>
-  </url><url>
-    <loc>https://qiref.github.io/tags/</loc>
-    <lastmod>2025-07-25T10:24:40+08:00</lastmod>
-    <changefreq>daily</changefreq>
-  </url><url>
-    <loc>https://qiref.github.io/</loc>
     <lastmod>2025-07-25T10:24:40+08:00</lastmod>
     <changefreq>daily</changefreq>
   </url><url>
@@ -182,11 +194,11 @@
     <lastmod>2023-12-05T11:03:22+08:00</lastmod>
     <changefreq>daily</changefreq>
   </url><url>
-    <loc>https://qiref.github.io/tags/b&#43;%E6%A0%91/</loc>
+    <loc>https://qiref.github.io/post/2023/12/05/b-%E6%A0%91/</loc>
     <lastmod>2023-12-05T11:03:22+08:00</lastmod>
     <changefreq>daily</changefreq>
   </url><url>
-    <loc>https://qiref.github.io/post/2023/12/05/b-%E6%A0%91/</loc>
+    <loc>https://qiref.github.io/tags/b&#43;%E6%A0%91/</loc>
     <lastmod>2023-12-05T11:03:22+08:00</lastmod>
     <changefreq>daily</changefreq>
   </url><url>

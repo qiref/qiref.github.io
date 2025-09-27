@@ -201,25 +201,25 @@ func (r *rect) peri() float64 {
 var geo1 geometry = &amp;rect{height: 1, width: 3} // 使用结构体指针初始化变量
 </code></pre>
 <table>
-<thead>
-<tr>
-<th></th>
-<th>结构体实现接口</th>
-<th>结构体指针实现接口</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>结构体指针初始化变量</td>
-<td>通过</td>
-<td>通过</td>
-</tr>
-<tr>
-<td>结构体初始化变量</td>
-<td>通过</td>
-<td>不通过</td>
-</tr>
-</tbody>
+  <thead>
+      <tr>
+          <th></th>
+          <th>结构体实现接口</th>
+          <th>结构体指针实现接口</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>结构体指针初始化变量</td>
+          <td>通过</td>
+          <td>通过</td>
+      </tr>
+      <tr>
+          <td>结构体初始化变量</td>
+          <td>通过</td>
+          <td>不通过</td>
+      </tr>
+  </tbody>
 </table>
 <p>当使用结构体实现接口时，无论初始化变量是结构体还是结构体指针，都可以编译通过；当使用结构体指针实现接口时，初始化变量为结构体时无法编译通过。</p>
 <p>为什么使用结构体指针实现接口时，初始化变量为结构体时无法编译通过？</p>

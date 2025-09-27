@@ -125,8 +125,7 @@ end
 <h3 id="redlock">redlock</h3>
 <p>上述基于redis实现的分布式锁, redis 是单实例的, 如果要增强锁的可靠性, 可以基于多个redis节点去实现, 问题从这里开始变得复杂, 业界已经出现了基于多个redis实例实现分布式锁的算法, redlock.</p>
 <blockquote>
-<p>Redlock 算法的基本思路，是让客户端和多个独立的 Redis 实例依次请求加锁，如果客户端能够和半数以上的实例成功地完成加锁操作，那么我们就认为，客户端成功地获得分布式锁了，否则加锁失败。这样一来，即使有单个 Redis 实例发生故障，因为锁变量在其它实例上也有保存，所以，客户端仍然可以正常地进行锁操作，锁变量并不会丢失。</p>
-</blockquote>
+<p>Redlock 算法的基本思路，是让客户端和多个独立的 Redis 实例依次请求加锁，如果客户端能够和半数以上的实例成功地完成加锁操作，那么我们就认为，客户端成功地获得分布式锁了，否则加锁失败。这样一来，即使有单个 Redis 实例发生故障，因为锁变量在其它实例上也有保存，所以，客户端仍然可以正常地进行锁操作，锁变量并不会丢失。</p></blockquote>
 <p>前置: 选取 N 个 redis 节点, 无需组成哨兵或者 cluster 模式, 这里假设 <code>N = 5</code> , 对于每个 redis 节点而言, 获取锁/释放锁的方式跟单机版本的方式一致;</p>
 <p>算法步骤:</p>
 <p><strong>加锁</strong></p>
@@ -177,8 +176,7 @@ end
 <li>客户端再次获取当前时间戳 T2, 如果此时获取到半数之上节点的锁(N=5 时, 需要获取 N/2+1=3 个节点的锁), 并且 <code>T2-T1 &lt; lock expired time</code>,  则认为获取锁成功;</li>
 <li>如果客户端获取到了锁, 锁的有效时间就是 T2 - T1;</li>
 <li>如果客户端由于某种原因未能获得锁（要么无法锁定 N/2+1 个实例，要么有效时间为负），客户端将尝试解锁所有实例（甚至是客户端认为没有锁定的实例)。</li>
-</ol>
-</blockquote>
+</ol></blockquote>
 <p>首先对于 NPC 的时钟问题, 这个确实会对锁产生影响, 但是时钟问题可以通过有效的运维手段解决, 比如: 1. 系统管理员修改了时钟; 2. 从时钟服务器收到一个更大的时钟;
 对于这两种情况而言, 是可以通过运维手段保证的, 手动修改时钟这种情况, 类似于有人手动修改 Raft 的日志, 这种情况下 Raft 也无法正常工作; NTP server 是可以通过调整配置来保证时钟不会大幅度跳跃;</p>
 <p>而对于 NPC 的另外两种情况, 进程GC 、网络延迟, 这两种情况都可以在算法的 1-4步发现, 这也就是为什么需要 T2-T1, 当发现 <code>T2-T1 &lt; lock expired time</code> 不成立时, 则获取锁失败了, 那就执行解锁流程就好了. 而在第4步之后, client 拿到锁遇到异常情况, 这并非是 RedLock 独有的问题, 任何一种分布式锁实现都会面临这个问题, 不在讨论范畴;</p>
@@ -213,8 +211,7 @@ end
 <li>对于严格要求数据正确性的场景下, 需要端到端的考虑数据的正确性, 不应该强依赖于分布式锁机制, 分布式锁可以在上层拦截大批量请求, 底层数据面需要有相应的兜底策略;</li>
 </ol>
 <blockquote>
-<p>Martin: For me, this is the most important point: I don’t care who is right or wrong in this debate — I care about learning from others’ work, so that we can avoid repeating old mistakes, and make things better in future. So much great work has already been done for us: by standing on the shoulders of giants, we can build better software.</p>
-</blockquote>
+<p>Martin: For me, this is the most important point: I don’t care who is right or wrong in this debate — I care about learning from others’ work, so that we can avoid repeating old mistakes, and make things better in future. So much great work has already been done for us: by standing on the shoulders of giants, we can build better software.</p></blockquote>
 <h2 id="参考">参考</h2>
 <p><a href="https://redis.io/docs/latest/develop/use/patterns/distributed-locks/">https://redis.io/docs/latest/develop/use/patterns/distributed-locks/</a>
 <a href="https://martin.kleppmann.com/2016/02/08/how-to-do-distributed-locking.html">https://martin.kleppmann.com/2016/02/08/how-to-do-distributed-locking.html</a></p>
