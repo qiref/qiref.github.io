@@ -76,7 +76,8 @@ hljs.highlightAll();
 <li>
 <p>Metaspace 的初始容量并不是 <code>-XX:MetaspaceSize</code> 设置，无论 <code>-XX:MetaspaceSize</code> 配置什么值，对于 64 位 JVM 来说，Metaspace 的初始容量都是 21807104（约 20.8m）。可以参考 Oracle 官方文档 :</p>
 <blockquote>
-<p>Specify a higher value for the option MetaspaceSize to avoid early garbage collections induced for class metadata. The amount of class metadata allocated for an application is application-dependent and general guidelines do not exist for the selection of MetaspaceSize. The default size of MetaspaceSize is platform-dependent and ranges from 12 MB to about 20 MB.</p></blockquote>
+<p>Specify a higher value for the option MetaspaceSize to avoid early garbage collections induced for class metadata. The amount of class metadata allocated for an application is application-dependent and general guidelines do not exist for the selection of MetaspaceSize. The default size of MetaspaceSize is platform-dependent and ranges from 12 MB to about 20 MB.</p>
+</blockquote>
 </li>
 <li>
 <p>Metaspace 由于使用不断扩容到<code>-XX:MetaspaceSize</code>参数指定的量，就会发生 Full GC，且之后每次 Metaspace 扩容都会发生 Full GC。也就是说，MetaspaceSize 表示 Metaspace 使用过程中触发 Full GC 的阈值，只对触发起作用；如果 <code>MaxMetaspaceSize</code> 设置太小，可能会导致频繁 Full GC ，甚至OOM。</p>

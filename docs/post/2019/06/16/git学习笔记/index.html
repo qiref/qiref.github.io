@@ -152,7 +152,7 @@ Untracked files:            #有哪些文件是Untracked状态，有1.txt
 1.txt
 nothing added to commit but untracked files present (use &quot;git add&quot; to track)
 </code></pre>
-<h3 id="git-add-把文件从untrackedstaged">git add 把文件从Untracked&ndash;&gt;Staged</h3>
+<h3 id="git-add-把文件从untracked--staged">git add 把文件从Untracked&ndash;&gt;Staged</h3>
 <pre><code class="language-shell">$ git add 1.txt  #成功后，没有输出
 $ git status     #再次查看
 On branch master
@@ -161,7 +161,7 @@ Changes to be committed:       #表示1.txt已经是staged了，可以被提交�
 (use &quot;git rm --cached ...&quot; to unstage)  #如果不想提交了，可以用git rm --cached 1.txt
 new file:   1.txt
 </code></pre>
-<h3 id="git-rm-cached">git rm &ndash;cached</h3>
+<h3 id="git-rm---cached">git rm &ndash;cached</h3>
 <p>文件已经是staged了，但想要退回原来的状态</p>
 <pre><code class="language-shell">$ git rm --cached 1.txt
 rm '1.txt'

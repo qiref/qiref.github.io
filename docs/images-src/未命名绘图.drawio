@@ -1,0 +1,85 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/28.2.8 Chrome/140.0.7339.240 Electron/38.4.0 Safari/537.36" version="28.2.8" pages="2">
+  <diagram name="第 1 页" id="ASyw4hlNhCohs8PfUIDJ">
+    <mxGraphModel dx="778" dy="563" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="9RaKFMmjxYK_u6_TsXJD-4" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="9RaKFMmjxYK_u6_TsXJD-1" target="9RaKFMmjxYK_u6_TsXJD-3" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="9RaKFMmjxYK_u6_TsXJD-5" value="1. 上传作业依赖" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="9RaKFMmjxYK_u6_TsXJD-4" vertex="1" connectable="0">
+          <mxGeometry x="0.0071" y="1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="9RaKFMmjxYK_u6_TsXJD-7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="9RaKFMmjxYK_u6_TsXJD-1" target="9RaKFMmjxYK_u6_TsXJD-2" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="9RaKFMmjxYK_u6_TsXJD-8" value="2.提交作业&lt;br&gt;&lt;span style=&quot;font-size: 12px; background-color: rgb(236, 236, 236);&quot;&gt;user00/,flink&lt;/span&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="9RaKFMmjxYK_u6_TsXJD-7" vertex="1" connectable="0">
+          <mxGeometry x="-0.2" y="-2" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="9RaKFMmjxYK_u6_TsXJD-1" value="oceanus" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="50" y="150" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="9RaKFMmjxYK_u6_TsXJD-2" value="tke" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="300" y="150" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="9RaKFMmjxYK_u6_TsXJD-3" value="cos" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="300" y="20" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="9RaKFMmjxYK_u6_TsXJD-6" value="user00/,flink&lt;br&gt;文件md5---cdc-connector&amp;nbsp;&lt;br&gt;作业 A 已经上传，此时步骤1 就会忽略&lt;br&gt;（沉降后，文件依然存在，但是无法下载）" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" parent="1" vertex="1">
+          <mxGeometry x="450" y="15" width="250" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="9RaKFMmjxYK_u6_TsXJD-13" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="9RaKFMmjxYK_u6_TsXJD-9" target="9RaKFMmjxYK_u6_TsXJD-12" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="9RaKFMmjxYK_u6_TsXJD-9" value="jm-initcontianer" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" parent="1" vertex="1">
+          <mxGeometry x="440" y="160" width="100" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="9RaKFMmjxYK_u6_TsXJD-10" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.47;entryY=-0.033;entryDx=0;entryDy=0;entryPerimeter=0;" parent="1" source="9RaKFMmjxYK_u6_TsXJD-3" target="9RaKFMmjxYK_u6_TsXJD-9" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="9RaKFMmjxYK_u6_TsXJD-11" value="3.拉取依赖&lt;br&gt;&lt;span style=&quot;font-size: 12px; background-color: rgb(236, 236, 236);&quot;&gt;user00/,flink&lt;/span&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="9RaKFMmjxYK_u6_TsXJD-10" vertex="1" connectable="0">
+          <mxGeometry x="-0.1636" y="4" relative="1" as="geometry">
+            <mxPoint x="-1" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="9RaKFMmjxYK_u6_TsXJD-15" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="9RaKFMmjxYK_u6_TsXJD-12" target="9RaKFMmjxYK_u6_TsXJD-14" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="9RaKFMmjxYK_u6_TsXJD-12" value="jm-main" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" parent="1" vertex="1">
+          <mxGeometry x="455" y="230" width="70" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="9RaKFMmjxYK_u6_TsXJD-14" value="jm-failover" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" parent="1" vertex="1">
+          <mxGeometry x="450" y="340" width="80" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="9RaKFMmjxYK_u6_TsXJD-16" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.99;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=0;" parent="1" source="9RaKFMmjxYK_u6_TsXJD-14" target="9RaKFMmjxYK_u6_TsXJD-9" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="640" y="360" />
+              <mxPoint x="640" y="175" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="9RaKFMmjxYK_u6_TsXJD-17" value="重新拉取&lt;br&gt;&lt;span style=&quot;font-size: 12px; background-color: rgb(236, 236, 236);&quot;&gt;user00/,flink 沉降无法拉取&lt;/span&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="9RaKFMmjxYK_u6_TsXJD-16" vertex="1" connectable="0">
+          <mxGeometry x="0.0909" y="-1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="9RaKFMmjxYK_u6_TsXJD-18" value="1. 作业failover 时，无法拉取&lt;br&gt;2. 作业A启动后，上传文件，作业B 不会重新上传，&lt;br&gt;此时文件沉降后，作业B 无法启动" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" parent="1" vertex="1">
+          <mxGeometry x="120" y="280" width="300" height="60" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="b1-_jjUERo8gEamG2tdN" name="第 2 页">
+    <mxGraphModel dx="778" dy="567" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
