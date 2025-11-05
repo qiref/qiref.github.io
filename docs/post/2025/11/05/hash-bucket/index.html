@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="cn-zh">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Hash bucket | 大道至简</title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/fonts.css" />
+    
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-PGMJFXZJRT"></script>
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+
+<script>
+hljs.configure({languages: []});
+hljs.highlightAll();
+</script>
+
+<link href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/github.min.css"  rel="stylesheet">
+
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-PGMJFXZJRT');
+</script>
+
+<link rel="stylesheet" href="/css/custom.css">
+  </head>
+
+  <body>
+    <nav>
+    <ul class="menu">
+      
+      <li><a href="/">Home</a></li>
+      
+      <li><a href="/tags/">Tags</a></li>
+      
+      <li><a href="/about/">About</a></li>
+      
+      <li><a href="/note/">Note</a></li>
+      
+      <li><a href="/index.xml">Subscribe</a></li>
+      
+    </ul>
+    <hr/>
+    </nav>
+
+<div class="article-meta">
+<h1><span class="title">Hash bucket</span></h1>
+
+<h2 class="date">2025/11/05</h2>
+<p class="terms">
+  
+  
+  
+  
+  Tags: <a href="/tags/go">Go</a> <a href="/tags/algorithm">Algorithm</a> 
+  
+  
+</p>
+</div>
+
+
+
+<main>
+<pre><code class="language-go">const (
+    // BucketSize 桶的数量，用于提高灰度精度
+    BucketSize = 10000
+
+    // DefaultSalt 默认盐值
+    DefaultSalt = &quot;gray_release_salt_2024&quot;
+)
+
+// GrayReleaseService 灰度发布服务
+type GrayReleaseService struct {
+    salt string
+    mu   sync.RWMutex
+}
+
+// NewGrayReleaseService 创建灰度发布服务实例
+func NewGrayReleaseService(salt string) *GrayReleaseService {
+    if salt == &quot;&quot; {
+        salt = DefaultSalt
+    }
+    return &amp;GrayReleaseService{
+        salt: salt,
+    }
+}
+
+// IsInGrayGroup 判断用户是否在灰度组中
+// userID: 用户ID
+// percentage: 灰度百分比 (0-100)
+// featureCode: 功能代码，用作额外的盐值确保不同功能独立分布
+func (g *GrayReleaseService) IsInGrayGroup(userID int64, percentage int, featureCode string) bool {
+    // 边界检查
+    if percentage &lt;= 0 {
+        return false
+    }
+    if percentage &gt;= 100 {
+        return true
+    }
+
+    // 计算灰度桶数量
+    grayBuckets := (percentage * BucketSize) / 100
+
+    // 计算用户所属桶
+    userBucket := g.getUserBucket(userID, featureCode)
+
+    return userBucket &lt; grayBuckets
+}
+
+// getUserBucket 计算用户所属的桶
+func (g *GrayReleaseService) getUserBucket(userID int64, featureCode string) int {
+    g.mu.RLock()
+    salt := g.salt
+    g.mu.RUnlock()
+
+    // 构造哈希输入：userID + featureCode + salt
+    input := fmt.Sprintf(&quot;%d:%s:%s&quot;, userID, featureCode, salt)
+
+    // 使用 MD5 哈希
+    hash := md5.Sum([]byte(input))
+
+    // 取前8个字节转换为uint64，然后取模
+    hashValue := binary.BigEndian.Uint64(hash[:8])
+
+    return int(hashValue % BucketSize)
+}
+</code></pre>
+<h2 id="核心原理">核心原理</h2>
+<p>这个算法使用了<strong>一致性哈希分桶</strong>的思想来实现灰度发布：</p>
+<h3 id="1-桶的概念">1. 桶的概念</h3>
+<pre><code class="language-go">const BucketSize = 10000  // 总共有10000个桶
+</code></pre>
+<p>可以把这10000个桶想象成一个圆环，编号从0到9999。每个用户通过哈希算法会被分配到其中一个桶。</p>
+<h3 id="2-graybuckets-的计算">2. grayBuckets 的计算</h3>
+<pre><code class="language-go">grayBuckets := (percentage * BucketSize) / 100
+</code></pre>
+<p>这里计算的是<strong>灰度用户应该占用多少个桶</strong>。</p>
+<p>举例：</p>
+<ul>
+<li>如果 <code>percentage = 20</code>（20%灰度）</li>
+<li>那么 <code>grayBuckets = (20 * 10000) / 100 = 2000</code></li>
+<li>意思是前2000个桶（桶0到桶1999）的用户都是灰度用户</li>
+</ul>
+<h3 id="3-userbucket-的计算">3. userBucket 的计算</h3>
+<pre><code class="language-go">userBucket := g.getUserBucket(userID, featureCode)
+</code></pre>
+<p>这个方法通过MD5哈希将用户ID映射到0-9999中的某个桶：</p>
+<pre><code class="language-go">// 构造哈希输入：userID + featureCode + salt
+input := fmt.Sprintf(&quot;%d:%s:%s&quot;, userID, featureCode, salt)
+hash := md5.Sum([]byte(input))
+hashValue := binary.BigEndian.Uint64(hash[:8])
+return int(hashValue % BucketSize)  // 取模得到0-9999的桶号
+</code></pre>
+<h3 id="4-判断逻辑">4. 判断逻辑</h3>
+<pre><code class="language-go">return userBucket &lt; grayBuckets
+</code></pre>
+<p><strong>关键在这里</strong>：</p>
+<ul>
+<li>如果用户的桶号 &lt; 灰度桶数量，则用户在灰度组</li>
+<li>如果用户的桶号 &gt;= 灰度桶数量，则用户不在灰度组</li>
+</ul>
+<h2 id="为什么这样能确保准确的灰度比例">为什么这样能确保准确的灰度比例？</h2>
+<h3 id="数学原理">数学原理</h3>
+<ol>
+<li><strong>均匀分布</strong>：MD5哈希保证用户在10000个桶中均匀分布</li>
+<li><strong>连续区间</strong>：灰度用户占用连续的前N个桶，非灰度用户占用剩余桶</li>
+<li><strong>比例精确</strong>：由于桶数量是10000，所以精度可以达到0.01%</li>
+</ol>
+<h3 id="举例说明">举例说明</h3>
+<p>假设要20%灰度：</p>
+<ul>
+<li><code>grayBuckets = 2000</code></li>
+<li>桶0-1999的用户 → 灰度用户（2000/10000 = 20%）</li>
+<li>桶2000-9999的用户 → 非灰度用户（8000/10000 = 80%）</li>
+</ul>
+<p>这就是为什么简单的 <code>userBucket &lt; grayBuckets</code> 比较就能准确控制灰度比例的原理！</p>
+
+</main>
+
+  <footer>
+  
+<script src="https://utteranc.es/client.js"
+        repo="qiref/qiref.github.io"
+        issue-term="pathname"
+        label="Comment"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script>
+
+  
+  <hr/>
+  © powered by <a href="https://gohugo.io/">Hugo</a> &amp; <a href="https://github.com/yihui/hugo-xmin">Xmin</a>  2017 &ndash; 2025 | <a href="https://github.com/qiref">Github</a>
+  
+  </footer>
+  </body>
+</html>
+

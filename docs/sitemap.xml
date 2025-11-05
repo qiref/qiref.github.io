@@ -2,15 +2,31 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>https://qiref.github.io/post/</loc>
-    <lastmod>2025-10-23T20:33:00+08:00</lastmod>
+    <loc>https://qiref.github.io/tags/algorithm/</loc>
+    <lastmod>2025-11-05T11:24:38+08:00</lastmod>
     <changefreq>daily</changefreq>
   </url><url>
-    <loc>https://qiref.github.io/post/2025/10/23/tcp/udp%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE%E5%AE%9E%E8%B7%B5/</loc>
-    <lastmod>2025-10-23T20:33:00+08:00</lastmod>
+    <loc>https://qiref.github.io/tags/go/</loc>
+    <lastmod>2025-11-05T11:24:38+08:00</lastmod>
+    <changefreq>daily</changefreq>
+  </url><url>
+    <loc>https://qiref.github.io/post/2025/11/05/hash-bucket/</loc>
+    <lastmod>2025-11-05T11:24:38+08:00</lastmod>
+    <changefreq>daily</changefreq>
+  </url><url>
+    <loc>https://qiref.github.io/post/</loc>
+    <lastmod>2025-11-05T11:24:38+08:00</lastmod>
+    <changefreq>daily</changefreq>
+  </url><url>
+    <loc>https://qiref.github.io/tags/</loc>
+    <lastmod>2025-11-05T11:24:38+08:00</lastmod>
     <changefreq>daily</changefreq>
   </url><url>
     <loc>https://qiref.github.io/</loc>
+    <lastmod>2025-11-05T11:24:38+08:00</lastmod>
+    <changefreq>daily</changefreq>
+  </url><url>
+    <loc>https://qiref.github.io/post/2025/10/23/tcp/udp%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE%E5%AE%9E%E8%B7%B5/</loc>
     <lastmod>2025-10-23T20:33:00+08:00</lastmod>
     <changefreq>daily</changefreq>
   </url><url>
@@ -19,10 +35,6 @@
     <changefreq>daily</changefreq>
   </url><url>
     <loc>https://qiref.github.io/note/</loc>
-    <lastmod>2025-09-25T10:24:40+08:00</lastmod>
-    <changefreq>daily</changefreq>
-  </url><url>
-    <loc>https://qiref.github.io/tags/</loc>
     <lastmod>2025-09-25T10:24:40+08:00</lastmod>
     <changefreq>daily</changefreq>
   </url><url>
@@ -174,10 +186,6 @@
     <lastmod>2024-05-15T15:53:46+08:00</lastmod>
     <changefreq>daily</changefreq>
   </url><url>
-    <loc>https://qiref.github.io/tags/go/</loc>
-    <lastmod>2024-05-15T15:53:46+08:00</lastmod>
-    <changefreq>daily</changefreq>
-  </url><url>
     <loc>https://qiref.github.io/tags/mutex/</loc>
     <lastmod>2024-05-15T15:53:46+08:00</lastmod>
     <changefreq>daily</changefreq>
@@ -192,10 +200,6 @@
   </url><url>
     <loc>https://qiref.github.io/tags/pprof/</loc>
     <lastmod>2024-02-23T15:53:46+08:00</lastmod>
-    <changefreq>daily</changefreq>
-  </url><url>
-    <loc>https://qiref.github.io/tags/algorithm/</loc>
-    <lastmod>2023-12-05T11:03:22+08:00</lastmod>
     <changefreq>daily</changefreq>
   </url><url>
     <loc>https://qiref.github.io/tags/b&#43;%E6%A0%91/</loc>

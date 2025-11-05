@@ -6,8 +6,15 @@
     <description>Recent content in Algorithm on 大道至简</description>
     <generator>Hugo</generator>
     <language>cn-zh</language>
-    <lastBuildDate>Tue, 05 Dec 2023 11:03:22 +0800</lastBuildDate>
+    <lastBuildDate>Wed, 05 Nov 2025 11:24:38 +0800</lastBuildDate>
     <atom:link href="https://qiref.github.io/tags/algorithm/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Hash bucket</title>
+      <link>https://qiref.github.io/post/2025/11/05/hash-bucket/</link>
+      <pubDate>Wed, 05 Nov 2025 11:24:38 +0800</pubDate>
+      <guid>https://qiref.github.io/post/2025/11/05/hash-bucket/</guid>
+      <description>const ( // BucketSize 桶的数量，用于提高灰度精度 BucketSize = 10000 // DefaultSalt 默认盐值 DefaultSalt = &amp;quot;gray_release_salt_2024&amp;quot; ) // GrayReleaseService 灰度发布服务 type GrayReleaseService struct { salt string mu sync.RWMutex } // NewGrayReleaseService 创建灰度发布服务实例 func NewGrayReleaseService(salt string) *GrayReleaseService { if salt == &amp;quot;&amp;quot; { salt = DefaultSalt } return &amp;amp;GrayReleaseService{ salt: salt, } } // IsInGrayGroup 判断用户是否在灰度组中 // userID: 用户ID // percentage: 灰度百分比 (0-100) // featureCode: 功能代码，用作额外的盐值确保不同功能独立分布 func (g *GrayReleaseService) IsInGrayGroup(userID int64, percentage int, featureCode string) bool { // 边界检查 if percentage &amp;lt;= 0 { return false } if percentage &amp;gt;= 100 { return true } // 计算灰度桶数量 grayBuckets := (percentage * BucketSize) / 100 // 计算用户所属桶 userBucket := g.</description>
+    </item>
     <item>
       <title>B&#43;树</title>
       <link>https://qiref.github.io/post/2023/12/05/b-%E6%A0%91/</link>
