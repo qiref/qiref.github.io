@@ -6,3 +6,124 @@
   font-variation-settings: normal;
   font-size: 0.9em;
 }
+
+
+/* 代码块滚动条样式 - 隐藏滚动条但保留滚动功能 */
+pre,
+pre code,
+pre code.hljs {
+  overflow-x: auto;
+  scrollbar-width: none !important; /* Firefox */
+  -ms-overflow-style: none !important; /* IE/Edge */
+}
+
+pre::-webkit-scrollbar,
+pre code::-webkit-scrollbar,
+pre code.hljs::-webkit-scrollbar {
+  display: none !important; /* Chrome/Safari */
+  width: 0 !important;
+  height: 0 !important;
+}
+
+
+/* ========== 搜索功能样式 ========== */
+
+/* 导航栏定位上下文 */
+nav {
+  position: relative;
+}
+
+/* 菜单项垂直对齐 */
+nav .menu li {
+  vertical-align: middle;
+}
+
+/* 搜索容器 */
+.search-container {
+  display: inline-block;
+  margin-left: 0.5em;
+  vertical-align: middle;
+}
+
+/* 搜索输入框 */
+#search-input {
+  width: 120px;
+  height: 26px;
+  padding: 4px 8px;
+  border: 1px solid #d0d7de;
+  border-radius: 5px;
+  font-size: 14px;
+  line-height: 1;
+  outline: none;
+  background: transparent;
+  vertical-align: middle;
+  box-sizing: border-box;
+}
+
+#search-input::placeholder {
+  color: #57606a;
+}
+
+/* 搜索结果下拉框 */
+#search-results {
+  display: none;
+  position: absolute;
+  left: 0;
+  right: 0;
+  margin-top: 4px;
+  background: #fff;
+  border: 1px solid #c9d1d9;
+  border-radius: 6px;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(0, 0, 0, 0.05);
+  z-index: 1000;
+}
+
+/* 搜索结果项 */
+.search-result-item {
+  display: block;
+  padding: 10px 12px;
+  color: #24292f;
+  text-decoration: none;
+  border-bottom: 1px solid #eaecef;
+  background: #fff !important;
+}
+
+.search-result-item:last-child {
+  border-bottom: none;
+}
+
+.search-result-item:hover,
+.search-result-item.active {
+  background: #f3f4f6 !important;
+}
+
+/* 搜索结果标题 */
+.search-result-title {
+  font-size: 14px;
+  color: #0969da;
+  text-align: left;
+}
+
+.search-result-item:hover .search-result-title,
+.search-result-item.active .search-result-title {
+  text-decoration: underline;
+}
+
+/* 搜索结果摘要 */
+.search-result-summary {
+  margin-top: 2px;
+  font-size: 12px;
+  color: #57606a;
+  line-height: 1.4;
+  text-align: left;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* 搜索高亮 */
+.search-result-item mark {
+  background: #fff3cd;
+  padding: 0 2px;
+  border-radius: 2px;
+}

@@ -8,3 +8,173 @@
         async>
 </script>
 {{ end }}
+
+<script>
+(function() {
+  const searchInput = document.getElementById('search-input');
+  const searchResults = document.getElementById('search-results');
+  if (!searchInput || !searchResults) return;
+  
+  let searchIndex = null;
+  let activeIndex = -1;
+  let isResultsVisible = false;
+
+  // 加载搜索索引
+  async function loadSearchIndex() {
+    if (searchIndex) return searchIndex;
+    try {
+      const response = await fetch('/index.json');
+      const data = await response.json();
+      searchIndex = data.pages || [];
+      return searchIndex;
+    } catch (e) {
+      console.error('Failed to load search index:', e);
+      return [];
+    }
+  }
+
+  // 搜索函数
+  function search(query) {
+    if (!searchIndex || !query.trim()) return [];
+    const q = query.toLowerCase();
+    return searchIndex.filter(page => {
+      const title = (page.title || '').toLowerCase();
+      const content = (page.content || '').toLowerCase();
+      return title.includes(q) || content.includes(q);
+    }).slice(0, 10);
+  }
+
+  // 高亮匹配文本
+  function highlight(text, query) {
+    if (!query) return text;
+    const regex = new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+    return text.replace(regex, '<mark>$1</mark>');
+  }
+
+  // 显示结果
+  function showResults() {
+    searchResults.style.display = 'block';
+    isResultsVisible = true;
+  }
+
+  // 隐藏结果
+  function hideResults() {
+    searchResults.style.display = 'none';
+    isResultsVisible = false;
+    activeIndex = -1;
+  }
+
+  // 更新选中状态
+  function updateActiveItem() {
+    const items = searchResults.querySelectorAll('.search-result-item');
+    items.forEach((item, index) => {
+      if (index === activeIndex) {
+        item.classList.add('active');
+      } else {
+        item.classList.remove('active');
+      }
+    });
+  }
+
+  // 渲染搜索结果
+  function renderResults(results, query) {
+    activeIndex = -1;
+    if (!results.length) {
+      hideResults();
+      return;
+    }
+    const html = results.map(page => {
+      const title = highlight(page.title || 'Untitled', query);
+      let summary = page.summary || page.content || '';
+      summary = summary.substring(0, 100) + (summary.length > 100 ? '...' : '');
+      return `<a class="search-result-item" href="${page.url}">
+        <div class="search-result-title">${title}</div>
+        <div class="search-result-summary">${summary}</div>
+      </a>`;
+    }).join('');
+    searchResults.innerHTML = html;
+    showResults();
+  }
+
+  // 防抖
+  let debounceTimer;
+  function debounce(fn, delay) {
+    return function(...args) {
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => fn.apply(this, args), delay);
+    };
+  }
+
+  // 输入事件
+  searchInput.addEventListener('input', debounce(async function() {
+    const query = this.value.trim();
+    if (!query) {
+      hideResults();
+      return;
+    }
+    await loadSearchIndex();
+    const results = search(query);
+    renderResults(results, query);
+  }, 200));
+
+  // 键盘导航
+  searchInput.addEventListener('keydown', function(e) {
+    if (!isResultsVisible) return;
+    
+    const items = searchResults.querySelectorAll('.search-result-item');
+    const itemCount = items.length;
+    if (itemCount === 0) return;
+
+    switch (e.key) {
+      case 'ArrowDown':
+        e.preventDefault();
+        e.stopPropagation();
+        activeIndex = (activeIndex + 1) % itemCount;
+        updateActiveItem();
+        break;
+      case 'ArrowUp':
+        e.preventDefault();
+        e.stopPropagation();
+        activeIndex = activeIndex <= 0 ? itemCount - 1 : activeIndex - 1;
+        updateActiveItem();
+        break;
+      case 'Enter':
+        if (activeIndex >= 0 && items[activeIndex]) {
+          e.preventDefault();
+          window.location.href = items[activeIndex].href;
+        }
+        break;
+      case 'Escape':
+        e.preventDefault();
+        hideResults();
+        break;
+    }
+  });
+
+  // 聚焦时如果有内容则显示结果
+  searchInput.addEventListener('focus', async function() {
+    const query = this.value.trim();
+    if (query) {
+      await loadSearchIndex();
+      const results = search(query);
+      renderResults(results, query);
+    }
+  });
+
+  // 点击外部关闭结果
+  document.addEventListener('click', function(e) {
+    if (!searchInput.contains(e.target) && !searchResults.contains(e.target)) {
+      hideResults();
+    }
+  });
+
+  // Cmd+K (Mac) / Ctrl+K (Windows/Linux) 快捷键聚焦搜索框
+  document.addEventListener('keydown', function(e) {
+    if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+      e.preventDefault();
+      searchInput.focus();
+      searchInput.select();
+    }
+  });
+})();
+</script>

@@ -43,6 +43,10 @@ hljs.highlightAll();
       
       <li><a href="/index.xml">Subscribe</a></li>
       
+      <li class="search-container">
+        <input type="text" id="search-input" placeholder="⌘ K" autocomplete="off">
+        <div id="search-results"></div>
+      </li>
     </ul>
     <hr/>
     </nav>
@@ -141,6 +145,176 @@ hljs.highlightAll();
 
   <footer>
   
+
+<script>
+(function() {
+  const searchInput = document.getElementById('search-input');
+  const searchResults = document.getElementById('search-results');
+  if (!searchInput || !searchResults) return;
+  
+  let searchIndex = null;
+  let activeIndex = -1;
+  let isResultsVisible = false;
+
+  
+  async function loadSearchIndex() {
+    if (searchIndex) return searchIndex;
+    try {
+      const response = await fetch('/index.json');
+      const data = await response.json();
+      searchIndex = data.pages || [];
+      return searchIndex;
+    } catch (e) {
+      console.error('Failed to load search index:', e);
+      return [];
+    }
+  }
+
+  
+  function search(query) {
+    if (!searchIndex || !query.trim()) return [];
+    const q = query.toLowerCase();
+    return searchIndex.filter(page => {
+      const title = (page.title || '').toLowerCase();
+      const content = (page.content || '').toLowerCase();
+      return title.includes(q) || content.includes(q);
+    }).slice(0, 10);
+  }
+
+  
+  function highlight(text, query) {
+    if (!query) return text;
+    const regex = new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+    return text.replace(regex, '<mark>$1</mark>');
+  }
+
+  
+  function showResults() {
+    searchResults.style.display = 'block';
+    isResultsVisible = true;
+  }
+
+  
+  function hideResults() {
+    searchResults.style.display = 'none';
+    isResultsVisible = false;
+    activeIndex = -1;
+  }
+
+  
+  function updateActiveItem() {
+    const items = searchResults.querySelectorAll('.search-result-item');
+    items.forEach((item, index) => {
+      if (index === activeIndex) {
+        item.classList.add('active');
+      } else {
+        item.classList.remove('active');
+      }
+    });
+  }
+
+  
+  function renderResults(results, query) {
+    activeIndex = -1;
+    if (!results.length) {
+      hideResults();
+      return;
+    }
+    const html = results.map(page => {
+      const title = highlight(page.title || 'Untitled', query);
+      let summary = page.summary || page.content || '';
+      summary = summary.substring(0, 100) + (summary.length > 100 ? '...' : '');
+      return `<a class="search-result-item" href="${page.url}">
+        <div class="search-result-title">${title}</div>
+        <div class="search-result-summary">${summary}</div>
+      </a>`;
+    }).join('');
+    searchResults.innerHTML = html;
+    showResults();
+  }
+
+  
+  let debounceTimer;
+  function debounce(fn, delay) {
+    return function(...args) {
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => fn.apply(this, args), delay);
+    };
+  }
+
+  
+  searchInput.addEventListener('input', debounce(async function() {
+    const query = this.value.trim();
+    if (!query) {
+      hideResults();
+      return;
+    }
+    await loadSearchIndex();
+    const results = search(query);
+    renderResults(results, query);
+  }, 200));
+
+  
+  searchInput.addEventListener('keydown', function(e) {
+    if (!isResultsVisible) return;
+    
+    const items = searchResults.querySelectorAll('.search-result-item');
+    const itemCount = items.length;
+    if (itemCount === 0) return;
+
+    switch (e.key) {
+      case 'ArrowDown':
+        e.preventDefault();
+        e.stopPropagation();
+        activeIndex = (activeIndex + 1) % itemCount;
+        updateActiveItem();
+        break;
+      case 'ArrowUp':
+        e.preventDefault();
+        e.stopPropagation();
+        activeIndex = activeIndex <= 0 ? itemCount - 1 : activeIndex - 1;
+        updateActiveItem();
+        break;
+      case 'Enter':
+        if (activeIndex >= 0 && items[activeIndex]) {
+          e.preventDefault();
+          window.location.href = items[activeIndex].href;
+        }
+        break;
+      case 'Escape':
+        e.preventDefault();
+        hideResults();
+        break;
+    }
+  });
+
+  
+  searchInput.addEventListener('focus', async function() {
+    const query = this.value.trim();
+    if (query) {
+      await loadSearchIndex();
+      const results = search(query);
+      renderResults(results, query);
+    }
+  });
+
+  
+  document.addEventListener('click', function(e) {
+    if (!searchInput.contains(e.target) && !searchResults.contains(e.target)) {
+      hideResults();
+    }
+  });
+
+  
+  document.addEventListener('keydown', function(e) {
+    if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+      e.preventDefault();
+      searchInput.focus();
+      searchInput.select();
+    }
+  });
+})();
+</script>
   
   <hr/>
   © powered by <a href="https://gohugo.io/">Hugo</a> &amp; <a href="https://github.com/yihui/hugo-xmin">Xmin</a>  2017 &ndash; 2025 | <a href="https://github.com/qiref">Github</a>
