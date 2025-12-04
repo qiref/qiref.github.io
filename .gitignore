@@ -4,3 +4,6 @@
 static/assets/.DS_Store
 *.drawio.bkp
 public/
+.vscode/
+.codebuddy/
+.idea/
