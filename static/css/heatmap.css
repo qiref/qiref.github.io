@@ -1,0 +1,142 @@
+/* 博客热力图样式 */
+#blog-heatmap {
+  margin: 20px 0;
+  padding: 0;
+}
+
+.heatmap-container {
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.heatmap-table {
+  border-collapse: separate;
+  border-spacing: 2px;
+  font-size: 12px;
+  width: auto;
+  margin: 0;
+  background: transparent !important;
+  line-height: 1;
+}
+
+.heatmap-table thead,
+.heatmap-table tbody,
+.heatmap-table tr {
+  background: transparent !important;
+}
+
+.heatmap-table tbody tr {
+  height: 13px;
+}
+
+.heatmap-table th {
+  text-align: center;
+  padding: 0 0 4px 0;
+  font-weight: 400;
+  color: #586069;
+  font-size: 12px;
+  background: transparent !important;
+  vertical-align: bottom;
+  border: none;
+}
+
+.heatmap-table th:first-child {
+  text-align: right;
+  padding-right: 8px;
+  width: 50px;
+}
+
+.heatmap-table td {
+  text-align: center;
+  padding: 0;
+  vertical-align: middle;
+  border: none;
+  background: transparent !important;
+  line-height: 13px;
+  height: 13px;
+}
+
+.heatmap-table td:first-child {
+  text-align: right;
+  padding-right: 8px;
+  font-weight: 400;
+  color: #586069;
+  font-size: 12px;
+}
+
+.heatmap-cell {
+  display: block;
+  width: 13px;
+  height: 13px;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.heatmap-cell:hover {
+  outline: 2px solid rgba(27, 31, 35, 0.3);
+  outline-offset: 0;
+  z-index: 1;
+}
+
+.heatmap-cell.empty {
+  background: #ebedf0;
+  cursor: default;
+}
+
+.heatmap-cell.empty:hover {
+  outline: none;
+}
+
+/* 热力图颜色等级 */
+.heatmap-cell.level-0 { background-color: #ebedf0; }
+.heatmap-cell.level-1 { background-color: #9be9a8; }
+.heatmap-cell.level-2 { background-color: #40c463; }
+.heatmap-cell.level-3 { background-color: #30a14e; }
+.heatmap-cell.level-4 { background-color: #216e39; }
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  #blog-heatmap {
+    margin: 15px -10px;
+  }
+  
+  .heatmap-cell {
+    width: 11px;
+    height: 11px;
+  }
+  
+  .heatmap-table tbody tr,
+  .heatmap-table td {
+    height: 11px;
+    line-height: 11px;
+  }
+}
+
+@media (max-width: 480px) {
+  .heatmap-table {
+    font-size: 10px;
+  }
+  
+  .heatmap-cell {
+    width: 9px;
+    height: 9px;
+  }
+  
+  .heatmap-table th:first-child,
+  .heatmap-table td:first-child {
+    width: 30px;
+    padding-right: 4px;
+    font-size: 10px;
+  }
+  
+  .heatmap-table th {
+    font-size: 10px;
+  }
+  
+  .heatmap-table tbody tr,
+  .heatmap-table td {
+    height: 9px;
+    line-height: 9px;
+  }
+}

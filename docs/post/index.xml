@@ -6,8 +6,15 @@
     <description>Recent content in Posts on 大道至简</description>
     <generator>Hugo</generator>
     <language>cn-zh</language>
-    <lastBuildDate>Thu, 04 Dec 2025 11:08:10 +0800</lastBuildDate>
+    <lastBuildDate>Thu, 04 Dec 2025 19:39:10 +0800</lastBuildDate>
     <atom:link href="https://qiref.github.io/post/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Flink源码-Flink Client</title>
+      <link>https://qiref.github.io/post/2025/12/04/flink%E6%BA%90%E7%A0%81-flink-client/</link>
+      <pubDate>Thu, 04 Dec 2025 19:39:10 +0800</pubDate>
+      <guid>https://qiref.github.io/post/2025/12/04/flink%E6%BA%90%E7%A0%81-flink-client/</guid>
+      <description>Flink Client Layer 学习指南 根据 Flink 源码的架构，Client Layer 主要负责作业提交、图转换、集群交互。本文规划了一个从易到难、循序渐进的学习路径。&#xA;作业提交入口 起点文件： StreamExecutionEnvironment.java&#xA;// FileSinkDemo.java 中的这行代码是整个 Client Layer 的入口 env.execute(&amp;quot;Local FileSystem Debug&amp;quot;); // 学习路径： // 1. StreamExecutionEnvironment.execute() // 2. StreamExecutionEnvironment.executeAsync() // 3. StreamExecutionEnvironment.getStreamGraph() // 4. PipelineExecutor.execute() 学习方式：&#xA;// 创建调试 Demo public class ClientLayerLearningDemo { public static void main(String[] args) throws Exception { Configuration conf = new Configuration(); StreamExecutionEnvironment env = StreamExecutionEnvironment.createLocalEnvironmentWithWebUI(conf); env.setParallelism(2); // 简单的作业 DataStream&amp;lt;String&amp;gt; source = env.fromElements(&amp;quot;a&amp;quot;, &amp;quot;b&amp;quot;, &amp;quot;c&amp;quot;); source.map(x -&amp;gt; x.</description>
+    </item>
     <item>
       <title>Flink源码学习指南</title>
       <link>https://qiref.github.io/post/2025/12/04/flink%E6%BA%90%E7%A0%81%E5%AD%A6%E4%B9%A0%E6%8C%87%E5%8D%97/</link>

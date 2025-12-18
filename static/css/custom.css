@@ -26,18 +26,39 @@ pre code.hljs::-webkit-scrollbar {
 }
 
 
-/* ========== 搜索功能样式 ========== */
+/* ========== 导航栏样式修复 ========== */
 
 /* 导航栏定位上下文 */
 nav {
   position: relative;
 }
 
-/* 菜单项垂直对齐 */
+/* 菜单项垂直对齐 - 重置列表的 margin-top */
 nav .menu li {
   vertical-align: middle;
+  margin-top: 0 !important;
 }
 
+/* 确保所有菜单链接样式一致 */
+nav .menu li a,
+nav ul.menu li a,
+ul.menu li a,
+.menu li a,
+.menu a {
+  display: inline-block !important;
+  padding: 5px !important;
+  font-size: 14px !important;
+  background: #eee !important;
+  border-radius: 5px !important;
+  text-decoration: none !important;
+  line-height: 1.5 !important;
+  height: auto !important;
+  min-height: auto !important;
+  vertical-align: middle !important;
+  box-sizing: border-box !important;
+}
+
+/* ========== 搜索功能样式 ========== */
 /* 搜索容器 */
 .search-container {
   display: inline-block;
@@ -48,12 +69,11 @@ nav .menu li {
 /* 搜索输入框 */
 #search-input {
   width: 120px;
-  height: 26px;
-  padding: 4px 8px;
+  padding: 5px 8px;
   border: 1px solid #d0d7de;
   border-radius: 5px;
   font-size: 14px;
-  line-height: 1;
+  line-height: normal;
   outline: none;
   background: transparent;
   vertical-align: middle;

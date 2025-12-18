@@ -1,0 +1,110 @@
+<div id="blog-heatmap">
+  <div class="heatmap-container">
+    <table class="heatmap-table">
+      <thead>
+        <tr id="month-header"><th></th></tr>
+      </thead>
+      <tbody id="heatmap-body"></tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+  const blogPosts = [
+    {{ range where site.RegularPages "Type" "==" "post" }}
+    { date: "{{ .Date.Format "2006-01-02" }}", title: "{{ .Title }}" },
+    {{ end }}
+  ];
+</script>
+
+<script>
+(function() {
+  const MONTH_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const WEEKS_PER_MONTH = 4;
+  const YEARS_TO_SHOW = 5;
+  
+  function generateHeatmap() {
+    const currentYear = new Date().getFullYear();
+    const years = Array.from({ length: YEARS_TO_SHOW }, (_, i) => currentYear - YEARS_TO_SHOW + i + 1);
+    
+    const postCounts = {};
+    blogPosts.forEach(post => {
+      const date = new Date(post.date);
+      const year = date.getFullYear();
+      const month = date.getMonth() + 1;
+      const week = Math.min(Math.ceil(date.getDate() / 7), WEEKS_PER_MONTH);
+      const key = `${year}-${String(month).padStart(2, '0')}-W${week}`;
+      
+      if (!postCounts[key]) postCounts[key] = { count: 0, titles: [] };
+      postCounts[key].count++;
+      postCounts[key].titles.push(post.title);
+    });
+    
+    const maxCount = Math.max(...Object.values(postCounts).map(v => v.count), 1);
+    
+    // 生成月份表头
+    const headerRow = document.getElementById('month-header');
+    headerRow.innerHTML = '<th></th>';
+    MONTH_NAMES.forEach(month => {
+      const th = document.createElement('th');
+      th.textContent = month;
+      th.colSpan = WEEKS_PER_MONTH;
+      headerRow.appendChild(th);
+    });
+    
+    // 生成年份行
+    const tbody = document.getElementById('heatmap-body');
+    tbody.innerHTML = '';
+    
+    years.forEach(year => {
+      const row = document.createElement('tr');
+      const yearCell = document.createElement('td');
+      yearCell.textContent = year;
+      row.appendChild(yearCell);
+      
+      for (let month = 1; month <= 12; month++) {
+        for (let week = 1; week <= WEEKS_PER_MONTH; week++) {
+          const key = `${year}-${String(month).padStart(2, '0')}-W${week}`;
+          const td = document.createElement('td');
+          const cell = document.createElement('div');
+          cell.className = 'heatmap-cell';
+          
+          const data = postCounts[key];
+          const weekStartDay = (week - 1) * 7 + 1;
+          const dateObj = new Date(year, month - 1, weekStartDay);
+          const isFuture = dateObj > new Date();
+          
+          if (data) {
+            const { count, titles } = data;
+            const level = count === 0 ? 0 : 
+                         count <= maxCount * 0.25 ? 1 :
+                         count <= maxCount * 0.5 ? 2 :
+                         count <= maxCount * 0.75 ? 3 : 4;
+            
+            cell.classList.add(`level-${level}`);
+            const titleList = titles.slice(0, 5).join('\n• ');
+            const more = titles.length > 5 ? `\n... and ${titles.length - 5} more` : '';
+            cell.title = `${MONTH_NAMES[month - 1]} ${year} Week ${week}: ${count} post${count > 1 ? 's' : ''}\n\n• ${titleList}${more}`;
+          } else if (isFuture) {
+            cell.classList.add('empty');
+          } else {
+            cell.classList.add('level-0');
+            cell.title = `${MONTH_NAMES[month - 1]} ${year} Week ${week}: No posts`;
+          }
+          
+          td.appendChild(cell);
+          row.appendChild(td);
+        }
+      }
+      
+      tbody.appendChild(row);
+    });
+  }
+  
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', generateHeatmap);
+  } else {
+    generateHeatmap();
+  }
+})();
+</script>
