@@ -41,7 +41,7 @@
       const title = (page.title || '').toLowerCase();
       const content = (page.content || '').toLowerCase();
       return title.includes(q) || content.includes(q);
-    }).slice(0, 10);
+    }).slice(0, 5);
   }
 
   // 高亮匹配文本

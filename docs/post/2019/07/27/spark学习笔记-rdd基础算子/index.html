@@ -10,6 +10,7 @@
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-PGMJFXZJRT"></script>
 
 <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/scala.min.js"></script>
 
 <script>
 hljs.configure({languages: []});
@@ -152,7 +153,7 @@ Transformation算子不会马上执行，只有当遇到Action算子时才会执
 </li>
 <li>
 <p><strong>mapPartitionsWithIndex(function)</strong> 类似于mapPartitions，但是传入的参数中多了一个索引值，该索引值为RDD分片数的索引值；
-（传入的函数类型为：(Int, Iterator<T>) =&gt; Iterator<U>）</p>
+（传入的函数类型为：·<code>(Int, Iterator&lt;T&gt;) =&gt; Iterator&lt;U&gt;）</code></p>
 </li>
 </ul>
 <pre><code class="language-scala">  /**
@@ -379,7 +380,7 @@ println(&quot;Counter value: &quot; + counter)
       const title = (page.title || '').toLowerCase();
       const content = (page.content || '').toLowerCase();
       return title.includes(q) || content.includes(q);
-    }).slice(0, 10);
+    }).slice(0, 5);
   }
 
   
