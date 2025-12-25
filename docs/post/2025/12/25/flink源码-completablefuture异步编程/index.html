@@ -1,0 +1,1719 @@
+<!DOCTYPE html>
+<html lang="cn-zh">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Flink源码-CompletableFuture异步编程 | 大道至简</title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/fonts.css" />
+    
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-PGMJFXZJRT"></script>
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/scala.min.js"></script>
+
+<script>
+hljs.configure({languages: []});
+hljs.highlightAll();
+</script>
+
+<link href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/github.min.css"  rel="stylesheet">
+
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-PGMJFXZJRT');
+</script>
+
+<link rel="stylesheet" href="/css/custom.css">
+<link rel="stylesheet" href="/css/heatmap.css">
+  </head>
+
+  <body>
+    <nav>
+    <ul class="menu">
+      
+      <li><a href="/">Home</a></li>
+      
+      <li><a href="/post/">Posts</a></li>
+      
+      <li><a href="/tags/">Tags</a></li>
+      
+      <li><a href="/about/">About</a></li>
+      
+      <li><a href="/note/">Note</a></li>
+      
+      <li><a href="/index.xml">Subscribe</a></li>
+      
+      <li class="search-container">
+        <input type="text" id="search-input" placeholder="⌘ K" autocomplete="off">
+        <div id="search-results"></div>
+      </li>
+    </ul>
+    <hr/>
+    </nav>
+
+<div class="article-meta">
+<h1><span class="title">Flink源码-CompletableFuture异步编程</span></h1>
+
+<h2 class="date">2025/12/25</h2>
+<p class="terms">
+  
+  
+  
+  
+  Tags: <a href="/tags/flink">Flink</a> 
+  
+  
+</p>
+</div>
+
+
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#1-基础概念">1. 基础概念</a>
+      <ul>
+        <li><a href="#11-什么是-completablefuture">1.1 什么是 CompletableFuture</a></li>
+        <li><a href="#12-同步-vs-异步对比">1.2 同步 vs 异步对比</a></li>
+        <li><a href="#13-核心接口关系">1.3 核心接口关系</a></li>
+      </ul>
+    </li>
+    <li><a href="#2-创建-completablefuture">2. 创建 CompletableFuture</a>
+      <ul>
+        <li><a href="#21-已完成的-future">2.1 已完成的 Future</a></li>
+        <li><a href="#22-异步执行有返回值的任务---supplyasync">2.2 异步执行有返回值的任务 - supplyAsync</a></li>
+        <li><a href="#23-异步执行无返回值的任务---runasync">2.3 异步执行无返回值的任务 - runAsync</a></li>
+        <li><a href="#24-手动创建并控制完成">2.4 手动创建并控制完成</a></li>
+      </ul>
+    </li>
+    <li><a href="#3-链式处理">3. 链式处理</a>
+      <ul>
+        <li><a href="#31-thenapply---转换结果同步">3.1 thenApply - 转换结果（同步）</a></li>
+        <li><a href="#32-thenapplyasync---转换结果异步">3.2 thenApplyAsync - 转换结果（异步）</a></li>
+        <li><a href="#33-thenaccept---消费结果无返回值">3.3 thenAccept - 消费结果（无返回值）</a></li>
+        <li><a href="#34-thenrun---执行后续操作不关心结果">3.4 thenRun - 执行后续操作（不关心结果）</a></li>
+        <li><a href="#35-thencompose---扁平化嵌套-future重要">3.5 thenCompose - 扁平化嵌套 Future（重要！）</a></li>
+        <li><a href="#36-thencompose-vs-thenapply">3.6 thenCompose vs thenApply</a></li>
+        <li><a href="#37-functionidentity-模式">3.7 Function.identity() 模式</a></li>
+      </ul>
+    </li>
+    <li><a href="#4-异常处理">4. 异常处理</a>
+      <ul>
+        <li><a href="#41-exceptionally---异常恢复">4.1 exceptionally - 异常恢复</a></li>
+        <li><a href="#42-handle---统一处理结果和异常">4.2 handle - 统一处理结果和异常</a></li>
+        <li><a href="#43-handleasync---异步处理结果和异常">4.3 handleAsync - 异步处理结果和异常</a></li>
+        <li><a href="#44-whencomplete---观察结果不改变结果">4.4 whenComplete - 观察结果（不改变结果）</a></li>
+        <li><a href="#45-异常处理链">4.5 异常处理链</a></li>
+        <li><a href="#46-异常类型处理">4.6 异常类型处理</a></li>
+      </ul>
+    </li>
+    <li><a href="#5-组合多个异步操作">5. 组合多个异步操作</a>
+      <ul>
+        <li><a href="#51-thencombine---合并两个-future-的结果">5.1 thenCombine - 合并两个 Future 的结果</a></li>
+        <li><a href="#52-thenacceptboth---消费两个-future-的结果">5.2 thenAcceptBoth - 消费两个 Future 的结果</a></li>
+        <li><a href="#53-runafterboth---两个都完成后执行">5.3 runAfterBoth - 两个都完成后执行</a></li>
+        <li><a href="#54-applytoeither---任一完成即处理">5.4 applyToEither - 任一完成即处理</a></li>
+        <li><a href="#55-accepteither---任一完成即消费">5.5 acceptEither - 任一完成即消费</a></li>
+        <li><a href="#56-allof---等待所有完成">5.6 allOf - 等待所有完成</a></li>
+        <li><a href="#57-anyof---任一完成即返回">5.7 anyOf - 任一完成即返回</a></li>
+        <li><a href="#58-批量处理模式">5.8 批量处理模式</a></li>
+      </ul>
+    </li>
+    <li><a href="#6-结合线程池">6. 结合线程池</a>
+      <ul>
+        <li><a href="#61-默认线程池">6.1 默认线程池</a></li>
+        <li><a href="#62-自定义线程池">6.2 自定义线程池</a></li>
+        <li><a href="#63-不同类型的线程池">6.3 不同类型的线程池</a></li>
+        <li><a href="#64-flink-风格的线程池使用">6.4 Flink 风格的线程池使用</a></li>
+        <li><a href="#65-线程池选择策略">6.5 线程池选择策略</a></li>
+      </ul>
+    </li>
+    <li><a href="#7-结合-runnable-和-callable">7. 结合 Runnable 和 Callable</a>
+      <ul>
+        <li><a href="#71-runnable-转-completablefuture">7.1 Runnable 转 CompletableFuture</a></li>
+        <li><a href="#72-callable-转-completablefuture">7.2 Callable 转 CompletableFuture</a></li>
+        <li><a href="#73-future-转-completablefuture">7.3 Future 转 CompletableFuture</a></li>
+        <li><a href="#74-completablefuture-与-runnable-链式组合">7.4 CompletableFuture 与 Runnable 链式组合</a></li>
+        <li><a href="#75-批量执行-runnable">7.5 批量执行 Runnable</a></li>
+      </ul>
+    </li>
+    <li><a href="#8-高级模式">8. 高级模式</a>
+      <ul>
+        <li><a href="#81-超时处理">8.1 超时处理</a></li>
+        <li><a href="#82-重试机制">8.2 重试机制</a></li>
+        <li><a href="#83-指数退避重试">8.3 指数退避重试</a></li>
+        <li><a href="#84-断路器模式">8.4 断路器模式</a></li>
+        <li><a href="#85-限流器">8.5 限流器</a></li>
+      </ul>
+    </li>
+    <li><a href="#9-flink-中的实际应用">9. Flink 中的实际应用</a>
+      <ul>
+        <li><a href="#91-jobmanagerrunner-结果处理模式">9.1 JobManagerRunner 结果处理模式</a></li>
+        <li><a href="#92-模拟-flink-作业提交流程">9.2 模拟 Flink 作业提交流程</a></li>
+        <li><a href="#93-带重试的请求发送">9.3 带重试的请求发送</a></li>
+      </ul>
+    </li>
+    <li><a href="#10-最佳实践">10. 最佳实践</a>
+      <ul>
+        <li><a href="#101-避免阻塞">10.1 避免阻塞</a></li>
+        <li><a href="#102-正确处理异常">10.2 正确处理异常</a></li>
+        <li><a href="#103-使用合适的线程池">10.3 使用合适的线程池</a></li>
+        <li><a href="#104-避免过长的链式调用">10.4 避免过长的链式调用</a></li>
+        <li><a href="#105-资源清理">10.5 资源清理</a></li>
+      </ul>
+    </li>
+    <li><a href="#附录常用方法速查表">附录：常用方法速查表</a></li>
+    <li><a href="#参考资料">参考资料</a></li>
+  </ul>
+</nav>
+
+
+<main>
+<h2 id="1-基础概念">1. 基础概念</h2>
+<h3 id="11-什么是-completablefuture">1.1 什么是 CompletableFuture</h3>
+<p><code>CompletableFuture</code> 是 Java 8 引入的异步编程工具，它代表一个可能尚未完成的异步计算结果。与传统的 <code>Future</code> 相比，它支持：</p>
+<ul>
+<li><strong>非阻塞回调</strong>：不需要调用 <code>get()</code> 阻塞等待</li>
+<li><strong>链式操作</strong>：可以将多个异步操作串联起来</li>
+<li><strong>组合操作</strong>：可以组合多个异步操作的结果</li>
+<li><strong>异常处理</strong>：提供优雅的异常处理机制</li>
+</ul>
+<h3 id="12-同步-vs-异步对比">1.2 同步 vs 异步对比</h3>
+<pre><code class="language-java">// ==================== 同步方式 - 阻塞等待 ====================
+public String processSync() {
+    String result1 = step1();           // 阻塞 2 秒
+    String result2 = step2(result1);    // 阻塞 2 秒
+    String result3 = step3(result2);    // 阻塞 2 秒
+    return result3;                     // 总耗时: 6 秒
+}
+
+// ==================== 异步方式 - 非阻塞 ====================
+public CompletableFuture&lt;String&gt; processAsync() {
+    return CompletableFuture
+        .supplyAsync(() -&gt; step1())              // 异步执行
+        .thenApplyAsync(result1 -&gt; step2(result1))  // 链式处理
+        .thenApplyAsync(result2 -&gt; step3(result2)); // 继续链式
+    // 主线程立即返回，不阻塞
+}
+</code></pre>
+<h3 id="13-核心接口关系">1.3 核心接口关系</h3>
+<pre><code>                    ┌─────────────────┐
+                    │     Future      │
+                    └────────┬────────┘
+                             │
+              ┌──────────────┴─────────────┐
+              │                            │
+    ┌─────────┴─────────┐       ┌──────────┴──────────┐
+    │  CompletionStage  │       │   CompletableFuture │
+    │   (接口)           │◄------│   (实现类)           │
+    └───────────────────┘       └─────────────────────┘
+</code></pre>
+<hr>
+<h2 id="2-创建-completablefuture">2. 创建 CompletableFuture</h2>
+<h3 id="21-已完成的-future">2.1 已完成的 Future</h3>
+<pre><code class="language-java">// 创建一个已经完成的 Future（成功）
+CompletableFuture&lt;String&gt; completed = CompletableFuture.completedFuture(&quot;result&quot;);
+System.out.println(completed.isDone());  // true
+System.out.println(completed.get());     // &quot;result&quot;
+
+// 创建一个已经完成的 Future（失败）- Java 9+
+CompletableFuture&lt;String&gt; failed = CompletableFuture.failedFuture(
+    new RuntimeException(&quot;error&quot;));
+
+// Java 8 兼容写法
+CompletableFuture&lt;String&gt; failedJava8 = new CompletableFuture&lt;&gt;();
+failedJava8.completeExceptionally(new RuntimeException(&quot;error&quot;));
+</code></pre>
+<h3 id="22-异步执行有返回值的任务---supplyasync">2.2 异步执行有返回值的任务 - supplyAsync</h3>
+<pre><code class="language-java">// 使用默认线程池（ForkJoinPool.commonPool()）
+CompletableFuture&lt;String&gt; future1 = CompletableFuture.supplyAsync(() -&gt; {
+    System.out.println(&quot;执行线程: &quot; + Thread.currentThread().getName());
+    // 模拟耗时操作
+    try {
+        Thread.sleep(1000);
+    } catch (InterruptedException e) {
+        Thread.currentThread().interrupt();
+    }
+    return &quot;async result&quot;;
+});
+
+// 使用自定义线程池
+ExecutorService executor = Executors.newFixedThreadPool(4);
+CompletableFuture&lt;String&gt; future2 = CompletableFuture.supplyAsync(() -&gt; {
+    return &quot;custom executor result&quot;;
+}, executor);
+</code></pre>
+<h3 id="23-异步执行无返回值的任务---runasync">2.3 异步执行无返回值的任务 - runAsync</h3>
+<pre><code class="language-java">// 无返回值的异步任务
+CompletableFuture&lt;Void&gt; future = CompletableFuture.runAsync(() -&gt; {
+    System.out.println(&quot;执行异步任务，线程: &quot; + Thread.currentThread().getName());
+    // 执行一些操作，没有返回值
+    doSomething();
+});
+
+// 等待完成
+future.join();
+</code></pre>
+<h3 id="24-手动创建并控制完成">2.4 手动创建并控制完成</h3>
+<pre><code class="language-java">// 手动创建 CompletableFuture
+CompletableFuture&lt;String&gt; manualFuture = new CompletableFuture&lt;&gt;();
+
+// 在另一个线程中完成它
+new Thread(() -&gt; {
+    try {
+        Thread.sleep(2000);
+        // 正常完成
+        manualFuture.complete(&quot;manual result&quot;);
+        
+        // 或者异常完成
+        // manualFuture.completeExceptionally(new RuntimeException(&quot;error&quot;));
+    } catch (InterruptedException e) {
+        manualFuture.completeExceptionally(e);
+    }
+}).start();
+
+// 主线程可以等待结果
+String result = manualFuture.get();  // 阻塞等待
+</code></pre>
+<hr>
+<h2 id="3-链式处理">3. 链式处理</h2>
+<h3 id="31-thenapply---转换结果同步">3.1 thenApply - 转换结果（同步）</h3>
+<pre><code class="language-java">// thenApply: 对结果进行同步转换
+// Function&lt;T, U&gt;: 接收 T 类型，返回 U 类型
+CompletableFuture&lt;String&gt; future = CompletableFuture
+    .supplyAsync(() -&gt; 42)                          // Integer
+    .thenApply(num -&gt; num * 2)                      // Integer -&gt; Integer
+    .thenApply(num -&gt; &quot;Result: &quot; + num);            // Integer -&gt; String
+
+System.out.println(future.get());  // &quot;Result: 84&quot;
+</code></pre>
+<h3 id="32-thenapplyasync---转换结果异步">3.2 thenApplyAsync - 转换结果（异步）</h3>
+<pre><code class="language-java">// thenApplyAsync: 在异步线程中执行转换
+ExecutorService executor = Executors.newFixedThreadPool(2);
+
+CompletableFuture&lt;String&gt; future = CompletableFuture
+    .supplyAsync(() -&gt; {
+        System.out.println(&quot;Step 1: &quot; + Thread.currentThread().getName());
+        return 42;
+    })
+    .thenApplyAsync(num -&gt; {
+        System.out.println(&quot;Step 2: &quot; + Thread.currentThread().getName());
+        return num * 2;
+    }, executor)  // 使用自定义线程池
+    .thenApplyAsync(num -&gt; {
+        System.out.println(&quot;Step 3: &quot; + Thread.currentThread().getName());
+        return &quot;Result: &quot; + num;
+    });  // 使用默认线程池
+
+executor.shutdown();
+</code></pre>
+<h3 id="33-thenaccept---消费结果无返回值">3.3 thenAccept - 消费结果（无返回值）</h3>
+<pre><code class="language-java">// thenAccept: 消费结果，不返回新值
+// Consumer&lt;T&gt;: 接收 T 类型，无返回值
+CompletableFuture&lt;Void&gt; future = CompletableFuture
+    .supplyAsync(() -&gt; &quot;Hello&quot;)
+    .thenApply(s -&gt; s + &quot; World&quot;)
+    .thenAccept(result -&gt; {
+        System.out.println(&quot;最终结果: &quot; + result);
+        // 可以在这里保存到数据库、发送通知等
+    });
+
+future.join();  // 等待完成
+</code></pre>
+<h3 id="34-thenrun---执行后续操作不关心结果">3.4 thenRun - 执行后续操作（不关心结果）</h3>
+<pre><code class="language-java">// thenRun: 不关心前一步的结果，只是在完成后执行某些操作
+// Runnable: 无参数，无返回值
+CompletableFuture&lt;Void&gt; future = CompletableFuture
+    .supplyAsync(() -&gt; {
+        System.out.println(&quot;执行主要任务&quot;);
+        return &quot;result&quot;;
+    })
+    .thenRun(() -&gt; {
+        System.out.println(&quot;任务完成，执行清理操作&quot;);
+        // 清理资源、记录日志等
+    });
+</code></pre>
+<h3 id="35-thencompose---扁平化嵌套-future重要">3.5 thenCompose - 扁平化嵌套 Future（重要！）</h3>
+<pre><code class="language-java">// 问题：thenApply 会产生嵌套的 CompletableFuture
+CompletableFuture&lt;CompletableFuture&lt;String&gt;&gt; nested = CompletableFuture
+    .supplyAsync(() -&gt; &quot;input&quot;)
+    .thenApply(input -&gt; asyncProcess(input));  // 返回 CompletableFuture&lt;String&gt;
+
+// 解决：使用 thenCompose 扁平化
+CompletableFuture&lt;String&gt; flattened = CompletableFuture
+    .supplyAsync(() -&gt; &quot;input&quot;)
+    .thenCompose(input -&gt; asyncProcess(input));  // 自动扁平化
+
+// 辅助方法
+private CompletableFuture&lt;String&gt; asyncProcess(String input) {
+    return CompletableFuture.supplyAsync(() -&gt; &quot;processed: &quot; + input);
+}
+</code></pre>
+<h3 id="36-thencompose-vs-thenapply">3.6 thenCompose vs thenApply</h3>
+<pre><code class="language-java">// ==================== thenApply ====================
+// 用于同步转换，lambda 返回普通值
+CompletableFuture&lt;String&gt; f1 = CompletableFuture
+    .supplyAsync(() -&gt; 1)
+    .thenApply(n -&gt; &quot;Number: &quot; + n);  // 返回 String
+
+// ==================== thenCompose ====================
+// 用于异步转换，lambda 返回 CompletableFuture
+CompletableFuture&lt;String&gt; f2 = CompletableFuture
+    .supplyAsync(() -&gt; 1)
+    .thenCompose(n -&gt; CompletableFuture.supplyAsync(() -&gt; &quot;Number: &quot; + n));
+
+// 类比 Stream API:
+// thenApply  ≈ map()
+// thenCompose ≈ flatMap()
+</code></pre>
+<h3 id="37-functionidentity-模式">3.7 Function.identity() 模式</h3>
+<pre><code class="language-java">// 这是 Flink 中常见的模式
+// 当 handleAsync 返回 CompletableFuture 时，需要扁平化
+
+CompletableFuture&lt;String&gt; result = CompletableFuture
+    .supplyAsync(() -&gt; &quot;input&quot;)
+    .handleAsync((value, throwable) -&gt; {
+        if (throwable != null) {
+            return CompletableFuture.completedFuture(&quot;error fallback&quot;);
+        }
+        return asyncProcess(value);  // 返回 CompletableFuture&lt;String&gt;
+    })
+    // handleAsync 返回 CompletableFuture&lt;CompletableFuture&lt;String&gt;&gt;
+    // 使用 thenCompose(Function.identity()) 扁平化
+    .thenCompose(Function.identity());  // 等价于 .thenCompose(f -&gt; f)
+</code></pre>
+<hr>
+<h2 id="4-异常处理">4. 异常处理</h2>
+<h3 id="41-exceptionally---异常恢复">4.1 exceptionally - 异常恢复</h3>
+<pre><code class="language-java">// exceptionally: 只处理异常情况，正常情况直接传递
+CompletableFuture&lt;String&gt; future = CompletableFuture
+    .supplyAsync(() -&gt; {
+        if (Math.random() &gt; 0.5) {
+            throw new RuntimeException(&quot;Random error&quot;);
+        }
+        return &quot;success&quot;;
+    })
+    .exceptionally(throwable -&gt; {
+        System.err.println(&quot;发生异常: &quot; + throwable.getMessage());
+        return &quot;default value&quot;;  // 返回默认值
+    });
+
+System.out.println(future.get());  // &quot;success&quot; 或 &quot;default value&quot;
+</code></pre>
+<h3 id="42-handle---统一处理结果和异常">4.2 handle - 统一处理结果和异常</h3>
+<pre><code class="language-java">// handle: 同时处理正常结果和异常
+// BiFunction&lt;T, Throwable, U&gt;: 接收结果和异常，返回新值
+CompletableFuture&lt;String&gt; future = CompletableFuture
+    .supplyAsync(() -&gt; {
+        if (Math.random() &gt; 0.5) {
+            throw new RuntimeException(&quot;Random error&quot;);
+        }
+        return &quot;success&quot;;
+    })
+    .handle((result, throwable) -&gt; {
+        if (throwable != null) {
+            // 异常情况
+            System.err.println(&quot;异常: &quot; + throwable.getMessage());
+            return &quot;error: &quot; + throwable.getMessage();
+        }
+        // 正常情况
+        return &quot;result: &quot; + result;
+    });
+</code></pre>
+<h3 id="43-handleasync---异步处理结果和异常">4.3 handleAsync - 异步处理结果和异常</h3>
+<pre><code class="language-java">ExecutorService executor = Executors.newFixedThreadPool(2);
+
+CompletableFuture&lt;String&gt; future = CompletableFuture
+    .supplyAsync(() -&gt; {
+        System.out.println(&quot;主任务线程: &quot; + Thread.currentThread().getName());
+        return &quot;data&quot;;
+    })
+    .handleAsync((result, throwable) -&gt; {
+        System.out.println(&quot;处理线程: &quot; + Thread.currentThread().getName());
+        if (throwable != null) {
+            return &quot;error&quot;;
+        }
+        return &quot;processed: &quot; + result;
+    }, executor);  // 在指定线程池中执行
+
+executor.shutdown();
+</code></pre>
+<h3 id="44-whencomplete---观察结果不改变结果">4.4 whenComplete - 观察结果（不改变结果）</h3>
+<pre><code class="language-java">// whenComplete: 观察结果和异常，但不改变它们
+// BiConsumer&lt;T, Throwable&gt;: 接收结果和异常，无返回值
+CompletableFuture&lt;String&gt; future = CompletableFuture
+    .supplyAsync(() -&gt; &quot;result&quot;)
+    .whenComplete((result, throwable) -&gt; {
+        if (throwable != null) {
+            System.err.println(&quot;任务失败: &quot; + throwable.getMessage());
+        } else {
+            System.out.println(&quot;任务成功: &quot; + result);
+        }
+        // 注意：这里不能改变结果
+    });
+
+// whenComplete 返回的 Future 包含原始结果
+System.out.println(future.get());  // &quot;result&quot;
+</code></pre>
+<h3 id="45-异常处理链">4.5 异常处理链</h3>
+<pre><code class="language-java">CompletableFuture&lt;String&gt; future = CompletableFuture
+    .supplyAsync(() -&gt; {
+        throw new RuntimeException(&quot;Step 1 error&quot;);
+    })
+    .thenApply(result -&gt; {
+        System.out.println(&quot;Step 2&quot;);  // 不会执行
+        return result + &quot; step2&quot;;
+    })
+    .thenApply(result -&gt; {
+        System.out.println(&quot;Step 3&quot;);  // 不会执行
+        return result + &quot; step3&quot;;
+    })
+    .exceptionally(throwable -&gt; {
+        // 捕获之前所有步骤的异常
+        System.err.println(&quot;捕获异常: &quot; + throwable.getMessage());
+        return &quot;recovered&quot;;
+    })
+    .thenApply(result -&gt; {
+        System.out.println(&quot;Step 4: &quot; + result);  // 会执行
+        return result + &quot; step4&quot;;
+    });
+
+System.out.println(future.get());  // &quot;recovered step4&quot;
+</code></pre>
+<h3 id="46-异常类型处理">4.6 异常类型处理</h3>
+<pre><code class="language-java">CompletableFuture&lt;String&gt; future = CompletableFuture
+    .supplyAsync(() -&gt; {
+        throw new IllegalArgumentException(&quot;Invalid argument&quot;);
+    })
+    .handle((result, throwable) -&gt; {
+        if (throwable != null) {
+            // 获取真正的异常（去除 CompletionException 包装）
+            Throwable cause = throwable.getCause();
+            if (cause == null) {
+                cause = throwable;
+            }
+            
+            if (cause instanceof IllegalArgumentException) {
+                return &quot;参数错误: &quot; + cause.getMessage();
+            } else if (cause instanceof IOException) {
+                return &quot;IO错误: &quot; + cause.getMessage();
+            } else {
+                return &quot;未知错误: &quot; + cause.getMessage();
+            }
+        }
+        return result;
+    });
+</code></pre>
+<hr>
+<h2 id="5-组合多个异步操作">5. 组合多个异步操作</h2>
+<h3 id="51-thencombine---合并两个-future-的结果">5.1 thenCombine - 合并两个 Future 的结果</h3>
+<pre><code class="language-java">// thenCombine: 等待两个 Future 都完成，然后合并结果
+CompletableFuture&lt;String&gt; future1 = CompletableFuture.supplyAsync(() -&gt; {
+    sleep(1000);
+    return &quot;Hello&quot;;
+});
+
+CompletableFuture&lt;String&gt; future2 = CompletableFuture.supplyAsync(() -&gt; {
+    sleep(1500);
+    return &quot;World&quot;;
+});
+
+CompletableFuture&lt;String&gt; combined = future1.thenCombine(future2, (s1, s2) -&gt; {
+    return s1 + &quot; &quot; + s2;
+});
+
+System.out.println(combined.get());  // &quot;Hello World&quot;（约 1.5 秒后）
+</code></pre>
+<h3 id="52-thenacceptboth---消费两个-future-的结果">5.2 thenAcceptBoth - 消费两个 Future 的结果</h3>
+<pre><code class="language-java">// thenAcceptBoth: 类似 thenCombine，但没有返回值
+CompletableFuture&lt;String&gt; future1 = CompletableFuture.supplyAsync(() -&gt; &quot;User&quot;);
+CompletableFuture&lt;Integer&gt; future2 = CompletableFuture.supplyAsync(() -&gt; 25);
+
+CompletableFuture&lt;Void&gt; result = future1.thenAcceptBoth(future2, (name, age) -&gt; {
+    System.out.println(name + &quot; is &quot; + age + &quot; years old&quot;);
+});
+
+result.join();
+</code></pre>
+<h3 id="53-runafterboth---两个都完成后执行">5.3 runAfterBoth - 两个都完成后执行</h3>
+<pre><code class="language-java">// runAfterBoth: 两个 Future 都完成后执行操作，不关心结果
+CompletableFuture&lt;String&gt; future1 = CompletableFuture.supplyAsync(() -&gt; &quot;task1&quot;);
+CompletableFuture&lt;String&gt; future2 = CompletableFuture.supplyAsync(() -&gt; &quot;task2&quot;);
+
+CompletableFuture&lt;Void&gt; result = future1.runAfterBoth(future2, () -&gt; {
+    System.out.println(&quot;两个任务都完成了&quot;);
+});
+</code></pre>
+<h3 id="54-applytoeither---任一完成即处理">5.4 applyToEither - 任一完成即处理</h3>
+<pre><code class="language-java">// applyToEither: 哪个先完成就用哪个的结果
+CompletableFuture&lt;String&gt; future1 = CompletableFuture.supplyAsync(() -&gt; {
+    sleep(2000);
+    return &quot;slow result&quot;;
+});
+
+CompletableFuture&lt;String&gt; future2 = CompletableFuture.supplyAsync(() -&gt; {
+    sleep(1000);
+    return &quot;fast result&quot;;
+});
+
+CompletableFuture&lt;String&gt; result = future1.applyToEither(future2, s -&gt; {
+    return &quot;Winner: &quot; + s;
+});
+
+System.out.println(result.get());  // &quot;Winner: fast result&quot;
+</code></pre>
+<h3 id="55-accepteither---任一完成即消费">5.5 acceptEither - 任一完成即消费</h3>
+<pre><code class="language-java">// acceptEither: 哪个先完成就消费哪个的结果
+CompletableFuture&lt;String&gt; future1 = CompletableFuture.supplyAsync(() -&gt; {
+    sleep(2000);
+    return &quot;slow&quot;;
+});
+
+CompletableFuture&lt;String&gt; future2 = CompletableFuture.supplyAsync(() -&gt; {
+    sleep(1000);
+    return &quot;fast&quot;;
+});
+
+future1.acceptEither(future2, result -&gt; {
+    System.out.println(&quot;First completed: &quot; + result);
+});
+</code></pre>
+<h3 id="56-allof---等待所有完成">5.6 allOf - 等待所有完成</h3>
+<pre><code class="language-java">// allOf: 等待所有 Future 完成
+CompletableFuture&lt;String&gt; f1 = CompletableFuture.supplyAsync(() -&gt; &quot;Result1&quot;);
+CompletableFuture&lt;String&gt; f2 = CompletableFuture.supplyAsync(() -&gt; &quot;Result2&quot;);
+CompletableFuture&lt;String&gt; f3 = CompletableFuture.supplyAsync(() -&gt; &quot;Result3&quot;);
+
+// allOf 返回 CompletableFuture&lt;Void&gt;
+CompletableFuture&lt;Void&gt; allFuture = CompletableFuture.allOf(f1, f2, f3);
+
+// 等待所有完成后，收集结果
+CompletableFuture&lt;List&lt;String&gt;&gt; resultsFuture = allFuture.thenApply(v -&gt; {
+    return Stream.of(f1, f2, f3)
+        .map(CompletableFuture::join)
+        .collect(Collectors.toList());
+});
+
+List&lt;String&gt; results = resultsFuture.get();
+System.out.println(results);  // [Result1, Result2, Result3]
+</code></pre>
+<h3 id="57-anyof---任一完成即返回">5.7 anyOf - 任一完成即返回</h3>
+<pre><code class="language-java">// anyOf: 任一 Future 完成就返回
+CompletableFuture&lt;String&gt; f1 = CompletableFuture.supplyAsync(() -&gt; {
+    sleep(3000);
+    return &quot;slow&quot;;
+});
+
+CompletableFuture&lt;String&gt; f2 = CompletableFuture.supplyAsync(() -&gt; {
+    sleep(1000);
+    return &quot;fast&quot;;
+});
+
+CompletableFuture&lt;String&gt; f3 = CompletableFuture.supplyAsync(() -&gt; {
+    sleep(2000);
+    return &quot;medium&quot;;
+});
+
+// anyOf 返回 CompletableFuture&lt;Object&gt;
+CompletableFuture&lt;Object&gt; anyFuture = CompletableFuture.anyOf(f1, f2, f3);
+
+System.out.println(anyFuture.get());  // &quot;fast&quot;
+</code></pre>
+<h3 id="58-批量处理模式">5.8 批量处理模式</h3>
+<pre><code class="language-java">// 批量处理多个异步任务
+public &lt;T&gt; CompletableFuture&lt;List&lt;T&gt;&gt; sequence(List&lt;CompletableFuture&lt;T&gt;&gt; futures) {
+    return CompletableFuture
+        .allOf(futures.toArray(new CompletableFuture[0]))
+        .thenApply(v -&gt; futures.stream()
+            .map(CompletableFuture::join)
+            .collect(Collectors.toList()));
+}
+
+// 使用示例
+List&lt;CompletableFuture&lt;String&gt;&gt; futures = Arrays.asList(
+    CompletableFuture.supplyAsync(() -&gt; &quot;A&quot;),
+    CompletableFuture.supplyAsync(() -&gt; &quot;B&quot;),
+    CompletableFuture.supplyAsync(() -&gt; &quot;C&quot;)
+);
+
+CompletableFuture&lt;List&lt;String&gt;&gt; resultFuture = sequence(futures);
+List&lt;String&gt; results = resultFuture.get();  // [A, B, C]
+</code></pre>
+<hr>
+<h2 id="6-结合线程池">6. 结合线程池</h2>
+<h3 id="61-默认线程池">6.1 默认线程池</h3>
+<pre><code class="language-java">// 默认使用 ForkJoinPool.commonPool()
+CompletableFuture&lt;String&gt; future = CompletableFuture.supplyAsync(() -&gt; {
+    System.out.println(&quot;线程: &quot; + Thread.currentThread().getName());
+    // 输出类似: ForkJoinPool.commonPool-worker-1
+    return &quot;result&quot;;
+});
+</code></pre>
+<h3 id="62-自定义线程池">6.2 自定义线程池</h3>
+<pre><code class="language-java">// 创建自定义线程池
+ExecutorService customExecutor = Executors.newFixedThreadPool(4, r -&gt; {
+    Thread t = new Thread(r);
+    t.setName(&quot;custom-thread-&quot; + t.getId());
+    t.setDaemon(true);
+    return t;
+});
+
+// 使用自定义线程池
+CompletableFuture&lt;String&gt; future = CompletableFuture.supplyAsync(() -&gt; {
+    System.out.println(&quot;线程: &quot; + Thread.currentThread().getName());
+    return &quot;result&quot;;
+}, customExecutor);
+
+// 链式操作也可以指定线程池
+CompletableFuture&lt;String&gt; result = future
+    .thenApplyAsync(s -&gt; s.toUpperCase(), customExecutor)
+    .thenApplyAsync(s -&gt; s + &quot;!&quot;, customExecutor);
+
+// 记得关闭线程池
+customExecutor.shutdown();
+</code></pre>
+<h3 id="63-不同类型的线程池">6.3 不同类型的线程池</h3>
+<pre><code class="language-java">// 1. 固定大小线程池 - 适合 CPU 密集型任务
+ExecutorService fixedPool = Executors.newFixedThreadPool(
+    Runtime.getRuntime().availableProcessors());
+
+// 2. 缓存线程池 - 适合短期异步任务
+ExecutorService cachedPool = Executors.newCachedThreadPool();
+
+// 3. 单线程池 - 保证顺序执行
+ExecutorService singlePool = Executors.newSingleThreadExecutor();
+
+// 4. 调度线程池 - 支持延迟和周期性任务
+ScheduledExecutorService scheduledPool = Executors.newScheduledThreadPool(2);
+
+// 5. 自定义 ThreadPoolExecutor
+ThreadPoolExecutor customPool = new ThreadPoolExecutor(
+    4,                      // 核心线程数
+    8,                      // 最大线程数
+    60L,                    // 空闲线程存活时间
+    TimeUnit.SECONDS,       // 时间单位
+    new LinkedBlockingQueue&lt;&gt;(100),  // 工作队列
+    new ThreadPoolExecutor.CallerRunsPolicy()  // 拒绝策略
+);
+</code></pre>
+<h3 id="64-flink-风格的线程池使用">6.4 Flink 风格的线程池使用</h3>
+<pre><code class="language-java">public class FlinkStyleExecutor {
+    
+    // 主线程执行器 - 保证线程安全
+    private final Executor mainThreadExecutor;
+    
+    // IO 执行器 - 用于 IO 密集型操作
+    private final ExecutorService ioExecutor;
+    
+    // 计算执行器 - 用于 CPU 密集型操作
+    private final ExecutorService computeExecutor;
+    
+    public FlinkStyleExecutor() {
+        // 主线程执行器（单线程，保证顺序）
+        this.mainThreadExecutor = Executors.newSingleThreadExecutor(
+            r -&gt; new Thread(r, &quot;main-thread&quot;));
+        
+        // IO 执行器（多线程，处理阻塞 IO）
+        this.ioExecutor = Executors.newCachedThreadPool(
+            r -&gt; new Thread(r, &quot;io-thread-&quot; + System.currentTimeMillis()));
+        
+        // 计算执行器（固定大小，处理 CPU 密集任务）
+        this.computeExecutor = Executors.newFixedThreadPool(
+            Runtime.getRuntime().availableProcessors(),
+            r -&gt; new Thread(r, &quot;compute-thread-&quot; + System.currentTimeMillis()));
+    }
+    
+    public CompletableFuture&lt;String&gt; processData(String input) {
+        return CompletableFuture
+            // IO 操作：读取数据
+            .supplyAsync(() -&gt; {
+                System.out.println(&quot;IO 读取, 线程: &quot; + Thread.currentThread().getName());
+                return readFromDatabase(input);
+            }, ioExecutor)
+            // 计算操作：处理数据
+            .thenApplyAsync(data -&gt; {
+                System.out.println(&quot;计算处理, 线程: &quot; + Thread.currentThread().getName());
+                return processData(data);
+            }, computeExecutor)
+            // 主线程：更新状态
+            .thenApplyAsync(result -&gt; {
+                System.out.println(&quot;更新状态, 线程: &quot; + Thread.currentThread().getName());
+                updateState(result);
+                return result;
+            }, mainThreadExecutor);
+    }
+    
+    private String readFromDatabase(String input) { return &quot;data-&quot; + input; }
+    private String processData(String data) { return &quot;processed-&quot; + data; }
+    private void updateState(String result) { /* 更新状态 */ }
+    
+    public void shutdown() {
+        ((ExecutorService) mainThreadExecutor).shutdown();
+        ioExecutor.shutdown();
+        computeExecutor.shutdown();
+    }
+}
+</code></pre>
+<h3 id="65-线程池选择策略">6.5 线程池选择策略</h3>
+<pre><code class="language-java">// 根据任务类型选择合适的线程池
+public class ExecutorSelector {
+    
+    private final ExecutorService cpuBoundExecutor;
+    private final ExecutorService ioBoundExecutor;
+    
+    public ExecutorSelector() {
+        // CPU 密集型：线程数 = CPU 核心数
+        int cpuCores = Runtime.getRuntime().availableProcessors();
+        this.cpuBoundExecutor = Executors.newFixedThreadPool(cpuCores);
+        
+        // IO 密集型：线程数 = CPU 核心数 * 2（或更多）
+        this.ioBoundExecutor = Executors.newFixedThreadPool(cpuCores * 2);
+    }
+    
+    // CPU 密集型任务
+    public &lt;T&gt; CompletableFuture&lt;T&gt; submitCpuTask(Supplier&lt;T&gt; task) {
+        return CompletableFuture.supplyAsync(task, cpuBoundExecutor);
+    }
+    
+    // IO 密集型任务
+    public &lt;T&gt; CompletableFuture&lt;T&gt; submitIoTask(Supplier&lt;T&gt; task) {
+        return CompletableFuture.supplyAsync(task, ioBoundExecutor);
+    }
+}
+</code></pre>
+<hr>
+<h2 id="7-结合-runnable-和-callable">7. 结合 Runnable 和 Callable</h2>
+<h3 id="71-runnable-转-completablefuture">7.1 Runnable 转 CompletableFuture</h3>
+<pre><code class="language-java">// Runnable: 无返回值
+Runnable task = () -&gt; {
+    System.out.println(&quot;执行任务&quot;);
+    // 执行一些操作
+};
+
+// 方式 1: 使用 runAsync
+CompletableFuture&lt;Void&gt; future1 = CompletableFuture.runAsync(task);
+
+// 方式 2: 使用自定义线程池
+ExecutorService executor = Executors.newFixedThreadPool(2);
+CompletableFuture&lt;Void&gt; future2 = CompletableFuture.runAsync(task, executor);
+
+// 方式 3: 手动包装
+CompletableFuture&lt;Void&gt; future3 = new CompletableFuture&lt;&gt;();
+executor.submit(() -&gt; {
+    try {
+        task.run();
+        future3.complete(null);
+    } catch (Exception e) {
+        future3.completeExceptionally(e);
+    }
+});
+</code></pre>
+<h3 id="72-callable-转-completablefuture">7.2 Callable 转 CompletableFuture</h3>
+<pre><code class="language-java">// Callable: 有返回值，可抛出异常
+Callable&lt;String&gt; callable = () -&gt; {
+    Thread.sleep(1000);
+    return &quot;callable result&quot;;
+};
+
+// 方式 1: 使用 supplyAsync（推荐）
+CompletableFuture&lt;String&gt; future1 = CompletableFuture.supplyAsync(() -&gt; {
+    try {
+        return callable.call();
+    } catch (Exception e) {
+        throw new CompletionException(e);
+    }
+});
+
+// 方式 2: 手动包装
+CompletableFuture&lt;String&gt; future2 = new CompletableFuture&lt;&gt;();
+ExecutorService executor = Executors.newSingleThreadExecutor();
+executor.submit(() -&gt; {
+    try {
+        String result = callable.call();
+        future2.complete(result);
+    } catch (Exception e) {
+        future2.completeExceptionally(e);
+    }
+});
+
+// 方式 3: 工具方法
+public static &lt;T&gt; CompletableFuture&lt;T&gt; fromCallable(
+        Callable&lt;T&gt; callable, Executor executor) {
+    CompletableFuture&lt;T&gt; future = new CompletableFuture&lt;&gt;();
+    executor.execute(() -&gt; {
+        try {
+            future.complete(callable.call());
+        } catch (Throwable t) {
+            future.completeExceptionally(t);
+        }
+    });
+    return future;
+}
+</code></pre>
+<h3 id="73-future-转-completablefuture">7.3 Future 转 CompletableFuture</h3>
+<pre><code class="language-java">// 传统 Future
+ExecutorService executor = Executors.newSingleThreadExecutor();
+Future&lt;String&gt; legacyFuture = executor.submit(() -&gt; {
+    Thread.sleep(1000);
+    return &quot;legacy result&quot;;
+});
+
+// 转换为 CompletableFuture（需要轮询或阻塞）
+// 方式 1: 阻塞转换（不推荐，会阻塞线程）
+CompletableFuture&lt;String&gt; cf1 = CompletableFuture.supplyAsync(() -&gt; {
+    try {
+        return legacyFuture.get();
+    } catch (Exception e) {
+        throw new CompletionException(e);
+    }
+});
+
+// 方式 2: 轮询转换
+public static &lt;T&gt; CompletableFuture&lt;T&gt; fromFuture(
+        Future&lt;T&gt; future, ScheduledExecutorService scheduler) {
+    CompletableFuture&lt;T&gt; cf = new CompletableFuture&lt;&gt;();
+    pollFuture(future, cf, scheduler);
+    return cf;
+}
+
+private static &lt;T&gt; void pollFuture(
+        Future&lt;T&gt; future, CompletableFuture&lt;T&gt; cf, 
+        ScheduledExecutorService scheduler) {
+    if (future.isDone()) {
+        try {
+            cf.complete(future.get());
+        } catch (Exception e) {
+            cf.completeExceptionally(e);
+        }
+    } else {
+        scheduler.schedule(() -&gt; pollFuture(future, cf, scheduler), 
+            10, TimeUnit.MILLISECONDS);
+    }
+}
+</code></pre>
+<h3 id="74-completablefuture-与-runnable-链式组合">7.4 CompletableFuture 与 Runnable 链式组合</h3>
+<pre><code class="language-java">// 在异步链中插入 Runnable
+CompletableFuture&lt;String&gt; future = CompletableFuture
+    .supplyAsync(() -&gt; &quot;step1&quot;)
+    .thenApply(s -&gt; {
+        System.out.println(&quot;处理: &quot; + s);
+        return s + &quot;-step2&quot;;
+    })
+    // 插入一个不关心结果的操作
+    .whenComplete((result, error) -&gt; {
+        // 这里可以执行 Runnable 风格的操作
+        Runnable logTask = () -&gt; System.out.println(&quot;日志记录: &quot; + result);
+        logTask.run();
+    })
+    .thenApply(s -&gt; s + &quot;-step3&quot;);
+</code></pre>
+<h3 id="75-批量执行-runnable">7.5 批量执行 Runnable</h3>
+<pre><code class="language-java">// 批量执行多个 Runnable 并等待全部完成
+public CompletableFuture&lt;Void&gt; runAll(List&lt;Runnable&gt; tasks, Executor executor) {
+    CompletableFuture&lt;?&gt;[] futures = tasks.stream()
+        .map(task -&gt; CompletableFuture.runAsync(task, executor))
+        .toArray(CompletableFuture[]::new);
+    
+    return CompletableFuture.allOf(futures);
+}
+
+// 使用示例
+List&lt;Runnable&gt; tasks = Arrays.asList(
+    () -&gt; System.out.println(&quot;Task 1&quot;),
+    () -&gt; System.out.println(&quot;Task 2&quot;),
+    () -&gt; System.out.println(&quot;Task 3&quot;)
+);
+
+ExecutorService executor = Executors.newFixedThreadPool(3);
+runAll(tasks, executor).join();
+executor.shutdown();
+</code></pre>
+<hr>
+<h2 id="8-高级模式">8. 高级模式</h2>
+<h3 id="81-超时处理">8.1 超时处理</h3>
+<pre><code class="language-java">// Java 9+ 方式
+CompletableFuture&lt;String&gt; future = CompletableFuture
+    .supplyAsync(() -&gt; {
+        sleep(5000);  // 模拟长时间操作
+        return &quot;result&quot;;
+    })
+    .orTimeout(2, TimeUnit.SECONDS)  // 2 秒超时
+    .exceptionally(throwable -&gt; {
+        if (throwable.getCause() instanceof TimeoutException) {
+            return &quot;timeout fallback&quot;;
+        }
+        return &quot;error fallback&quot;;
+    });
+
+// Java 8 兼容方式
+public static &lt;T&gt; CompletableFuture&lt;T&gt; withTimeout(
+        CompletableFuture&lt;T&gt; future, long timeout, TimeUnit unit) {
+    
+    CompletableFuture&lt;T&gt; timeoutFuture = new CompletableFuture&lt;&gt;();
+    
+    ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+    scheduler.schedule(() -&gt; {
+        timeoutFuture.completeExceptionally(
+            new TimeoutException(&quot;Operation timed out after &quot; + timeout + &quot; &quot; + unit));
+    }, timeout, unit);
+    
+    return future.applyToEither(timeoutFuture, Function.identity());
+}
+
+// 使用示例
+CompletableFuture&lt;String&gt; original = CompletableFuture.supplyAsync(() -&gt; {
+    sleep(5000);
+    return &quot;result&quot;;
+});
+
+CompletableFuture&lt;String&gt; withTimeout = withTimeout(original, 2, TimeUnit.SECONDS)
+    .exceptionally(e -&gt; &quot;timeout fallback&quot;);
+</code></pre>
+<h3 id="82-重试机制">8.2 重试机制</h3>
+<pre><code class="language-java">// 带重试的异步操作
+public static &lt;T&gt; CompletableFuture&lt;T&gt; retryAsync(
+        Supplier&lt;CompletableFuture&lt;T&gt;&gt; supplier,
+        int maxRetries,
+        long delayMs,
+        Predicate&lt;Throwable&gt; retryOn) {
+    
+    return supplier.get().handle((result, throwable) -&gt; {
+        if (throwable == null) {
+            return CompletableFuture.completedFuture(result);
+        }
+        
+        if (maxRetries &gt; 0 &amp;&amp; retryOn.test(throwable)) {
+            System.out.println(&quot;重试中... 剩余次数: &quot; + maxRetries);
+            sleep(delayMs);
+            return retryAsync(supplier, maxRetries - 1, delayMs, retryOn);
+        }
+        
+        CompletableFuture&lt;T&gt; failed = new CompletableFuture&lt;&gt;();
+        failed.completeExceptionally(throwable);
+        return failed;
+    }).thenCompose(Function.identity());
+}
+
+// 使用示例
+AtomicInteger attempts = new AtomicInteger(0);
+
+CompletableFuture&lt;String&gt; result = retryAsync(
+    () -&gt; CompletableFuture.supplyAsync(() -&gt; {
+        int attempt = attempts.incrementAndGet();
+        System.out.println(&quot;尝试 #&quot; + attempt);
+        if (attempt &lt; 3) {
+            throw new RuntimeException(&quot;模拟失败&quot;);
+        }
+        return &quot;成功&quot;;
+    }),
+    5,      // 最大重试次数
+    1000,   // 重试间隔（毫秒）
+    e -&gt; e instanceof RuntimeException  // 重试条件
+);
+
+System.out.println(result.get());  // &quot;成功&quot;
+</code></pre>
+<h3 id="83-指数退避重试">8.3 指数退避重试</h3>
+<pre><code class="language-java">public static &lt;T&gt; CompletableFuture&lt;T&gt; retryWithBackoff(
+        Supplier&lt;CompletableFuture&lt;T&gt;&gt; supplier,
+        int maxRetries,
+        long initialDelayMs,
+        double multiplier) {
+    
+    return retryWithBackoffInternal(supplier, maxRetries, initialDelayMs, multiplier, 0);
+}
+
+private static &lt;T&gt; CompletableFuture&lt;T&gt; retryWithBackoffInternal(
+        Supplier&lt;CompletableFuture&lt;T&gt;&gt; supplier,
+        int maxRetries,
+        long currentDelayMs,
+        double multiplier,
+        int currentAttempt) {
+    
+    return supplier.get().handle((result, throwable) -&gt; {
+        if (throwable == null) {
+            return CompletableFuture.completedFuture(result);
+        }
+        
+        if (currentAttempt &lt; maxRetries) {
+            System.out.printf(&quot;重试 #%d，等待 %dms%n&quot;, currentAttempt + 1, currentDelayMs);
+            sleep(currentDelayMs);
+            
+            long nextDelay = (long) (currentDelayMs * multiplier);
+            return retryWithBackoffInternal(
+                supplier, maxRetries, nextDelay, multiplier, currentAttempt + 1);
+        }
+        
+        CompletableFuture&lt;T&gt; failed = new CompletableFuture&lt;&gt;();
+        failed.completeExceptionally(throwable);
+        return failed;
+    }).thenCompose(Function.identity());
+}
+
+// 使用示例
+CompletableFuture&lt;String&gt; result = retryWithBackoff(
+    () -&gt; CompletableFuture.supplyAsync(() -&gt; {
+        throw new RuntimeException(&quot;总是失败&quot;);
+    }),
+    3,       // 最大重试 3 次
+    100,     // 初始延迟 100ms
+    2.0      // 每次延迟翻倍: 100ms -&gt; 200ms -&gt; 400ms
+);
+</code></pre>
+<h3 id="84-断路器模式">8.4 断路器模式</h3>
+<pre><code class="language-java">public class CircuitBreaker {
+    
+    private enum State { CLOSED, OPEN, HALF_OPEN }
+    
+    private final int failureThreshold;
+    private final long resetTimeoutMs;
+    
+    private State state = State.CLOSED;
+    private int failureCount = 0;
+    private long lastFailureTime = 0;
+    
+    public CircuitBreaker(int failureThreshold, long resetTimeoutMs) {
+        this.failureThreshold = failureThreshold;
+        this.resetTimeoutMs = resetTimeoutMs;
+    }
+    
+    public &lt;T&gt; CompletableFuture&lt;T&gt; execute(Supplier&lt;CompletableFuture&lt;T&gt;&gt; supplier) {
+        if (state == State.OPEN) {
+            if (System.currentTimeMillis() - lastFailureTime &gt; resetTimeoutMs) {
+                state = State.HALF_OPEN;
+            } else {
+                CompletableFuture&lt;T&gt; failed = new CompletableFuture&lt;&gt;();
+                failed.completeExceptionally(
+                    new RuntimeException(&quot;Circuit breaker is OPEN&quot;));
+                return failed;
+            }
+        }
+        
+        return supplier.get()
+            .whenComplete((result, throwable) -&gt; {
+                if (throwable != null) {
+                    recordFailure();
+                } else {
+                    recordSuccess();
+                }
+            });
+    }
+    
+    private synchronized void recordFailure() {
+        failureCount++;
+        lastFailureTime = System.currentTimeMillis();
+        if (failureCount &gt;= failureThreshold) {
+            state = State.OPEN;
+            System.out.println(&quot;断路器打开！&quot;);
+        }
+    }
+    
+    private synchronized void recordSuccess() {
+        failureCount = 0;
+        state = State.CLOSED;
+    }
+}
+
+// 使用示例
+CircuitBreaker breaker = new CircuitBreaker(3, 5000);
+
+for (int i = 0; i &lt; 10; i++) {
+    breaker.execute(() -&gt; CompletableFuture.supplyAsync(() -&gt; {
+        throw new RuntimeException(&quot;服务不可用&quot;);
+    })).exceptionally(e -&gt; {
+        System.out.println(&quot;错误: &quot; + e.getMessage());
+        return null;
+    }).join();
+}
+</code></pre>
+<h3 id="85-限流器">8.5 限流器</h3>
+<pre><code class="language-java">public class RateLimiter {
+    
+    private final Semaphore semaphore;
+    private final ExecutorService executor;
+    
+    public RateLimiter(int maxConcurrent) {
+        this.semaphore = new Semaphore(maxConcurrent);
+        this.executor = Executors.newCachedThreadPool();
+    }
+    
+    public &lt;T&gt; CompletableFuture&lt;T&gt; execute(Supplier&lt;T&gt; task) {
+        return CompletableFuture.supplyAsync(() -&gt; {
+            try {
+                semaphore.acquire();
+                try {
+                    return task.get();
+                } finally {
+                    semaphore.release();
+                }
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                throw new CompletionException(e);
+            }
+        }, executor);
+    }
+    
+    public void shutdown() {
+        executor.shutdown();
+    }
+}
+
+// 使用示例
+RateLimiter limiter = new RateLimiter(3);  // 最多 3 个并发
+
+List&lt;CompletableFuture&lt;String&gt;&gt; futures = IntStream.range(0, 10)
+    .mapToObj(i -&gt; limiter.execute(() -&gt; {
+        System.out.println(&quot;执行任务 &quot; + i + &quot;，线程: &quot; + 
+            Thread.currentThread().getName());
+        sleep(1000);
+        return &quot;Result &quot; + i;
+    }))
+    .collect(Collectors.toList());
+
+futures.forEach(f -&gt; System.out.println(f.join()));
+limiter.shutdown();
+</code></pre>
+<hr>
+<h2 id="9-flink-中的实际应用">9. Flink 中的实际应用</h2>
+<h3 id="91-jobmanagerrunner-结果处理模式">9.1 JobManagerRunner 结果处理模式</h3>
+<pre><code class="language-java">// Flink 源码中的典型模式
+final CompletableFuture&lt;CleanupJobState&gt; cleanupJobStateFuture =
+    jobManagerRunner
+        .getResultFuture()  // 获取作业结果 Future
+        .handleAsync(       // 异步处理结果和异常
+            (jobManagerRunnerResult, throwable) -&gt; {
+                // 1. 验证状态一致性
+                Preconditions.checkState(
+                    jobManagerRunnerRegistry.isRegistered(jobId) &amp;&amp;
+                    jobManagerRunnerRegistry.get(jobId) == jobManagerRunner,
+                    &quot;Job entry must be bound to JobManagerRunner lifetime.&quot;);
+
+                // 2. 根据结果或异常进行不同处理
+                if (jobManagerRunnerResult != null) {
+                    // 正常完成，返回另一个 CompletableFuture
+                    return handleJobManagerRunnerResult(
+                        jobManagerRunnerResult, executionType);
+                } else {
+                    // 异常情况，返回已完成的 Future
+                    return CompletableFuture.completedFuture(
+                        jobManagerRunnerFailed(jobId, JobStatus.FAILED, throwable));
+                }
+            },
+            getMainThreadExecutor())  // 在主线程执行器中执行
+        .thenCompose(Function.identity());  // 扁平化嵌套的 Future
+</code></pre>
+<h3 id="92-模拟-flink-作业提交流程">9.2 模拟 Flink 作业提交流程</h3>
+<pre><code class="language-java">public class FlinkJobSubmissionDemo {
+    
+    private final ExecutorService executorService = 
+        Executors.newFixedThreadPool(4);
+    
+    // 模拟作业提交
+    public CompletableFuture&lt;JobID&gt; submitJob(JobGraph jobGraph) {
+        // 步骤 1: 异步序列化 JobGraph
+        CompletableFuture&lt;Path&gt; jobGraphFileFuture = 
+            CompletableFuture.supplyAsync(() -&gt; {
+                System.out.println(&quot;序列化 JobGraph，线程: &quot; + 
+                    Thread.currentThread().getName());
+                return serializeJobGraph(jobGraph);
+            }, executorService);
+        
+        // 步骤 2: 准备请求体
+        CompletableFuture&lt;JobSubmitRequest&gt; requestFuture = 
+            jobGraphFileFuture.thenApply(jobGraphFile -&gt; {
+                System.out.println(&quot;准备请求体，线程: &quot; + 
+                    Thread.currentThread().getName());
+                return prepareRequest(jobGraphFile, jobGraph);
+            });
+        
+        // 步骤 3: 发送请求
+        CompletableFuture&lt;JobSubmitResponse&gt; submissionFuture = 
+            requestFuture.thenCompose(request -&gt; {
+                System.out.println(&quot;发送请求，线程: &quot; + 
+                    Thread.currentThread().getName());
+                return sendRequest(request);
+            });
+        
+        // 步骤 4: 提取 JobID
+        return submissionFuture
+            .thenApply(response -&gt; {
+                System.out.println(&quot;提交成功: &quot; + response.getJobId());
+                return response.getJobId();
+            })
+            .whenComplete((jobId, error) -&gt; {
+                if (error != null) {
+                    System.err.println(&quot;提交失败: &quot; + error.getMessage());
+                }
+            });
+    }
+    
+    // 模拟方法
+    private Path serializeJobGraph(JobGraph jobGraph) {
+        sleep(500);
+        return Path.of(&quot;/tmp/jobgraph-&quot; + jobGraph.getJobID() + &quot;.bin&quot;);
+    }
+    
+    private JobSubmitRequest prepareRequest(Path jobGraphFile, JobGraph jobGraph) {
+        return new JobSubmitRequest(jobGraphFile, jobGraph.getJobID());
+    }
+    
+    private CompletableFuture&lt;JobSubmitResponse&gt; sendRequest(JobSubmitRequest request) {
+        return CompletableFuture.supplyAsync(() -&gt; {
+            sleep(1000);  // 模拟网络延迟
+            return new JobSubmitResponse(request.getJobId());
+        }, executorService);
+    }
+    
+    // 内部类
+    static class JobGraph {
+        private final JobID jobId = new JobID();
+        public JobID getJobID() { return jobId; }
+    }
+    
+    static class JobID {
+        private final String id = UUID.randomUUID().toString();
+        @Override public String toString() { return id; }
+    }
+    
+    static class JobSubmitRequest {
+        private final Path jobGraphFile;
+        private final JobID jobId;
+        
+        JobSubmitRequest(Path jobGraphFile, JobID jobId) {
+            this.jobGraphFile = jobGraphFile;
+            this.jobId = jobId;
+        }
+        
+        public JobID getJobId() { return jobId; }
+    }
+    
+    static class JobSubmitResponse {
+        private final JobID jobId;
+        
+        JobSubmitResponse(JobID jobId) { this.jobId = jobId; }
+        public JobID getJobId() { return jobId; }
+    }
+    
+    public void shutdown() {
+        executorService.shutdown();
+    }
+}
+</code></pre>
+<h3 id="93-带重试的请求发送">9.3 带重试的请求发送</h3>
+<pre><code class="language-java">public class RetriableRequestSender {
+    
+    private final RestClient restClient;
+    private final int maxRetries;
+    private final Predicate&lt;Throwable&gt; retryPredicate;
+    
+    public RetriableRequestSender(RestClient restClient, int maxRetries) {
+        this.restClient = restClient;
+        this.maxRetries = maxRetries;
+        this.retryPredicate = throwable -&gt; 
+            throwable instanceof IOException ||
+            throwable instanceof TimeoutException;
+    }
+    
+    public &lt;T&gt; CompletableFuture&lt;T&gt; sendRetriableRequest(
+            String url, Object request, Class&lt;T&gt; responseType) {
+        
+        return retry(
+            () -&gt; restClient.sendRequest(url, request, responseType),
+            maxRetries,
+            retryPredicate);
+    }
+    
+    private &lt;T&gt; CompletableFuture&lt;T&gt; retry(
+            Supplier&lt;CompletableFuture&lt;T&gt;&gt; operation,
+            int retriesLeft,
+            Predicate&lt;Throwable&gt; shouldRetry) {
+        
+        return operation.get()
+            .handle((result, throwable) -&gt; {
+                if (throwable == null) {
+                    return CompletableFuture.completedFuture(result);
+                }
+                
+                Throwable cause = throwable.getCause() != null ? 
+                    throwable.getCause() : throwable;
+                
+                if (retriesLeft &gt; 0 &amp;&amp; shouldRetry.test(cause)) {
+                    System.out.println(&quot;请求失败，重试中... 剩余次数: &quot; + retriesLeft);
+                    return retry(operation, retriesLeft - 1, shouldRetry);
+                }
+                
+                CompletableFuture&lt;T&gt; failed = new CompletableFuture&lt;&gt;();
+                failed.completeExceptionally(throwable);
+                return failed;
+            })
+            .thenCompose(Function.identity());
+    }
+    
+    // 模拟 RestClient
+    static class RestClient {
+        public &lt;T&gt; CompletableFuture&lt;T&gt; sendRequest(
+                String url, Object request, Class&lt;T&gt; responseType) {
+            return CompletableFuture.supplyAsync(() -&gt; {
+                // 模拟请求
+                return null;
+            });
+        }
+    }
+}
+</code></pre>
+<hr>
+<h2 id="10-最佳实践">10. 最佳实践</h2>
+<h3 id="101-避免阻塞">10.1 避免阻塞</h3>
+<pre><code class="language-java">// ❌ 错误：在异步链中阻塞
+CompletableFuture&lt;String&gt; bad = CompletableFuture
+    .supplyAsync(() -&gt; &quot;step1&quot;)
+    .thenApply(s -&gt; {
+        // 不要在这里调用 get() 或 join()
+        String other = anotherFuture.get();  // 阻塞！
+        return s + other;
+    });
+
+// ✅ 正确：使用 thenCompose 组合
+CompletableFuture&lt;String&gt; good = CompletableFuture
+    .supplyAsync(() -&gt; &quot;step1&quot;)
+    .thenCompose(s -&gt; anotherFuture.thenApply(other -&gt; s + other));
+</code></pre>
+<h3 id="102-正确处理异常">10.2 正确处理异常</h3>
+<pre><code class="language-java">// ❌ 错误：忽略异常
+CompletableFuture&lt;String&gt; bad = CompletableFuture
+    .supplyAsync(() -&gt; {
+        throw new RuntimeException(&quot;error&quot;);
+    });
+// 异常被吞掉，没有任何处理
+
+// ✅ 正确：始终处理异常
+CompletableFuture&lt;String&gt; good = CompletableFuture
+    .supplyAsync(() -&gt; {
+        throw new RuntimeException(&quot;error&quot;);
+    })
+    .exceptionally(e -&gt; {
+        log.error(&quot;操作失败&quot;, e);
+        return &quot;fallback&quot;;
+    });
+</code></pre>
+<h3 id="103-使用合适的线程池">10.3 使用合适的线程池</h3>
+<pre><code class="language-java">// ❌ 错误：所有操作使用默认线程池
+CompletableFuture.supplyAsync(() -&gt; blockingIoOperation());  // 可能阻塞公共线程池
+
+// ✅ 正确：IO 操作使用专用线程池
+ExecutorService ioExecutor = Executors.newCachedThreadPool();
+CompletableFuture.supplyAsync(() -&gt; blockingIoOperation(), ioExecutor);
+</code></pre>
+<h3 id="104-避免过长的链式调用">10.4 避免过长的链式调用</h3>
+<pre><code class="language-java">// ❌ 难以阅读和调试
+CompletableFuture&lt;String&gt; bad = cf
+    .thenApply(...)
+    .thenCompose(...)
+    .thenApply(...)
+    .thenCompose(...)
+    .thenApply(...)
+    .thenCompose(...)
+    .thenApply(...);
+
+// ✅ 拆分成有意义的方法
+CompletableFuture&lt;String&gt; good = cf
+    .thenCompose(this::validateInput)
+    .thenCompose(this::processData)
+    .thenCompose(this::saveResult);
+</code></pre>
+<h3 id="105-资源清理">10.5 资源清理</h3>
+<pre><code class="language-java">// ✅ 使用 whenComplete 确保资源清理
+CompletableFuture&lt;String&gt; future = CompletableFuture
+    .supplyAsync(() -&gt; {
+        Resource resource = acquireResource();
+        try {
+            return process(resource);
+        } finally {
+            // 这里的清理可能不会执行（如果是异步的）
+        }
+    })
+    .whenComplete((result, error) -&gt; {
+        // 无论成功还是失败都会执行
+        releaseResource();
+    });
+</code></pre>
+<h2 id="附录常用方法速查表">附录：常用方法速查表</h2>
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th>描述</th>
+<th>返回类型</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>supplyAsync(Supplier)</code></td>
+<td>异步执行有返回值的任务</td>
+<td><code>CompletableFuture&lt;T&gt;</code></td>
+</tr>
+<tr>
+<td><code>runAsync(Runnable)</code></td>
+<td>异步执行无返回值的任务</td>
+<td><code>CompletableFuture&lt;Void&gt;</code></td>
+</tr>
+<tr>
+<td><code>thenApply(Function)</code></td>
+<td>同步转换结果</td>
+<td><code>CompletableFuture&lt;U&gt;</code></td>
+</tr>
+<tr>
+<td><code>thenApplyAsync(Function)</code></td>
+<td>异步转换结果</td>
+<td><code>CompletableFuture&lt;U&gt;</code></td>
+</tr>
+<tr>
+<td><code>thenCompose(Function)</code></td>
+<td>扁平化嵌套 Future</td>
+<td><code>CompletableFuture&lt;U&gt;</code></td>
+</tr>
+<tr>
+<td><code>thenAccept(Consumer)</code></td>
+<td>消费结果</td>
+<td><code>CompletableFuture&lt;Void&gt;</code></td>
+</tr>
+<tr>
+<td><code>thenRun(Runnable)</code></td>
+<td>执行后续操作</td>
+<td><code>CompletableFuture&lt;Void&gt;</code></td>
+</tr>
+<tr>
+<td><code>handle(BiFunction)</code></td>
+<td>处理结果和异常</td>
+<td><code>CompletableFuture&lt;U&gt;</code></td>
+</tr>
+<tr>
+<td><code>exceptionally(Function)</code></td>
+<td>异常恢复</td>
+<td><code>CompletableFuture&lt;T&gt;</code></td>
+</tr>
+<tr>
+<td><code>whenComplete(BiConsumer)</code></td>
+<td>观察完成（不改变结果）</td>
+<td><code>CompletableFuture&lt;T&gt;</code></td>
+</tr>
+<tr>
+<td><code>thenCombine(CF, BiFunction)</code></td>
+<td>合并两个 Future</td>
+<td><code>CompletableFuture&lt;V&gt;</code></td>
+</tr>
+<tr>
+<td><code>allOf(CF...)</code></td>
+<td>等待所有完成</td>
+<td><code>CompletableFuture&lt;Void&gt;</code></td>
+</tr>
+<tr>
+<td><code>anyOf(CF...)</code></td>
+<td>任一完成</td>
+<td><code>CompletableFuture&lt;Object&gt;</code></td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="参考资料">参考资料</h2>
+<ul>
+<li><a href="https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/CompletableFuture.html">Java CompletableFuture 官方文档</a></li>
+<li><a href="https://github.com/apache/flink/blob/master/flink-clients/src/main/java/org/apache/flink/client/program/rest/RestClusterClient.java">Flink 源码 - RestClusterClient</a></li>
+<li><a href="https://github.com/apache/flink/blob/master/flink-runtime/src/main/java/org/apache/flink/runtime/dispatcher/Dispatcher.java">Flink 源码 - Dispatcher</a></li>
+</ul>
+<hr>
+<p><em>本文档基于 Flink 1.19 源码分析编写</em></p>
+
+</main>
+
+  <footer>
+  
+<script src="https://utteranc.es/client.js"
+        repo="qiref/qiref.github.io"
+        issue-term="pathname"
+        label="Comment"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script>
+
+
+<script>
+(function() {
+  const searchInput = document.getElementById('search-input');
+  const searchResults = document.getElementById('search-results');
+  if (!searchInput || !searchResults) return;
+  
+  let searchIndex = null;
+  let activeIndex = -1;
+  let isResultsVisible = false;
+
+  
+  async function loadSearchIndex() {
+    if (searchIndex) return searchIndex;
+    try {
+      const response = await fetch('/index.json');
+      const data = await response.json();
+      searchIndex = data.pages || [];
+      return searchIndex;
+    } catch (e) {
+      console.error('Failed to load search index:', e);
+      return [];
+    }
+  }
+
+  
+  function search(query) {
+    if (!searchIndex || !query.trim()) return [];
+    const q = query.toLowerCase();
+    return searchIndex.filter(page => {
+      const title = (page.title || '').toLowerCase();
+      const content = (page.content || '').toLowerCase();
+      return title.includes(q) || content.includes(q);
+    }).slice(0, 5);
+  }
+
+  
+  function highlight(text, query) {
+    if (!query) return text;
+    const regex = new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+    return text.replace(regex, '<mark>$1</mark>');
+  }
+
+  
+  function showResults() {
+    searchResults.style.display = 'block';
+    isResultsVisible = true;
+  }
+
+  
+  function hideResults() {
+    searchResults.style.display = 'none';
+    isResultsVisible = false;
+    activeIndex = -1;
+  }
+
+  
+  function updateActiveItem() {
+    const items = searchResults.querySelectorAll('.search-result-item');
+    items.forEach((item, index) => {
+      if (index === activeIndex) {
+        item.classList.add('active');
+      } else {
+        item.classList.remove('active');
+      }
+    });
+  }
+
+  
+  function renderResults(results, query) {
+    activeIndex = -1;
+    if (!results.length) {
+      hideResults();
+      return;
+    }
+    const html = results.map(page => {
+      const title = highlight(page.title || 'Untitled', query);
+      let summary = page.summary || page.content || '';
+      summary = summary.substring(0, 100) + (summary.length > 100 ? '...' : '');
+      return `<a class="search-result-item" href="${page.url}">
+        <div class="search-result-title">${title}</div>
+        <div class="search-result-summary">${summary}</div>
+      </a>`;
+    }).join('');
+    searchResults.innerHTML = html;
+    showResults();
+  }
+
+  
+  let debounceTimer;
+  function debounce(fn, delay) {
+    return function(...args) {
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => fn.apply(this, args), delay);
+    };
+  }
+
+  
+  searchInput.addEventListener('input', debounce(async function() {
+    const query = this.value.trim();
+    if (!query) {
+      hideResults();
+      return;
+    }
+    await loadSearchIndex();
+    const results = search(query);
+    renderResults(results, query);
+  }, 200));
+
+  
+  searchInput.addEventListener('keydown', function(e) {
+    if (!isResultsVisible) return;
+    
+    const items = searchResults.querySelectorAll('.search-result-item');
+    const itemCount = items.length;
+    if (itemCount === 0) return;
+
+    switch (e.key) {
+      case 'ArrowDown':
+        e.preventDefault();
+        e.stopPropagation();
+        activeIndex = (activeIndex + 1) % itemCount;
+        updateActiveItem();
+        break;
+      case 'ArrowUp':
+        e.preventDefault();
+        e.stopPropagation();
+        activeIndex = activeIndex <= 0 ? itemCount - 1 : activeIndex - 1;
+        updateActiveItem();
+        break;
+      case 'Enter':
+        if (activeIndex >= 0 && items[activeIndex]) {
+          e.preventDefault();
+          window.location.href = items[activeIndex].href;
+        }
+        break;
+      case 'Escape':
+        e.preventDefault();
+        hideResults();
+        break;
+    }
+  });
+
+  
+  searchInput.addEventListener('focus', async function() {
+    const query = this.value.trim();
+    if (query) {
+      await loadSearchIndex();
+      const results = search(query);
+      renderResults(results, query);
+    }
+  });
+
+  
+  document.addEventListener('click', function(e) {
+    if (!searchInput.contains(e.target) && !searchResults.contains(e.target)) {
+      hideResults();
+    }
+  });
+
+  
+  document.addEventListener('keydown', function(e) {
+    if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+      e.preventDefault();
+      searchInput.focus();
+      searchInput.select();
+    }
+  });
+})();
+</script>
+  
+  <hr/>
+  © powered by <a href="https://gohugo.io/">Hugo</a> &amp; <a href="https://github.com/yihui/hugo-xmin">Xmin</a>  2017 &ndash; 2025 | <a href="https://github.com/qiref">Github</a>
+  
+  </footer>
+  </body>
+</html>
+
