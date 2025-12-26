@@ -1,0 +1,1066 @@
+<!DOCTYPE html>
+<html lang="cn-zh">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Flink源码 Jobmanager作业提交与调度 | 大道至简</title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/fonts.css" />
+    
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-PGMJFXZJRT"></script>
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/scala.min.js"></script>
+
+<script>
+hljs.configure({languages: []});
+hljs.highlightAll();
+</script>
+
+<link href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/github.min.css"  rel="stylesheet">
+
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-PGMJFXZJRT');
+</script>
+
+<link rel="stylesheet" href="/css/custom.css">
+<link rel="stylesheet" href="/css/heatmap.css">
+  </head>
+
+  <body>
+    <nav>
+    <ul class="menu">
+      
+      <li><a href="/">Home</a></li>
+      
+      <li><a href="/post/">Posts</a></li>
+      
+      <li><a href="/tags/">Tags</a></li>
+      
+      <li><a href="/about/">About</a></li>
+      
+      <li><a href="/note/">Note</a></li>
+      
+      <li><a href="/index.xml">Subscribe</a></li>
+      
+      <li class="search-container">
+        <input type="text" id="search-input" placeholder="⌘ K" autocomplete="off">
+        <div id="search-results"></div>
+      </li>
+    </ul>
+    <hr/>
+    </nav>
+
+<div class="article-meta">
+<h1><span class="title">Flink源码 Jobmanager作业提交与调度</span></h1>
+
+<h2 class="date">2025/12/26</h2>
+<p class="terms">
+  
+  
+  
+  
+  Tags: <a href="/tags/flink">Flink</a> 
+  
+  
+</p>
+</div>
+
+
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#1-整体流程概览">1. 整体流程概览</a></li>
+    <li><a href="#2-核心类和文件位置">2. 核心类和文件位置</a>
+      <ul>
+        <li><a href="#21-作业提交相关">2.1 作业提交相关</a></li>
+        <li><a href="#22-调度核心类">2.2 调度核心类</a></li>
+        <li><a href="#23-执行图相关类">2.3 执行图相关类</a></li>
+        <li><a href="#24-调度策略和部署类">2.4 调度策略和部署类</a></li>
+        <li><a href="#25-taskmanager-相关">2.5 TaskManager 相关</a></li>
+      </ul>
+    </li>
+    <li><a href="#3-阶段一client-提交作业">3. 阶段一：Client 提交作业</a>
+      <ul>
+        <li><a href="#31-rest-请求路由机制">3.1 REST 请求路由机制</a></li>
+        <li><a href="#32-rest-api-入口---jobsubmithandler">3.2 REST API 入口 - JobSubmitHandler</a></li>
+        <li><a href="#33-dispatcher-接收作业">3.3 Dispatcher 接收作业</a></li>
+        <li><a href="#34-启动-jobmanagerrunner">3.4 启动 JobManagerRunner</a></li>
+      </ul>
+    </li>
+    <li><a href="#4-阶段二leader-选举和-jobmaster-创建">4. 阶段二：Leader 选举和 JobMaster 创建</a>
+      <ul>
+        <li><a href="#41-jobmasterserviceleadershiprunner-启动">4.1 JobMasterServiceLeadershipRunner 启动</a></li>
+        <li><a href="#42-获得-leadership">4.2 获得 Leadership</a></li>
+        <li><a href="#43-创建-jobmaster">4.3 创建 JobMaster</a></li>
+      </ul>
+    </li>
+    <li><a href="#5-阶段三jobmaster-启动和调度器初始化">5. 阶段三：JobMaster 启动和调度器初始化</a>
+      <ul>
+        <li><a href="#51-jobmaster-构造函数">5.1 JobMaster 构造函数</a></li>
+        <li><a href="#52-jobmaster-启动">5.2 JobMaster 启动</a></li>
+      </ul>
+    </li>
+    <li><a href="#6-阶段四jobgraph-转换为-executiongraph">6. 阶段四：JobGraph 转换为 ExecutionGraph</a>
+      <ul>
+        <li><a href="#61-转换时机">6.1 转换时机</a></li>
+        <li><a href="#62-executiongraph-构建">6.2 ExecutionGraph 构建</a></li>
+        <li><a href="#63-数据结构转换关系">6.3 数据结构转换关系</a></li>
+      </ul>
+    </li>
+    <li><a href="#7-阶段五调度器启动调度">7. 阶段五：调度器启动调度</a>
+      <ul>
+        <li><a href="#71-触发调度">7.1 触发调度</a></li>
+        <li><a href="#72-schedulerbasestartscheduling">7.2 SchedulerBase.startScheduling()</a></li>
+        <li><a href="#73-defaultschedulerstartschedulinginternal">7.3 DefaultScheduler.startSchedulingInternal()</a></li>
+      </ul>
+    </li>
+    <li><a href="#8-阶段六调度策略决定调度顺序">8. 阶段六：调度策略决定调度顺序</a>
+      <ul>
+        <li><a href="#81-pipelinedregionschedulingstrategy">8.1 PipelinedRegionSchedulingStrategy</a></li>
+        <li><a href="#82-scheduleregion">8.2 ScheduleRegion</a></li>
+      </ul>
+    </li>
+    <li><a href="#9-阶段七slot-分配和任务部署">9. 阶段七：Slot 分配和任务部署</a>
+      <ul>
+        <li><a href="#91-defaultschedulerallocateslotsanddeploy">9.1 DefaultScheduler.allocateSlotsAndDeploy()</a></li>
+        <li><a href="#92-defaultexecutiondeployerallocateslotsanddeploy">9.2 DefaultExecutionDeployer.allocateSlotsAndDeploy()</a></li>
+        <li><a href="#93-executiondeploy---核心部署方法">9.3 Execution.deploy() - 核心部署方法</a></li>
+      </ul>
+    </li>
+    <li><a href="#10-阶段八taskmanager-执行任务">10. 阶段八：TaskManager 执行任务</a>
+      <ul>
+        <li><a href="#100-rpc-调用链taskmanagergateway-到-taskexecutor">10.0 RPC 调用链：TaskManagerGateway 到 TaskExecutor</a></li>
+        <li><a href="#101-taskexecutorsubmittask">10.1 TaskExecutor.submitTask()</a></li>
+        <li><a href="#102-taskrun">10.2 Task.run()</a></li>
+      </ul>
+    </li>
+    <li><a href="#11-task-状态流转">11. Task 状态流转</a>
+      <ul>
+        <li><a href="#111-executionstate-枚举">11.1 ExecutionState 枚举</a></li>
+        <li><a href="#112-状态转换图">11.2 状态转换图</a></li>
+      </ul>
+    </li>
+    <li><a href="#12-完整调用链">12. 完整调用链</a></li>
+    <li><a href="#13-关键接口和实现">13. 关键接口和实现</a>
+      <ul>
+        <li><a href="#131-类图关系">13.1 类图关系</a></li>
+        <li><a href="#132-组件职责">13.2 组件职责</a></li>
+      </ul>
+    </li>
+    <li><a href="#14-调试指南">14. 调试指南</a>
+      <ul>
+        <li><a href="#141-关键断点位置">14.1 关键断点位置</a></li>
+        <li><a href="#142-关键日志">14.2 关键日志</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+
+
+<main>
+<p>详细梳理 Flink 中从 Client 提交作业到任务在 TaskManager 上执行的完整流程。</p>
+<h2 id="1-整体流程概览">1. 整体流程概览</h2>
+<pre><code>Client 提交 JobGraph
+       ↓
+REST API (JobSubmitHandler)    -- 接收 HTTP 请求，解析 JobGraph
+       ↓
+Dispatcher.submitJob()         -- 作业提交入口，创建 JobManagerRunner
+       ↓
+JobManagerRunner.start()       -- 启动 Leader 选举
+       ↓
+grantLeadership()              -- 获得 Leadership
+       ↓
+JobMasterServiceProcess        -- 创建 JobMaster
+       ↓
+JobMaster.onStart()            -- JobMaster 启动，触发调度
+       ↓
+SchedulerBase.startScheduling  -- 创建 ExecutionGraph，开始调度
+       ↓
+SchedulingStrategy             -- 调度策略，决定任务调度顺序
+       ↓
+ExecutionDeployer              -- 分配 Slot，部署任务
+       ↓
+TaskManagerGateway             -- RPC 调用，提交任务到 TaskManager
+       ↓
+TaskExecutor.submitTask()      -- 创建 Task，启动执行线程
+       ↓
+Task.run()                     -- 执行用户代码
+</code></pre>
+<hr>
+<h2 id="2-核心类和文件位置">2. 核心类和文件位置</h2>
+<h3 id="21-作业提交相关">2.1 作业提交相关</h3>
+<ul>
+<li><strong>JobSubmitHandler</strong> - <code>flink-runtime/.../rest/handler/job/JobSubmitHandler.java</code> - REST API 处理作业提交</li>
+<li><strong>Dispatcher</strong> - <code>flink-runtime/.../dispatcher/Dispatcher.java</code> - 作业提交入口，管理多个作业</li>
+<li><strong>JobManagerRunner</strong> - <code>flink-runtime/.../jobmaster/JobManagerRunner.java</code> - 管理单个作业的生命周期</li>
+<li><strong>JobMasterServiceLeadershipRunner</strong> - <code>flink-runtime/.../jobmaster/JobMasterServiceLeadershipRunner.java</code> - Leader 选举和 JobMaster 创建</li>
+</ul>
+<h3 id="22-调度核心类">2.2 调度核心类</h3>
+<ul>
+<li><strong>JobMaster</strong> - <code>flink-runtime/.../jobmaster/JobMaster.java</code> - 作业主节点，管理单个作业</li>
+<li><strong>SchedulerNG</strong> - <code>flink-runtime/.../scheduler/SchedulerNG.java</code> - 调度器接口</li>
+<li><strong>SchedulerBase</strong> - <code>flink-runtime/.../scheduler/SchedulerBase.java</code> - 调度器基类</li>
+<li><strong>DefaultScheduler</strong> - <code>flink-runtime/.../scheduler/DefaultScheduler.java</code> - 默认调度器实现</li>
+</ul>
+<h3 id="23-执行图相关类">2.3 执行图相关类</h3>
+<ul>
+<li><strong>ExecutionGraph</strong> - <code>flink-runtime/.../executiongraph/ExecutionGraph.java</code> - 执行图接口</li>
+<li><strong>DefaultExecutionGraph</strong> - <code>flink-runtime/.../executiongraph/DefaultExecutionGraph.java</code> - 执行图实现</li>
+<li><strong>ExecutionJobVertex</strong> - <code>flink-runtime/.../executiongraph/ExecutionJobVertex.java</code> - 对应 JobVertex 的运行时表示</li>
+<li><strong>ExecutionVertex</strong> - <code>flink-runtime/.../executiongraph/ExecutionVertex.java</code> - 单个并行子任务的运行时表示</li>
+<li><strong>Execution</strong> - <code>flink-runtime/.../executiongraph/Execution.java</code> - 一次执行尝试</li>
+</ul>
+<h3 id="24-调度策略和部署类">2.4 调度策略和部署类</h3>
+<ul>
+<li><strong>SchedulingStrategy</strong> - <code>flink-runtime/.../scheduler/strategy/SchedulingStrategy.java</code> - 调度策略接口</li>
+<li><strong>PipelinedRegionSchedulingStrategy</strong> - <code>flink-runtime/.../scheduler/strategy/PipelinedRegionSchedulingStrategy.java</code> - 流水线区域调度策略</li>
+<li><strong>ExecutionDeployer</strong> - <code>flink-runtime/.../scheduler/ExecutionDeployer.java</code> - 执行部署器接口</li>
+<li><strong>DefaultExecutionDeployer</strong> - <code>flink-runtime/.../scheduler/DefaultExecutionDeployer.java</code> - 默认执行部署器</li>
+</ul>
+<h3 id="25-taskmanager-相关">2.5 TaskManager 相关</h3>
+<ul>
+<li><strong>TaskExecutor</strong> - <code>flink-runtime/.../taskexecutor/TaskExecutor.java</code> - TaskManager 主类</li>
+<li><strong>Task</strong> - <code>flink-runtime/.../taskmanager/Task.java</code> - 任务执行实例</li>
+<li><strong>StreamTask</strong> - <code>flink-streaming-java/.../runtime/tasks/StreamTask.java</code> - 流式任务执行</li>
+</ul>
+<hr>
+<h2 id="3-阶段一client-提交作业">3. 阶段一：Client 提交作业</h2>
+<h3 id="31-rest-请求路由机制">3.1 REST 请求路由机制</h3>
+<p>Client 提交作业时，HTTP 请求经过以下路由过程到达 Dispatcher：</p>
+<pre><code>HTTP POST /jobs
+    ↓
+Netty ChannelPipeline   -- Flink REST Server 基于 Netty 实现
+    ↓
+RouterHandler           -- 根据 URL 匹配对应的 Handler
+    ↓
+LeaderRetrievalHandler  -- 获取当前 Leader (DispatcherGateway)
+    ↓
+AbstractRestHandler     -- 通用 REST 处理逻辑
+    ↓
+JobSubmitHandler        -- 具体处理作业提交
+    ↓
+gateway.submitJob()     -- 调用 DispatcherGateway RPC
+    ↓
+Dispatcher.submitJob()  -- Dispatcher 实现 DispatcherGateway 接口
+</code></pre>
+<p><strong>关键类继承关系：</strong></p>
+<pre><code class="language-java">JobSubmitHandler
+    extends AbstractRestHandler&lt;DispatcherGateway, ...&gt;
+        extends AbstractHandler&lt;T, R, M&gt;
+            extends LeaderRetrievalHandler&lt;T&gt;
+</code></pre>
+<p><strong>LeaderRetrievalHandler 获取 Dispatcher 的核心逻辑：</strong></p>
+<pre><code class="language-java">// LeaderRetrievalHandler.java
+@Override
+protected void channelRead0(ChannelHandlerContext ctx, RoutedRequest routedRequest) {
+    // 通过 GatewayRetriever 获取当前 Leader（Dispatcher）
+    OptionalConsumer&lt;? extends T&gt; optLeaderConsumer =
+            OptionalConsumer.of(leaderRetriever.getNow());
+    
+    optLeaderConsumer.ifPresent(gateway -&gt; {
+        // gateway 就是 DispatcherGateway，指向当前 Leader Dispatcher
+        respondAsLeader(ctx, routedRequest, gateway);
+    });
+}
+</code></pre>
+<p><strong>GatewayRetriever 的作用：</strong></p>
+<ul>
+<li><code>GatewayRetriever&lt;DispatcherGateway&gt;</code> 负责追踪 Dispatcher Leader</li>
+<li>当 Dispatcher 发生 Leader 切换时，GatewayRetriever 会自动更新</li>
+<li>确保 REST 请求总是发送到当前 Leader Dispatcher</li>
+</ul>
+<h3 id="32-rest-api-入口---jobsubmithandler">3.2 REST API 入口 - JobSubmitHandler</h3>
+<pre><code class="language-java">// JobSubmitHandler.java
+@Override
+protected CompletableFuture&lt;JobSubmitResponseBody&gt; handleRequest(
+        HandlerRequest&lt;JobSubmitRequestBody&gt; request,
+        DispatcherGateway gateway) {  // gateway 由 LeaderRetrievalHandler 传入
+    
+    // 1. 获取上传的文件
+    final Collection&lt;File&gt; uploadedFiles = request.getUploadedFiles();
+    
+    // 2. 加载 JobGraph（反序列化）
+    CompletableFuture&lt;JobGraph&gt; jobGraphFuture = loadJobGraph(requestBody, nameToFile);
+    
+    // 3. 上传 JAR 文件到 BlobServer
+    CompletableFuture&lt;JobGraph&gt; finalizedJobGraphFuture =
+            uploadJobGraphFiles(gateway, jobGraphFuture, jarFiles, artifacts, configuration);
+    
+    // 4. 提交作业到 Dispatcher（RPC 调用）
+    CompletableFuture&lt;Acknowledge&gt; jobSubmissionFuture =
+            finalizedJobGraphFuture.thenCompose(
+                    jobGraph -&gt; gateway.submitJob(jobGraph, timeout));
+    
+    return jobSubmissionFuture.thenCombine(
+            jobGraphFuture,
+            (ack, jobGraph) -&gt; new JobSubmitResponseBody(&quot;/jobs/&quot; + jobGraph.getJobID()));
+}
+</code></pre>
+<h3 id="33-dispatcher-接收作业">3.3 Dispatcher 接收作业</h3>
+<pre><code class="language-java">// Dispatcher.java
+@Override
+public CompletableFuture&lt;Acknowledge&gt; submitJob(JobGraph jobGraph, Time timeout) {
+    final JobID jobID = jobGraph.getJobID();
+    
+    log.info(&quot;Received JobGraph submission '{}' ({}).&quot;, jobGraph.getName(), jobID);
+    
+    // 检查作业是否已存在
+    if (jobManagerRunnerRegistry.isRegistered(jobID)) {
+        return FutureUtils.completedExceptionally(
+                DuplicateJobSubmissionException.of(jobID));
+    }
+    
+    // 内部提交作业
+    return internalSubmitJob(jobGraph);
+}
+
+private CompletableFuture&lt;Acknowledge&gt; internalSubmitJob(JobGraph jobGraph) {
+    log.info(&quot;Submitting job '{}' ({}).&quot;, jobGraph.getName(), jobGraph.getJobID());
+    
+    // 持久化并运行作业
+    return waitForTerminatingJob(jobGraph.getJobID(), jobGraph, this::persistAndRunJob)
+            .handle((ignored, throwable) -&gt; handleTermination(jobGraph.getJobID(), throwable))
+            .thenCompose(Function.identity());
+}
+</code></pre>
+<h3 id="34-启动-jobmanagerrunner">3.4 启动 JobManagerRunner</h3>
+<pre><code class="language-java">// Dispatcher.java
+private void runJob(JobManagerRunner jobManagerRunner, ExecutionType executionType) {
+    // 1. 启动 JobManagerRunner
+    jobManagerRunner.start();
+    jobManagerRunnerRegistry.register(jobManagerRunner);
+    
+    // 2. 监听作业完成（异步）
+    final CompletableFuture&lt;CleanupJobState&gt; cleanupJobStateFuture =
+        jobManagerRunner.getResultFuture()
+            .handleAsync((result, throwable) -&gt; {
+                if (result != null) {
+                    return handleJobManagerRunnerResult(result, executionType);
+                } else {
+                    return CompletableFuture.completedFuture(
+                        jobManagerRunnerFailed(jobId, JobStatus.FAILED, throwable));
+                }
+            }, getMainThreadExecutor())
+            .thenCompose(Function.identity());
+    
+    // 3. 清理作业
+    cleanupJobStateFuture.thenCompose(
+        cleanupJobState -&gt; removeJob(jobId, cleanupJobState));
+}
+</code></pre>
+<hr>
+<h2 id="4-阶段二leader-选举和-jobmaster-创建">4. 阶段二：Leader 选举和 JobMaster 创建</h2>
+<h3 id="41-jobmasterserviceleadershiprunner-启动">4.1 JobMasterServiceLeadershipRunner 启动</h3>
+<pre><code class="language-java">// JobMasterServiceLeadershipRunner.java
+@Override
+public void start() throws Exception {
+    LOG.debug(&quot;Start leadership runner for job {}.&quot;, getJobID());
+    // 启动 Leader 选举
+    leaderElection.startLeaderElection(this);
+}
+</code></pre>
+<h3 id="42-获得-leadership">4.2 获得 Leadership</h3>
+<pre><code class="language-java">// JobMasterServiceLeadershipRunner.java
+@Override
+public void grantLeadership(UUID leaderSessionID) {
+    runIfStateRunning(
+        () -&gt; startJobMasterServiceProcessAsync(leaderSessionID),
+        &quot;starting a new JobMasterServiceProcess&quot;);
+}
+
+private void createNewJobMasterServiceProcess(UUID leaderSessionId) {
+    LOG.info(&quot;Creating new JobMasterServiceProcess for job {}&quot;, getJobID());
+    
+    // 创建 JobMasterServiceProcess（内部会创建 JobMaster）
+    jobMasterServiceProcess = jobMasterServiceProcessFactory.create(leaderSessionId);
+}
+</code></pre>
+<h3 id="43-创建-jobmaster">4.3 创建 JobMaster</h3>
+<pre><code class="language-java">// DefaultJobMasterServiceProcess.java
+public DefaultJobMasterServiceProcess(...) {
+    // 异步创建 JobMasterService（即 JobMaster）
+    this.jobMasterServiceFuture =
+        jobMasterServiceFactory.createJobMasterService(leaderSessionId, this);
+    
+    jobMasterServiceFuture.whenComplete((jobMasterService, throwable) -&gt; {
+        if (throwable != null) {
+            resultFuture.complete(
+                JobManagerRunnerResult.forInitializationFailure(...));
+        } else {
+            registerJobMasterServiceFutures(jobMasterService);
+        }
+    });
+}
+</code></pre>
+<hr>
+<h2 id="5-阶段三jobmaster-启动和调度器初始化">5. 阶段三：JobMaster 启动和调度器初始化</h2>
+<h3 id="51-jobmaster-构造函数">5.1 JobMaster 构造函数</h3>
+<pre><code class="language-java">// JobMaster.java
+public JobMaster(...) throws Exception {
+    // ... 初始化各种服务 ...
+    
+    // 创建调度器（核心！）
+    this.schedulerNG = createScheduler(
+            slotPoolServiceSchedulerFactory,
+            executionDeploymentTracker,
+            jobManagerJobMetricGroup,
+            jobStatusListener);
+}
+</code></pre>
+<h3 id="52-jobmaster-启动">5.2 JobMaster 启动</h3>
+<pre><code class="language-java">// JobMaster.java
+@Override
+protected void onStart() throws Exception {
+    try {
+        startJobExecution();
+    } catch (Exception e) {
+        handleJobMasterError(e);
+    }
+}
+
+private void startJobExecution() throws Exception {
+    // 1. 验证 JobMaster 正在运行
+    validateRunsInMainThread();
+    
+    // 2. 启动 JobMaster 服务
+    startJobMasterServices();
+    
+    // 3. 重连 ResourceManager
+    reconnectToResourceManager(
+            new FlinkException(&quot;Starting JobMaster component.&quot;));
+    
+    // 4. 开始调度！
+    startScheduling();
+}
+</code></pre>
+<hr>
+<h2 id="6-阶段四jobgraph-转换为-executiongraph">6. 阶段四：JobGraph 转换为 ExecutionGraph</h2>
+<h3 id="61-转换时机">6.1 转换时机</h3>
+<p>在 <code>SchedulerBase</code> 构造函数中，JobGraph 被转换为 ExecutionGraph：</p>
+<pre><code class="language-java">// SchedulerBase.java
+public SchedulerBase(...) throws Exception {
+    // 创建并恢复 ExecutionGraph
+    this.executionGraph = createAndRestoreExecutionGraph(
+            completedCheckpointStore,
+            checkpointsCleaner,
+            checkpointIdCounter,
+            initializationTimestamp,
+            mainThreadExecutor,
+            jobStatusListener,
+            vertexParallelismStore);
+}
+</code></pre>
+<h3 id="62-executiongraph-构建">6.2 ExecutionGraph 构建</h3>
+<pre><code class="language-java">// DefaultExecutionGraphBuilder.java
+public static DefaultExecutionGraph buildGraph(
+        JobGraph jobGraph, ...) {
+    
+    // 1. 创建 JobInformation
+    final JobInformation jobInformation = new JobInformation(...);
+    
+    // 2. 创建 ExecutionGraph 实例
+    final DefaultExecutionGraph executionGraph = new DefaultExecutionGraph(...);
+    
+    // 3. 初始化各个 JobVertex
+    for (JobVertex vertex : jobGraph.getVertices()) {
+        vertex.initializeOnMaster(...);
+    }
+    
+    // 4. 将 JobGraph 的顶点附加到 ExecutionGraph
+    executionGraph.attachJobGraph(sortedTopology);
+    
+    return executionGraph;
+}
+</code></pre>
+<h3 id="63-数据结构转换关系">6.3 数据结构转换关系</h3>
+<pre><code>JobGraph (用户提交)              ExecutionGraph (运行时)
+─────────────────              ────────────────────
+
+JobVertex                ──►   ExecutionJobVertex
+  │                            │
+  ├── parallelism = 4          ├── ExecutionVertex[0] → Execution
+  │                            ├── ExecutionVertex[1] → Execution
+  │                            ├── ExecutionVertex[2] → Execution
+  │                            └── ExecutionVertex[3] → Execution
+  │
+JobEdge (数据交换)       ──►   IntermediateResult
+                              └── IntermediateResultPartition[]
+</code></pre>
+<hr>
+<h2 id="7-阶段五调度器启动调度">7. 阶段五：调度器启动调度</h2>
+<h3 id="71-触发调度">7.1 触发调度</h3>
+<pre><code class="language-java">// JobMaster.java
+private void startScheduling() {
+    schedulerNG.startScheduling();
+}
+</code></pre>
+<h3 id="72-schedulerbasestartscheduling">7.2 SchedulerBase.startScheduling()</h3>
+<pre><code class="language-java">// SchedulerBase.java
+@Override
+public final void startScheduling() {
+    mainThreadExecutor.assertRunningInMainThread();
+    
+    // 1. 注册作业指标
+    registerJobMetrics(...);
+    
+    // 2. 启动所有 Operator Coordinator
+    operatorCoordinatorHandler.startAllOperatorCoordinators();
+    
+    // 3. 调用子类实现的调度方法
+    startSchedulingInternal();
+}
+</code></pre>
+<h3 id="73-defaultschedulerstartschedulinginternal">7.3 DefaultScheduler.startSchedulingInternal()</h3>
+<pre><code class="language-java">// DefaultScheduler.java
+@Override
+protected void startSchedulingInternal() {
+    log.info(&quot;Starting scheduling with scheduling strategy [{}]&quot;,
+            schedulingStrategy.getClass().getName());
+    
+    // 1. 将 ExecutionGraph 状态转换为 RUNNING
+    transitionToRunning();
+    
+    // 2. 调用调度策略开始调度
+    schedulingStrategy.startScheduling();
+}
+</code></pre>
+<hr>
+<h2 id="8-阶段六调度策略决定调度顺序">8. 阶段六：调度策略决定调度顺序</h2>
+<h3 id="81-pipelinedregionschedulingstrategy">8.1 PipelinedRegionSchedulingStrategy</h3>
+<p>这是 Flink 默认的调度策略，基于流水线区域（Pipelined Region）进行调度。</p>
+<pre><code class="language-java">// PipelinedRegionSchedulingStrategy.java
+@Override
+public void startScheduling() {
+    // 1. 找出所有源头区域
+    final Set&lt;SchedulingPipelinedRegion&gt; sourceRegions =
+            IterableUtils.toStream(schedulingTopology.getAllPipelinedRegions())
+                    .filter(this::isSourceRegion)
+                    .collect(Collectors.toSet());
+    
+    // 2. 调度这些源头区域
+    maybeScheduleRegions(sourceRegions);
+}
+</code></pre>
+<h3 id="82-scheduleregion">8.2 ScheduleRegion</h3>
+<pre><code class="language-java">// PipelinedRegionSchedulingStrategy.java
+private void scheduleRegion(final SchedulingPipelinedRegion region) {
+    // 1. 检查区域内所有顶点都处于 CREATED 状态
+    checkState(areRegionVerticesAllInCreatedState(region));
+    
+    // 2. 标记区域已调度
+    scheduledRegions.add(region);
+    
+    // 3. 调用 SchedulerOperations 分配 Slot 并部署
+    schedulerOperations.allocateSlotsAndDeploy(
+            regionVerticesSorted.get(region));
+}
+</code></pre>
+<hr>
+<h2 id="9-阶段七slot-分配和任务部署">9. 阶段七：Slot 分配和任务部署</h2>
+<h3 id="91-defaultschedulerallocateslotsanddeploy">9.1 DefaultScheduler.allocateSlotsAndDeploy()</h3>
+<pre><code class="language-java">// DefaultScheduler.java
+@Override
+public void allocateSlotsAndDeploy(final List&lt;ExecutionVertexID&gt; verticesToDeploy) {
+    // 1. 记录顶点版本
+    final Map&lt;ExecutionVertexID, ExecutionVertexVersion&gt; requiredVersionByVertex =
+            executionVertexVersioner.recordVertexModifications(verticesToDeploy);
+    
+    // 2. 获取需要部署的 Execution 列表
+    final List&lt;Execution&gt; executionsToDeploy =
+            verticesToDeploy.stream()
+                    .map(this::getCurrentExecutionOfVertex)
+                    .collect(Collectors.toList());
+    
+    // 3. 调用 ExecutionDeployer 进行部署
+    executionDeployer.allocateSlotsAndDeploy(executionsToDeploy, requiredVersionByVertex);
+}
+</code></pre>
+<h3 id="92-defaultexecutiondeployerallocateslotsanddeploy">9.2 DefaultExecutionDeployer.allocateSlotsAndDeploy()</h3>
+<pre><code class="language-java">// DefaultExecutionDeployer.java
+@Override
+public void allocateSlotsAndDeploy(
+        final List&lt;Execution&gt; executionsToDeploy,
+        final Map&lt;ExecutionVertexID, ExecutionVertexVersion&gt; requiredVersionByVertex) {
+    
+    // 1. 验证执行状态
+    validateExecutionStates(executionsToDeploy);
+    
+    // 2. 状态转换：CREATED -&gt; SCHEDULED
+    transitionToScheduled(executionsToDeploy);
+    
+    // 3. 为每个 Execution 分配 Slot
+    final Map&lt;ExecutionAttemptID, ExecutionSlotAssignment&gt; executionSlotAssignmentMap =
+            allocateSlotsFor(executionsToDeploy);
+    
+    // 4. 创建部署句柄
+    final List&lt;ExecutionDeploymentHandle&gt; deploymentHandles =
+            createDeploymentHandles(...);
+    
+    // 5. 等待所有 Slot 分配完成，然后部署
+    waitForAllSlotsAndDeploy(deploymentHandles);
+}
+</code></pre>
+<h3 id="93-executiondeploy---核心部署方法">9.3 Execution.deploy() - 核心部署方法</h3>
+<pre><code class="language-java">// Execution.java
+public void deploy() throws JobException {
+    // 1. 获取分配的 Slot
+    final LogicalSlot slot = assignedResource;
+    
+    // 2. 状态转换：SCHEDULED -&gt; DEPLOYING
+    if (!transitionState(previous, DEPLOYING)) {
+        throw new IllegalStateException(&quot;Cannot deploy task&quot;);
+    }
+    
+    // 3. 创建 TaskDeploymentDescriptor
+    final TaskDeploymentDescriptor deployment =
+            vertex.getExecutionGraphAccessor()
+                    .getTaskDeploymentDescriptorFactory()
+                    .createDeploymentDescriptor(...);
+    
+    // 4. 获取 TaskManagerGateway
+    final TaskManagerGateway taskManagerGateway = slot.getTaskManagerGateway();
+    
+    // 5. 异步提交任务到 TaskManager
+    CompletableFuture.supplyAsync(
+            () -&gt; taskManagerGateway.submitTask(deployment, rpcTimeout),
+            executor)
+        .thenCompose(Function.identity())
+        .whenCompleteAsync((ack, failure) -&gt; {
+            if (failure == null) {
+                vertex.notifyCompletedDeployment(this);
+            } else {
+                markFailed(failure);
+            }
+        }, jobMasterMainThreadExecutor);
+}
+</code></pre>
+<hr>
+<h2 id="10-阶段八taskmanager-执行任务">10. 阶段八：TaskManager 执行任务</h2>
+<h3 id="100-rpc-调用链taskmanagergateway-到-taskexecutor">10.0 RPC 调用链：TaskManagerGateway 到 TaskExecutor</h3>
+<p>在 <code>Execution.deploy()</code> 中调用 <code>taskManagerGateway.submitTask()</code>，这里的 RPC 调用链如下：</p>
+<pre><code>taskManagerGateway.submitTask(deployment, rpcTimeout)
+    ↓
+RpcTaskManagerGateway.submitTask() -- TaskManagerGateway 的实现类
+    ↓
+taskExecutorGateway.submitTask()   -- TaskExecutorGateway RPC 代理
+    ↓
+[Akka/Pekko RPC 网络传输]           -- 跨进程 RPC 调用
+    ↓
+TaskExecutor.submitTask()          -- TaskExecutor 实现 TaskExecutorGateway
+</code></pre>
+<p><strong>关键类关系：</strong></p>
+<pre><code>TaskManagerGateway (接口)        -- JobMaster 侧的抽象
+    ↓ 实现
+RpcTaskManagerGateway           -- 持有 TaskExecutorGateway 引用
+    ↓ 委托
+TaskExecutorGateway (RPC 接口)   -- Flink RPC 定义的远程接口
+    ↓ 实现
+TaskExecutor                    -- TaskManager 主类，实现 TaskExecutorGateway
+</code></pre>
+<p><strong>RpcTaskManagerGateway 核心代码：</strong></p>
+<pre><code class="language-java">// RpcTaskManagerGateway.java
+public class RpcTaskManagerGateway implements TaskManagerGateway {
+    
+    private final TaskExecutorGateway taskExecutorGateway;  // RPC 代理
+    private final JobMasterId jobMasterId;
+    
+    @Override
+    public CompletableFuture&lt;Acknowledge&gt; submitTask(TaskDeploymentDescriptor tdd, Time timeout) {
+        // 委托给 TaskExecutorGateway，这是一个 RPC 调用
+        return taskExecutorGateway.submitTask(tdd, jobMasterId, timeout);
+    }
+}
+</code></pre>
+<h3 id="101-taskexecutorsubmittask">10.1 TaskExecutor.submitTask()</h3>
+<pre><code class="language-java">// TaskExecutor.java
+@Override
+public CompletableFuture&lt;Acknowledge&gt; submitTask(
+        TaskDeploymentDescriptor tdd, JobMasterId jobMasterId, Time timeout) {
+    
+    // 1. 创建 Task 对象
+    final Task task = new Task(
+            tdd,
+            memoryManager,
+            ioManager,
+            networkEnvironment,
+            ...);
+    
+    // 2. 注册 Task
+    taskSlotTable.addTask(task);
+    
+    // 3. 启动 Task 执行线程
+    task.startTaskThread();
+    
+    return CompletableFuture.completedFuture(Acknowledge.get());
+}
+</code></pre>
+<h3 id="102-taskrun">10.2 Task.run()</h3>
+<pre><code class="language-java">// Task.java
+@Override
+public void run() {
+    try {
+        // 1. 切换状态：DEPLOYING -&gt; RUNNING
+        transitionState(ExecutionState.DEPLOYING, ExecutionState.RUNNING);
+        
+        // 2. 初始化任务
+        invokable = loadAndInstantiateInvokable(
+                userCodeClassLoader, nameOfInvokableClass);
+        
+        // 3. 执行任务（调用用户代码）
+        invokable.invoke();  // ← 用户代码在这里执行！
+        
+        // 4. 任务完成
+        transitionState(ExecutionState.RUNNING, ExecutionState.FINISHED);
+        
+    } catch (Throwable t) {
+        transitionState(ExecutionState.RUNNING, ExecutionState.FAILED);
+    }
+}
+</code></pre>
+<hr>
+<h2 id="11-task-状态流转">11. Task 状态流转</h2>
+<h3 id="111-executionstate-枚举">11.1 ExecutionState 枚举</h3>
+<pre><code class="language-java">// ExecutionState.java
+public enum ExecutionState {
+    CREATED,       // 初始状态
+    SCHEDULED,     // 已调度，等待 Slot
+    DEPLOYING,     // 正在部署到 TaskManager
+    INITIALIZING,  // 正在初始化
+    RUNNING,       // 运行中
+    FINISHED,      // 成功完成
+    CANCELING,     // 正在取消
+    CANCELED,      // 已取消
+    FAILED,        // 失败
+    RECONCILING;   // 协调中
+}
+</code></pre>
+<h3 id="112-状态转换图">11.2 状态转换图</h3>
+<pre><code>CREATED                  -- 初始状态
+    ↓ allocateSlotsAndDeploy()
+SCHEDULED                -- 已调度，等待 Slot
+    ↓ Execution.deploy()
+DEPLOYING                -- 正在部署到 TaskManager
+    ↓
+INITIALIZING             -- Task 在 TaskManager 上初始化
+    ↓
+RUNNING                  -- Task 开始处理数据
+    ↓
+    ├──→ FINISHED        -- 成功完成
+    ├──→ CANCELING       -- 取消中
+    │       ↓
+    │    CANCELED        -- 已取消
+    └──→ FAILED          -- 失败
+</code></pre>
+<hr>
+<h2 id="12-完整调用链">12. 完整调用链</h2>
+<pre><code>Client 提交作业
+    ↓
+JobSubmitHandler.handleRequest()   -- REST API 入口
+    ↓
+Dispatcher.submitJob()             -- 作业提交入口
+    ↓
+Dispatcher.runJob()                -- 启动 JobManagerRunner
+    ↓
+JobMasterServiceLeadershipRunner
+  .start()                         -- 启动 Leader 选举
+    ↓
+grantLeadership()                  -- 获得 Leadership
+    ↓
+JobMasterServiceProcess.create()   -- 创建 JobMaster
+    ↓
+JobMaster.onStart()                -- JobMaster 启动
+    ↓
+startJobExecution()                -- 启动作业执行
+    ↓
+startScheduling()                  -- 触发调度
+    ↓
+SchedulerBase.startScheduling()    -- 注册指标，启动 Coordinator
+    ↓
+DefaultScheduler
+  .startSchedulingInternal()       -- ExecutionGraph → RUNNING
+    ↓
+PipelinedRegionSchedulingStrategy
+  .startScheduling()               -- 识别源头区域
+    ↓
+scheduleRegion()                   -- 调度单个区域
+    ↓
+DefaultScheduler
+  .allocateSlotsAndDeploy()        -- 获取 Execution 列表
+    ↓
+DefaultExecutionDeployer
+  .allocateSlotsAndDeploy()        -- CREATED → SCHEDULED，分配 Slot
+    ↓
+waitForAllSlotsAndDeploy()         -- 异步等待 Slot 分配完成
+    ↓
+deployAll()                        -- 遍历所有 DeploymentHandle
+    ↓
+Execution.deploy()                 -- SCHEDULED → DEPLOYING，创建 TDD
+    ↓
+taskManagerGateway.submitTask()    -- RPC 调用
+    ↓
+TaskExecutor.submitTask()          -- 创建 Task
+    ↓
+Task.startTaskThread()             -- 启动任务线程
+    ↓
+Task.run() → invokable.invoke()    -- 执行用户代码
+</code></pre>
+<hr>
+<h2 id="13-关键接口和实现">13. 关键接口和实现</h2>
+<h3 id="131-类图关系">13.1 类图关系</h3>
+<pre><code>Dispatcher                   -- 作业提交入口
+    ↓
+JobManagerRunner             → JobMasterServiceLeadershipRunner
+    ↓
+JobMasterServiceProcess      → DefaultJobMasterServiceProcess
+    ↓
+JobMaster                    -- RpcEndpoint
+    ↓
+SchedulerNG                  -- 接口
+    ↓
+SchedulerBase                -- 抽象类
+    ↓
+DefaultScheduler
+    ├── SchedulingStrategy   → PipelinedRegionSchedulingStrategy
+    ├── ExecutionDeployer    → DefaultExecutionDeployer
+    └── ExecutionGraph
+            ├── ExecutionJobVertex → ExecutionVertex → Execution
+            └── IntermediateResult
+</code></pre>
+<h3 id="132-组件职责">13.2 组件职责</h3>
+<ul>
+<li><strong>Dispatcher</strong> - 接收作业提交，管理多个 JobManagerRunner（集群级别）</li>
+<li><strong>JobManagerRunner</strong> - 管理单个作业的生命周期，Leader 选举（作业级别）</li>
+<li><strong>JobMaster</strong> - 管理单个作业的调度、执行、容错（作业级别）</li>
+<li><strong>Scheduler</strong> - 调度任务，管理 ExecutionGraph（作业级别）</li>
+<li><strong>TaskExecutor</strong> - 执行具体任务（集群级别）</li>
+</ul>
+<hr>
+<h2 id="14-调试指南">14. 调试指南</h2>
+<h3 id="141-关键断点位置">14.1 关键断点位置</h3>
+<ul>
+<li><strong>作业提交</strong> - <code>JobSubmitHandler.handleRequest()</code> - REST API 入口</li>
+<li><strong>作业提交</strong> - <code>Dispatcher.submitJob()</code> - 核心提交逻辑</li>
+<li><strong>Leader 选举</strong> - <code>JobMasterServiceLeadershipRunner.grantLeadership()</code> - 获得 Leadership</li>
+<li><strong>JobMaster 启动</strong> - <code>JobMaster.onStart()</code> - JobMaster 启动回调</li>
+<li><strong>调度启动</strong> - <code>JobMaster.startScheduling()</code> - 调度入口</li>
+<li><strong>调度策略</strong> - <code>PipelinedRegionSchedulingStrategy.startScheduling()</code> - 调度策略启动</li>
+<li><strong>Slot 分配</strong> - <code>DefaultExecutionDeployer.allocateSlotsAndDeploy()</code> - 分配 Slot 并部署</li>
+<li><strong>任务部署</strong> - <code>Execution.deploy()</code> - 部署单个任务</li>
+<li><strong>TaskManager</strong> - <code>TaskExecutor.submitTask()</code> - TaskManager 接收任务</li>
+<li><strong>任务执行</strong> - <code>Task.run()</code> - 任务执行主循环 |</li>
+</ul>
+<h3 id="142-关键日志">14.2 关键日志</h3>
+<pre><code># 作业提交
+&quot;Received JobGraph submission '{}' ({}).&quot;
+&quot;Submitting job '{}' ({}).&quot;
+
+# 调度开始
+&quot;Starting scheduling with scheduling strategy [{}]&quot;
+
+# 区域调度
+&quot;Scheduling pipelined region&quot;
+
+# Slot 分配
+&quot;Allocating slot for execution&quot;
+
+# 任务部署
+&quot;Deploying {} to {}&quot;
+</code></pre>
+<hr>
+<p><em>本文档基于 Flink 1.19 源码分析编写</em></p>
+
+</main>
+
+  <footer>
+  
+<script src="https://utteranc.es/client.js"
+        repo="qiref/qiref.github.io"
+        issue-term="pathname"
+        label="Comment"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script>
+
+
+<script>
+(function() {
+  const searchInput = document.getElementById('search-input');
+  const searchResults = document.getElementById('search-results');
+  if (!searchInput || !searchResults) return;
+  
+  let searchIndex = null;
+  let activeIndex = -1;
+  let isResultsVisible = false;
+
+  
+  async function loadSearchIndex() {
+    if (searchIndex) return searchIndex;
+    try {
+      const response = await fetch('/index.json');
+      const data = await response.json();
+      searchIndex = data.pages || [];
+      return searchIndex;
+    } catch (e) {
+      console.error('Failed to load search index:', e);
+      return [];
+    }
+  }
+
+  
+  function search(query) {
+    if (!searchIndex || !query.trim()) return [];
+    const q = query.toLowerCase();
+    return searchIndex.filter(page => {
+      const title = (page.title || '').toLowerCase();
+      const content = (page.content || '').toLowerCase();
+      return title.includes(q) || content.includes(q);
+    }).slice(0, 5);
+  }
+
+  
+  function highlight(text, query) {
+    if (!query) return text;
+    const regex = new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+    return text.replace(regex, '<mark>$1</mark>');
+  }
+
+  
+  function showResults() {
+    searchResults.style.display = 'block';
+    isResultsVisible = true;
+  }
+
+  
+  function hideResults() {
+    searchResults.style.display = 'none';
+    isResultsVisible = false;
+    activeIndex = -1;
+  }
+
+  
+  function updateActiveItem() {
+    const items = searchResults.querySelectorAll('.search-result-item');
+    items.forEach((item, index) => {
+      if (index === activeIndex) {
+        item.classList.add('active');
+      } else {
+        item.classList.remove('active');
+      }
+    });
+  }
+
+  
+  function renderResults(results, query) {
+    activeIndex = -1;
+    if (!results.length) {
+      hideResults();
+      return;
+    }
+    const html = results.map(page => {
+      const title = highlight(page.title || 'Untitled', query);
+      let summary = page.summary || page.content || '';
+      summary = summary.substring(0, 100) + (summary.length > 100 ? '...' : '');
+      return `<a class="search-result-item" href="${page.url}">
+        <div class="search-result-title">${title}</div>
+        <div class="search-result-summary">${summary}</div>
+      </a>`;
+    }).join('');
+    searchResults.innerHTML = html;
+    showResults();
+  }
+
+  
+  let debounceTimer;
+  function debounce(fn, delay) {
+    return function(...args) {
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => fn.apply(this, args), delay);
+    };
+  }
+
+  
+  searchInput.addEventListener('input', debounce(async function() {
+    const query = this.value.trim();
+    if (!query) {
+      hideResults();
+      return;
+    }
+    await loadSearchIndex();
+    const results = search(query);
+    renderResults(results, query);
+  }, 200));
+
+  
+  searchInput.addEventListener('keydown', function(e) {
+    if (!isResultsVisible) return;
+    
+    const items = searchResults.querySelectorAll('.search-result-item');
+    const itemCount = items.length;
+    if (itemCount === 0) return;
+
+    switch (e.key) {
+      case 'ArrowDown':
+        e.preventDefault();
+        e.stopPropagation();
+        activeIndex = (activeIndex + 1) % itemCount;
+        updateActiveItem();
+        break;
+      case 'ArrowUp':
+        e.preventDefault();
+        e.stopPropagation();
+        activeIndex = activeIndex <= 0 ? itemCount - 1 : activeIndex - 1;
+        updateActiveItem();
+        break;
+      case 'Enter':
+        if (activeIndex >= 0 && items[activeIndex]) {
+          e.preventDefault();
+          window.location.href = items[activeIndex].href;
+        }
+        break;
+      case 'Escape':
+        e.preventDefault();
+        hideResults();
+        break;
+    }
+  });
+
+  
+  searchInput.addEventListener('focus', async function() {
+    const query = this.value.trim();
+    if (query) {
+      await loadSearchIndex();
+      const results = search(query);
+      renderResults(results, query);
+    }
+  });
+
+  
+  document.addEventListener('click', function(e) {
+    if (!searchInput.contains(e.target) && !searchResults.contains(e.target)) {
+      hideResults();
+    }
+  });
+
+  
+  document.addEventListener('keydown', function(e) {
+    if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+      e.preventDefault();
+      searchInput.focus();
+      searchInput.select();
+    }
+  });
+})();
+</script>
+  
+  <hr/>
+  © powered by <a href="https://gohugo.io/">Hugo</a> &amp; <a href="https://github.com/yihui/hugo-xmin">Xmin</a>  2017 &ndash; 2025 | <a href="https://github.com/qiref">Github</a>
+  
+  </footer>
+  </body>
+</html>
+

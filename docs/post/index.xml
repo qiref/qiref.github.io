@@ -6,8 +6,15 @@
     <description>Recent content in Posts on 大道至简</description>
     <generator>Hugo</generator>
     <language>cn-zh</language>
-    <lastBuildDate>Thu, 25 Dec 2025 12:05:41 +0800</lastBuildDate>
+    <lastBuildDate>Fri, 26 Dec 2025 11:39:10 +0800</lastBuildDate>
     <atom:link href="https://qiref.github.io/post/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Flink源码 Jobmanager作业提交与调度</title>
+      <link>https://qiref.github.io/post/2025/12/26/flink%E6%BA%90%E7%A0%81-jobmanager%E4%BD%9C%E4%B8%9A%E6%8F%90%E4%BA%A4%E4%B8%8E%E8%B0%83%E5%BA%A6/</link>
+      <pubDate>Fri, 26 Dec 2025 11:39:10 +0800</pubDate>
+      <guid>https://qiref.github.io/post/2025/12/26/flink%E6%BA%90%E7%A0%81-jobmanager%E4%BD%9C%E4%B8%9A%E6%8F%90%E4%BA%A4%E4%B8%8E%E8%B0%83%E5%BA%A6/</guid>
+      <description>详细梳理 Flink 中从 Client 提交作业到任务在 TaskManager 上执行的完整流程。&#xA;1. 整体流程概览 Client 提交 JobGraph ↓ REST API (JobSubmitHandler) -- 接收 HTTP 请求，解析 JobGraph ↓ Dispatcher.submitJob() -- 作业提交入口，创建 JobManagerRunner ↓ JobManagerRunner.start() -- 启动 Leader 选举 ↓ grantLeadership() -- 获得 Leadership ↓ JobMasterServiceProcess -- 创建 JobMaster ↓ JobMaster.onStart() -- JobMaster 启动，触发调度 ↓ SchedulerBase.startScheduling -- 创建 ExecutionGraph，开始调度 ↓ SchedulingStrategy -- 调度策略，决定任务调度顺序 ↓ ExecutionDeployer -- 分配 Slot，部署任务 ↓ TaskManagerGateway -- RPC 调用，提交任务到 TaskManager ↓ TaskExecutor.submitTask() -- 创建 Task，启动执行线程 ↓ Task.</description>
+    </item>
     <item>
       <title>Flink源码-CompletableFuture异步编程</title>
       <link>https://qiref.github.io/post/2025/12/25/flink%E6%BA%90%E7%A0%81-completablefuture%E5%BC%82%E6%AD%A5%E7%BC%96%E7%A8%8B/</link>
