@@ -842,6 +842,116 @@ DefaultScheduler
 "Deploying {} to {}"
 ```
 
+
+## 15. 补充：Flink Web UI REST API 的启动
+
+Flink Web UI 的 REST API **不是**在 `JobMaster.onStart()` 中启动的，而是在**集群启动时**由 `DispatcherResourceManagerComponent` 组件启动。
+
+### 15.1 REST API 启动时机
+
+REST API 在 Flink 集群启动时初始化，早于任何作业提交：
+
+```
+ClusterEntrypoint.runCluster()
+    ↓
+DefaultDispatcherResourceManagerComponentFactory.create()
+    ↓
+restEndpointFactory.createRestEndpoint()   -- 创建 WebMonitorEndpoint
+    ↓
+webMonitorEndpoint.start()                 -- 启动 REST Server
+    ↓
+dispatcherRunner.start()                   -- 启动 Dispatcher
+    ↓
+resourceManagerService.start()             -- 启动 ResourceManager
+```
+
+### 15.2 核心源码位置
+
+- **DefaultDispatcherResourceManagerComponentFactory** - `flink-runtime/.../entrypoint/component/DefaultDispatcherResourceManagerComponentFactory.java`
+- **WebMonitorEndpoint** - `flink-runtime/.../webmonitor/WebMonitorEndpoint.java`
+- **DispatcherRestEndpoint** - `flink-runtime/.../dispatcher/DispatcherRestEndpoint.java`
+
+### 15.3 REST API 启动流程
+
+```java
+// DefaultDispatcherResourceManagerComponentFactory.java
+public DispatcherResourceManagerComponent create(...) {
+    // 1. 创建 GatewayRetriever（用于获取 Dispatcher Leader）
+    final LeaderGatewayRetriever<DispatcherGateway> dispatcherGatewayRetriever =
+            new RpcGatewayRetriever<>(...);
+    
+    // 2. 创建 REST Endpoint
+    webMonitorEndpoint = restEndpointFactory.createRestEndpoint(
+            configuration,
+            dispatcherGatewayRetriever,
+            resourceManagerGatewayRetriever,
+            ...);
+    
+    // 3. 启动 REST Server（此时 Web UI 可访问）
+    log.debug("Starting Dispatcher REST endpoint.");
+    webMonitorEndpoint.start();
+    
+    // 4. 之后才启动 Dispatcher 和 ResourceManager
+    dispatcherRunner = dispatcherRunnerFactory.createDispatcherRunner(...);
+    resourceManagerService.start();
+}
+```
+
+### 15.4 Handler 注册机制
+
+`WebMonitorEndpoint.initializeHandlers()` 中注册所有 REST Handler：
+
+```java
+// WebMonitorEndpoint.java
+@Override
+protected List<Tuple2<RestHandlerSpecification, ChannelInboundHandler>> initializeHandlers(...) {
+    ArrayList<Tuple2<RestHandlerSpecification, ChannelInboundHandler>> handlers = new ArrayList<>();
+    
+    // 集群概览
+    handlers.add(Tuple2.of(ClusterOverviewHeaders.getInstance(), clusterOverviewHandler));
+    
+    // 作业列表
+    handlers.add(Tuple2.of(JobsOverviewHeaders.getInstance(), jobsOverviewHandler));
+    
+    // 作业详情
+    handlers.add(Tuple2.of(JobDetailsHeaders.getInstance(), jobDetailsHandler));
+    
+    // Checkpoint 相关
+    handlers.add(Tuple2.of(CheckpointConfigHeaders.getInstance(), checkpointConfigHandler));
+    handlers.add(Tuple2.of(CheckpointingStatisticsHeaders.getInstance(), checkpointStatisticsHandler));
+    
+    // TaskManager 相关
+    handlers.add(Tuple2.of(TaskManagersHeaders.getInstance(), taskManagersHandler));
+    handlers.add(Tuple2.of(TaskManagerDetailsHeaders.getInstance(), taskManagerDetailsHandler));
+    
+    // ... 更多 Handler
+    return handlers;
+}
+```
+
+`DispatcherRestEndpoint` 继承 `WebMonitorEndpoint`，额外添加 `JobSubmitHandler`：
+
+```java
+// DispatcherRestEndpoint.java
+@Override
+protected List<Tuple2<RestHandlerSpecification, ChannelInboundHandler>> initializeHandlers(...) {
+    List<Tuple2<RestHandlerSpecification, ChannelInboundHandler>> handlers =
+            super.initializeHandlers(localAddressFuture);  // 继承父类 Handler
+    
+    // 添加作业提交 Handler（Dispatcher 特有）
+    JobSubmitHandler jobSubmitHandler = new JobSubmitHandler(...);
+    handlers.add(Tuple2.of(jobSubmitHandler.getMessageHeaders(), jobSubmitHandler));
+    
+    return handlers;
+}
+```
+
+### 15.5 关键设计点
+
+- **REST API 与 JobMaster 解耦** - REST Server 在集群级别运行，不依赖具体作业
+- **GatewayRetriever 模式** - Handler 通过 `GatewayRetriever` 获取当前 Leader，支持 HA 切换
+- **Handler 分层** - `WebMonitorEndpoint` 提供通用 Handler，`DispatcherRestEndpoint` 添加作业提交相关 Handler
+
 ---
 
 *本文档基于 Flink 1.19 源码分析编写*
