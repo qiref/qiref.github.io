@@ -1441,80 +1441,80 @@ CompletableFuture&lt;String&gt; future = CompletableFuture
 </code></pre>
 <h2 id="附录常用方法速查表">附录：常用方法速查表</h2>
 <table>
-<thead>
-<tr>
-<th>方法</th>
-<th>描述</th>
-<th>返回类型</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>supplyAsync(Supplier)</code></td>
-<td>异步执行有返回值的任务</td>
-<td><code>CompletableFuture&lt;T&gt;</code></td>
-</tr>
-<tr>
-<td><code>runAsync(Runnable)</code></td>
-<td>异步执行无返回值的任务</td>
-<td><code>CompletableFuture&lt;Void&gt;</code></td>
-</tr>
-<tr>
-<td><code>thenApply(Function)</code></td>
-<td>同步转换结果</td>
-<td><code>CompletableFuture&lt;U&gt;</code></td>
-</tr>
-<tr>
-<td><code>thenApplyAsync(Function)</code></td>
-<td>异步转换结果</td>
-<td><code>CompletableFuture&lt;U&gt;</code></td>
-</tr>
-<tr>
-<td><code>thenCompose(Function)</code></td>
-<td>扁平化嵌套 Future</td>
-<td><code>CompletableFuture&lt;U&gt;</code></td>
-</tr>
-<tr>
-<td><code>thenAccept(Consumer)</code></td>
-<td>消费结果</td>
-<td><code>CompletableFuture&lt;Void&gt;</code></td>
-</tr>
-<tr>
-<td><code>thenRun(Runnable)</code></td>
-<td>执行后续操作</td>
-<td><code>CompletableFuture&lt;Void&gt;</code></td>
-</tr>
-<tr>
-<td><code>handle(BiFunction)</code></td>
-<td>处理结果和异常</td>
-<td><code>CompletableFuture&lt;U&gt;</code></td>
-</tr>
-<tr>
-<td><code>exceptionally(Function)</code></td>
-<td>异常恢复</td>
-<td><code>CompletableFuture&lt;T&gt;</code></td>
-</tr>
-<tr>
-<td><code>whenComplete(BiConsumer)</code></td>
-<td>观察完成（不改变结果）</td>
-<td><code>CompletableFuture&lt;T&gt;</code></td>
-</tr>
-<tr>
-<td><code>thenCombine(CF, BiFunction)</code></td>
-<td>合并两个 Future</td>
-<td><code>CompletableFuture&lt;V&gt;</code></td>
-</tr>
-<tr>
-<td><code>allOf(CF...)</code></td>
-<td>等待所有完成</td>
-<td><code>CompletableFuture&lt;Void&gt;</code></td>
-</tr>
-<tr>
-<td><code>anyOf(CF...)</code></td>
-<td>任一完成</td>
-<td><code>CompletableFuture&lt;Object&gt;</code></td>
-</tr>
-</tbody>
+  <thead>
+      <tr>
+          <th>方法</th>
+          <th>描述</th>
+          <th>返回类型</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>supplyAsync(Supplier)</code></td>
+          <td>异步执行有返回值的任务</td>
+          <td><code>CompletableFuture&lt;T&gt;</code></td>
+      </tr>
+      <tr>
+          <td><code>runAsync(Runnable)</code></td>
+          <td>异步执行无返回值的任务</td>
+          <td><code>CompletableFuture&lt;Void&gt;</code></td>
+      </tr>
+      <tr>
+          <td><code>thenApply(Function)</code></td>
+          <td>同步转换结果</td>
+          <td><code>CompletableFuture&lt;U&gt;</code></td>
+      </tr>
+      <tr>
+          <td><code>thenApplyAsync(Function)</code></td>
+          <td>异步转换结果</td>
+          <td><code>CompletableFuture&lt;U&gt;</code></td>
+      </tr>
+      <tr>
+          <td><code>thenCompose(Function)</code></td>
+          <td>扁平化嵌套 Future</td>
+          <td><code>CompletableFuture&lt;U&gt;</code></td>
+      </tr>
+      <tr>
+          <td><code>thenAccept(Consumer)</code></td>
+          <td>消费结果</td>
+          <td><code>CompletableFuture&lt;Void&gt;</code></td>
+      </tr>
+      <tr>
+          <td><code>thenRun(Runnable)</code></td>
+          <td>执行后续操作</td>
+          <td><code>CompletableFuture&lt;Void&gt;</code></td>
+      </tr>
+      <tr>
+          <td><code>handle(BiFunction)</code></td>
+          <td>处理结果和异常</td>
+          <td><code>CompletableFuture&lt;U&gt;</code></td>
+      </tr>
+      <tr>
+          <td><code>exceptionally(Function)</code></td>
+          <td>异常恢复</td>
+          <td><code>CompletableFuture&lt;T&gt;</code></td>
+      </tr>
+      <tr>
+          <td><code>whenComplete(BiConsumer)</code></td>
+          <td>观察完成（不改变结果）</td>
+          <td><code>CompletableFuture&lt;T&gt;</code></td>
+      </tr>
+      <tr>
+          <td><code>thenCombine(CF, BiFunction)</code></td>
+          <td>合并两个 Future</td>
+          <td><code>CompletableFuture&lt;V&gt;</code></td>
+      </tr>
+      <tr>
+          <td><code>allOf(CF...)</code></td>
+          <td>等待所有完成</td>
+          <td><code>CompletableFuture&lt;Void&gt;</code></td>
+      </tr>
+      <tr>
+          <td><code>anyOf(CF...)</code></td>
+          <td>任一完成</td>
+          <td><code>CompletableFuture&lt;Object&gt;</code></td>
+      </tr>
+  </tbody>
 </table>
 <hr>
 <h2 id="参考资料">参考资料</h2>

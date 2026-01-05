@@ -262,40 +262,39 @@ StreamGraphGenerator.generate()
 <p><strong>为什么需要转换？</strong></p>
 <p>StreamGraph 和 JobGraph 代表了 Flink 作业的两个不同抽象层次：</p>
 <table>
-<thead>
-<tr>
-<th>对比维度</th>
-<th>StreamGraph</th>
-<th>JobGraph</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>抽象层次</strong></td>
-<td>逻辑执行图</td>
-<td>优化后的逻辑图</td>
-</tr>
-<tr>
-<td><strong>节点单位</strong></td>
-<td>StreamNode（单个算子）</td>
-<td>JobVertex（算子链）</td>
-</tr>
-<tr>
-<td><strong>优化程度</strong></td>
-<td>未优化，1:1 映射用户代码</td>
-<td>已优化，包含算子链</td>
-</tr>
-<tr>
-<td><strong>用途</strong></td>
-<td>表达用户意图</td>
-<td>提交给集群执行</td>
-</tr>
-</tbody>
+  <thead>
+      <tr>
+          <th>对比维度</th>
+          <th>StreamGraph</th>
+          <th>JobGraph</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>抽象层次</strong></td>
+          <td>逻辑执行图</td>
+          <td>优化后的逻辑图</td>
+      </tr>
+      <tr>
+          <td><strong>节点单位</strong></td>
+          <td>StreamNode（单个算子）</td>
+          <td>JobVertex（算子链）</td>
+      </tr>
+      <tr>
+          <td><strong>优化程度</strong></td>
+          <td>未优化，1:1 映射用户代码</td>
+          <td>已优化，包含算子链</td>
+      </tr>
+      <tr>
+          <td><strong>用途</strong></td>
+          <td>表达用户意图</td>
+          <td>提交给集群执行</td>
+      </tr>
+  </tbody>
 </table>
 <blockquote>
 <p>注：真正的物理执行图是 <strong>ExecutionGraph</strong>，
-它在 JobManager 端生成，将 JobVertex 按并行度展开为多个 ExecutionVertex。</p>
-</blockquote>
+它在 JobManager 端生成，将 JobVertex 按并行度展开为多个 ExecutionVertex。</p></blockquote>
 <p><strong>转换的核心目的是性能优化</strong>，主要体现在 <strong>Operator Chain（算子链）</strong> 机制上：</p>
 <pre><code>转换前（StreamGraph）：
 Source → Map → Filter → KeyBy → Reduce → Sink
@@ -507,40 +506,40 @@ Source -&gt; Map -&gt; Filter --[HASH分区]--&gt; Map -&gt; Sink
 </code></pre>
 <p>keyBy 在不同阶段的体现</p>
 <table>
-<thead>
-<tr>
-<th>阶段</th>
-<th>keyBy 的体现</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>用户代码</td>
-<td><code>.keyBy(x -&gt; x)</code></td>
-<td>用户调用 keyBy 方法</td>
-</tr>
-<tr>
-<td>StreamGraph</td>
-<td><code>StreamEdge.partitioner = KeyGroupStreamPartitioner</code></td>
-<td>设置边的分区器为 HASH</td>
-</tr>
-<tr>
-<td>JobGraph</td>
-<td>打断 Operator Chain</td>
-<td>因为分区策略改变，不能 Chain</td>
-</tr>
-<tr>
-<td>ExecutionGraph</td>
-<td>创建 IntermediateResultPartition</td>
-<td>创建中间结果分区</td>
-</tr>
-<tr>
-<td>物理执行</td>
-<td>数据通过网络 Shuffle</td>
-<td>按照 key 的 hash 值分发到不同的 Task</td>
-</tr>
-</tbody>
+  <thead>
+      <tr>
+          <th>阶段</th>
+          <th>keyBy 的体现</th>
+          <th>说明</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>用户代码</td>
+          <td><code>.keyBy(x -&gt; x)</code></td>
+          <td>用户调用 keyBy 方法</td>
+      </tr>
+      <tr>
+          <td>StreamGraph</td>
+          <td><code>StreamEdge.partitioner = KeyGroupStreamPartitioner</code></td>
+          <td>设置边的分区器为 HASH</td>
+      </tr>
+      <tr>
+          <td>JobGraph</td>
+          <td>打断 Operator Chain</td>
+          <td>因为分区策略改变，不能 Chain</td>
+      </tr>
+      <tr>
+          <td>ExecutionGraph</td>
+          <td>创建 IntermediateResultPartition</td>
+          <td>创建中间结果分区</td>
+      </tr>
+      <tr>
+          <td>物理执行</td>
+          <td>数据通过网络 Shuffle</td>
+          <td>按照 key 的 hash 值分发到不同的 Task</td>
+      </tr>
+  </tbody>
 </table>
 <p>类比理解</p>
 <pre><code>keyBy 就像是道路上的&quot;分流指示牌&quot;：
