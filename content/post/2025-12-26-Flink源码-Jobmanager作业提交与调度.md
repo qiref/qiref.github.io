@@ -1,5 +1,5 @@
 ---
-title: "Flink源码 Jobmanager作业提交与调度"
+title: "Flink源码-Jobmanager作业提交与调度"
 date: 2025-12-26T11:39:10+08:00
 toc: true
 tags:
@@ -776,25 +776,34 @@ Task.run() → invokable.invoke()    -- 执行用户代码
 
 ### 13.1 类图关系
 
+**图例说明（UML 标准简写）：**
+- `A <|-- B` 表示 B 继承 A（B extends A）
+- `A <|.. B` 表示 B 实现 A（B implements A）
+- `A o-- B` 表示 A 组合 B（A has/contains B）
+
+**作业管理层级：**
 ```
-Dispatcher                   -- 作业提交入口
-    ↓
-JobManagerRunner             → JobMasterServiceLeadershipRunner
-    ↓
-JobMasterServiceProcess      → DefaultJobMasterServiceProcess
-    ↓
-JobMaster                    -- RpcEndpoint
-    ↓
-SchedulerNG                  -- 接口
-    ↓
-SchedulerBase                -- 抽象类
-    ↓
-DefaultScheduler
-    ├── SchedulingStrategy   → PipelinedRegionSchedulingStrategy
-    ├── ExecutionDeployer    → DefaultExecutionDeployer
-    └── ExecutionGraph
-            ├── ExecutionJobVertex → ExecutionVertex → Execution
-            └── IntermediateResult
+Dispatcher --o JobManagerRunner <|.. JobMasterServiceLeadershipRunner
+                                          |--o JobMasterServiceProcess 
+                                                    <|.. DefaultJobMasterServiceProcess
+                                                              |--o JobMasterService <|.. JobMaster
+```
+
+**调度器继承体系：**
+```
+SchedulerNG <|.. SchedulerBase <|-- DefaultScheduler
+                                        |--o SchedulingStrategy 
+                                                <|.. PipelinedRegionSchedulingStrategy
+                                        |--o ExecutionDeployer 
+                                                <|.. DefaultExecutionDeployer
+                                        |--o ExecutionGraph
+```
+
+**ExecutionGraph 内部结构：**
+```
+ExecutionGraph <|.. DefaultExecutionGraph
+                         |--o ExecutionJobVertex[] --o ExecutionVertex[] --o Execution
+                         |--o IntermediateResult[]
 ```
 
 ### 13.2 组件职责

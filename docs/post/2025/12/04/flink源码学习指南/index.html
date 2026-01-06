@@ -521,70 +521,70 @@ public void triggerCheckpoint(long checkpointId) {
 </code></pre>
 <h2 id="关键类速查表">关键类速查表</h2>
 <table>
-  <thead>
-      <tr>
-          <th>阶段</th>
-          <th>关键类</th>
-          <th>职责</th>
-      </tr>
-  </thead>
-  <tbody>
-      <tr>
-          <td>Client</td>
-          <td><code>StreamExecutionEnvironment</code></td>
-          <td>用户程序入口，管理 transformations</td>
-      </tr>
-      <tr>
-          <td>Client</td>
-          <td><code>StreamGraphGenerator</code></td>
-          <td>生成 StreamGraph</td>
-      </tr>
-      <tr>
-          <td>Client</td>
-          <td><code>StreamingJobGraphGenerator</code></td>
-          <td>生成 JobGraph，算子链优化</td>
-      </tr>
-      <tr>
-          <td>Master</td>
-          <td><code>Dispatcher</code></td>
-          <td>接收作业，创建 JobMaster</td>
-      </tr>
-      <tr>
-          <td>Master</td>
-          <td><code>JobMaster</code></td>
-          <td>作业协调，生成 ExecutionGraph</td>
-      </tr>
-      <tr>
-          <td>Master</td>
-          <td><code>DefaultScheduler</code></td>
-          <td>调度 Task 到 TaskManager</td>
-      </tr>
-      <tr>
-          <td>Master</td>
-          <td><code>CheckpointCoordinator</code></td>
-          <td>触发和协调 checkpoint</td>
-      </tr>
-      <tr>
-          <td>Worker</td>
-          <td><code>TaskExecutor</code></td>
-          <td>TaskManager 的 RPC 端点</td>
-      </tr>
-      <tr>
-          <td>Worker</td>
-          <td><code>Task</code></td>
-          <td>执行单元，包装 StreamTask</td>
-      </tr>
-      <tr>
-          <td>Worker</td>
-          <td><code>StreamTask</code></td>
-          <td>流式 Task 基类，核心处理循环</td>
-      </tr>
-      <tr>
-          <td>Worker</td>
-          <td><code>OperatorChain</code></td>
-          <td>管理 chained 算子</td>
-      </tr>
-  </tbody>
+<thead>
+<tr>
+<th>阶段</th>
+<th>关键类</th>
+<th>职责</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Client</td>
+<td><code>StreamExecutionEnvironment</code></td>
+<td>用户程序入口，管理 transformations</td>
+</tr>
+<tr>
+<td>Client</td>
+<td><code>StreamGraphGenerator</code></td>
+<td>生成 StreamGraph</td>
+</tr>
+<tr>
+<td>Client</td>
+<td><code>StreamingJobGraphGenerator</code></td>
+<td>生成 JobGraph，算子链优化</td>
+</tr>
+<tr>
+<td>Master</td>
+<td><code>Dispatcher</code></td>
+<td>接收作业，创建 JobMaster</td>
+</tr>
+<tr>
+<td>Master</td>
+<td><code>JobMaster</code></td>
+<td>作业协调，生成 ExecutionGraph</td>
+</tr>
+<tr>
+<td>Master</td>
+<td><code>DefaultScheduler</code></td>
+<td>调度 Task 到 TaskManager</td>
+</tr>
+<tr>
+<td>Master</td>
+<td><code>CheckpointCoordinator</code></td>
+<td>触发和协调 checkpoint</td>
+</tr>
+<tr>
+<td>Worker</td>
+<td><code>TaskExecutor</code></td>
+<td>TaskManager 的 RPC 端点</td>
+</tr>
+<tr>
+<td>Worker</td>
+<td><code>Task</code></td>
+<td>执行单元，包装 StreamTask</td>
+</tr>
+<tr>
+<td>Worker</td>
+<td><code>StreamTask</code></td>
+<td>流式 Task 基类，核心处理循环</td>
+</tr>
+<tr>
+<td>Worker</td>
+<td><code>OperatorChain</code></td>
+<td>管理 chained 算子</td>
+</tr>
+</tbody>
 </table>
 <h2 id="调试技巧">调试技巧</h2>
 <h3 id="关键断点位置">关键断点位置</h3>

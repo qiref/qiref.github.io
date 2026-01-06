@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Flink源码 Jobmanager作业提交与调度 | 大道至简</title>
+    <title>Flink源码-Jobmanager作业提交与调度 | 大道至简</title>
     <link rel="stylesheet" href="/css/style.css" />
     <link rel="stylesheet" href="/css/fonts.css" />
     
@@ -56,7 +56,7 @@ hljs.highlightAll();
     </nav>
 
 <div class="article-meta">
-<h1><span class="title">Flink源码 Jobmanager作业提交与调度</span></h1>
+<h1><span class="title">Flink源码-Jobmanager作业提交与调度</span></h1>
 
 <h2 class="date">2025/12/26</h2>
 <p class="terms">
@@ -820,24 +820,30 @@ Task.run() → invokable.invoke()    -- 执行用户代码
 <hr>
 <h2 id="13-关键接口和实现">13. 关键接口和实现</h2>
 <h3 id="131-类图关系">13.1 类图关系</h3>
-<pre><code>Dispatcher                   -- 作业提交入口
-    ↓
-JobManagerRunner             → JobMasterServiceLeadershipRunner
-    ↓
-JobMasterServiceProcess      → DefaultJobMasterServiceProcess
-    ↓
-JobMaster                    -- RpcEndpoint
-    ↓
-SchedulerNG                  -- 接口
-    ↓
-SchedulerBase                -- 抽象类
-    ↓
-DefaultScheduler
-    ├── SchedulingStrategy   → PipelinedRegionSchedulingStrategy
-    ├── ExecutionDeployer    → DefaultExecutionDeployer
-    └── ExecutionGraph
-            ├── ExecutionJobVertex → ExecutionVertex → Execution
-            └── IntermediateResult
+<p><strong>图例说明（UML 标准简写）：</strong></p>
+<ul>
+<li><code>A &lt;|-- B</code> 表示 B 继承 A（B extends A）</li>
+<li><code>A &lt;|.. B</code> 表示 B 实现 A（B implements A）</li>
+<li><code>A o-- B</code> 表示 A 组合 B（A has/contains B）</li>
+</ul>
+<p><strong>作业管理层级：</strong></p>
+<pre><code>Dispatcher --o JobManagerRunner &lt;|.. JobMasterServiceLeadershipRunner
+                                          |--o JobMasterServiceProcess 
+                                                    &lt;|.. DefaultJobMasterServiceProcess
+                                                              |--o JobMasterService &lt;|.. JobMaster
+</code></pre>
+<p><strong>调度器继承体系：</strong></p>
+<pre><code>SchedulerNG &lt;|.. SchedulerBase &lt;|-- DefaultScheduler
+                                        |--o SchedulingStrategy 
+                                                &lt;|.. PipelinedRegionSchedulingStrategy
+                                        |--o ExecutionDeployer 
+                                                &lt;|.. DefaultExecutionDeployer
+                                        |--o ExecutionGraph
+</code></pre>
+<p><strong>ExecutionGraph 内部结构：</strong></p>
+<pre><code>ExecutionGraph &lt;|.. DefaultExecutionGraph
+                         |--o ExecutionJobVertex[] --o ExecutionVertex[] --o Execution
+                         |--o IntermediateResult[]
 </code></pre>
 <h3 id="132-组件职责">13.2 组件职责</h3>
 <ul>

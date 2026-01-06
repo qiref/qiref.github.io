@@ -1,0 +1,1182 @@
+<!DOCTYPE html>
+<html lang="cn-zh">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Flink源码-RPC体系 | 大道至简</title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/fonts.css" />
+    
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-PGMJFXZJRT"></script>
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/scala.min.js"></script>
+
+<script>
+hljs.configure({languages: []});
+hljs.highlightAll();
+</script>
+
+<link href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/github.min.css"  rel="stylesheet">
+
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-PGMJFXZJRT');
+</script>
+
+<link rel="stylesheet" href="/css/custom.css">
+<link rel="stylesheet" href="/css/heatmap.css">
+  </head>
+
+  <body>
+    <nav>
+    <ul class="menu">
+      
+      <li><a href="/">Home</a></li>
+      
+      <li><a href="/post/">Posts</a></li>
+      
+      <li><a href="/tags/">Tags</a></li>
+      
+      <li><a href="/about/">About</a></li>
+      
+      <li><a href="/note/">Note</a></li>
+      
+      <li><a href="/index.xml">Subscribe</a></li>
+      
+      <li class="search-container">
+        <input type="text" id="search-input" placeholder="⌘ K" autocomplete="off">
+        <div id="search-results"></div>
+      </li>
+    </ul>
+    <hr/>
+    </nav>
+
+<div class="article-meta">
+<h1><span class="title">Flink源码-RPC体系</span></h1>
+
+<h2 class="date">2026/01/05</h2>
+<p class="terms">
+  
+  
+  
+  
+  Tags: <a href="/tags/flink">Flink</a> 
+  
+  
+</p>
+</div>
+
+
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#1-整体架构概览">1. 整体架构概览</a></li>
+    <li><a href="#2-核心类和文件位置">2. 核心类和文件位置</a>
+      <ul>
+        <li><a href="#21-rpc-核心接口flink-rpc-core">2.1 RPC 核心接口（flink-rpc-core）</a></li>
+        <li><a href="#22-pekko-实现类flink-rpc-akka">2.2 Pekko 实现类（flink-rpc-akka）</a></li>
+        <li><a href="#23-rpc-消息类flink-rpc-core">2.3 RPC 消息类（flink-rpc-core）</a></li>
+        <li><a href="#24-各组件的-gateway-接口flink-runtime">2.4 各组件的 Gateway 接口（flink-runtime）</a></li>
+      </ul>
+    </li>
+    <li><a href="#3-rpc-系统加载和初始化流程">3. RPC 系统加载和初始化流程</a>
+      <ul>
+        <li><a href="#31-rpc-系统加载">3.1 RPC 系统加载</a></li>
+        <li><a href="#32-rpcservice-创建">3.2 RpcService 创建</a></li>
+        <li><a href="#33-rpcendpoint-启动流程">3.3 RpcEndpoint 启动流程</a></li>
+      </ul>
+    </li>
+    <li><a href="#4-rpc-核心类图">4. RPC 核心类图</a>
+      <ul>
+        <li><a href="#41-rpc-核心接口继承关系">4.1 RPC 核心接口继承关系</a></li>
+        <li><a href="#42-rpcendpoint-继承关系">4.2 RpcEndpoint 继承关系</a></li>
+        <li><a href="#43-rpcservice-实现关系">4.3 RpcService 实现关系</a></li>
+        <li><a href="#44-rpc-消息类继承关系">4.4 RPC 消息类继承关系</a></li>
+        <li><a href="#45-actor-类继承关系">4.5 Actor 类继承关系</a></li>
+      </ul>
+    </li>
+    <li><a href="#5-rpc-调用流程详解">5. RPC 调用流程详解</a>
+      <ul>
+        <li><a href="#51-核心接口职责说明">5.1 核心接口职责说明</a></li>
+        <li><a href="#52-本地调用流程">5.2 本地调用流程</a></li>
+        <li><a href="#53-远程调用流程">5.3 远程调用流程</a></li>
+        <li><a href="#54-消息处理状态机">5.4 消息处理状态机</a></li>
+      </ul>
+    </li>
+    <li><a href="#6-flink-组件通信模式">6. Flink 组件通信模式</a>
+      <ul>
+        <li><a href="#61-组件通信架构图">6.1 组件通信架构图</a></li>
+        <li><a href="#62-各组件-rpc-通信详解">6.2 各组件 RPC 通信详解</a></li>
+        <li><a href="#63-典型通信场景">6.3 典型通信场景</a></li>
+        <li><a href="#64-服务发现机制">6.4 服务发现机制</a></li>
+        <li><a href="#65-fencing-token-机制">6.5 Fencing Token 机制</a></li>
+      </ul>
+    </li>
+    <li><a href="#7-关键设计模式">7. 关键设计模式</a>
+      <ul>
+        <li><a href="#71-actor-模型">7.1 Actor 模型</a></li>
+        <li><a href="#72-动态代理模式">7.2 动态代理模式</a></li>
+        <li><a href="#73-监管策略">7.3 监管策略</a></li>
+      </ul>
+    </li>
+    <li><a href="#8-调试指南">8. 调试指南</a>
+      <ul>
+        <li><a href="#81-关键断点位置">8.1 关键断点位置</a></li>
+        <li><a href="#82-关键日志">8.2 关键日志</a></li>
+        <li><a href="#83-常见问题排查">8.3 常见问题排查</a></li>
+      </ul>
+    </li>
+    <li><a href="#9-配置参数">9. 配置参数</a>
+      <ul>
+        <li><a href="#91-rpc-相关配置">9.1 RPC 相关配置</a></li>
+      </ul>
+    </li>
+    <li><a href="#10-总结">10. 总结</a></li>
+  </ul>
+</nav>
+
+
+<main>
+<p>本文档详细梳理 Flink 中的 RPC（远程过程调用）体系架构，包括 RPC 系统的初始化流程、核心类关系以及各组件之间的通信模式。</p>
+<hr>
+<h2 id="1-整体架构概览">1. 整体架构概览</h2>
+<p>Flink 的 RPC 体系基于 <strong>Apache Pekko (原 Akka)</strong> Actor 模型实现，提供了一套完整的分布式通信框架。</p>
+<pre><code>RpcEndpoint (业务逻辑) &lt;---&gt; RpcService (RPC 服务管理) &lt;---&gt; RpcGateway (远程代理接口)
+     ↑                            ↑                              ↑
+     |                            |                              |
+PekkoRpcActor (Actor 实现)   PekkoRpcService (Pekko 实现)   PekkoInvocationHandler (动态代理)
+                                  ↓
+                            ActorSystem (Pekko 运行时)
+</code></pre>
+<hr>
+<h2 id="2-核心类和文件位置">2. 核心类和文件位置</h2>
+<h3 id="21-rpc-核心接口flink-rpc-core">2.1 RPC 核心接口（flink-rpc-core）</h3>
+<ul>
+<li><code>RpcEndpoint</code> - <code>flink-rpc-core/.../rpc/RpcEndpoint.java</code> - RPC 端点基类，所有提供 RPC 服务的组件都继承它</li>
+<li><code>RpcGateway</code> - <code>flink-rpc-core/.../rpc/RpcGateway.java</code> - RPC 网关接口，定义可远程调用的方法</li>
+<li><code>RpcServer</code> - <code>flink-rpc-core/.../rpc/RpcServer.java</code> - RPC 服务器接口，组合了多个功能接口</li>
+<li><code>RpcService</code> - <code>flink-rpc-core/.../rpc/RpcService.java</code> - RPC 服务接口，管理 RPC 端点的生命周期</li>
+<li><code>RpcSystem</code> - <code>flink-rpc-core/.../rpc/RpcSystem.java</code> - RPC 系统工厂接口，用于创建 RpcService</li>
+<li><code>RpcSystemLoader</code> - <code>flink-rpc-core/.../rpc/RpcSystemLoader.java</code> - RPC 系统加载器接口</li>
+<li><code>FencedRpcEndpoint</code> - <code>flink-rpc-core/.../rpc/FencedRpcEndpoint.java</code> - 带隔离令牌的 RPC 端点，防止脑裂</li>
+<li><code>FencedRpcGateway</code> - <code>flink-rpc-core/.../rpc/FencedRpcGateway.java</code> - 带隔离令牌的 RPC 网关</li>
+<li><code>MainThreadExecutable</code> - <code>flink-rpc-core/.../rpc/MainThreadExecutable.java</code> - 主线程执行接口</li>
+</ul>
+<h3 id="22-pekko-实现类flink-rpc-akka">2.2 Pekko 实现类（flink-rpc-akka）</h3>
+<ul>
+<li><code>PekkoRpcService</code> - <code>flink-rpc-akka/.../pekko/PekkoRpcService.java</code> - RpcService 的 Pekko 实现</li>
+<li><code>PekkoRpcActor</code> - <code>flink-rpc-akka/.../pekko/PekkoRpcActor.java</code> - RPC Actor，处理 RPC 消息</li>
+<li><code>PekkoInvocationHandler</code> - <code>flink-rpc-akka/.../pekko/PekkoInvocationHandler.java</code> - JDK 动态代理处理器</li>
+<li><code>FencedPekkoRpcActor</code> - <code>flink-rpc-akka/.../pekko/FencedPekkoRpcActor.java</code> - 带隔离令牌的 RPC Actor</li>
+<li><code>FencedPekkoInvocationHandler</code> - <code>flink-rpc-akka/.../pekko/FencedPekkoInvocationHandler.java</code> - 带隔离令牌的代理处理器</li>
+<li><code>SupervisorActor</code> - <code>flink-rpc-akka/.../pekko/SupervisorActor.java</code> - 监管 Actor，管理 RPC Actor 生命周期</li>
+<li><code>ControlMessages</code> - <code>flink-rpc-akka/.../pekko/ControlMessages.java</code> - 控制消息枚举（START/STOP/TERMINATE）</li>
+</ul>
+<h3 id="23-rpc-消息类flink-rpc-core">2.3 RPC 消息类（flink-rpc-core）</h3>
+<ul>
+<li><code>RpcInvocation</code> - <code>flink-rpc-core/.../rpc/messages/RpcInvocation.java</code> - RPC 调用消息接口</li>
+<li><code>LocalRpcInvocation</code> - <code>flink-rpc-core/.../rpc/messages/LocalRpcInvocation.java</code> - 本地 RPC 调用（不序列化）</li>
+<li><code>RemoteRpcInvocation</code> - <code>flink-rpc-core/.../rpc/messages/RemoteRpcInvocation.java</code> - 远程 RPC 调用（需序列化）</li>
+<li><code>RunAsync</code> - <code>flink-rpc-core/.../rpc/messages/RunAsync.java</code> - 异步执行 Runnable</li>
+<li><code>CallAsync</code> - <code>flink-rpc-core/.../rpc/messages/CallAsync.java</code> - 异步执行 Callable</li>
+</ul>
+<h3 id="24-各组件的-gateway-接口flink-runtime">2.4 各组件的 Gateway 接口（flink-runtime）</h3>
+<ul>
+<li><code>JobMasterGateway</code> - <code>flink-runtime/.../jobmaster/JobMasterGateway.java</code> - JobMaster 的 RPC 接口</li>
+<li><code>TaskExecutorGateway</code> - <code>flink-runtime/.../taskexecutor/TaskExecutorGateway.java</code> - TaskExecutor 的 RPC 接口</li>
+<li><code>DispatcherGateway</code> - <code>flink-runtime/.../dispatcher/DispatcherGateway.java</code> - Dispatcher 的 RPC 接口</li>
+<li><code>ResourceManagerGateway</code> - <code>flink-runtime/.../resourcemanager/ResourceManagerGateway.java</code> - ResourceManager 的 RPC 接口</li>
+</ul>
+<hr>
+<h2 id="3-rpc-系统加载和初始化流程">3. RPC 系统加载和初始化流程</h2>
+<h3 id="31-rpc-系统加载">3.1 RPC 系统加载</h3>
+<p>Flink 使用 Java SPI（ServiceLoader）机制加载 RPC 系统：</p>
+<pre><code>RpcSystem.load(Configuration config)
+       ↓
+ServiceLoader.load(RpcSystemLoader.class)  -- 加载所有 RpcSystemLoader 实现
+       ↓
+按 loadPriority 排序                        -- 优先级排序
+       ↓
+PekkoRpcSystemLoader.loadRpcSystem()       -- 默认 Pekko 加载器
+       ↓
+提取 flink-rpc-akka.jar                    -- 从资源中提取 jar
+       ↓
+创建 SubmoduleClassLoader                  -- 隔离类加载器
+       ↓
+ServiceLoader.load(RpcSystem.class)        -- 加载 PekkoRpcSystem
+       ↓
+返回 CleanupOnCloseRpcSystem               -- 包装清理逻辑
+</code></pre>
+<p><strong>关键源码：</strong></p>
+<pre><code class="language-java">// RpcSystem.java - 加载入口
+static RpcSystem load(Configuration config) {
+    final PriorityQueue&lt;RpcSystemLoader&gt; rpcSystemLoaders =
+            new PriorityQueue&lt;&gt;(Comparator.comparingInt(RpcSystemLoader::getLoadPriority));
+    ServiceLoader.load(RpcSystemLoader.class).forEach(rpcSystemLoaders::add);
+    
+    while (iterator.hasNext()) {
+        return next.loadRpcSystem(config);
+    }
+}
+
+// PekkoRpcSystemLoader.java - Pekko 加载器
+public RpcSystem loadRpcSystem(Configuration config) {
+    // 1. 提取 flink-rpc-akka.jar 到临时目录
+    final InputStream resourceStream = flinkClassLoader.getResourceAsStream(FLINK_RPC_PEKKO_FAT_JAR);
+    IOUtils.copyBytes(resourceStream, Files.newOutputStream(tempFile));
+    
+    // 2. 创建隔离的类加载器
+    final SubmoduleClassLoader submoduleClassLoader =
+            new SubmoduleClassLoader(new URL[] {tempFile.toUri().toURL()}, flinkClassLoader);
+    
+    // 3. 通过 SPI 加载 PekkoRpcSystem
+    return new CleanupOnCloseRpcSystem(
+            ServiceLoader.load(RpcSystem.class, submoduleClassLoader).iterator().next(),
+            submoduleClassLoader,
+            tempFile);
+}
+</code></pre>
+<h3 id="32-rpcservice-创建">3.2 RpcService 创建</h3>
+<pre><code>RpcSystem.remoteServiceBuilder()           -- 创建远程服务构建器
+       ↓
+RpcServiceBuilder.createAndStart()         -- 构建并启动
+       ↓
+PekkoUtils.createActorSystem()             -- 创建 Pekko ActorSystem
+       ↓
+new PekkoRpcService(actorSystem, config)   -- 创建 RpcService
+       ↓
+startSupervisorActor()                     -- 启动监管 Actor
+       ↓
+startDeadLettersActor()                    -- 启动死信处理 Actor
+</code></pre>
+<p><strong>ActorSystem 启动：</strong></p>
+<pre><code class="language-java">// PekkoRpcService 构造函数
+PekkoRpcService(ActorSystem actorSystem, PekkoRpcServiceConfiguration configuration) {
+    this.actorSystem = checkNotNull(actorSystem);
+    this.configuration = checkNotNull(configuration);
+    
+    // 获取地址和端口
+    Address actorSystemAddress = PekkoUtils.getAddress(actorSystem);
+    address = actorSystemAddress.host().isDefined() ? actorSystemAddress.host().get() : &quot;&quot;;
+    port = actorSystemAddress.port().isDefined() ? (Integer) actorSystemAddress.port().get() : -1;
+    
+    // 启动监管 Actor
+    supervisor = startSupervisorActor();
+    
+    // 启动死信处理 Actor
+    startDeadLettersActor();
+}
+</code></pre>
+<h3 id="33-rpcendpoint-启动流程">3.3 RpcEndpoint 启动流程</h3>
+<pre><code>new XxxEndpoint(rpcService, ...)           -- 创建 RpcEndpoint 子类
+       ↓
+RpcEndpoint 构造函数
+       ↓
+rpcService.startServer(this)               -- 注册到 RpcService
+       ↓
+registerRpcActor(rpcEndpoint)              -- 创建并注册 Actor
+       ↓
+SupervisorActor.startRpcActor()            -- 通过监管 Actor 创建
+       ↓
+context.actorOf(Props.create(...))         -- 创建 PekkoRpcActor
+       ↓
+Proxy.newProxyInstance(...)                -- 创建 RpcServer 代理
+       ↓
+返回 RpcServer                              -- 赋值给 rpcServer 字段
+       ↓
+rpcEndpoint.start()                        -- 调用 start() 方法
+       ↓
+rpcServer.start()                          -- 发送 START 消息
+       ↓
+PekkoRpcActor 状态: STOPPED → STARTED      -- Actor 开始处理消息
+       ↓
+internalCallOnStart()                      -- 调用 onStart() 回调
+</code></pre>
+<p><strong>关键源码：</strong></p>
+<pre><code class="language-java">// RpcEndpoint.java - 构造函数
+protected RpcEndpoint(final RpcService rpcService, final String endpointId) {
+    this.rpcService = checkNotNull(rpcService);
+    this.endpointId = checkNotNull(endpointId);
+    
+    // 关键：启动 RPC 服务器，返回代理对象
+    this.rpcServer = rpcService.startServer(this);
+    
+    this.mainThreadExecutor = new MainThreadExecutor(rpcServer, ...);
+}
+
+// PekkoRpcService.java - 启动服务器
+public &lt;C extends RpcEndpoint &amp; RpcGateway&gt; RpcServer startServer(C rpcEndpoint) {
+    // 1. 注册 RPC Actor
+    final SupervisorActor.ActorRegistration actorRegistration = registerRpcActor(rpcEndpoint);
+    final ActorRef actorRef = actorRegistration.getActorRef();
+    
+    // 2. 创建代理处理器
+    final InvocationHandler invocationHandler;
+    if (rpcEndpoint instanceof FencedRpcEndpoint) {
+        invocationHandler = new FencedPekkoInvocationHandler&lt;&gt;(...);
+    } else {
+        invocationHandler = new PekkoInvocationHandler(...);
+    }
+    
+    // 3. 创建 JDK 动态代理
+    RpcServer server = (RpcServer) Proxy.newProxyInstance(
+            classLoader,
+            implementedRpcGateways.toArray(new Class&lt;?&gt;[0]),
+            invocationHandler);
+    
+    return server;
+}
+</code></pre>
+<hr>
+<h2 id="4-rpc-核心类图">4. RPC 核心类图</h2>
+<p><strong>图例说明（UML 标准简写）：</strong></p>
+<ul>
+<li><code>A &lt;|-- B</code> 表示 B 继承 A（B extends A）</li>
+<li><code>A &lt;|.. B</code> 表示 B 实现 A（B implements A）</li>
+<li><code>A o-- B</code> 表示 A 组合 B（A has/contains B）</li>
+</ul>
+<h3 id="41-rpc-核心接口继承关系">4.1 RPC 核心接口继承关系</h3>
+<p><strong>RpcGateway 继承体系：</strong></p>
+<pre><code>RpcGateway &lt;|-- FencedRpcGateway&lt;F&gt;
+                    &lt;|-- JobMasterGateway
+                    &lt;|-- TaskExecutorGateway
+                    &lt;|-- DispatcherGateway
+                    &lt;|-- ResourceManagerGateway
+</code></pre>
+<p><strong>RpcServer 继承体系：</strong></p>
+<pre><code>StartStoppable ────┐
+MainThreadExecutable ─┼─&lt;|-- RpcServer &lt;|.. PekkoInvocationHandler
+RpcGateway ────────┘
+</code></pre>
+<h3 id="42-rpcendpoint-继承关系">4.2 RpcEndpoint 继承关系</h3>
+<pre><code>RpcEndpoint &lt;|-- FencedRpcEndpoint&lt;F&gt;
+                      &lt;|-- JobMaster ..|&gt; JobMasterGateway
+                      &lt;|-- Dispatcher ..|&gt; DispatcherGateway
+                      &lt;|-- ResourceManager ..|&gt; ResourceManagerGateway
+                      &lt;|-- TaskExecutor ..|&gt; TaskExecutorGateway
+</code></pre>
+<h3 id="43-rpcservice-实现关系">4.3 RpcService 实现关系</h3>
+<pre><code>RpcService &lt;|.. PekkoRpcService
+                     |--o ActorSystem
+                     |--o SupervisorActor --o PekkoRpcActor[]
+                     |--o Configuration
+</code></pre>
+<h3 id="44-rpc-消息类继承关系">4.4 RPC 消息类继承关系</h3>
+<pre><code>Message &lt;|-- RpcInvocation &lt;|.. LocalRpcInvocation
+        |                  &lt;|.. RemoteRpcInvocation
+        &lt;|.. RunAsync
+        &lt;|.. CallAsync
+</code></pre>
+<h3 id="45-actor-类继承关系">4.5 Actor 类继承关系</h3>
+<pre><code>AbstractActor &lt;|-- PekkoRpcActor &lt;|-- FencedPekkoRpcActor&lt;F&gt;
+              &lt;|-- SupervisorActor
+</code></pre>
+<hr>
+<h2 id="5-rpc-调用流程详解">5. RPC 调用流程详解</h2>
+<h3 id="51-核心接口职责说明">5.1 核心接口职责说明</h3>
+<ul>
+<li><strong>RpcGateway</strong>：远程调用的&quot;门面接口&quot;，定义可被远程调用的方法签名（类似 REST API 的接口定义）</li>
+<li><strong>RpcEndpoint</strong>：实际处理 RPC 请求的&quot;服务端&quot;，实现具体业务逻辑（类似 Controller/Service 实现类）</li>
+<li><strong>RpcService</strong>：RPC 运行时环境，负责创建、管理 RpcEndpoint（类似 Spring 容器）</li>
+<li><strong>RpcServer</strong>：RpcEndpoint 的代理对象，用于控制生命周期和执行调度（类似本地的 RPC Stub）</li>
+</ul>
+<p><strong>核心交互流程：</strong></p>
+<pre><code>调用方 → RpcGateway(代理) → PekkoInvocationHandler → RpcInvocation → PekkoRpcActor → RpcEndpoint
+                                                                                         ↓
+结果   ←                                                                             业务方法()
+</code></pre>
+<blockquote>
+<p><strong>说明</strong>：调用方获取的 <code>RpcGateway</code> 实际上是一个 JDK 动态代理对象，其 <code>InvocationHandler</code> 就是 <code>PekkoInvocationHandler</code>。
+该代理同时实现了 <code>RpcGateway</code>（定义业务方法）和 <code>RpcServer</code>（提供 start/stop 等生命周期方法）接口。</p>
+</blockquote>
+<p><strong>流程说明：</strong></p>
+<ol>
+<li>调用方通过 RpcGateway 代理发起方法调用（代理背后是 PekkoInvocationHandler）</li>
+<li>PekkoInvocationHandler 将调用封装为 RpcInvocation 消息</li>
+<li>消息发送到 PekkoRpcActor 的消息队列</li>
+<li>Actor 通过反射调用 RpcEndpoint 的业务方法</li>
+<li>结果原路返回给调用方</li>
+</ol>
+<p><strong>各接口交互关系：</strong></p>
+<pre><code>RpcService (RPC 运行时容器)
+│
+├─ 管理的 RpcEndpoint:
+│     JobMaster ↔ PekkoRpcActor
+│     Dispatcher ↔ PekkoRpcActor
+│     TaskExecutor ↔ PekkoRpcActor
+│
+└─ 底层: ActorSystem (Pekko 运行时)
+</code></pre>
+<p><strong>RpcService 职责：</strong></p>
+<ul>
+<li><code>startServer(endpoint)</code> → 创建 Actor + 返回 RpcServer 代理</li>
+<li><code>connect(address, gateway)</code> → 连接远程 RpcEndpoint</li>
+<li><code>stopServer(server)</code> → 停止 RpcEndpoint</li>
+</ul>
+<p><strong>RpcGateway、RpcEndpoint、RpcServer、RpcService 四者关系：</strong></p>
+<pre><code>                    RpcService (容器/工厂)
+                    • startServer(endpoint) → 创建 Actor + 返回代理
+                    • connect(address) → 获取远程 Gateway
+                            │
+         ┌──────────────────┼──────────────────┐
+         │ 创建              │ 管理              │ 创建代理
+         ↓                  ↓                  ↓
+   PekkoRpcActor      RpcEndpoint ───持有──→ RpcServer (JDK 动态代理)
+   (消息处理)         (业务实现)              • 实现 RpcGateway + 生命周期控制
+         │                  │                  │
+         │                  │ implements       │ 实际是
+         │                  ↓                  ↓
+         └────反射调用──→ RpcGateway ←───── 调用方使用
+                        (接口定义)
+</code></pre>
+<p><strong>关系说明：</strong></p>
+<ul>
+<li><strong>RpcService</strong>：容器角色，负责创建 Actor、生成代理、管理连接</li>
+<li><strong>RpcEndpoint</strong>：业务实现，继承它并实现 RpcGateway 接口</li>
+<li><strong>RpcServer</strong>：代理对象，由 RpcService 创建，实现了 RpcGateway 接口</li>
+<li><strong>RpcGateway</strong>：接口定义，调用方通过它发起 RPC 调用</li>
+</ul>
+<p><strong>示例 - JobMaster：</strong></p>
+<pre><code class="language-java">class JobMaster extends RpcEndpoint implements JobMasterGateway {
+    // RpcEndpoint 提供: rpcServer 字段
+    // JobMasterGateway 定义: 可被远程调用的方法
+}
+</code></pre>
+<h3 id="52-本地调用流程">5.2 本地调用流程</h3>
+<p>当调用者和被调用者在同一个 JVM 中时：</p>
+<pre><code>调用方: gateway.someMethod(args)
+       ↓
+PekkoInvocationHandler.invoke()
+       ↓
+判断方法类型
+       ↓
+invokeRpc(method, args)
+       ↓
+createRpcInvocationMessage()              -- 创建 LocalRpcInvocation
+       ↓
+tell(rpcInvocation) 或 ask(rpcInvocation) -- 发送到 Actor
+       ↓
+PekkoRpcActor.handleRpcInvocation()       -- Actor 接收消息
+       ↓
+lookupRpcMethod()                         -- 反射查找方法
+       ↓
+method.invoke(rpcEndpoint, args)          -- 调用 RpcEndpoint 方法
+       ↓
+返回结果或 CompletableFuture
+</code></pre>
+<h3 id="53-远程调用流程">5.3 远程调用流程</h3>
+<p>当调用者和被调用者在不同 JVM 中时：</p>
+<pre><code>调用方: gateway.someMethod(args)
+       ↓
+PekkoInvocationHandler.invoke()
+       ↓
+createRpcInvocationMessage()              -- 创建 RemoteRpcInvocation
+       ↓
+序列化参数                                 -- 参数 → 字节数组
+       ↓
+Patterns.ask(rpcEndpoint, message, timeout)
+       ↓
+[网络传输 - Pekko Remoting]               -- 跨 JVM 传输
+       ↓
+远程 PekkoRpcActor.handleRpcInvocation()  -- 远程 Actor 接收
+       ↓
+反序列化参数                               -- 字节数组 → 参数
+       ↓
+method.invoke(rpcEndpoint, args)          -- 调用目标方法
+       ↓
+序列化结果                                 -- 结果 → 字节数组
+       ↓
+[网络传输返回]
+       ↓
+反序列化结果                               -- 字节数组 → 结果
+       ↓
+返回给调用方
+</code></pre>
+<h3 id="54-消息处理状态机">5.4 消息处理状态机</h3>
+<p>PekkoRpcActor 内部维护一个状态机来管理消息处理：</p>
+<pre><code>STOPPED (初始状态)
+    ↓ ControlMessages.START
+STARTED (运行状态)
+    ↓ ControlMessages.TERMINATE
+TERMINATING (终止中)
+    ↓ Actor 停止
+TERMINATED (已终止)
+</code></pre>
+<p><strong>状态说明：</strong></p>
+<ul>
+<li><strong>STOPPED</strong>: 初始状态，不处理 RPC 消息（会丢弃）</li>
+<li><strong>STARTED</strong>: 运行状态，正常处理 RPC 消息</li>
+<li><strong>TERMINATING</strong>: 终止中，仍处理消息但准备关闭</li>
+<li><strong>TERMINATED</strong>: 已终止</li>
+</ul>
+<hr>
+<h2 id="6-flink-组件通信模式">6. Flink 组件通信模式</h2>
+<h3 id="61-组件通信架构图">6.1 组件通信架构图</h3>
+<pre><code>Client (REST API)
+    ↓ HTTP
+JobManager
+    ├── Dispatcher ←→ JobMaster ←→ ResourceManager
+    ↓ RPC          ↓ RPC         ↓ RPC
+TaskManager(s)
+    └── TaskExecutor
+            └── Task, Task, Task, Task ...
+</code></pre>
+<h3 id="62-各组件-rpc-通信详解">6.2 各组件 RPC 通信详解</h3>
+<h4 id="621-dispatcher作业分发器">6.2.1 Dispatcher（作业分发器）</h4>
+<p><strong>角色</strong>：接收客户端提交的作业，管理多个 JobMaster</p>
+<p><strong>Gateway 继承关系</strong>：</p>
+<pre><code>DispatcherGateway
+    extends FencedRpcGateway&lt;DispatcherId&gt;
+    extends RestfulGateway
+</code></pre>
+<p><strong>主要 RPC 方法</strong>：</p>
+<ul>
+<li><code>submitJob(JobGraph)</code> - 调用方: REST API - 提交作业</li>
+<li><code>listJobs()</code> - 调用方: REST API - 列出所有作业</li>
+<li><code>cancelJob(JobID)</code> - 调用方: REST API - 取消作业</li>
+<li><code>triggerSavepoint(...)</code> - 调用方: REST API - 触发 Savepoint</li>
+<li><code>getBlobServerPort()</code> - 调用方: JobMaster - 获取 BlobServer 端口</li>
+</ul>
+<p><strong>通信模式</strong>：</p>
+<pre><code>Client (REST) ---HTTP---&gt; Dispatcher ---内部调用---&gt; JobMaster
+</code></pre>
+<h4 id="622-jobmaster作业主节点">6.2.2 JobMaster（作业主节点）</h4>
+<p><strong>角色</strong>：管理单个作业的执行，协调 Task 调度</p>
+<p><strong>Gateway 继承关系</strong>：</p>
+<pre><code>JobMasterGateway
+    extends CheckpointCoordinatorGateway
+    extends FencedRpcGateway&lt;JobMasterId&gt;
+    extends KvStateLocationOracle
+    extends BlocklistListener
+</code></pre>
+<p><strong>主要 RPC 方法</strong>：</p>
+<ul>
+<li><code>registerTaskManager(...)</code> - 调用方: TaskExecutor - 注册 TaskManager</li>
+<li><code>offerSlots(...)</code> - 调用方: TaskExecutor - 提供 Slot</li>
+<li><code>updateTaskExecutionState(...)</code> - 调用方: TaskExecutor - 更新任务状态</li>
+<li><code>heartbeatFromTaskManager(...)</code> - 调用方: TaskExecutor - 心跳</li>
+<li><code>requestNextInputSplit(...)</code> - 调用方: Task - 请求输入分片</li>
+<li><code>notifyEndOfData(...)</code> - 调用方: Task - 通知数据结束</li>
+<li><code>triggerSavepoint(...)</code> - 调用方: Dispatcher - 触发 Savepoint</li>
+</ul>
+<p><strong>通信模式</strong>：</p>
+<pre><code>ResourceManager &lt;---RPC---&gt; JobMaster &lt;---RPC---&gt; TaskExecutor
+                                ↓ RPC
+                            Dispatcher
+</code></pre>
+<h4 id="623-resourcemanager资源管理器">6.2.3 ResourceManager（资源管理器）</h4>
+<p><strong>角色</strong>：管理集群资源，分配 Slot 给 JobMaster</p>
+<p><strong>Gateway 继承关系</strong>：</p>
+<pre><code>ResourceManagerGateway
+    extends FencedRpcGateway&lt;ResourceManagerId&gt;
+    extends ClusterPartitionManager
+    extends BlocklistListener
+</code></pre>
+<p><strong>主要 RPC 方法</strong>：</p>
+<ul>
+<li><code>registerJobMaster(...)</code> - 调用方: JobMaster - 注册 JobMaster</li>
+<li><code>registerTaskExecutor(...)</code> - 调用方: TaskExecutor - 注册 TaskExecutor</li>
+<li><code>declareRequiredResources(...)</code> - 调用方: JobMaster - 声明资源需求</li>
+<li><code>sendSlotReport(...)</code> - 调用方: TaskExecutor - 发送 Slot 报告</li>
+<li><code>heartbeatFromTaskManager(...)</code> - 调用方: TaskExecutor - 心跳</li>
+<li><code>heartbeatFromJobManager(...)</code> - 调用方: JobMaster - 心跳</li>
+<li><code>notifySlotAvailable(...)</code> - 调用方: TaskExecutor - 通知 Slot 可用</li>
+</ul>
+<p><strong>通信模式</strong>：</p>
+<pre><code>JobMaster (Scheduler) &lt;---RPC---&gt; ResourceManager (SlotManager) &lt;---RPC---&gt; TaskExecutor (SlotTable)
+       ↓ requestSlots                    ↓ allocateSlot
+</code></pre>
+<h4 id="624-taskexecutor任务执行器">6.2.4 TaskExecutor（任务执行器）</h4>
+<p><strong>角色</strong>：执行具体的 Task，管理本地资源</p>
+<p><strong>Gateway 继承关系</strong>：</p>
+<pre><code>TaskExecutorGateway
+    extends RpcGateway
+    extends TaskExecutorOperatorEventGateway
+    extends TaskExecutorThreadInfoGateway
+</code></pre>
+<p><strong>主要 RPC 方法</strong>：</p>
+<ul>
+<li><code>requestSlot(...)</code> - 调用方: ResourceManager - 请求分配 Slot</li>
+<li><code>submitTask(...)</code> - 调用方: JobMaster - 提交任务</li>
+<li><code>cancelTask(...)</code> - 调用方: JobMaster - 取消任务</li>
+<li><code>triggerCheckpoint(...)</code> - 调用方: JobMaster - 触发 Checkpoint</li>
+<li><code>confirmCheckpoint(...)</code> - 调用方: JobMaster - 确认 Checkpoint</li>
+<li><code>freeSlot(...)</code> - 调用方: JobMaster - 释放 Slot</li>
+<li><code>heartbeatFromJobManager(...)</code> - 调用方: JobMaster - 心跳</li>
+<li><code>heartbeatFromResourceManager(...)</code> - 调用方: ResourceManager - 心跳</li>
+</ul>
+<p><strong>通信模式</strong>：</p>
+<pre><code>ResourceManager ---requestSlot---&gt; TaskExecutor
+JobMaster &lt;---RPC---&gt; TaskExecutor
+    ↓ submitTask           ↓
+Execution            Task.run()
+</code></pre>
+<h3 id="63-典型通信场景">6.3 典型通信场景</h3>
+<h4 id="场景一作业提交流程">场景一：作业提交流程</h4>
+<pre><code>Client
+   │
+   │ 1. POST /jobs (HTTP)
+   ↓
+Dispatcher
+   │
+   │ 2. createJobManagerRunner()
+   ↓
+JobMaster (创建)
+   │
+   │ 3. registerJobMaster() (RPC)
+   ↓
+ResourceManager
+   │
+   │ 4. declareRequiredResources() (RPC)
+   │
+   │ 5. requestSlot() (RPC)
+   ↓
+TaskExecutor
+   │
+   │ 6. offerSlots() (RPC)
+   ↓
+JobMaster
+   │
+   │ 7. submitTask() (RPC)
+   ↓
+TaskExecutor
+   │
+   │ 8. Task.run()
+   ↓
+用户代码执行
+</code></pre>
+<h4 id="场景二心跳机制">场景二：心跳机制</h4>
+<pre><code>心跳发送方向:
+TaskExecutor ---heartbeat---&gt; JobMaster
+TaskExecutor ---heartbeat---&gt; ResourceManager
+JobMaster -----heartbeat---&gt; ResourceManager
+</code></pre>
+<h4 id="场景三checkpoint-流程">场景三：Checkpoint 流程</h4>
+<pre><code>JobMaster (CheckpointCoordinator)
+   │
+   │ 1. triggerCheckpoint() (RPC)
+   ↓
+TaskExecutor (所有 Source Task)
+   │
+   │ 2. Barrier 传播 (数据流)
+   ↓
+下游 Task
+   │
+   │ 3. acknowledgeCheckpoint() (RPC)
+   ↓
+JobMaster
+   │
+   │ 4. 所有 Task 确认后完成 Checkpoint
+</code></pre>
+<h3 id="64-服务发现机制">6.4 服务发现机制</h3>
+<p>Flink RPC 地址不是写死的，而是通过 <strong>服务发现机制</strong> 动态获取。</p>
+<h4 id="核心组件">核心组件</h4>
+<ul>
+<li><strong>HighAvailabilityServices</strong>：服务发现的总入口，提供各组件的 LeaderRetriever</li>
+<li><strong>LeaderRetrievalService</strong>：监听并获取特定组件 Leader 的地址</li>
+<li><strong>LeaderElection</strong>：参与 Leader 选举，当选后发布自己的地址</li>
+<li><strong>LeaderRetrievalListener</strong>：监听 Leader 变化的回调接口</li>
+</ul>
+<h4 id="工作流程">工作流程</h4>
+<pre><code>组件启动流程（以 JobMaster 发现 ResourceManager 为例）:
+
+JobMaster 启动
+    ↓
+haServices.getResourceManagerLeaderRetriever()   // 获取服务发现器
+    ↓
+leaderRetriever.start(listener)                  // 开始监听
+    ↓
+[ZooKeeper/内存] 通知 Leader 地址变化             // 后端存储
+    ↓
+listener.notifyLeaderAddress(address, leaderID)  // 回调通知
+    ↓
+rpcService.connect(address, fencingToken, gateway) // 连接到 Leader
+    ↓
+ResourceManagerGateway                           // 可以进行 RPC 调用
+</code></pre>
+<h4 id="实现方式">实现方式</h4>
+<p>Flink 提供多种 HighAvailabilityServices 实现：</p>
+<ul>
+<li><strong>StandaloneHaServices</strong>：单机模式，地址通过配置指定（非真正的服务发现）</li>
+<li><strong>EmbeddedHaServices</strong>：嵌入式模式（MiniCluster），内存中的服务发现</li>
+<li><strong>ZooKeeperHaServices</strong>：生产 HA 模式，通过 ZooKeeper 实现真正的服务发现</li>
+</ul>
+<pre><code>HighAvailabilityServices 提供的服务发现:
+
+haServices
+    ├── getResourceManagerLeaderRetriever()      → 发现 ResourceManager
+    ├── getDispatcherLeaderRetriever()           → 发现 Dispatcher  
+    ├── getJobManagerLeaderRetriever(jobId)      → 发现特定作业的 JobMaster
+    └── getClusterRestEndpointLeaderRetriever()  → 发现 REST 端点
+</code></pre>
+<h4 id="典型使用示例">典型使用示例</h4>
+<pre><code class="language-java">// JobMaster 中发现 ResourceManager
+public class JobMaster extends FencedRpcEndpoint&lt;JobMasterId&gt; {
+    private final LeaderRetrievalService resourceManagerLeaderRetriever;
+    
+    public JobMaster(HighAvailabilityServices haServices, ...) {
+        // 从 HA 服务获取 ResourceManager 的服务发现器
+        this.resourceManagerLeaderRetriever = 
+            haServices.getResourceManagerLeaderRetriever();
+    }
+    
+    @Override
+    protected void onStart() {
+        // 启动服务发现，监听 ResourceManager Leader 变化
+        resourceManagerLeaderRetriever.start(new ResourceManagerLeaderListener());
+    }
+    
+    // Leader 变化时的回调
+    private class ResourceManagerLeaderListener implements LeaderRetrievalListener {
+        @Override
+        public void notifyLeaderAddress(String leaderAddress, UUID leaderSessionID) {
+            // 连接到新的 ResourceManager Leader
+            rpcService.connect(leaderAddress, 
+                              ResourceManagerId.fromUuid(leaderSessionID), 
+                              ResourceManagerGateway.class);
+        }
+    }
+}
+</code></pre>
+<h4 id="服务发现与-rpc-的关系">服务发现与 RPC 的关系</h4>
+<pre><code>                  HighAvailabilityServices (服务发现中心)
+                              │
+       ┌──────────────────────┼──────────────────────┐
+       ↓                      ↓                      ↓
+LeaderRetriever        LeaderRetriever        LeaderRetriever
+(ResourceManager)      (Dispatcher)           (JobMaster)
+       │                      │                      │
+       │ 监听地址变化          │                      │
+       ↓                      ↓                      ↓
+notifyLeaderAddress    notifyLeaderAddress    notifyLeaderAddress
+       │                      │                      │
+       │ 调用 RpcService.connect()                   │
+       ↓                      ↓                      ↓
+RpcGateway 代理         RpcGateway 代理        RpcGateway 代理
+</code></pre>
+<hr>
+<h3 id="65-fencing-token-机制">6.5 Fencing Token 机制</h3>
+<p><strong>Fencing Token</strong>（隔离令牌）是 Flink 用来解决 <strong>分布式系统脑裂问题（Split-Brain）</strong> 的关键机制。</p>
+<h4 id="641-问题背景">6.4.1 问题背景</h4>
+<p>在分布式高可用（HA）场景下，可能同时存在多个 JobManager 实例：</p>
+<pre><code>场景：网络分区导致的脑裂
+
+时刻 T1: 正常状态
+    JobManager-A (Leader, 活跃)
+    JobManager-B (Standby, 备用)
+
+时刻 T2: 网络分区
+    JobManager-A (以为自己还是 Leader)  ←── 网络分区 ──→  JobManager-B (被选举为新 Leader)
+         ↓                                                    ↓
+    继续发送 RPC 命令                                      开始发送 RPC 命令
+         ↓                                                    ↓
+    TaskExecutor 收到两个&quot;Leader&quot;的命令，怎么办？
+</code></pre>
+<p>如果没有 Fencing Token，TaskExecutor 无法区分哪个 JobMaster 是&quot;合法的 Leader&quot;，可能导致：</p>
+<ul>
+<li>同一个 Task 被启动两次</li>
+<li>Checkpoint 数据混乱</li>
+<li>资源分配冲突</li>
+</ul>
+<h4 id="642-工作原理">6.4.2 工作原理</h4>
+<p><strong>核心思想</strong>：每次 Leader 选举时生成一个 <strong>唯一的令牌（UUID）</strong>，所有 RPC 请求都必须携带这个令牌，接收方验证令牌是否匹配。</p>
+<pre><code>Fencing Token 验证流程:
+
+1. 旧 JobMaster (Token: UUID-A) 发送 RPC
+    ↓
+2. TaskExecutor 收到消息
+    ↓
+3. 新 JobMaster (Token: UUID-B) 已注册到 TaskExecutor
+    ↓
+4. Token 不匹配 (UUID-A ≠ UUID-B)
+    ↓
+5. 拒绝请求，抛出 FencingTokenException
+</code></pre>
+<h4 id="643-实现方式">6.4.3 实现方式</h4>
+<p>Flink 通过以下类实现 Fencing Token 机制：</p>
+<ul>
+<li>
+<p><code>FencedRpcEndpoint&lt;F&gt;</code> - 带令牌的 RPC 端点基类</p>
+<ul>
+<li><code>F</code> 是 Fencing Token 类型（如 <code>JobMasterId</code>、<code>ResourceManagerId</code>）</li>
+<li>存储当前的 Fencing Token</li>
+</ul>
+</li>
+<li>
+<p><code>FencedRpcGateway&lt;F&gt;</code> - 带令牌的 RPC 网关接口</p>
+<ul>
+<li><code>getFencingToken()</code> 方法返回当前令牌</li>
+</ul>
+</li>
+<li>
+<p><code>FencedPekkoRpcActor</code> - 验证令牌的 Actor</p>
+<ul>
+<li>收到消息时检查令牌是否匹配</li>
+<li>不匹配则拒绝处理</li>
+</ul>
+</li>
+<li>
+<p><code>FencedPekkoInvocationHandler</code> - 附加令牌的代理</p>
+<ul>
+<li>发送 RPC 时自动附加当前令牌</li>
+</ul>
+</li>
+</ul>
+<h4 id="644-典型应用">6.4.4 典型应用</h4>
+<pre><code class="language-java">// JobMaster 继承 FencedRpcEndpoint，使用 JobMasterId 作为 Fencing Token
+public class JobMaster extends FencedRpcEndpoint&lt;JobMasterId&gt; implements JobMasterGateway {
+    // JobMasterId 是一个包装了 UUID 的类
+    // 每次 JobMaster 启动时生成新的 UUID
+}
+
+// ResourceManager 同样使用 Fencing Token
+public class ResourceManager extends FencedRpcEndpoint&lt;ResourceManagerId&gt; 
+        implements ResourceManagerGateway {
+    // ...
+}
+</code></pre>
+<h4 id="645-消息验证过程">6.4.5 消息验证过程</h4>
+<pre><code>FencedPekkoRpcActor 中的验证逻辑:
+
+收到 FencedMessage&lt;F&gt;
+    ↓
+获取消息中的 Token
+    ↓
+与本地存储的 Token 比较
+    ↓
+匹配? ──否──→ 丢弃消息或返回 FencingTokenException
+    ↓ 是
+正常处理 RPC 调用
+</code></pre>
+<h4 id="646-为什么同进程组件也需要心跳">6.4.6 为什么同进程组件也需要心跳？</h4>
+<p>虽然 ResourceManager 和 JobMaster 在同一个 JVM 进程中，但它们之间仍然需要心跳机制：</p>
+<pre><code>JobManager 进程内部:
+    │
+    ├── ResourceManager (独立的 RpcEndpoint/Actor)
+    │       ↑
+    │       │ RPC 心跳消息 (仍然走 Actor 消息机制)
+    │       ↓
+    ├── JobMaster (独立的 RpcEndpoint/Actor)
+    │
+    └── Dispatcher
+</code></pre>
+<p><strong>心跳的真正目的</strong>不仅仅是检测网络连通性，更重要的是：</p>
+<ul>
+<li>
+<p><strong>活性检测（Liveness Check）</strong>：检测组件是否正常响应，即使在同一进程，Actor 也可能因为死锁、长时间阻塞、消息队列积压等原因无法响应</p>
+</li>
+<li>
+<p><strong>Leader 变更感知</strong>：Flink 支持高可用（HA），可能存在多个 JobManager 进程，当 Leader 切换时，心跳超时可以帮助快速感知并进行故障转移</p>
+</li>
+<li>
+<p><strong>Fencing Token 验证</strong>：每次心跳都会验证 Fencing Token，确保通信的是合法的 Leader</p>
+</li>
+<li>
+<p><strong>设计一致性</strong>：统一的通信模式，不管是同进程还是跨进程，都使用相同的心跳机制和 RPC 接口</p>
+</li>
+</ul>
+<h4 id="647-总结">6.4.7 总结</h4>
+<ul>
+<li><strong>目的</strong>：防止脑裂，确保只有合法 Leader 的命令被执行</li>
+<li><strong>实现</strong>：基于 UUID 的唯一令牌，每次 Leader 选举更新</li>
+<li><strong>验证方</strong>：FencedPekkoRpcActor 在接收消息时验证</li>
+<li><strong>发送方</strong>：FencedPekkoInvocationHandler 自动附加令牌</li>
+<li><strong>适用组件</strong>：JobMaster、ResourceManager、Dispatcher 等所有需要 HA 的组件</li>
+</ul>
+<hr>
+<h2 id="7-关键设计模式">7. 关键设计模式</h2>
+<h3 id="71-actor-模型">7.1 Actor 模型</h3>
+<p>Flink RPC 基于 Actor 模型，每个 RpcEndpoint 对应一个 Actor：</p>
+<pre><code>Actor 模型:
+Actor A (Mailbox) ----消息----&gt; Actor B (Mailbox)
+     ↓ 单线程处理                    ↓ 单线程处理
+   处理消息                        处理消息
+   更新状态                        更新状态
+
+优点：无锁并发、消息驱动、故障隔离
+</code></pre>
+<h3 id="72-动态代理模式">7.2 动态代理模式</h3>
+<p>RPC 调用通过 JDK 动态代理实现：</p>
+<pre><code>动态代理模式:
+调用方
+    ↓ gateway.someMethod(args)
+JDK Proxy (RpcGateway 接口)
+    ↓ 委托
+PekkoInvocationHandler
+    - 创建 RpcInvocation
+    - 发送到 Actor
+    - 处理返回值
+</code></pre>
+<h3 id="73-监管策略">7.3 监管策略</h3>
+<p>SupervisorActor 监管所有 RpcActor 的生命周期：</p>
+<pre><code>监管策略:
+SupervisorActor
+    ├── RpcActor
+    ├── RpcActor
+    └── RpcActor
+            ↓ 异常
+        SupervisorActorSupervisorStrategy
+            ↓ 决策: Stop (不重启)
+        rpcActorFailed() → 终止整个 ActorSystem
+</code></pre>
+<hr>
+<h2 id="8-调试指南">8. 调试指南</h2>
+<h3 id="81-关键断点位置">8.1 关键断点位置</h3>
+<ul>
+<li><code>PekkoRpcService.startServer()</code> - RPC 服务器启动</li>
+<li><code>PekkoInvocationHandler.invoke()</code> - RPC 调用入口</li>
+<li><code>PekkoRpcActor.handleRpcInvocation()</code> - RPC 消息处理</li>
+<li><code>PekkoRpcActor.handleControlMessage()</code> - 控制消息处理</li>
+<li><code>SupervisorActor.createStartRpcActorMessage()</code> - Actor 创建</li>
+</ul>
+<h3 id="82-关键日志">8.2 关键日志</h3>
+<pre><code># RPC 服务启动
+&quot;Starting RPC endpoint for {} at {}.&quot;
+
+# RPC 连接
+&quot;Try to connect to remote RPC endpoint with address {}.&quot;
+
+# Actor 终止
+&quot;RpcActor {} has terminated.&quot;
+
+# 状态转换
+&quot;Starting {} with name {}.&quot;
+</code></pre>
+<h3 id="83-常见问题排查">8.3 常见问题排查</h3>
+<p><strong>问题1：RPC 调用超时</strong></p>
+<ul>
+<li>检查网络连接</li>
+<li>检查目标 RpcEndpoint 是否启动</li>
+<li>检查 Fencing Token 是否匹配</li>
+<li>增加 <code>pekko.ask.timeout</code> 配置</li>
+</ul>
+<p><strong>问题2：序列化错误</strong></p>
+<ul>
+<li>确保参数类实现 Serializable</li>
+<li>检查类加载器是否正确</li>
+<li>查看是否使用了不可序列化的 Lambda</li>
+</ul>
+<p><strong>问题3：Actor 异常终止</strong></p>
+<ul>
+<li>查看 SupervisorActor 日志</li>
+<li>检查 onStart/onStop 回调是否抛出异常</li>
+<li>确认资源是否正确释放</li>
+</ul>
+<hr>
+<h2 id="9-配置参数">9. 配置参数</h2>
+<h3 id="91-rpc-相关配置">9.1 RPC 相关配置</h3>
+<ul>
+<li><code>pekko.ask.timeout</code> - 默认值: 10s - RPC 调用超时时间</li>
+<li><code>pekko.framesize</code> - 默认值: 10485760b - 最大消息帧大小</li>
+<li><code>pekko.tcp.timeout</code> - 默认值: 20s - TCP 连接超时</li>
+<li><code>pekko.throughput</code> - 默认值: 15 - Actor 每次处理的消息数</li>
+<li><code>pekko.fork-join-executor.parallelism-factor</code> - 默认值: 2.0 - 并行度因子</li>
+</ul>
+<hr>
+<h2 id="10-总结">10. 总结</h2>
+<p>Flink RPC 体系的核心特点：</p>
+<ol>
+<li><strong>基于 Actor 模型</strong>：利用 Pekko Actor 实现消息驱动的异步通信</li>
+<li><strong>动态代理透明化</strong>：通过 JDK 动态代理使远程调用像本地调用一样简单</li>
+<li><strong>单线程保证</strong>：每个 RpcEndpoint 的方法都在其主线程中执行，避免并发问题</li>
+<li><strong>Fencing Token 防脑裂</strong>：通过令牌机制确保只有合法的 Leader 能够执行操作</li>
+<li><strong>监管策略</strong>：SupervisorActor 统一管理所有 RpcActor 的生命周期</li>
+<li><strong>本地/远程统一</strong>：同一套接口既支持本地调用也支持远程调用</li>
+</ol>
+<hr>
+<p><em>本文档基于 Flink 1.19 源码分析编写</em></p>
+
+</main>
+
+  <footer>
+  
+<script src="https://utteranc.es/client.js"
+        repo="qiref/qiref.github.io"
+        issue-term="pathname"
+        label="Comment"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script>
+
+
+<script>
+(function() {
+  const searchInput = document.getElementById('search-input');
+  const searchResults = document.getElementById('search-results');
+  if (!searchInput || !searchResults) return;
+  
+  let searchIndex = null;
+  let activeIndex = -1;
+  let isResultsVisible = false;
+
+  
+  async function loadSearchIndex() {
+    if (searchIndex) return searchIndex;
+    try {
+      const response = await fetch('/index.json');
+      const data = await response.json();
+      searchIndex = data.pages || [];
+      return searchIndex;
+    } catch (e) {
+      console.error('Failed to load search index:', e);
+      return [];
+    }
+  }
+
+  
+  function search(query) {
+    if (!searchIndex || !query.trim()) return [];
+    const q = query.toLowerCase();
+    return searchIndex.filter(page => {
+      const title = (page.title || '').toLowerCase();
+      const content = (page.content || '').toLowerCase();
+      return title.includes(q) || content.includes(q);
+    }).slice(0, 5);
+  }
+
+  
+  function highlight(text, query) {
+    if (!query) return text;
+    const regex = new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+    return text.replace(regex, '<mark>$1</mark>');
+  }
+
+  
+  function showResults() {
+    searchResults.style.display = 'block';
+    isResultsVisible = true;
+  }
+
+  
+  function hideResults() {
+    searchResults.style.display = 'none';
+    isResultsVisible = false;
+    activeIndex = -1;
+  }
+
+  
+  function updateActiveItem() {
+    const items = searchResults.querySelectorAll('.search-result-item');
+    items.forEach((item, index) => {
+      if (index === activeIndex) {
+        item.classList.add('active');
+      } else {
+        item.classList.remove('active');
+      }
+    });
+  }
+
+  
+  function renderResults(results, query) {
+    activeIndex = -1;
+    if (!results.length) {
+      hideResults();
+      return;
+    }
+    const html = results.map(page => {
+      const title = highlight(page.title || 'Untitled', query);
+      let summary = page.summary || page.content || '';
+      summary = summary.substring(0, 100) + (summary.length > 100 ? '...' : '');
+      return `<a class="search-result-item" href="${page.url}">
+        <div class="search-result-title">${title}</div>
+        <div class="search-result-summary">${summary}</div>
+      </a>`;
+    }).join('');
+    searchResults.innerHTML = html;
+    showResults();
+  }
+
+  
+  let debounceTimer;
+  function debounce(fn, delay) {
+    return function(...args) {
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => fn.apply(this, args), delay);
+    };
+  }
+
+  
+  searchInput.addEventListener('input', debounce(async function() {
+    const query = this.value.trim();
+    if (!query) {
+      hideResults();
+      return;
+    }
+    await loadSearchIndex();
+    const results = search(query);
+    renderResults(results, query);
+  }, 200));
+
+  
+  searchInput.addEventListener('keydown', function(e) {
+    if (!isResultsVisible) return;
+    
+    const items = searchResults.querySelectorAll('.search-result-item');
+    const itemCount = items.length;
+    if (itemCount === 0) return;
+
+    switch (e.key) {
+      case 'ArrowDown':
+        e.preventDefault();
+        e.stopPropagation();
+        activeIndex = (activeIndex + 1) % itemCount;
+        updateActiveItem();
+        break;
+      case 'ArrowUp':
+        e.preventDefault();
+        e.stopPropagation();
+        activeIndex = activeIndex <= 0 ? itemCount - 1 : activeIndex - 1;
+        updateActiveItem();
+        break;
+      case 'Enter':
+        if (activeIndex >= 0 && items[activeIndex]) {
+          e.preventDefault();
+          window.location.href = items[activeIndex].href;
+        }
+        break;
+      case 'Escape':
+        e.preventDefault();
+        hideResults();
+        break;
+    }
+  });
+
+  
+  searchInput.addEventListener('focus', async function() {
+    const query = this.value.trim();
+    if (query) {
+      await loadSearchIndex();
+      const results = search(query);
+      renderResults(results, query);
+    }
+  });
+
+  
+  document.addEventListener('click', function(e) {
+    if (!searchInput.contains(e.target) && !searchResults.contains(e.target)) {
+      hideResults();
+    }
+  });
+
+  
+  document.addEventListener('keydown', function(e) {
+    if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+      e.preventDefault();
+      searchInput.focus();
+      searchInput.select();
+    }
+  });
+})();
+</script>
+  
+  <hr/>
+  © powered by <a href="https://gohugo.io/">Hugo</a> &amp; <a href="https://github.com/yihui/hugo-xmin">Xmin</a>  2017 &ndash; 2026 | <a href="https://github.com/qiref">Github</a>
+  
+  </footer>
+  </body>
+</html>
+
