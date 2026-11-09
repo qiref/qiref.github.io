@@ -51,6 +51,10 @@ params:
   footer: "&copy; powered by [Hugo](https://gohugo.io/) & [Xmin](https://github.com/yihui/hugo-xmin)  2017 -- {Year} | [Github](https://github.com/qiref) "
 
 markup:
+  tableOfContents:
+    startLevel: 2
+    endLevel: 4
+    ordered: false
   highlight:
     codeFences: false
   goldmark:

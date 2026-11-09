@@ -1,0 +1,30 @@
+{{ partial "header.html" . }}
+
+{{ $pages := .Pages }}
+{{ if .IsHome }}
+  {{ $pages = where site.RegularPages "Type" "==" "post" }}
+{{ else if eq .Section "note" }}
+  {{ $pages = where .Pages "Type" "==" "note" }}
+{{ else }}
+  {{ $pages = where .Pages "Section" "!=" "" }}
+{{ end }}
+
+{{ if not .IsHome }}
+<div class="page-header">
+  <h1 class="page-title">{{ .Title | markdownify }}</h1>
+  <span class="page-count">{{ len $pages }} 篇</span>
+</div>
+{{ end }}
+
+{{ .Content }}
+
+<ul class="post-list">
+  {{ range $pages.ByDate.Reverse }}
+  <li class="post-item">
+    <span class="date">{{ .Date.Format "2006/01/02" }}</span>
+    <a href="{{ .RelPermalink }}">{{ .Title | markdownify }}</a>
+  </li>
+  {{ end }}
+</ul>
+
+{{ partial "footer.html" . }}

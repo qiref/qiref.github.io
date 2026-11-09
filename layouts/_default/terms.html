@@ -1,0 +1,17 @@
+{{ partial "header.html" . }}
+
+<div class="page-header">
+  <h1 class="page-title">{{ .Title }}</h1>
+  <span class="page-count">{{ len .Data.Terms }} 个标签</span>
+</div>
+
+<div class="tags-cloud">
+  {{ range .Data.Terms.ByCount }}
+  <a class="tag-pill" href="{{ .Page.RelPermalink }}">
+    <span class="tag-pill-name">{{ .Page.Title }}</span>
+    <span class="tag-pill-count">{{ .Count }}</span>
+  </a>
+  {{ end }}
+</div>
+
+{{ partial "footer.html" . }}

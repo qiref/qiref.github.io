@@ -1,0 +1,46 @@
+{{ partial "header.html" . }}
+<div class="article-meta">
+  <h1 class="article-title">{{ .Title | markdownify }}</h1>
+  {{- $hasAuthor := .Params.author -}}
+  {{- $hasDate := gt .Params.date 0 -}}
+  {{- $categories := $.Param "categories" -}}
+  {{- $tags := $.Param "tags" -}}
+  {{- if or $hasAuthor $hasDate $categories $tags }}
+  <div class="article-info">
+    {{- if $hasDate }}
+    <time class="article-date" datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "2006/01/02" }}</time>
+    {{- end }}
+    {{- with $hasAuthor }}
+    {{- if $hasDate }}<span class="meta-sep">·</span>{{ end }}
+    <span class="article-author">{{ . }}</span>
+    {{- end }}
+    {{- if or $categories $tags }}
+    {{- if or $hasDate $hasAuthor }}<span class="meta-sep">·</span>{{ end }}
+    <div class="article-tags">
+      {{- range $i := (slice "categories" "tags") }}
+      {{- with ($.Param $i) }}
+      {{- range $k := . }}
+      <a class="article-tag" href="{{ relURL (print "/" $i "/" $k | urlize) }}">{{ $k }}</a>
+      {{- end }}
+      {{- end }}
+      {{- end }}
+    </div>
+    {{- end }}
+  </div>
+  {{- end }}
+</div>
+
+{{ if and (ne .Params.toc false) (in .TableOfContents "<li>") }}
+<aside class="toc-sidebar" id="toc-sidebar" aria-label="文章目录">
+  <div class="toc-lines" id="toc-lines" aria-hidden="true"></div>
+  <div class="toc-card" id="toc-card">
+    {{ .TableOfContents }}
+  </div>
+</aside>
+{{ end }}
+
+<main>
+{{ .Content }}
+</main>
+
+{{ partial "footer.html" . }}
