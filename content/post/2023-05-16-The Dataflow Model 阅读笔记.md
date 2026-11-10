@@ -31,7 +31,7 @@ ParDo 操作因为是对每个输入的元素进行处理，因此很自然地�
 
 ### 时间语义
 
-窗口通常基于时间，时间对于窗口来说是必不可少的，在流式计算中，有 processing-time 和 event-time 两种时间语义，具体参考： [时间语义](https://archieyao.github.io/posts/2022-02-25-flink-%E6%97%B6%E9%97%B4%E8%AF%AD%E4%B9%89/)
+窗口通常基于时间，时间对于窗口来说是必不可少的，在流式计算中，有 processing-time 和 event-time 两种时间语义，具体参考： [时间语义](/post/2022/02/25/flink时间语义/)
 
 ### 窗口分类
 

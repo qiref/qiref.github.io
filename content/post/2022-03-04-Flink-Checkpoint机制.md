@@ -23,7 +23,7 @@ title: Flink Checkpoint机制
 ## 理论基础
 
 ### asynchronous barrier snapshotting
-Flink Checkpoint 机制是异步屏障快照（asynchronous barrier snapshotting, ABS）算法的一种实现，而 ABS 算法基于 [Chandy-Lamport](https://archieyao.github.io/posts/2023-05-08-chandy-lamport%E7%AE%97%E6%B3%95/) 的变种，但数据模型是还是基于  Chandy-Lamport；
+Flink Checkpoint 机制是异步屏障快照（asynchronous barrier snapshotting, ABS）算法的一种实现，而 ABS 算法基于 [Chandy-Lamport](/post/2023/05/08/chandy-lamport-算法笔记/) 的变种，但数据模型是还是基于  Chandy-Lamport；
 
 在 flink 中，作业算子被抽象为 DAG，节点为 operator，边是每一个 operator 的 stream（channel），与 Chandy-Lamport 的数据模型正好吻合；
 

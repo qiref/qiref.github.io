@@ -148,7 +148,7 @@ hljs.highlightAll();
 </ul>
 <h2 id="理论基础">理论基础</h2>
 <h3 id="asynchronous-barrier-snapshotting">asynchronous barrier snapshotting</h3>
-<p>Flink Checkpoint 机制是异步屏障快照（asynchronous barrier snapshotting, ABS）算法的一种实现，而 ABS 算法基于 <a href="https://archieyao.github.io/posts/2023-05-08-chandy-lamport%E7%AE%97%E6%B3%95/">Chandy-Lamport</a> 的变种，但数据模型是还是基于  Chandy-Lamport；</p>
+<p>Flink Checkpoint 机制是异步屏障快照（asynchronous barrier snapshotting, ABS）算法的一种实现，而 ABS 算法基于 <a href="/post/2023/05/08/chandy-lamport-%E7%AE%97%E6%B3%95%E7%AC%94%E8%AE%B0/">Chandy-Lamport</a> 的变种，但数据模型是还是基于  Chandy-Lamport；</p>
 <p>在 flink 中，作业算子被抽象为 DAG，节点为 operator，边是每一个 operator 的 stream（channel），与 Chandy-Lamport 的数据模型正好吻合；</p>
 <p>ABS 算法把 Chandy-Lamport 中的 marker 消息换成了 barrier，作用是一致的，都是切分 snapshot；</p>
 <p>ABS 算法 中 asynchronous 是异步的意思，当算子收齐 barrier 并触发快照之后，不会等待快照数据全部写入状态后端，而是一边后台写入，一边立刻继续处理数据流，并将 barrier 发送到下游，实现了最小化延迟。当然，引入异步性之后，所有有状态的算子都需要上报 ack，否则 JobManager 就无法确认一次 snapshot 是否完成。</p>
