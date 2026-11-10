@@ -3,7 +3,7 @@ languageCode: "cn-zh"
 # defaultContentLanguage: "en"
 defaultContentLanguage: "zh"
 title: "大道至简"
-theme: "hugo-xmin"
+theme: "hugo-zen"
 googleAnalytics: "G-PGMJFXZJRT"
 disqusShortname: ""
 ignoreFiles: ["\\.Rmd$", "\\.Rmarkdown$", "_cache$"]
@@ -12,7 +12,6 @@ footnotereturnlinkcontents: "↩"
 #paginate: 10
 #pagination.pagerSize: 10
 enableEmoji: true
-footnotereturnlinkcontents: "↩"
 
 permalinks:
   note: "/note/:year/:month/:day/:slug/"
@@ -47,8 +46,16 @@ menu:
       url: "index.xml"
 
 params:
-  description: "A website built through Hugo and blogdown."
-  footer: "&copy; powered by [Hugo](https://gohugo.io/) & [Xmin](https://github.com/yihui/hugo-xmin)  2017 -- {Year} | [Github](https://github.com/qiref) "
+  description: "A website built through Hugo and hugo-zen."
+  footer: "&copy; powered by [Hugo](https://gohugo.io/) & [Hugo Zen](https://github.com/qiref/hugo-zen)  2017 -- {Year} | [Github](https://github.com/qiref) "
+  homePostLimit: 25
+  enableHeatmap: true
+  enableSearch: true
+  utterances:
+    repo: "qiref/qiref.github.io"
+    issueTerm: "pathname"
+    label: "Comment"
+    theme: "github-light"
 
 markup:
   tableOfContents:

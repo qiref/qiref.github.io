@@ -576,11 +576,11 @@
       <description>摘要：Spring中如何使用注解实现面向切面编程，以及如何使用自定义注解。&#xA;场景 比如用户登录，每个请求发起之前都会判断用户是否登录，如果每个请求都去判断一次，那就重复地做了很多事情，只要是有重复的地方，就有优化的空间。现在就把重复的地方抽取出来，暂且称之为 &amp;quot; 拦截器 &amp;ldquo;，然后每次请求之前就先经过&amp;rdquo; 拦截器 &amp;ldquo;，这个编程的思想就可以称之为面向切面编程。AOP(Aspect Oriented Program)&#xA;最典型的应用就是事务管理和权限验证，还有日志统计，下文中的案例就是接口执行时间的统计。&#xA;spring中使用AOP（基于注解） 不得不说注解是个很巧妙的设计，使用很少量的信息描述数据，这类数据称之为元数据，描述数据的数据。关于注解的理解，这里有个传送门：http://www.importnew.com/10294.html&#xA;下面的案例是在springBoot中进行的，直观地感受一下如何使用注解完成AOP。&#xA;@Service public class UserService { public void getUser() { //To do something System.out.println(&amp;#34;getUser() has been called&amp;#34;); try { Thread.sleep(1000); } catch (InterruptedException e) { e.printStackTrace(); } } } 切面是这样定义的：&#xA;@Component @Aspect public class LoggerAspect { /** * getUser()执行之前执行 */ @Before(&amp;#34;execution(* com.springboot.demo.service.UserService.getUser(..))&amp;#34;) public void callBefore() { System.out.println(&amp;#34;before call method&amp;#34;); System.out.println(&amp;#34;begin........................&amp;#34;); } /** * getUser()执行之后执行 */ @After(&amp;#34;execution(* com.springboot.demo.service.UserService.getUser(..))&amp;#34;) public void callAfter() { System.</description>
     </item>
     <item>
-      <title>About Hugo XMin</title>
+      <title>About Hugo Zen</title>
       <link>https://qiref.github.io/about/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       <guid>https://qiref.github.io/about/</guid>
-      <description>XMin is the first Hugo theme I have designed. The original reason that I wrote it was I needed a minimal example of Hugo themes when I was writing the blogdown book. Basically I wanted a simple theme that supports a navigation menu, a home page, other single pages, lists of pages, blog posts, categories, tags, and RSS. That is all. Nothing fancy. In terms of CSS and JavaScript, I really want to keep them minimal.</description>
+      <description>Hugo Zen is a fast, clean, and minimalist Hugo theme designed for technical blogs, architecture essays, and personal notes. Inspired by hugo-xmin and GitHub Primer Light, it delivers modern reading ergonomics—instant ⌘K search, a floating scroll-spy table of contents, a 5-year post contribution heatmap, and zero-JS compile-time syntax highlighting—without heavy frontend frameworks.&#xA;✨ Features Minimalist Typography &amp;amp; Reading Layout: Focused single-column layout (max-width: 800px) with GitHub Primer-inspired typography, clean tables, and subtle dividers.</description>
     </item>
   </channel>
 </rss>

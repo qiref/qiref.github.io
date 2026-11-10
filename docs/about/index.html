@@ -3,22 +3,21 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>About Hugo XMin | 大道至简</title>
+    <title>About Hugo Zen | 大道至简</title>
     <link rel="stylesheet" href="/css/style.css" />
     <link rel="stylesheet" href="/css/fonts.css" />
+    <link rel="stylesheet" href="/css/custom.css" />
+    <link rel="stylesheet" href="/css/hugo-zen.css" />
+    <link rel="stylesheet" href="/css/heatmap.css" />
     
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-PGMJFXZJRT"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-PGMJFXZJRT');
-</script>
-
-<link rel="stylesheet" href="/css/custom.css">
-<link rel="stylesheet" href="/css/heatmap.css">
-
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-PGMJFXZJRT"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-PGMJFXZJRT');
+    </script>
+    
   </head>
 
   <body>
@@ -37,6 +36,7 @@
       
       <li><a href="/index.xml">Subscribe</a></li>
       
+      
       <li class="search-container">
         <button type="button" id="search-trigger" class="search-trigger" aria-label="搜索文章 (⌘K)" title="搜索 (⌘K)">
           <svg class="search-trigger-icon" viewBox="0 0 16 16" width="13" height="13" aria-hidden="true">
@@ -45,11 +45,13 @@
           <span class="search-trigger-kbd">⌘K</span>
         </button>
       </li>
+      
     </ul>
     <hr/>
     </nav>
 
-    <div id="search-modal" class="search-modal" aria-hidden="true">
+    
+    <div id="search-modal" class="search-modal" aria-hidden="true" data-search-index="/index.json">
       <div class="search-backdrop" id="search-backdrop"></div>
       <div class="search-dialog" role="dialog" aria-modal="true" aria-label="站内搜索">
         <div class="search-header">
@@ -71,12 +73,10 @@
         </div>
       </div>
     </div>
+    
 
 <div class="article-meta">
-  <h1 class="article-title">About Hugo XMin</h1>
-  <div class="article-info">
-    <span class="article-author">Yihui Xie</span>
-  </div>
+  <h1 class="article-title">About Hugo Zen</h1>
 </div>
 
 
@@ -85,9 +85,18 @@
   <div class="toc-card" id="toc-card">
     <nav id="TableOfContents">
   <ul>
-    <li><a href="#hugoyaml-the-config-file"><code>hugo.yaml</code> (the config file)</a></li>
-    <li><a href="#custom-layouts">Custom layouts</a></li>
-    <li><a href="#other-features">Other features</a></li>
+    <li><a href="#-features">✨ Features</a></li>
+    <li><a href="#-installation">🚀 Installation</a>
+      <ul>
+        <li><a href="#option-1-git-submodule-recommended">Option 1: Git Submodule (Recommended)</a></li>
+        <li><a href="#option-2-clone-directly">Option 2: Clone Directly</a></li>
+        <li><a href="#running-the-built-in-demo-examplesite">Running the Built-in Demo (<code>exampleSite</code>)</a></li>
+      </ul>
+    </li>
+    <li><a href="#-configuration">⚙️ Configuration</a></li>
+    <li><a href="#-front-matter-parameters">📝 Front Matter Parameters</a></li>
+    <li><a href="#-customization-hooks">🔌 Customization Hooks</a></li>
+    <li><a href="#-license--credits">📄 License &amp; Credits</a></li>
   </ul>
 </nav>
   </div>
@@ -95,481 +104,198 @@
 
 
 <main>
-<p><strong>XMin</strong> is the first Hugo theme I have designed. The original reason that I wrote it was I needed a minimal example of Hugo themes when I was writing the  <a href="https://github.com/rstudio/blogdown"><strong>blogdown</strong></a> book. Basically I wanted a simple theme that supports a navigation menu, a home page, other single pages, lists of pages, blog posts, categories, tags, and RSS. That is all. Nothing fancy. In terms of CSS and JavaScript, I really want to keep them minimal. In fact, this theme does not contain any JavaScript code at all, although on this example website I did introduce some JavaScript code (still relatively simple anyway). The theme does not contain any images, either, and is pretty much a plain-text theme.</p>
-<p>The theme name &ldquo;XMin&rdquo; can be interpreted as &ldquo;<strong>X</strong>ie&rsquo;s <strong>Min</strong>imal theme&rdquo; (Xie is my last name) or &ldquo;e<strong>X</strong>tremely <strong>Min</strong>imal theme&rdquo;.</p>
-<h2 id="hugoyaml-the-config-file"><code>hugo.yaml</code> (the config file)</h2>
-<p>For this example site, I defined permalinks for two sections, <code>post</code> and <code>note</code>, so that the links to pages under these directories will contain the date info, e.g., <code>https://xmin.yihui.org/post/2016/02/14/a-plain-markdown-post/</code>. This is optional, and it is up to your personal taste of URLs.</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nt">permalinks</span><span class="p">:</span><span class="w">
+<p><a href="https://github.com/qiref/hugo-zen/blob/master/LICENSE.md"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License: MIT"></a>
+<a href="https://gohugo.io"><img src="https://img.shields.io/badge/Hugo-%E2%89%A50.100.0-ff4088.svg" alt="Hugo"></a></p>
+<p><strong>Hugo Zen</strong> is a fast, clean, and minimalist Hugo theme designed for technical blogs, architecture essays, and personal notes. Inspired by <a href="https://github.com/yihui/hugo-xmin">hugo-xmin</a> and GitHub Primer Light, it delivers modern reading ergonomics—instant <code>⌘K</code> search, a floating scroll-spy table of contents, a 5-year post contribution heatmap, and zero-JS compile-time syntax highlighting—without heavy frontend frameworks.</p>
+<hr>
+<h2 id="-features">✨ Features</h2>
+<ul>
+<li><strong>Minimalist Typography &amp; Reading Layout</strong>: Focused single-column layout (<code>max-width: 800px</code>) with GitHub Primer-inspired typography, clean tables, and subtle dividers.</li>
+<li><strong>Instant <code>⌘K</code> / <code>/</code> Full-Text Search</strong>: Built-in client-side search modal with glassmorphism backdrop, keyword highlighting, snippet extraction, and full keyboard navigation (<code>↑</code> <code>↓</code> <code>↵</code> <code>ESC</code>).</li>
+<li><strong>Floating Minimal TOC Sidebar</strong>: Unobtrusive line-indicator on the right margin that expands into a frosted-glass Table of Contents card on hover, complete with active heading scroll-spy and smooth scrolling.</li>
+<li><strong>5-Year Contribution Heatmap</strong>: GitHub-style post activity heatmap automatically rendered on the homepage.</li>
+<li><strong>Tag Cloud Pill Matrix</strong>: Clean taxonomy pill badges with post counts.</li>
+<li><strong>Atom One Light Syntax Highlighting</strong>: Zero-JS, compile-time syntax highlighting powered by Hugo&rsquo;s native Chroma lexer.</li>
+<li><strong>Dual Content Sections (<code>post</code> &amp; <code>note</code>)</strong>: Separate long-form technical articles (<code>post</code>) from lightweight daily notes (<code>note</code>).</li>
+<li><strong>Zero Hardcoding &amp; Extensible</strong>: Native configuration for Google Analytics (<code>gtag.js</code>), Utterances comments, MathJax/KaTeX passthrough, and custom head/footer partial hooks.</li>
+</ul>
+<hr>
+<h2 id="-installation">🚀 Installation</h2>
+<h3 id="option-1-git-submodule-recommended">Option 1: Git Submodule (Recommended)</h3>
+<p>From the root of your Hugo site:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">git submodule add https://github.com/qiref/hugo-zen.git themes/hugo-zen
+</span></span></code></pre></div><p>Then set <code>theme: &quot;hugo-zen&quot;</code> in your <code>config.yaml</code> (or <code>hugo.yaml</code>).</p>
+<p>To update the theme later:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">git submodule update --remote --merge themes/hugo-zen
+</span></span></code></pre></div><h3 id="option-2-clone-directly">Option 2: Clone Directly</h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">git clone https://github.com/qiref/hugo-zen.git themes/hugo-zen
+</span></span></code></pre></div><h3 id="running-the-built-in-demo-examplesite">Running the Built-in Demo (<code>exampleSite</code>)</h3>
+<p>You can preview the theme immediately using the bundled <code>exampleSite</code>:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">git clone https://github.com/qiref/hugo-zen.git
+</span></span><span class="line"><span class="cl"><span class="nb">cd</span> hugo-zen
+</span></span><span class="line"><span class="cl">hugo server -s exampleSite --themesDir ../..
+</span></span></code></pre></div><hr>
+<h2 id="-configuration">⚙️ Configuration</h2>
+<p>Below is a complete <code>config.yaml</code> reference:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nt">baseurl</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;https://example.com/&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">languageCode</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;en-us&#34;</span><span class="w"> </span><span class="c"># or &#34;cn-zh&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">defaultContentLanguage</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;zh&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;My Blog&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">theme</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;hugo-zen&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c"># Optional: Google Analytics 4 Measurement ID</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">googleAnalytics</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">enableEmoji</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">footnotereturnlinkcontents</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;↩&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">permalinks</span><span class="p">:</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">note</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;/note/:year/:month/:day/:slug/&#34;</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">post</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;/post/:year/:month/:day/:slug/&#34;</span><span class="w">
-</span></span></span></code></pre></div><p>You can define the menu through <code>menu.main</code>, e.g.,</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nt">menu</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c"># Required for Cmd+K instant search (/index.json)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">outputs</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">home</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&#34;HTML&#34;</span><span class="p">,</span><span class="w"> </span><span class="s2">&#34;RSS&#34;</span><span class="p">,</span><span class="w"> </span><span class="s2">&#34;JSON&#34;</span><span class="p">]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">menu</span><span class="p">:</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">main</span><span class="p">:</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">Home</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">url</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">url</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;/&#34;</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">weight</span><span class="p">:</span><span class="w"> </span><span class="m">1</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">About</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">url</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;about/&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">Posts</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">url</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;post/&#34;</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">weight</span><span class="p">:</span><span class="w"> </span><span class="m">2</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">Categories</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">url</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;categories/&#34;</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">weight</span><span class="p">:</span><span class="w"> </span><span class="m">3</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">Tags</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">url</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;tags/&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">weight</span><span class="p">:</span><span class="w"> </span><span class="m">3</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">Note</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">url</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;note/&#34;</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">weight</span><span class="p">:</span><span class="w"> </span><span class="m">4</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">About</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">url</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;about/&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">weight</span><span class="p">:</span><span class="w"> </span><span class="m">5</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">Subscribe</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">url</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;index.xml&#34;</span><span class="w">
-</span></span></span></code></pre></div><p>Alternatively, you can add <code>menu: main</code> to the YAML metadata of any of your pages, so that these pages will appear in the menu.</p>
-<p>The page footer can be defined in <code>.Params.footer</code>, and the text is treated as Markdown, e.g.,</p>
-<pre tabindex="0"><code>params:
-  footer: &#34;&amp;copy; [Yihui Xie](https://yihui.org) 2017 -- {Year}&#34;
-</code></pre><p>Here <code>{Year}</code> means the year in which the site is built (usually the current year).</p>
-<h2 id="custom-layouts">Custom layouts</h2>
-<p>There are two layout files under <code>layouts/partials/</code> that you may want to override: <code>head_custom.html</code> and <code>foot_custom.html</code>. This is how you inject arbitrary HTML code to the head and foot areas. For example, this site has a file <code>layouts/partials/foot_custom.html</code> to support LaTeX math via KaTeX and center images automatically:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">link</span> <span class="na">rel</span><span class="o">=</span><span class="s">&#34;stylesheet&#34;</span> <span class="na">href</span><span class="o">=</span><span class="s">&#34;//cdn.jsdelivr.net/npm/katex/dist/katex.min.css&#34;</span><span class="p">&gt;</span>
-</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">script</span> <span class="na">src</span><span class="o">=</span><span class="s">&#34;//cdn.jsdelivr.net/combine/npm/katex/dist/katex.min.js,npm/katex/dist/contrib/auto-render.min.js,npm/@xiee/utils/js/render-katex.js&#34;</span> <span class="na">defer</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">script</span> <span class="na">src</span><span class="o">=</span><span class="s">&#34;//cdn.jsdelivr.net/npm/@xiee/utils/js/center-img.min.js&#34;</span> <span class="na">defer</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
-</span></span></code></pre></div><p>You can certainly enable highlight.js for syntax highlighting by yourself through <code>head_custom.html</code> and <code>foot_custom.html</code> if you want.</p>
-<p>If you do not like the default fonts (e.g., <code>Palatino</code>), you may provide your own <code>static/css/fonts.css</code> under the root directory of your website to override the <code>fonts.css</code> in the theme.</p>
-<h2 id="other-features">Other features</h2>
-<p>I could have added more features to this theme, but I decided not to, since I have no intention to make this theme feature-rich. However, I will teach you how. I have prepared several examples via pull requests at <a href="https://github.com/yihui/hugo-xmin/pulls">https://github.com/yihui/hugo-xmin/pulls</a>, so that you can see the implementations of these features when you check out the diffs in the pull requests. For example, you can:</p>
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">weight</span><span class="p">:</span><span class="w"> </span><span class="m">6</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">params</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;Personal blog powered by Hugo and hugo-zen.&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">footer</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;&amp;copy; powered by [Hugo](https://gohugo.io/) &amp; [Hugo Zen](https://github.com/qiref/hugo-zen) 2017 -- {Year}&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">homePostLimit</span><span class="p">:</span><span class="w"> </span><span class="m">25</span><span class="w">       </span><span class="c"># Number of recent posts displayed on the homepage</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">enableHeatmap</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">     </span><span class="c"># Show 5-year post contribution heatmap on the homepage</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">enableSearch</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">      </span><span class="c"># Enable Cmd+K / Ctrl+K search trigger and modal</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">utterances</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">repo</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;&#34;</span><span class="w">              </span><span class="c"># e.g. &#34;username/repo&#34; (leave empty to disable comments)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">issueTerm</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;pathname&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">label</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;Comment&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">theme</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;github-light&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">markup</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">tableOfContents</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">startLevel</span><span class="p">:</span><span class="w"> </span><span class="m">2</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">endLevel</span><span class="p">:</span><span class="w"> </span><span class="m">4</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">ordered</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">highlight</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">codeFences</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">noClasses: false      # Required</span><span class="p">:</span><span class="w"> </span><span class="l">use semantic Chroma CSS classes</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">guessSyntax</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">tabWidth</span><span class="p">:</span><span class="w"> </span><span class="m">4</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">goldmark</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">renderer</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">unsafe</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">extensions</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">passthrough</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">enable</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">delimiters</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="nt">block</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span>- - <span class="l">\[</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">              </span>- <span class="l">\]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span>- - <span class="l">$$</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">              </span>- <span class="l">$$</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="nt">inline</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span>- - <span class="l">\(</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">              </span>- <span class="l">\)</span><span class="w">
+</span></span></span></code></pre></div><hr>
+<h2 id="-front-matter-parameters">📝 Front Matter Parameters</h2>
+<p>You can customize individual posts via YAML front matter:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nn">---</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;Understanding Distributed Consensus&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">date</span><span class="p">:</span><span class="w"> </span><span class="ld">2026-01-15</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">author</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;Your Name&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">tags</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&#34;Distributed Systems&#34;</span><span class="p">,</span><span class="w"> </span><span class="s2">&#34;Go&#34;</span><span class="p">]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">categories</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&#34;Architecture&#34;</span><span class="p">]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">toc</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w"> </span><span class="c"># Set to false to hide the floating TOC sidebar on a specific post</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nn">---</span><span class="w">
+</span></span></span></code></pre></div><table>
+<thead>
+<tr>
+<th style="text-align:left">Parameter</th>
+<th style="text-align:left">Type</th>
+<th style="text-align:left">Default</th>
+<th style="text-align:left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>title</code></td>
+<td style="text-align:left"><code>string</code></td>
+<td style="text-align:left">Required</td>
+<td style="text-align:left">Article title</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>date</code></td>
+<td style="text-align:left"><code>date</code></td>
+<td style="text-align:left">Required</td>
+<td style="text-align:left">Publication date (<code>YYYY-MM-DD</code>)</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>author</code></td>
+<td style="text-align:left"><code>string</code></td>
+<td style="text-align:left">Optional</td>
+<td style="text-align:left">Author name displayed in article metadata</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>tags</code></td>
+<td style="text-align:left"><code>string[]</code></td>
+<td style="text-align:left"><code>[]</code></td>
+<td style="text-align:left">Tags rendered as pills in metadata and <code>/tags/</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>categories</code></td>
+<td style="text-align:left"><code>string[]</code></td>
+<td style="text-align:left"><code>[]</code></td>
+<td style="text-align:left">Categories rendered in metadata</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>toc</code></td>
+<td style="text-align:left"><code>boolean</code></td>
+<td style="text-align:left"><code>true</code></td>
+<td style="text-align:left">Toggle the right-hand floating TOC sidebar</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="-customization-hooks">🔌 Customization Hooks</h2>
+<p><strong>Hugo Zen</strong> provides two clean partial hooks so you can inject custom CSS, fonts, or scripts without overriding core templates:</p>
 <ul>
-<li>
-<p><a href="https://github.com/yihui/hugo-xmin/pull/3">Enable Google Analytics</a></p>
-</li>
-<li>
-<p><a href="https://github.com/yihui/hugo-xmin/pull/4">Enable Disqus comments</a></p>
-</li>
-<li>
-<p><a href="https://github.com/yihui/hugo-xmin/pull/5">Enable highlight.js for syntax highlighting of code blocks</a></p>
-</li>
-<li>
-<p><a href="https://github.com/yihui/hugo-xmin/pull/2">Display categories and tags on a page</a></p>
-</li>
-<li>
-<p><a href="https://github.com/yihui/hugo-xmin/pull/7">Add a table of contents</a></p>
-</li>
-<li>
-<p><a href="https://github.com/yihui/hugo-xmin/pull/6">Add a link in the footer of each page to &ldquo;Edit this page&rdquo; on Github</a></p>
-</li>
+<li><code>layouts/partials/head_custom.html</code>: Injected right before <code>&lt;/head&gt;</code>.</li>
+<li><code>layouts/partials/foot_custom.html</code>: Injected inside <code>&lt;footer&gt;</code> before <code>&lt;/body&gt;</code>.</li>
 </ul>
-<p>To fully understand these examples, you have to read <a href="https://bookdown.org/yihui/blogdown/templates.html">the section on Hugo templates</a> in the <strong>blogdown</strong> book.</p>
-<h1 id="design-philosophy">Design philosophy</h1>
-<p>Lastly, a few words about my design philosophy for this theme: I have been relying on existing frameworks like Bootstrap for years since I&rsquo;m not really a designer, and I was always scared by the complexity of CSS.</p>
-<p>When I started writing this theme, I asked myself, &ldquo;<em>What if I just write from scratch?</em>&rdquo; No Bootstrap. No Normalize.css. I don&rsquo;t care about IE (life could be so much easier without IE) or inconsistencies among browsers (for personal websites). As long as the theme looks okay in Chrome, Firefox, and Safari, I&rsquo;m done. Thanks to the simplicity of Markdown, you cannot really produce very complicated HTML, and I think styling the HTML output from Markdown is much simpler than general HTML documents. For example, I do not need to care much about form elements like textareas or buttons.</p>
-<p>After I finished this theme, I started to wonder why I&rsquo;d need <code>normalize.css</code> at all. The default appearance of modern browsers actually looks pretty good in my eyes, after I tweak the typeface a little bit.</p>
-<p>Compared to inconsistencies across browsers, I care much more about these properties of HTML elements:</p>
-<ul>
-<li>Tables should always be centered, and striped tables are easier to read especially when they are wide. Tables should not have vertical borders.</li>
-<li>An image should be centered if it is the only child element of a paragraph.</li>
-<li>The <code>max-width</code> of images, videos, and iframes should be <code>100%</code>.</li>
-</ul>
-<p>I hope you can enjoy this theme. The source code is <a href="https://github.com/yihui/hugo-xmin">on Github</a>. Happy hacking!</p>
+<hr>
+<h2 id="-license--credits">📄 License &amp; Credits</h2>
+<p>Released under the <a href="https://github.com/qiref/hugo-zen/blob/master/LICENSE.md">MIT License</a>.
+Originally inspired by <a href="https://github.com/yihui/hugo-xmin">Yihui Xie&rsquo;s hugo-xmin</a>.</p>
 
 </main>
 
   <footer>
   
 
-<script>
-(function() {
-  const modal = document.getElementById('search-modal');
-  const backdrop = document.getElementById('search-backdrop');
-  const trigger = document.getElementById('search-trigger');
-  const searchInput = document.getElementById('search-input');
-  const clearBtn = document.getElementById('search-clear');
-  const escBtn = document.getElementById('search-esc-btn');
-  const searchResults = document.getElementById('search-results');
-  const searchCount = document.getElementById('search-count');
-  if (!modal || !searchInput || !searchResults) return;
-
-  let searchIndex = null;
-  let activeIndex = 0;
-  let isOpen = false;
-
-  function escapeHtml(str) {
-    return String(str || '')
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;');
-  }
-
-  function escapeRegExp(str) {
-    return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  }
-
-  async function loadSearchIndex() {
-    if (searchIndex) return searchIndex;
-    try {
-      const response = await fetch('/index.json');
-      const data = await response.json();
-      searchIndex = (data.pages || []).map(p => ({
-        ...p,
-        cleanContent: (p.content || '').replace(/\s+/g, ' ').trim()
-      }));
-      return searchIndex;
-    } catch (e) {
-      console.error('Failed to load search index:', e);
-      return [];
-    }
-  }
-
-  function highlightText(text, terms) {
-    const safe = escapeHtml(text);
-    if (!terms.length) return safe;
-    const pattern = terms.map(escapeRegExp).join('|');
-    const regex = new RegExp(`(${pattern})`, 'gi');
-    return safe.replace(regex, '<mark>$1</mark>');
-  }
-
-  function extractSnippet(content, terms) {
-    if (!content) return '';
-    if (!terms.length) {
-      return content.length > 90 ? content.slice(0, 90) + '...' : content;
-    }
-    const lower = content.toLowerCase();
-    let firstIdx = -1;
-    for (const term of terms) {
-      const idx = lower.indexOf(term.toLowerCase());
-      if (idx !== -1 && (firstIdx === -1 || idx < firstIdx)) {
-        firstIdx = idx;
-      }
-    }
-    if (firstIdx === -1) {
-      return content.length > 90 ? content.slice(0, 90) + '...' : content;
-    }
-    const start = Math.max(0, firstIdx - 28);
-    const end = Math.min(content.length, firstIdx + 68);
-    let snippet = content.slice(start, end);
-    if (start > 0) snippet = '...' + snippet;
-    if (end < content.length) snippet = snippet + '...';
-    return snippet;
-  }
-
-  function search(query) {
-    if (!searchIndex) return { items: [], total: 0, terms: [] };
-    const terms = query.trim().split(/\s+/).filter(Boolean);
-    if (!terms.length) {
-      return {
-        items: searchIndex.slice(0, 6),
-        total: searchIndex.length,
-        terms: [],
-        isRecent: true
-      };
-    }
-
-    const scored = [];
-    for (const page of searchIndex) {
-      const title = (page.title || '').toLowerCase();
-      const content = (page.cleanContent || '').toLowerCase();
-      let score = 0;
-      let matchedAll = true;
-
-      for (const t of terms) {
-        const q = t.toLowerCase();
-        const inTitle = title.includes(q);
-        const inContent = content.includes(q);
-        if (!inTitle && !inContent) {
-          matchedAll = false;
-          break;
-        }
-        if (inTitle) score += title.startsWith(q) ? 15 : 10;
-        if (inContent) score += 2;
-      }
-
-      if (matchedAll) {
-        scored.push({ page, score });
-      }
-    }
-
-    scored.sort((a, b) => b.score - a.score);
-    return {
-      items: scored.slice(0, 10).map(s => s.page),
-      total: scored.length,
-      terms,
-      isRecent: false
-    };
-  }
-
-  function updateActiveItem(scrollIntoView) {
-    const items = searchResults.querySelectorAll('.search-result-item');
-    items.forEach((item, index) => {
-      if (index === activeIndex) {
-        item.classList.add('active');
-        if (scrollIntoView) {
-          item.scrollIntoView({ block: 'nearest' });
-        }
-      } else {
-        item.classList.remove('active');
-      }
-    });
-  }
-
-  function renderResults(resultObj) {
-    const { items, total, terms, isRecent } = resultObj;
-    if (!items.length) {
-      activeIndex = -1;
-      searchResults.innerHTML = `<div class="search-empty">未找到与 “${escapeHtml(terms.join(' '))}” 相关的文章</div>`;
-      if (searchCount) searchCount.textContent = '0 条结果';
-      return;
-    }
-
-    activeIndex = 0;
-    const labelHtml = isRecent ? `<div class="search-section-label">最近更新</div>` : '';
-    const listHtml = items.map((page, idx) => {
-      const titleHtml = highlightText(page.title || 'Untitled', terms);
-      const rawSnippet = extractSnippet(page.cleanContent || '', terms);
-      const summaryHtml = highlightText(rawSnippet, terms);
-      const dateHtml = page.date ? `<span class="search-result-date">${escapeHtml(page.date)}</span>` : '';
-      return `<a class="search-result-item${idx === 0 ? ' active' : ''}" href="${page.url}" data-index="${idx}">
-        <div class="search-result-top">
-          <span class="search-result-title">${titleHtml}</span>
-          ${dateHtml}
-        </div>
-        ${summaryHtml ? `<div class="search-result-summary">${summaryHtml}</div>` : ''}
-      </a>`;
-    }).join('');
-
-    searchResults.innerHTML = labelHtml + listHtml;
-    if (searchCount) {
-      searchCount.textContent = isRecent ? `共 ${total} 篇` : `${total} 条匹配`;
-    }
-  }
-
-  async function refreshSearch() {
-    const q = searchInput.value;
-    if (clearBtn) clearBtn.hidden = !q.length;
-    await loadSearchIndex();
-    renderResults(search(q));
-  }
-
-  async function openModal() {
-    if (isOpen) return;
-    isOpen = true;
-    modal.classList.add('is-open');
-    modal.setAttribute('aria-hidden', 'false');
-    await refreshSearch();
-    requestAnimationFrame(() => {
-      searchInput.focus();
-      searchInput.select();
-    });
-  }
-
-  function closeModal() {
-    if (!isOpen) return;
-    isOpen = false;
-    modal.classList.remove('is-open');
-    modal.setAttribute('aria-hidden', 'true');
-  }
-
-  if (trigger) {
-    trigger.addEventListener('click', openModal);
-  }
-  if (backdrop) {
-    backdrop.addEventListener('click', closeModal);
-  }
-  if (escBtn) {
-    escBtn.addEventListener('click', closeModal);
-  }
-  if (clearBtn) {
-    clearBtn.addEventListener('click', function() {
-      searchInput.value = '';
-      refreshSearch();
-      searchInput.focus();
-    });
-  }
-
-  let debounceTimer;
-  searchInput.addEventListener('input', function() {
-    if (clearBtn) clearBtn.hidden = !this.value.length;
-    clearTimeout(debounceTimer);
-    debounceTimer = setTimeout(refreshSearch, 80);
-  });
-
-  searchResults.addEventListener('mousemove', function(e) {
-    const item = e.target.closest('.search-result-item');
-    if (!item) return;
-    const idx = Number(item.dataset.index);
-    if (!Number.isNaN(idx) && idx !== activeIndex) {
-      activeIndex = idx;
-      updateActiveItem(false);
-    }
-  });
-
-  searchInput.addEventListener('keydown', function(e) {
-    const items = searchResults.querySelectorAll('.search-result-item');
-    const itemCount = items.length;
-
-    switch (e.key) {
-      case 'ArrowDown':
-        if (!itemCount) return;
-        e.preventDefault();
-        activeIndex = (activeIndex + 1) % itemCount;
-        updateActiveItem(true);
-        break;
-      case 'ArrowUp':
-        if (!itemCount) return;
-        e.preventDefault();
-        activeIndex = activeIndex <= 0 ? itemCount - 1 : activeIndex - 1;
-        updateActiveItem(true);
-        break;
-      case 'Enter':
-        if (itemCount > 0 && activeIndex >= 0 && items[activeIndex]) {
-          e.preventDefault();
-          window.location.href = items[activeIndex].getAttribute('href');
-        }
-        break;
-      case 'Escape':
-        e.preventDefault();
-        closeModal();
-        break;
-    }
-  });
-
-  document.addEventListener('keydown', function(e) {
-    if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
-      e.preventDefault();
-      if (isOpen) {
-        closeModal();
-      } else {
-        openModal();
-      }
-      return;
-    }
-    if (e.key === '/' && !isOpen) {
-      const tag = (document.activeElement && document.activeElement.tagName) || '';
-      if (tag !== 'INPUT' && tag !== 'TEXTAREA' && !document.activeElement?.isContentEditable) {
-        e.preventDefault();
-        openModal();
-      }
-      return;
-    }
-    if (e.key === 'Escape' && isOpen) {
-      e.preventDefault();
-      closeModal();
-    }
-  });
-})();
-
-(function() {
-  const sidebar = document.getElementById('toc-sidebar');
-  const linesContainer = document.getElementById('toc-lines');
-  const card = document.getElementById('toc-card');
-  if (!sidebar || !linesContainer || !card) return;
-
-  const links = Array.from(card.querySelectorAll('#TableOfContents a[href^="#"]'));
-  if (!links.length) {
-    sidebar.style.display = 'none';
-    return;
-  }
-
+  <script src="/js/main.js" defer></script>
   
-  const items = [];
-  links.forEach(link => {
-    const rawHash = link.getAttribute('href').slice(1);
-    const id = decodeURIComponent(rawHash);
-    const heading = document.getElementById(id);
-    if (!heading) return;
-
-    let depth = 0;
-    let el = link.parentElement;
-    while (el && el.id !== 'TableOfContents') {
-      if (el.tagName === 'UL') depth++;
-      el = el.parentElement;
-    }
-    const level = Math.min(Math.max(depth, 1), 3);
-
-    const line = document.createElement('span');
-    line.className = `toc-line level-${level}`;
-    linesContainer.appendChild(line);
-
-    link.setAttribute('title', link.textContent.trim());
-    items.push({ link, line, heading, id });
-  });
-
-  if (!items.length) {
-    sidebar.style.display = 'none';
-    return;
-  }
-
-  if (items.length > 24) {
-    linesContainer.classList.add('toc-lines-compact');
-  }
-
-  let activeIdx = -1;
-
-  function setActive(index) {
-    if (index === activeIdx || index < 0 || index >= items.length) return;
-    if (activeIdx >= 0 && items[activeIdx]) {
-      items[activeIdx].link.classList.remove('active');
-      items[activeIdx].line.classList.remove('active');
-    }
-    activeIdx = index;
-    items[activeIdx].link.classList.add('active');
-    items[activeIdx].line.classList.add('active');
-  }
-
-  function updateScrollSpy() {
-    const scrollY = window.scrollY || window.pageYOffset;
-    const offset = 100;
-    let current = 0;
-
-    for (let i = 0; i < items.length; i++) {
-      const top = items[i].heading.getBoundingClientRect().top;
-      if (top <= offset) {
-        current = i;
-      } else {
-        break;
-      }
-    }
-
-    
-    if (window.innerHeight + scrollY >= document.documentElement.scrollHeight - 20) {
-      current = items.length - 1;
-    }
-
-    setActive(current);
-  }
-
-  let ticking = false;
-  window.addEventListener('scroll', function() {
-    if (!ticking) {
-      window.requestAnimationFrame(function() {
-        updateScrollSpy();
-        ticking = false;
-      });
-      ticking = true;
-    }
-  }, { passive: true });
-
-  
-  sidebar.addEventListener('mouseenter', function() {
-    if (activeIdx >= 0 && items[activeIdx]) {
-      const activeLink = items[activeIdx].link;
-      const targetScroll = activeLink.offsetTop - card.clientHeight / 2 + activeLink.offsetHeight / 2;
-      card.scrollTo({ top: Math.max(0, targetScroll), behavior: 'smooth' });
-    }
-  });
-
-  
-  items.forEach((item, idx) => {
-    item.link.addEventListener('click', function(e) {
-      e.preventDefault();
-      setActive(idx);
-      const top = item.heading.getBoundingClientRect().top + window.pageYOffset - 24;
-      window.scrollTo({ top, behavior: 'smooth' });
-      history.replaceState(null, '', `#${encodeURIComponent(item.id)}`);
-    });
-  });
-
-  updateScrollSpy();
-})();
-</script>
   
   <hr/>
-  © powered by <a href="https://gohugo.io/">Hugo</a> &amp; <a href="https://github.com/yihui/hugo-xmin">Xmin</a>  2017 &ndash; 2026 | <a href="https://github.com/qiref">Github</a>
+  © powered by <a href="https://gohugo.io/">Hugo</a> &amp; <a href="https://github.com/qiref/hugo-zen">Hugo Zen</a>  2017 &ndash; 2026 | <a href="https://github.com/qiref">Github</a>
   
   </footer>
   </body>

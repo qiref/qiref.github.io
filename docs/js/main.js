@@ -1,15 +1,3 @@
-{{ if eq .Section "post" }}
-<script src="https://utteranc.es/client.js"
-        repo="qiref/qiref.github.io"
-        issue-term="pathname"
-        label="Comment"
-        theme="github-light"
-        crossorigin="anonymous"
-        async>
-</script>
-{{ end }}
-
-<script>
 (function() {
   const modal = document.getElementById('search-modal');
   const backdrop = document.getElementById('search-backdrop');
@@ -40,7 +28,8 @@
   async function loadSearchIndex() {
     if (searchIndex) return searchIndex;
     try {
-      const response = await fetch('/index.json');
+      const indexUrl = modal.dataset.searchIndex || '/index.json';
+      const response = await fetch(indexUrl);
       const data = await response.json();
       searchIndex = (data.pages || []).map(p => ({
         ...p,
@@ -313,7 +302,7 @@
     let depth = 0;
     let el = link.parentElement;
     while (el && el.id !== 'TableOfContents') {
-      if (el.tagName === 'UL') depth++;
+      if (el.tagName === 'UL' || el.tagName === 'OL') depth++;
       el = el.parentElement;
     }
     const level = Math.min(Math.max(depth, 1), 3);
@@ -403,4 +392,3 @@
 
   updateScrollSpy();
 })();
-</script>

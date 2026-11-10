@@ -53,7 +53,9 @@ pre code,
 /* 函数名、方法调用、标签 -> One Light 蓝 (#4078f2) */
 .chroma .nf,
 .chroma .fm,
-.chroma .nl {
+.chroma .nl,
+.chroma .language-java .na,
+.chroma .language-scala .na {
   color: #4078f2;
   font-weight: normal;
 }
@@ -932,13 +934,15 @@ main table {
   border: none;
 }
 
-.toc-card #TableOfContents ul {
+.toc-card #TableOfContents ul,
+.toc-card #TableOfContents ol {
   list-style: none;
   margin: 0;
   padding: 0;
 }
 
-.toc-card #TableOfContents ul ul {
+.toc-card #TableOfContents ul ul,
+.toc-card #TableOfContents ol ol {
   padding-left: 10px;
   margin-left: 6px;
   margin-top: 2px;

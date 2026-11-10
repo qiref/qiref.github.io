@@ -1,100 +1,187 @@
 ---
-title: About Hugo XMin
-author: Yihui Xie
+title: About Hugo Zen
 toc: true
 ---
 
-**XMin** is the first Hugo theme I have designed. The original reason that I wrote it was I needed a minimal example of Hugo themes when I was writing the  [**blogdown**](https://github.com/rstudio/blogdown) book. Basically I wanted a simple theme that supports a navigation menu, a home page, other single pages, lists of pages, blog posts, categories, tags, and RSS. That is all. Nothing fancy. In terms of CSS and JavaScript, I really want to keep them minimal. In fact, this theme does not contain any JavaScript code at all, although on this example website I did introduce some JavaScript code (still relatively simple anyway). The theme does not contain any images, either, and is pretty much a plain-text theme.
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/qiref/hugo-zen/blob/master/LICENSE.md)
+[![Hugo](https://img.shields.io/badge/Hugo-%E2%89%A50.100.0-ff4088.svg)](https://gohugo.io)
 
-The theme name "XMin" can be interpreted as "**X**ie's **Min**imal theme" (Xie is my last name) or "e**X**tremely **Min**imal theme".
+**Hugo Zen** is a fast, clean, and minimalist Hugo theme designed for technical blogs, architecture essays, and personal notes. Inspired by [hugo-xmin](https://github.com/yihui/hugo-xmin) and GitHub Primer Light, it delivers modern reading ergonomics—instant `⌘K` search, a floating scroll-spy table of contents, a 5-year post contribution heatmap, and zero-JS compile-time syntax highlighting—without heavy frontend frameworks.
 
-## `hugo.yaml` (the config file)
+---
 
-For this example site, I defined permalinks for two sections, `post` and `note`, so that the links to pages under these directories will contain the date info, e.g., `https://xmin.yihui.org/post/2016/02/14/a-plain-markdown-post/`. This is optional, and it is up to your personal taste of URLs.
+## ✨ Features
+
+- **Minimalist Typography & Reading Layout**: Focused single-column layout (`max-width: 800px`) with GitHub Primer-inspired typography, clean tables, and subtle dividers.
+- **Instant `⌘K` / `/` Full-Text Search**: Built-in client-side search modal with glassmorphism backdrop, keyword highlighting, snippet extraction, and full keyboard navigation (`↑` `↓` `↵` `ESC`).
+- **Floating Minimal TOC Sidebar**: Unobtrusive line-indicator on the right margin that expands into a frosted-glass Table of Contents card on hover, complete with active heading scroll-spy and smooth scrolling.
+- **5-Year Contribution Heatmap**: GitHub-style post activity heatmap automatically rendered on the homepage.
+- **Tag Cloud Pill Matrix**: Clean taxonomy pill badges with post counts.
+- **Atom One Light Syntax Highlighting**: Zero-JS, compile-time syntax highlighting powered by Hugo's native Chroma lexer.
+- **Dual Content Sections (`post` & `note`)**: Separate long-form technical articles (`post`) from lightweight daily notes (`note`).
+- **Zero Hardcoding & Extensible**: Native configuration for Google Analytics (`gtag.js`), Utterances comments, MathJax/KaTeX passthrough, and custom head/footer partial hooks.
+
+---
+
+## 🚀 Installation
+
+### Option 1: Git Submodule (Recommended)
+
+From the root of your Hugo site:
+
+```bash
+git submodule add https://github.com/qiref/hugo-zen.git themes/hugo-zen
+```
+
+Then set `theme: "hugo-zen"` in your `config.yaml` (or `hugo.yaml`).
+
+To update the theme later:
+
+```bash
+git submodule update --remote --merge themes/hugo-zen
+```
+
+### Option 2: Clone Directly
+
+```bash
+git clone https://github.com/qiref/hugo-zen.git themes/hugo-zen
+```
+
+### Running the Built-in Demo (`exampleSite`)
+
+You can preview the theme immediately using the bundled `exampleSite`:
+
+```bash
+git clone https://github.com/qiref/hugo-zen.git
+cd hugo-zen
+hugo server -s exampleSite --themesDir ../..
+```
+
+---
+
+## ⚙️ Configuration
+
+Below is a complete `config.yaml` reference:
 
 ```yaml
+baseurl: "https://example.com/"
+languageCode: "en-us" # or "cn-zh"
+defaultContentLanguage: "zh"
+title: "My Blog"
+theme: "hugo-zen"
+
+# Optional: Google Analytics 4 Measurement ID
+googleAnalytics: ""
+
+enableEmoji: true
+footnotereturnlinkcontents: "↩"
+
 permalinks:
   note: "/note/:year/:month/:day/:slug/"
   post: "/post/:year/:month/:day/:slug/"
-```
 
-You can define the menu through `menu.main`, e.g.,
+# Required for Cmd+K instant search (/index.json)
+outputs:
+  home: ["HTML", "RSS", "JSON"]
 
-```yaml
 menu:
   main:
     - name: Home
-      url: ""
+      url: "/"
       weight: 1
-    - name: About
-      url: "about/"
+    - name: Posts
+      url: "post/"
       weight: 2
-    - name: Categories
-      url: "categories/"
-      weight: 3
     - name: Tags
       url: "tags/"
+      weight: 3
+    - name: Note
+      url: "note/"
       weight: 4
+    - name: About
+      url: "about/"
+      weight: 5
     - name: Subscribe
       url: "index.xml"
-```
+      weight: 6
 
-Alternatively, you can add `menu: main` to the YAML metadata of any of your pages, so that these pages will appear in the menu.
-
-The page footer can be defined in `.Params.footer`, and the text is treated as Markdown, e.g.,
-
-```
 params:
-  footer: "&copy; [Yihui Xie](https://yihui.org) 2017 -- {Year}"
+  description: "Personal blog powered by Hugo and hugo-zen."
+  footer: "&copy; powered by [Hugo](https://gohugo.io/) & [Hugo Zen](https://github.com/qiref/hugo-zen) 2017 -- {Year}"
+  homePostLimit: 25       # Number of recent posts displayed on the homepage
+  enableHeatmap: true     # Show 5-year post contribution heatmap on the homepage
+  enableSearch: true      # Enable Cmd+K / Ctrl+K search trigger and modal
+  utterances:
+    repo: ""              # e.g. "username/repo" (leave empty to disable comments)
+    issueTerm: "pathname"
+    label: "Comment"
+    theme: "github-light"
+
+markup:
+  tableOfContents:
+    startLevel: 2
+    endLevel: 4
+    ordered: false
+  highlight:
+    codeFences: true
+    noClasses: false      # Required: use semantic Chroma CSS classes
+    guessSyntax: false
+    tabWidth: 4
+  goldmark:
+    renderer:
+      unsafe: true
+    extensions:
+      passthrough:
+        enable: true
+        delimiters:
+          block:
+            - - \[
+              - \]
+            - - $$
+              - $$
+          inline:
+            - - \(
+              - \)
 ```
 
-Here `{Year}` means the year in which the site is built (usually the current year).
+---
 
-## Custom layouts
+## 📝 Front Matter Parameters
 
-There are two layout files under `layouts/partials/` that you may want to override: `head_custom.html` and `foot_custom.html`. This is how you inject arbitrary HTML code to the head and foot areas. For example, this site has a file `layouts/partials/foot_custom.html` to support LaTeX math via KaTeX and center images automatically:
+You can customize individual posts via YAML front matter:
 
-```html
-<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/katex/dist/katex.min.css">
-<script src="//cdn.jsdelivr.net/combine/npm/katex/dist/katex.min.js,npm/katex/dist/contrib/auto-render.min.js,npm/@xiee/utils/js/render-katex.js" defer></script>
-
-<script src="//cdn.jsdelivr.net/npm/@xiee/utils/js/center-img.min.js" defer></script>
+```yaml
+---
+title: "Understanding Distributed Consensus"
+date: 2026-01-15
+author: "Your Name"
+tags: ["Distributed Systems", "Go"]
+categories: ["Architecture"]
+toc: true # Set to false to hide the floating TOC sidebar on a specific post
+---
 ```
 
-You can certainly enable highlight.js for syntax highlighting by yourself through `head_custom.html` and `foot_custom.html` if you want.
+| Parameter | Type | Default | Description |
+| :--- | :--- | :--- | :--- |
+| `title` | `string` | Required | Article title |
+| `date` | `date` | Required | Publication date (`YYYY-MM-DD`) |
+| `author` | `string` | Optional | Author name displayed in article metadata |
+| `tags` | `string[]` | `[]` | Tags rendered as pills in metadata and `/tags/` |
+| `categories` | `string[]` | `[]` | Categories rendered in metadata |
+| `toc` | `boolean` | `true` | Toggle the right-hand floating TOC sidebar |
 
-If you do not like the default fonts (e.g., `Palatino`), you may provide your own `static/css/fonts.css` under the root directory of your website to override the `fonts.css` in the theme.
+---
 
-## Other features
+## 🔌 Customization Hooks
 
-I could have added more features to this theme, but I decided not to, since I have no intention to make this theme feature-rich. However, I will teach you how. I have prepared several examples via pull requests at https://github.com/yihui/hugo-xmin/pulls, so that you can see the implementations of these features when you check out the diffs in the pull requests. For example, you can:
+**Hugo Zen** provides two clean partial hooks so you can inject custom CSS, fonts, or scripts without overriding core templates:
 
-- [Enable Google Analytics](https://github.com/yihui/hugo-xmin/pull/3)
+- `layouts/partials/head_custom.html`: Injected right before `</head>`.
+- `layouts/partials/foot_custom.html`: Injected inside `<footer>` before `</body>`.
 
-- [Enable Disqus comments](https://github.com/yihui/hugo-xmin/pull/4)
+---
 
-- [Enable highlight.js for syntax highlighting of code blocks](https://github.com/yihui/hugo-xmin/pull/5)
+## 📄 License & Credits
 
-- [Display categories and tags on a page](https://github.com/yihui/hugo-xmin/pull/2)
-
-- [Add a table of contents](https://github.com/yihui/hugo-xmin/pull/7)
-
-- [Add a link in the footer of each page to "Edit this page" on Github](https://github.com/yihui/hugo-xmin/pull/6)
-
-To fully understand these examples, you have to read [the section on Hugo templates](https://bookdown.org/yihui/blogdown/templates.html) in the **blogdown** book.
-
-# Design philosophy
-
-Lastly, a few words about my design philosophy for this theme: I have been relying on existing frameworks like Bootstrap for years since I'm not really a designer, and I was always scared by the complexity of CSS.
-
-When I started writing this theme, I asked myself, "_What if I just write from scratch?_" No Bootstrap. No Normalize.css. I don't care about IE (life could be so much easier without IE) or inconsistencies among browsers (for personal websites). As long as the theme looks okay in Chrome, Firefox, and Safari, I'm done. Thanks to the simplicity of Markdown, you cannot really produce very complicated HTML, and I think styling the HTML output from Markdown is much simpler than general HTML documents. For example, I do not need to care much about form elements like textareas or buttons.
-
-After I finished this theme, I started to wonder why I'd need `normalize.css` at all. The default appearance of modern browsers actually looks pretty good in my eyes, after I tweak the typeface a little bit.
-
-Compared to inconsistencies across browsers, I care much more about these properties of HTML elements:
-
-- Tables should always be centered, and striped tables are easier to read especially when they are wide. Tables should not have vertical borders.
-- An image should be centered if it is the only child element of a paragraph.
-- The `max-width` of images, videos, and iframes should be `100%`.
-
-I hope you can enjoy this theme. The source code is [on Github](https://github.com/yihui/hugo-xmin). Happy hacking!
+Released under the [MIT License](https://github.com/qiref/hugo-zen/blob/master/LICENSE.md).
+Originally inspired by [Yihui Xie's hugo-xmin](https://github.com/yihui/hugo-xmin).

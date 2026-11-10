@@ -4,6 +4,8 @@
 static/assets/.DS_Store
 *.drawio.bkp
 public/
+resources/
+.hugo_build.lock
 .vscode/
 .codebuddy/
 .idea/
