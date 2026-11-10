@@ -8,17 +8,6 @@
     <link rel="stylesheet" href="/css/fonts.css" />
     
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-PGMJFXZJRT"></script>
-
-<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/scala.min.js"></script>
-
-<script>
-hljs.configure({languages: []});
-hljs.highlightAll();
-</script>
-
-<link href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/github.min.css"  rel="stylesheet">
-
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
@@ -117,126 +106,117 @@ hljs.highlightAll();
 <h2 id="全局变量">全局变量</h2>
 <p>全局变量可以被全局访问</p>
 <p>定义全局变量：</p>
-<pre><code class="language-go">// global variable
-var x, y int
-
-var (
-    a int
-    b bool
-)
-</code></pre>
-<h2 id="基本常量">基本常量</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// global variable
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">var</span> <span class="nx">x</span><span class="p">,</span> <span class="nx">y</span> <span class="kt">int</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">var</span> <span class="p">(</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">a</span> <span class="kt">int</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">b</span> <span class="kt">bool</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span>
+</span></span></code></pre></div><h2 id="基本常量">基本常量</h2>
 <p>常量一经被定义后无法被重新赋值，常量可以定义为全局的，也可以定义为局部的。</p>
 <p>定义常量：</p>
-<pre><code class="language-go">// 这是一个常量
-const CONST1 = 111
-</code></pre>
-<h2 id="iota常量">iota常量</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// 这是一个常量
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">const</span> <span class="nx">CONST1</span> <span class="p">=</span> <span class="mi">111</span>
+</span></span></code></pre></div><h2 id="iota常量">iota常量</h2>
 <p>iota，特殊常量，可以认为是一个可以被编译器修改的常量。
 iota 在 const关键字出现时将被重置为 0(const 内部的第一行之前)，const 中每新增一行常量声明将使 iota 计数一次(iota 可理解为 const 语句块中的行索引)。</p>
-<pre><code class="language-go">const (
-    a = iota
-    b = iota
-    c = iota
-)
-
-// 以上写法可以简写为
-const (
-    d = iota
-    e
-    f
-)
-
-fmt.Println(a, b, c)
-fmt.Println(d, e, f)
-
-// 输出结果：
-
-// 0 1 2
-// 0 1 2 
-</code></pre>
-<p>iota常量可以恢复计数</p>
-<pre><code class="language-go">// iota可以恢复计数
-const (
-    aa = iota
-    bb
-    cc
-    dd = &quot;lalala&quot;
-    ee = 2
-    ff = true
-    gg = iota // 恢复计数
-    hh
-)
-fmt.Println(aa, bb, cc, dd, ee, ff, gg, hh)
-
-// 输出结果为：
-
-// 0 1 2 lalala 2 true 6 7
-</code></pre>
-<p>关于iota一个有趣的例子</p>
-<pre><code class="language-go">// iota 移位运算
-const (
-    ii = 1 &lt;&lt; iota
-    jj = 2 &lt;&lt; iota
-    kk = 3 &lt;&lt; iota
-    ll // 此处等价于 ll = 3 &lt;&lt; iota
-    mm // 此处等价于 ll = 3 &lt;&lt; iota
-)
-fmt.Println(ii, jj, kk, ll, mm)
-
-// 输出结果为：
-
-// 1 4 12 24 48
-
-</code></pre>
-<h2 id="变量">变量</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">const</span> <span class="p">(</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">a</span> <span class="p">=</span> <span class="kc">iota</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">b</span> <span class="p">=</span> <span class="kc">iota</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">c</span> <span class="p">=</span> <span class="kc">iota</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// 以上写法可以简写为
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">const</span> <span class="p">(</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">d</span> <span class="p">=</span> <span class="kc">iota</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">e</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">f</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="p">,</span> <span class="nx">c</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">d</span><span class="p">,</span> <span class="nx">e</span><span class="p">,</span> <span class="nx">f</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// 输出结果：
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="c1">// 0 1 2
+</span></span></span><span class="line"><span class="cl"><span class="c1">// 0 1 2 
+</span></span></span></code></pre></div><p>iota常量可以恢复计数</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// iota可以恢复计数
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">const</span> <span class="p">(</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">aa</span> <span class="p">=</span> <span class="kc">iota</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">bb</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">cc</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">dd</span> <span class="p">=</span> <span class="s">&#34;lalala&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">ee</span> <span class="p">=</span> <span class="mi">2</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">ff</span> <span class="p">=</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">gg</span> <span class="p">=</span> <span class="kc">iota</span> <span class="c1">// 恢复计数
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="nx">hh</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">aa</span><span class="p">,</span> <span class="nx">bb</span><span class="p">,</span> <span class="nx">cc</span><span class="p">,</span> <span class="nx">dd</span><span class="p">,</span> <span class="nx">ee</span><span class="p">,</span> <span class="nx">ff</span><span class="p">,</span> <span class="nx">gg</span><span class="p">,</span> <span class="nx">hh</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// 输出结果为：
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="c1">// 0 1 2 lalala 2 true 6 7
+</span></span></span></code></pre></div><p>关于iota一个有趣的例子</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// iota 移位运算
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">const</span> <span class="p">(</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">ii</span> <span class="p">=</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="kc">iota</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">jj</span> <span class="p">=</span> <span class="mi">2</span> <span class="o">&lt;&lt;</span> <span class="kc">iota</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">kk</span> <span class="p">=</span> <span class="mi">3</span> <span class="o">&lt;&lt;</span> <span class="kc">iota</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">ll</span> <span class="c1">// 此处等价于 ll = 3 &lt;&lt; iota
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="nx">mm</span> <span class="c1">// 此处等价于 ll = 3 &lt;&lt; iota
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">ii</span><span class="p">,</span> <span class="nx">jj</span><span class="p">,</span> <span class="nx">kk</span><span class="p">,</span> <span class="nx">ll</span><span class="p">,</span> <span class="nx">mm</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// 输出结果为：
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="c1">// 1 4 12 24 48
+</span></span></span></code></pre></div><h2 id="变量">变量</h2>
 <p>定义变量：</p>
-<pre><code class="language-go">// 定义一个变量并对其赋值
-var intVal int
-intVal = 1
-
-// 定义一个变量对其赋值，与上文中的效果一样
-intVal1 := 1
-</code></pre>
-<p>go语言中，int类型比较特殊，可以有多种类型的int。</p>
-<pre><code class="language-go">// int 数据类型 包含了以下所有数据类型
-var var1 int = -9223372036854775808
-
-// 无符号 8 位整型 (0 到 255)
-var var2 uint8 = 255
-
-// 无符号 16 位整型 (0 到 65535)
-var var3 uint16 = 65535
-
-// 无符号 32 位整型 (0 到 4294967295)
-var var4 uint32 = 4294967295
-
-// 无符号 64 位整型 (0 到 18446744073709551615)
-var var5 uint64 = 18446744073709551615
-
-// 有符号 8 位整型 (-128 到 127)
-var var6 int8 = 127
-
-// 有符号 16 位整型 (-32768 到 32767)
-var var7 int16 = 32767
-
-// 有符号 32 位整型 (-2147483648 到 2147483647)
-var var8 int32 = 2147483647
-
-// 有符号 64 位整型 (-9223372036854775808 到 9223372036854775807)
-var var9 int64 = 9223372036854775807
-
-fmt.Println(var1, var2, var3, var4, var5, var6, var7, var8, var9)
-</code></pre>
-<h2 id="go类型强转">go类型强转</h2>
-<pre><code class="language-go">// go 类型转换
-var sum int = 16
-var sumf float32
-
-sumf = float32(sum / 2)
-fmt.Printf(&quot;%f\n&quot;, sumf)
-</code></pre>
-
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// 定义一个变量并对其赋值
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">var</span> <span class="nx">intVal</span> <span class="kt">int</span>
+</span></span><span class="line"><span class="cl"><span class="nx">intVal</span> <span class="p">=</span> <span class="mi">1</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// 定义一个变量对其赋值，与上文中的效果一样
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nx">intVal1</span> <span class="o">:=</span> <span class="mi">1</span>
+</span></span></code></pre></div><p>go语言中，int类型比较特殊，可以有多种类型的int。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// int 数据类型 包含了以下所有数据类型
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">var</span> <span class="nx">var1</span> <span class="kt">int</span> <span class="p">=</span> <span class="o">-</span><span class="mi">9223372036854775808</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// 无符号 8 位整型 (0 到 255)
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">var</span> <span class="nx">var2</span> <span class="kt">uint8</span> <span class="p">=</span> <span class="mi">255</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// 无符号 16 位整型 (0 到 65535)
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">var</span> <span class="nx">var3</span> <span class="kt">uint16</span> <span class="p">=</span> <span class="mi">65535</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// 无符号 32 位整型 (0 到 4294967295)
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">var</span> <span class="nx">var4</span> <span class="kt">uint32</span> <span class="p">=</span> <span class="mi">4294967295</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// 无符号 64 位整型 (0 到 18446744073709551615)
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">var</span> <span class="nx">var5</span> <span class="kt">uint64</span> <span class="p">=</span> <span class="mi">18446744073709551615</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// 有符号 8 位整型 (-128 到 127)
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">var</span> <span class="nx">var6</span> <span class="kt">int8</span> <span class="p">=</span> <span class="mi">127</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// 有符号 16 位整型 (-32768 到 32767)
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">var</span> <span class="nx">var7</span> <span class="kt">int16</span> <span class="p">=</span> <span class="mi">32767</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// 有符号 32 位整型 (-2147483648 到 2147483647)
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">var</span> <span class="nx">var8</span> <span class="kt">int32</span> <span class="p">=</span> <span class="mi">2147483647</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// 有符号 64 位整型 (-9223372036854775808 到 9223372036854775807)
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">var</span> <span class="nx">var9</span> <span class="kt">int64</span> <span class="p">=</span> <span class="mi">9223372036854775807</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">var1</span><span class="p">,</span> <span class="nx">var2</span><span class="p">,</span> <span class="nx">var3</span><span class="p">,</span> <span class="nx">var4</span><span class="p">,</span> <span class="nx">var5</span><span class="p">,</span> <span class="nx">var6</span><span class="p">,</span> <span class="nx">var7</span><span class="p">,</span> <span class="nx">var8</span><span class="p">,</span> <span class="nx">var9</span><span class="p">)</span>
+</span></span></code></pre></div><h2 id="go类型强转">go类型强转</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// go 类型转换
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">var</span> <span class="nx">sum</span> <span class="kt">int</span> <span class="p">=</span> <span class="mi">16</span>
+</span></span><span class="line"><span class="cl"><span class="kd">var</span> <span class="nx">sumf</span> <span class="kt">float32</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nx">sumf</span> <span class="p">=</span> <span class="nb">float32</span><span class="p">(</span><span class="nx">sum</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;%f\n&#34;</span><span class="p">,</span> <span class="nx">sumf</span><span class="p">)</span>
+</span></span></code></pre></div>
 </main>
 
   <footer>

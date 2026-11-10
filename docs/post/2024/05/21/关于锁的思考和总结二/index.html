@@ -8,17 +8,6 @@
     <link rel="stylesheet" href="/css/fonts.css" />
     
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-PGMJFXZJRT"></script>
-
-<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/scala.min.js"></script>
-
-<script>
-hljs.configure({languages: []});
-hljs.highlightAll();
-</script>
-
-<link href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/github.min.css"  rel="stylesheet">
-
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
@@ -164,7 +153,7 @@ hljs.highlightAll();
 <h2 id="基于-redis-的分布式锁">基于 redis 的分布式锁</h2>
 <p>使用 <code>redis</code> 实现天然就避免了问题2, 因为 <code>redis</code> 支持过期时间;</p>
 <p>在 <code>redis</code> 中, SETNX 命令，它用于设置键值对的值。具体来说，就是这个命令在执行时会判断键值对是否存在，如果不存在，就设置键值对的值，如果存在，就不做任何设置。</p>
-<pre><code>SETNX key value
+<pre tabindex="0"><code>SETNX key value
 
 // 加锁
 SETNX lock_key 1
@@ -172,26 +161,22 @@ SETNX lock_key 1
 DO THINGS
 // 释放锁
 DEL lock_key
-</code></pre>
-<p>那在 <code>redis</code> 中, 如何保证原子性呢?</p>
-<pre><code># NX 不存在即设置,EX PX  设置过期时间
+</code></pre><p>那在 <code>redis</code> 中, 如何保证原子性呢?</p>
+<pre tabindex="0"><code># NX 不存在即设置,EX PX  设置过期时间
 SET key value [EX seconds | PX milliseconds]  [NX]
-</code></pre>
-<p>对于释放锁而言, <code>DEL lock_key</code> 本身不存在原子性的问题; 但是如果要解决问题4, 保证 client 只释放自己的锁, 此时加锁时就需要把 value 设置为 client 的一个标识, 与此同时, 释放锁时, 也需要先判断当前 client 是否能释放锁, 此时的命令为:</p>
-<pre><code class="language-go">// 加锁, unique_value作为客户端唯一性的标识
-SET lock_key unique_value NX PX 10000
-
-//释放锁 比较unique_value是否相等，避免误释放, 使用 lua 脚本保证原子性
-if redis.call(&quot;get&quot;,KEYS[1]) == ARGV[1] then
-    return redis.call(&quot;del&quot;,KEYS[1])
-else
-    return 0
-end
-</code></pre>
-<p>KEYS[1]表示 lock_key，ARGV[1]是当前客户端的唯一标识，这两个值都是我们在执行 Lua 脚本时作为参数传入.</p>
-<pre><code class="language-shell">redis-cli  --eval  unlock.script lock_key , unique_value 
-</code></pre>
-<h3 id="redlock">redlock</h3>
+</code></pre><p>对于释放锁而言, <code>DEL lock_key</code> 本身不存在原子性的问题; 但是如果要解决问题4, 保证 client 只释放自己的锁, 此时加锁时就需要把 value 设置为 client 的一个标识, 与此同时, 释放锁时, 也需要先判断当前 client 是否能释放锁, 此时的命令为:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// 加锁, unique_value作为客户端唯一性的标识
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nx">SET</span> <span class="nx">lock_key</span> <span class="nx">unique_value</span> <span class="nx">NX</span> <span class="nx">PX</span> <span class="mi">10000</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">//释放锁 比较unique_value是否相等，避免误释放, 使用 lua 脚本保证原子性
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">if</span> <span class="nx">redis</span><span class="p">.</span><span class="nf">call</span><span class="p">(</span><span class="s">&#34;get&#34;</span><span class="p">,</span><span class="nx">KEYS</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">==</span> <span class="nx">ARGV</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="nx">then</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="nx">redis</span><span class="p">.</span><span class="nf">call</span><span class="p">(</span><span class="s">&#34;del&#34;</span><span class="p">,</span><span class="nx">KEYS</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+</span></span><span class="line"><span class="cl"><span class="k">else</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="mi">0</span>
+</span></span><span class="line"><span class="cl"><span class="nx">end</span>
+</span></span></code></pre></div><p>KEYS[1]表示 lock_key，ARGV[1]是当前客户端的唯一标识，这两个值都是我们在执行 Lua 脚本时作为参数传入.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">redis-cli  --eval  unlock.script lock_key , unique_value 
+</span></span></code></pre></div><h3 id="redlock">redlock</h3>
 <p>上述基于redis实现的分布式锁, redis 是单实例的, 如果要增强锁的可靠性, 可以基于多个redis节点去实现, 问题从这里开始变得复杂, 业界已经出现了基于多个redis实例实现分布式锁的算法, redlock.</p>
 <blockquote>
 <p>Redlock 算法的基本思路，是让客户端和多个独立的 Redis 实例依次请求加锁，如果客户端能够和半数以上的实例成功地完成加锁操作，那么我们就认为，客户端成功地获得分布式锁了，否则加锁失败。这样一来，即使有单个 Redis 实例发生故障，因为锁变量在其它实例上也有保存，所以，客户端仍然可以正常地进行锁操作，锁变量并不会丢失。</p>

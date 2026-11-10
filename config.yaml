@@ -56,7 +56,10 @@ markup:
     endLevel: 4
     ordered: false
   highlight:
-    codeFences: false
+    codeFences: true
+    noClasses: false
+    guessSyntax: false
+    tabWidth: 4
   goldmark:
     renderer:
       unsafe: true

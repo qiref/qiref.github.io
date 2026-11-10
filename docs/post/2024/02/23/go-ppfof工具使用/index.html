@@ -8,17 +8,6 @@
     <link rel="stylesheet" href="/css/fonts.css" />
     
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-PGMJFXZJRT"></script>
-
-<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/scala.min.js"></script>
-
-<script>
-hljs.configure({languages: []});
-hljs.highlightAll();
-</script>
-
-<link href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/github.min.css"  rel="stylesheet">
-
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
@@ -123,37 +112,35 @@ hljs.highlightAll();
 </ul>
 <h2 id="启用方式">启用方式</h2>
 <p>在<code>main</code>函数之前使用启动, <code>DoProfile(6060)</code></p>
-<pre><code class="language-go">
-import (
-    &quot;net/http&quot;
-    _ &quot;net/http/pprof&quot;
-    &quot;strconv&quot;
-)
-
-type ProfileServer struct {
-}
-
-func (this *ProfileServer) DoProfile(port int) {
-    go func() {
-        err := http.ListenAndServe(&quot;:&quot;+strconv.FormatInt(int64(port), 10), nil)
-        if err != nil {
-            log.Errorf(&quot;Failed to do profile on port: %d&quot;, port)
-        } else {
-            log.Infof(&quot;pprof start successfully on port %d&quot;, port)
-        }
-    }()
-}
-  
-</code></pre>
-<h2 id="分析">分析</h2>
-<pre><code class="language-shell">curl 'http://127.0.0.1:6060/debug/pprof/profile' -o profile.20240223
-curl 'http://127.0.0.1:6060/debug/pprof/heap' -o heap.20240223
-curl 'http://127.0.0.1:6060/debug/pprof/block' -o block.20240223
-curl 'http://127.0.0.1:6060/debug/pprof/mutex' -o mutex.20240223
-curl 'http://127.0.0.1:6060/debug/pprof/trace' -o trace.20240223
-  
-</code></pre>
-<p>输出对应的pprof文件之后, 对文件进行分析;</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="p">(</span>
+</span></span><span class="line"><span class="cl">    <span class="s">&#34;net/http&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">_</span> <span class="s">&#34;net/http/pprof&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="s">&#34;strconv&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">ProfileServer</span> <span class="kd">struct</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="p">(</span><span class="nx">this</span> <span class="o">*</span><span class="nx">ProfileServer</span><span class="p">)</span> <span class="nf">DoProfile</span><span class="p">(</span><span class="nx">port</span> <span class="kt">int</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">go</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">err</span> <span class="o">:=</span> <span class="nx">http</span><span class="p">.</span><span class="nf">ListenAndServe</span><span class="p">(</span><span class="s">&#34;:&#34;</span><span class="o">+</span><span class="nx">strconv</span><span class="p">.</span><span class="nf">FormatInt</span><span class="p">(</span><span class="nb">int64</span><span class="p">(</span><span class="nx">port</span><span class="p">),</span> <span class="mi">10</span><span class="p">),</span> <span class="kc">nil</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">log</span><span class="p">.</span><span class="nf">Errorf</span><span class="p">(</span><span class="s">&#34;Failed to do profile on port: %d&#34;</span><span class="p">,</span> <span class="nx">port</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">log</span><span class="p">.</span><span class="nf">Infof</span><span class="p">(</span><span class="s">&#34;pprof start successfully on port %d&#34;</span><span class="p">,</span> <span class="nx">port</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}()</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">  
+</span></span></code></pre></div><h2 id="分析">分析</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">curl <span class="s1">&#39;http://127.0.0.1:6060/debug/pprof/profile&#39;</span> -o profile.20240223
+</span></span><span class="line"><span class="cl">curl <span class="s1">&#39;http://127.0.0.1:6060/debug/pprof/heap&#39;</span> -o heap.20240223
+</span></span><span class="line"><span class="cl">curl <span class="s1">&#39;http://127.0.0.1:6060/debug/pprof/block&#39;</span> -o block.20240223
+</span></span><span class="line"><span class="cl">curl <span class="s1">&#39;http://127.0.0.1:6060/debug/pprof/mutex&#39;</span> -o mutex.20240223
+</span></span><span class="line"><span class="cl">curl <span class="s1">&#39;http://127.0.0.1:6060/debug/pprof/trace&#39;</span> -o trace.20240223
+</span></span><span class="line"><span class="cl">  
+</span></span></code></pre></div><p>输出对应的pprof文件之后, 对文件进行分析;</p>
 <ul>
 <li>Flat：函数自身运行耗时</li>
 <li>Flat%：函数自身耗时比例</li>
@@ -164,12 +151,12 @@ curl 'http://127.0.0.1:6060/debug/pprof/trace' -o trace.20240223
 <h3 id="使用命令行分析">使用命令行分析</h3>
 <p>输入 help 查看帮助命令, 常有 <code>top</code> 和 <code>list</code></p>
 <p><code>top</code> 找到占用资源最高的函数, <code>list methodName</code> 找到源码所在;</p>
-<pre><code>go tool pprof profile.230904
+<pre tabindex="0"><code>go tool pprof profile.230904
 File: xx_cc
 Type: cpu
 Time: Feb 23, 2024 at 10:53am (CST)
 Duration: 30s, Total samples = 230ms ( 0.77%)
-Entering interactive mode (type &quot;help&quot; for commands, &quot;o&quot; for options)
+Entering interactive mode (type &#34;help&#34; for commands, &#34;o&#34; for options)
 (pprof) top 20
 Showing nodes accounting for 300ms, 88.24% of 340ms total
 Showing top 20 nodes out of 212
@@ -203,26 +190,23 @@ ROUTINE ======================== fmt.(*pp).doPrintf in /usr/lib/golang/src/fmt/p
          .          .   1011:   for i := 0; i &lt; end; {
          .          .   1012:           p.goodArgNum = true
          .          .   1013:           lasti := i
-      10ms       10ms   1014:           for i &lt; end &amp;&amp; format[i] != '%' {
+      10ms       10ms   1014:           for i &lt; end &amp;&amp; format[i] != &#39;%&#39; {
          .          .   1015:                   i++
          .          .   1016:           }
          .          .   1017:           if i &gt; lasti {
          .          .   1018:                   p.buf.writeString(format[lasti:i])
          .          .   1019:           }
 (pprof)
-</code></pre>
-<h3 id="web-界面查看分析结果">web 界面查看分析结果</h3>
+</code></pre><h3 id="web-界面查看分析结果">web 界面查看分析结果</h3>
 <p>需要先安装 graphviz</p>
-<pre><code class="language-shell">brew install graphviz # for macos
-apt install graphviz # for ubuntu
-yum install graphviz # for centos
-</code></pre>
-<p>界面分析更为方便, 还能看 CPU 火焰图, 更容易找到问题所在; 启动web服务查看profile分析结果:</p>
-<pre><code class="language-shell">go tool pprof -http=127.0.0.1:8001 profile.230904
-  Serving web UI on http://127.0.0.1:8001
-  
-</code></pre>
-
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">brew install graphviz <span class="c1"># for macos</span>
+</span></span><span class="line"><span class="cl">apt install graphviz <span class="c1"># for ubuntu</span>
+</span></span><span class="line"><span class="cl">yum install graphviz <span class="c1"># for centos</span>
+</span></span></code></pre></div><p>界面分析更为方便, 还能看 CPU 火焰图, 更容易找到问题所在; 启动web服务查看profile分析结果:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">go tool pprof -http<span class="o">=</span>127.0.0.1:8001 profile.230904
+</span></span><span class="line"><span class="cl">  Serving web UI on http://127.0.0.1:8001
+</span></span><span class="line"><span class="cl">  
+</span></span></code></pre></div>
 </main>
 
   <footer>

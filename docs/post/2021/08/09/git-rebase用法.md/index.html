@@ -8,17 +8,6 @@
     <link rel="stylesheet" href="/css/fonts.css" />
     
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-PGMJFXZJRT"></script>
-
-<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/scala.min.js"></script>
-
-<script>
-hljs.configure({languages: []});
-hljs.highlightAll();
-</script>
-
-<link href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/github.min.css"  rel="stylesheet">
-
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
@@ -117,16 +106,13 @@ hljs.highlightAll();
 <h2 id="commit-合并">commit 合并</h2>
 <p>当多个commit存在时，提交MR会出现很多的commit，review会很困难，这时可以将多个commit合并为一个commit。</p>
 <p>命令说明：</p>
-<pre><code class="language-shell">git rebase -i  [startpoint]  [endpoint] 
-</code></pre>
-<p>其中-i的意思是&ndash;interactive，即弹出交互式的界面让用户编辑完成合并操作，[startpoint] [endpoint] 则指定了一个编辑区间，如果不指定[endpoint]，则该区间的终点默认是当前分支HEAD所指向的commit(注：该区间指定的是一个前开后闭的区间)。
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">git rebase -i  <span class="o">[</span>startpoint<span class="o">]</span>  <span class="o">[</span>endpoint<span class="o">]</span> 
+</span></span></code></pre></div><p>其中-i的意思是&ndash;interactive，即弹出交互式的界面让用户编辑完成合并操作，[startpoint] [endpoint] 则指定了一个编辑区间，如果不指定[endpoint]，则该区间的终点默认是当前分支HEAD所指向的commit(注：该区间指定的是一个前开后闭的区间)。
 在查看到了log日志后，我们运行以下命令：</p>
-<pre><code class="language-shell">git rebase -i 36224db
-or
-git rebase -i HEAD~3 # 合并最近三次commit
-
-</code></pre>
-<p>每一个commit id 前面的pick表示指令类型，git 为我们提供了以下几个命令:
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">git rebase -i 36224db
+</span></span><span class="line"><span class="cl">or
+</span></span><span class="line"><span class="cl">git rebase -i HEAD~3 <span class="c1"># 合并最近三次commit</span>
+</span></span></code></pre></div><p>每一个commit id 前面的pick表示指令类型，git 为我们提供了以下几个命令:
 pick：保留该commit（缩写:p）
 reword：保留该commit，但我需要修改该commit的注释（缩写:r）
 edit：保留该commit, 但我要停下来修改该提交(不仅仅修改注释)（缩写:e）
@@ -135,7 +121,7 @@ fixup：将该commit和前一个commit合并，但我不要保留该提交的注
 exec：执行shell命令（缩写:x）
 drop：我要丢弃该commit（缩写:d）</p>
 <h3 id="示例">示例</h3>
-<pre><code class="language-shel">git log
+<pre tabindex="0"><code class="language-shel" data-lang="shel">git log
 
 commit 4ab2734f3380fbdace8620f461cd04c7993b6b0b (HEAD -&gt; master)
 Author: archieyao &lt;archieyao@tencent.com&gt;
@@ -160,86 +146,80 @@ Author: archieyao &lt;archieyao@tencent.com&gt;
 Date:   Mon Aug 9 09:31:11 2021 +0800
 
     [update] readme
-</code></pre>
-<p>现在合并最近三次的commit。</p>
-<pre><code class="language-shell">git rebase -i 7a9ab6f445ce0c7525a5dce3ca15fe600282553b
-
-pick 1c3c123 add something
-s 60d0bbb add something 1
-s 4ab2734 add something 2
-
-# Rebase 7a9ab6f..4ab2734 onto 7a9ab6f (3 commands)
-#
-# Commands:
-# p, pick &lt;commit&gt; = use commit
-# r, reword &lt;commit&gt; = use commit, but edit the commit message
-# e, edit &lt;commit&gt; = use commit, but stop for amending
-# s, squash &lt;commit&gt; = use commit, but meld into previous commit
-# f, fixup &lt;commit&gt; = like &quot;squash&quot;, but discard this commit's log message
-# x, exec &lt;command&gt; = run command (the rest of the line) using shell
-# b, break = stop here (continue rebase later with 'git rebase --continue')
-# d, drop &lt;commit&gt; = remove commit
-# l, label &lt;label&gt; = label current HEAD with a name
-# t, reset &lt;label&gt; = reset HEAD to a label
-# m, merge [-C &lt;commit&gt; | -c &lt;commit&gt;] &lt;label&gt; [# &lt;oneline&gt;]
-# .       create a merge commit using the original merge commit's
-# .       message (or the oneline, if no original merge commit was
-# .       specified). Use -c &lt;commit&gt; to reword the commit message.
-#
-# These lines can be re-ordered; they are executed from top to bottom.
-#
-# If you remove a line here THAT COMMIT WILL BE LOST.
-#
-# However, if you remove everything, the rebase will be aborted.
-</code></pre>
-<p>然后继续编辑，选择commit message，删除后两次的commit message。</p>
-<pre><code class="language-shell"># This is a combination of 3 commits.
-# This is the 1st commit message:
-
-add something
-
-# This is the commit message #2:
-
-add something 1 # 删除这行
-
-# This is the commit message #3:
-
-add something 2  # 删除这行
-
-# Please enter the commit message for your changes. Lines starting
-# with '#' will be ignored, and an empty message aborts the commit.
-#
-# Date:      Mon Aug 9 16:37:43 2021 +0800
-#
-# interactive rebase in progress; onto 7a9ab6f
-# Last commands done (3 commands done):
-#    squash 60d0bbb add something 1
-#    squash 4ab2734 add something 2
-# No commands remaining.
-# You are currently rebasing branch 'master' on '7a9ab6f'.
-#
-# Changes to be committed:
-#       modified:   README.md
-</code></pre>
-<p>保存退出后，可以看到输出信息：</p>
-<pre><code class="language-shel">[detached HEAD 98eef0d] add something
+</code></pre><p>现在合并最近三次的commit。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">git rebase -i 7a9ab6f445ce0c7525a5dce3ca15fe600282553b
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">pick 1c3c123 add something
+</span></span><span class="line"><span class="cl">s 60d0bbb add something <span class="m">1</span>
+</span></span><span class="line"><span class="cl">s 4ab2734 add something <span class="m">2</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Rebase 7a9ab6f..4ab2734 onto 7a9ab6f (3 commands)</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># Commands:</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># p, pick &lt;commit&gt; = use commit</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># r, reword &lt;commit&gt; = use commit, but edit the commit message</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># e, edit &lt;commit&gt; = use commit, but stop for amending</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># s, squash &lt;commit&gt; = use commit, but meld into previous commit</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># f, fixup &lt;commit&gt; = like &#34;squash&#34;, but discard this commit&#39;s log message</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># x, exec &lt;command&gt; = run command (the rest of the line) using shell</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># b, break = stop here (continue rebase later with &#39;git rebase --continue&#39;)</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># d, drop &lt;commit&gt; = remove commit</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># l, label &lt;label&gt; = label current HEAD with a name</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># t, reset &lt;label&gt; = reset HEAD to a label</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># m, merge [-C &lt;commit&gt; | -c &lt;commit&gt;] &lt;label&gt; [# &lt;oneline&gt;]</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># .       create a merge commit using the original merge commit&#39;s</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># .       message (or the oneline, if no original merge commit was</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># .       specified). Use -c &lt;commit&gt; to reword the commit message.</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># These lines can be re-ordered; they are executed from top to bottom.</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># If you remove a line here THAT COMMIT WILL BE LOST.</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># However, if you remove everything, the rebase will be aborted.</span>
+</span></span></code></pre></div><p>然后继续编辑，选择commit message，删除后两次的commit message。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1"># This is a combination of 3 commits.</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># This is the 1st commit message:</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">add something
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># This is the commit message #2:</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">add something <span class="m">1</span> <span class="c1"># 删除这行</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># This is the commit message #3:</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">add something <span class="m">2</span>  <span class="c1"># 删除这行</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Please enter the commit message for your changes. Lines starting</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># with &#39;#&#39; will be ignored, and an empty message aborts the commit.</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># Date:      Mon Aug 9 16:37:43 2021 +0800</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># interactive rebase in progress; onto 7a9ab6f</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># Last commands done (3 commands done):</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#    squash 60d0bbb add something 1</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#    squash 4ab2734 add something 2</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># No commands remaining.</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># You are currently rebasing branch &#39;master&#39; on &#39;7a9ab6f&#39;.</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># Changes to be committed:</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#       modified:   README.md</span>
+</span></span></code></pre></div><p>保存退出后，可以看到输出信息：</p>
+<pre tabindex="0"><code class="language-shel" data-lang="shel">[detached HEAD 98eef0d] add something
  Date: Mon Aug 9 16:37:43 2021 +0800
  1 file changed, 8 insertions(+)
 Successfully rebased and updated refs/heads/master.
-</code></pre>
-<p>如果后续推送到远程，需要 <code>git push origin --force xxx</code> ，强制覆盖远程代码。</p>
+</code></pre><p>如果后续推送到远程，需要 <code>git push origin --force xxx</code> ，强制覆盖远程代码。</p>
 <h2 id="同步master代码">同步master代码</h2>
 <p>开发时，从master上checkout一个dev分支，开发一段时间后，master上的代码有更新，这时从master上拉取更新。</p>
-<pre><code class="language-shell">git rebase origin master
-# 等价于 git pull origin master --rebase
-git rebase --continue
-git rebase --abort
-</code></pre>
-<p>在rebase的过程中，也许会出现冲突(conflict)，在这种情况，Git会停止rebase并会让你去解决冲突；</p>
-<pre><code class="language-shell">git add conflict file
-git rebase --continue
-</code></pre>
-<p>在解决完冲突后，用<code>git-add</code>去更新这些内容的索引(index)， 然后，你无需执行 git-commit,只要执行: <code>git rebase --continue</code>这样git会继续应用(apply)余下的补丁。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">git rebase origin master
+</span></span><span class="line"><span class="cl"><span class="c1"># 等价于 git pull origin master --rebase</span>
+</span></span><span class="line"><span class="cl">git rebase --continue
+</span></span><span class="line"><span class="cl">git rebase --abort
+</span></span></code></pre></div><p>在rebase的过程中，也许会出现冲突(conflict)，在这种情况，Git会停止rebase并会让你去解决冲突；</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">git add conflict file
+</span></span><span class="line"><span class="cl">git rebase --continue
+</span></span></code></pre></div><p>在解决完冲突后，用<code>git-add</code>去更新这些内容的索引(index)， 然后，你无需执行 git-commit,只要执行: <code>git rebase --continue</code>这样git会继续应用(apply)余下的补丁。</p>
 <p>在任何时候，你可以用<code> git rebase --abort</code>来终止rebase的行动，并且&quot;mywork&quot; 分支会回到rebase开始前的状态。</p>
 <p>git merge 与 git rebase 的最终效果是一致的，但git merge会产生合并记录，使用git rebase 会让分支看起来没有合并一样。</p>
 <hr>

@@ -8,17 +8,6 @@
     <link rel="stylesheet" href="/css/fonts.css" />
     
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-PGMJFXZJRT"></script>
-
-<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/scala.min.js"></script>
-
-<script>
-hljs.configure({languages: []});
-hljs.highlightAll();
-</script>
-
-<link href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/github.min.css"  rel="stylesheet">
-
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
@@ -167,11 +156,10 @@ hljs.highlightAll();
 <h3 id="flink-checkpoint-整体流程">Flink Checkpoint 整体流程</h3>
 <p><img src="/assets/img/checkpoint-flow.svg" alt="Checkpoint 流程"></p>
 <p>Chekcpoint 是由 jobmanager 中的 CheckpointCoordinator 发起的，CheckpointCoordinator 是一个类，Flink 中具体描述如下：</p>
-<pre><code class="language-java">// The checkpoint coordinator coordinates the distributed snapshots of operators and state.
-// It triggers the checkpoint by sending the messages to the relevant tasks and 
-// collects the checkpoint acknowledgements.
-</code></pre>
-<p>CheckpointCoordinator 会调度task 进行 checkpoint，并接收来自 tasks 的 ack；</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="c1">// The checkpoint coordinator coordinates the distributed snapshots of operators and state.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c1">// It triggers the checkpoint by sending the messages to the relevant tasks and </span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c1">// collects the checkpoint acknowledgements.</span><span class="w">
+</span></span></span></code></pre></div><p>CheckpointCoordinator 会调度task 进行 checkpoint，并接收来自 tasks 的 ack；</p>
 <p>用于保存 Checkpoint state 和 meta 的容器称为 state backend，Flink 中自带几种 state backend：</p>
 <ul>
 <li>MemoryStateBackend 内存型（默认）</li>
@@ -183,76 +171,72 @@ hljs.highlightAll();
 <p>当 Barrier Alignment 时，先到来的数据进行 buffer，就是 <code>EXACTLY_ONCE</code>，当先到来的数据先进行处理时，就是 <code>AT_LEAST_ONCE</code> 。</p>
 <p>从Flink 1.11开始，Checkpoint 可以是非对齐的。 Unaligned checkpoints 包含 In-flight 数据(例如，存储在缓冲区中的数据)作为 Checkpoint State的一部分，允许 Checkpoint Barrier 跨越这些缓冲区。因此，Checkpoint 时长变得与当前吞吐量无关，因为 Checkpoint Barrier 实际上已经不再嵌入到数据流当中。 使用  Unaligned checkpoints 也会带来新的代价，State 中会保存数据，这样会增加 State 的负担；</p>
 <p>如果到算子背压是由于 Checkpoint 周期过长（Barrier Alignment）时，此时建议使用  Unaligned checkpoint；</p>
-<pre><code class="language-java">StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
-// 启用非对齐 Checkpoint
-env.getCheckpointConfig().enableUnalignedCheckpoints();
-</code></pre>
-<h2 id="flink-checkpoint-使用">Flink Checkpoint 使用</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="n">StreamExecutionEnvironment</span><span class="w"> </span><span class="n">env</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">StreamExecutionEnvironment</span><span class="p">.</span><span class="na">getExecutionEnvironment</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c1">// 启用非对齐 Checkpoint</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">env</span><span class="p">.</span><span class="na">getCheckpointConfig</span><span class="p">().</span><span class="na">enableUnalignedCheckpoints</span><span class="p">();</span><span class="w">
+</span></span></span></code></pre></div><h2 id="flink-checkpoint-使用">Flink Checkpoint 使用</h2>
 <h3 id="flink-job-重启策略">Flink Job 重启策略</h3>
 <p>在作业运行时，经常会由于各种不确定因素导致作业停止，网络，磁盘，外部依赖等等，Flink 内部提供多种作业重启的策略来减少运维成本，Flink 程序设置重启策略后，当作业停止时，Flink 可以重新拉起作业，常用的重启策略如下：</p>
-<pre><code class="language-java">StreamExecutionEnvironment executionEnvironment =
-        StreamExecutionEnvironment.getExecutionEnvironment();
-// 默认重启策略，没有重启策略
-executionEnvironment.setRestartStrategy(RestartStrategies.noRestart());
-// 采用集群的重启策略，如果没有定义其他重启策略，默认选择固定延时重启策略。
-executionEnvironment.setRestartStrategy(RestartStrategies.fallBackRestart());
-// 采用集群的重启策略，如果没有定义其他重启策略，默认选择固定延时重启策略。
-executionEnvironment.setRestartStrategy(RestartStrategies.fallBackRestart());
-// 如果20 S 内，有1次错误，则终止作业，不满足则会重启作业，重启时间间隔为 5 S
-executionEnvironment.setRestartStrategy(
-        RestartStrategies.failureRateRestart(1, Time.seconds(20), Time.seconds(5)));
-</code></pre>
-<p>source 定义了一个 Tuple3 的数据源，index 一直自增，在 map 过程中，遇到 100 时抛出一个异常； 作业运行的结果是，当 index=100 时，作业失败，然后重启，重新开始运行：</p>
-<pre><code class="language-java">
-public class MapFunc {
-    public static MapFunction&lt;Tuple3&lt;String, Integer, Long&gt;, Tuple2&lt;String, Integer&gt;&gt; getMapFunc(
-            Logger logger) {
-        return new MapFunction&lt;Tuple3&lt;String, Integer, Long&gt;, Tuple2&lt;String, Integer&gt;&gt;() {
-            @Override
-            public Tuple2&lt;String, Integer&gt; map(Tuple3&lt;String, Integer, Long&gt; event)
-                    throws Exception {
-                if (event.f1 % 100 == 0) {
-                    logger.error(&quot;event.f1 more than 100. value : &quot; + event.f1);
-                    throw new RuntimeException(&quot;event.f1 more than 100.&quot;);
-                }
-                return new Tuple2&lt;&gt;(event.f0, event.f1);
-            }
-        };
-    }
-}
-
-// 运行作业
-public class FixedDelayRestartJob {
-
-    public static void main(String[] args) throws Exception {
-        Logger logger = LoggerFactory.getLogger(FixedDelayRestartJob.class);
-        StreamExecutionEnvironment executionEnvironment =
-                StreamExecutionEnvironment.getExecutionEnvironment();
-        executionEnvironment.setParallelism(1);
-        // 重启尝试次数 2，每次重启间隔 5 S
-        executionEnvironment.setRestartStrategy(
-                RestartStrategies.fixedDelayRestart(2, Time.seconds(5)));
-        // source
-        DataStreamSource&lt;Tuple3&lt;String, Integer, Long&gt;&gt; source =
-                executionEnvironment.addSource(SourceFunc.getSourceFunc(logger));
-        // map operator
-        SingleOutputStreamOperator&lt;Tuple2&lt;String, Integer&gt;&gt; operator =
-                source.map(MapFunc.getMapFunc(logger));
-        // sink
-        operator.print();
-        executionEnvironment.execute(&quot;not-restart&quot;);
-    }
-}
-</code></pre>
-<h3 id="flink-job-开启-checkpoint">Flink Job 开启 Checkpoint</h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="n">StreamExecutionEnvironment</span><span class="w"> </span><span class="n">executionEnvironment</span><span class="w"> </span><span class="o">=</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">StreamExecutionEnvironment</span><span class="p">.</span><span class="na">getExecutionEnvironment</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c1">// 默认重启策略，没有重启策略</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">executionEnvironment</span><span class="p">.</span><span class="na">setRestartStrategy</span><span class="p">(</span><span class="n">RestartStrategies</span><span class="p">.</span><span class="na">noRestart</span><span class="p">());</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c1">// 采用集群的重启策略，如果没有定义其他重启策略，默认选择固定延时重启策略。</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">executionEnvironment</span><span class="p">.</span><span class="na">setRestartStrategy</span><span class="p">(</span><span class="n">RestartStrategies</span><span class="p">.</span><span class="na">fallBackRestart</span><span class="p">());</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c1">// 采用集群的重启策略，如果没有定义其他重启策略，默认选择固定延时重启策略。</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">executionEnvironment</span><span class="p">.</span><span class="na">setRestartStrategy</span><span class="p">(</span><span class="n">RestartStrategies</span><span class="p">.</span><span class="na">fallBackRestart</span><span class="p">());</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c1">// 如果20 S 内，有1次错误，则终止作业，不满足则会重启作业，重启时间间隔为 5 S</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">executionEnvironment</span><span class="p">.</span><span class="na">setRestartStrategy</span><span class="p">(</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">RestartStrategies</span><span class="p">.</span><span class="na">failureRateRestart</span><span class="p">(</span><span class="n">1</span><span class="p">,</span><span class="w"> </span><span class="n">Time</span><span class="p">.</span><span class="na">seconds</span><span class="p">(</span><span class="n">20</span><span class="p">),</span><span class="w"> </span><span class="n">Time</span><span class="p">.</span><span class="na">seconds</span><span class="p">(</span><span class="n">5</span><span class="p">)));</span><span class="w">
+</span></span></span></code></pre></div><p>source 定义了一个 Tuple3 的数据源，index 一直自增，在 map 过程中，遇到 100 时抛出一个异常； 作业运行的结果是，当 index=100 时，作业失败，然后重启，重新开始运行：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MapFunc</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="n">MapFunction</span><span class="o">&lt;</span><span class="n">Tuple3</span><span class="o">&lt;</span><span class="n">String</span><span class="p">,</span><span class="w"> </span><span class="n">Integer</span><span class="p">,</span><span class="w"> </span><span class="n">Long</span><span class="o">&gt;</span><span class="p">,</span><span class="w"> </span><span class="n">Tuple2</span><span class="o">&lt;</span><span class="n">String</span><span class="p">,</span><span class="w"> </span><span class="n">Integer</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="nf">getMapFunc</span><span class="p">(</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">Logger</span><span class="w"> </span><span class="n">logger</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">MapFunction</span><span class="o">&lt;</span><span class="n">Tuple3</span><span class="o">&lt;</span><span class="n">String</span><span class="p">,</span><span class="w"> </span><span class="n">Integer</span><span class="p">,</span><span class="w"> </span><span class="n">Long</span><span class="o">&gt;</span><span class="p">,</span><span class="w"> </span><span class="n">Tuple2</span><span class="o">&lt;</span><span class="n">String</span><span class="p">,</span><span class="w"> </span><span class="n">Integer</span><span class="o">&gt;&gt;</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="nd">@Override</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="kd">public</span><span class="w"> </span><span class="n">Tuple2</span><span class="o">&lt;</span><span class="n">String</span><span class="p">,</span><span class="w"> </span><span class="n">Integer</span><span class="o">&gt;</span><span class="w"> </span><span class="nf">map</span><span class="p">(</span><span class="n">Tuple3</span><span class="o">&lt;</span><span class="n">String</span><span class="p">,</span><span class="w"> </span><span class="n">Integer</span><span class="p">,</span><span class="w"> </span><span class="n">Long</span><span class="o">&gt;</span><span class="w"> </span><span class="n">event</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                    </span><span class="kd">throws</span><span class="w"> </span><span class="n">Exception</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">event</span><span class="p">.</span><span class="na">f1</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="n">100</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                    </span><span class="n">logger</span><span class="p">.</span><span class="na">error</span><span class="p">(</span><span class="s">&#34;event.f1 more than 100. value : &#34;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">event</span><span class="p">.</span><span class="na">f1</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                    </span><span class="k">throw</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">RuntimeException</span><span class="p">(</span><span class="s">&#34;event.f1 more than 100.&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="k">return</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Tuple2</span><span class="o">&lt;&gt;</span><span class="p">(</span><span class="n">event</span><span class="p">.</span><span class="na">f0</span><span class="p">,</span><span class="w"> </span><span class="n">event</span><span class="p">.</span><span class="na">f1</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">};</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c1">// 运行作业</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">FixedDelayRestartJob</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="n">String</span><span class="o">[]</span><span class="w"> </span><span class="n">args</span><span class="p">)</span><span class="w"> </span><span class="kd">throws</span><span class="w"> </span><span class="n">Exception</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">Logger</span><span class="w"> </span><span class="n">logger</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">LoggerFactory</span><span class="p">.</span><span class="na">getLogger</span><span class="p">(</span><span class="n">FixedDelayRestartJob</span><span class="p">.</span><span class="na">class</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">StreamExecutionEnvironment</span><span class="w"> </span><span class="n">executionEnvironment</span><span class="w"> </span><span class="o">=</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="n">StreamExecutionEnvironment</span><span class="p">.</span><span class="na">getExecutionEnvironment</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">executionEnvironment</span><span class="p">.</span><span class="na">setParallelism</span><span class="p">(</span><span class="n">1</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// 重启尝试次数 2，每次重启间隔 5 S</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">executionEnvironment</span><span class="p">.</span><span class="na">setRestartStrategy</span><span class="p">(</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="n">RestartStrategies</span><span class="p">.</span><span class="na">fixedDelayRestart</span><span class="p">(</span><span class="n">2</span><span class="p">,</span><span class="w"> </span><span class="n">Time</span><span class="p">.</span><span class="na">seconds</span><span class="p">(</span><span class="n">5</span><span class="p">)));</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// source</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">DataStreamSource</span><span class="o">&lt;</span><span class="n">Tuple3</span><span class="o">&lt;</span><span class="n">String</span><span class="p">,</span><span class="w"> </span><span class="n">Integer</span><span class="p">,</span><span class="w"> </span><span class="n">Long</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">source</span><span class="w"> </span><span class="o">=</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="n">executionEnvironment</span><span class="p">.</span><span class="na">addSource</span><span class="p">(</span><span class="n">SourceFunc</span><span class="p">.</span><span class="na">getSourceFunc</span><span class="p">(</span><span class="n">logger</span><span class="p">));</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// map operator</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">SingleOutputStreamOperator</span><span class="o">&lt;</span><span class="n">Tuple2</span><span class="o">&lt;</span><span class="n">String</span><span class="p">,</span><span class="w"> </span><span class="n">Integer</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">operator</span><span class="w"> </span><span class="o">=</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="n">source</span><span class="p">.</span><span class="na">map</span><span class="p">(</span><span class="n">MapFunc</span><span class="p">.</span><span class="na">getMapFunc</span><span class="p">(</span><span class="n">logger</span><span class="p">));</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// sink</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">operator</span><span class="p">.</span><span class="na">print</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">executionEnvironment</span><span class="p">.</span><span class="na">execute</span><span class="p">(</span><span class="s">&#34;not-restart&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><h3 id="flink-job-开启-checkpoint">Flink Job 开启 Checkpoint</h3>
 <p>在给 Flink 作业设置重启策略后，作业失败时会重新运行，此时，作业是从最开始的位置开始运行，每次重新启动后，上述示例中的 sum 都会从 0 开始；</p>
 <p>在真实场景下，通常不需要作业又重新把历史数据都计算一次，因为可能会造成数据重复，Flink 中因此引入了 Checkpoint 机制，作业可以利用 Checkpoint 保存 sum 的值，在失败的地方重新启动，此时 sum 的值会从 Checkpoint 中读取，并持续累加。</p>
-<pre><code class="language-java">// 重启尝试次数 2，每次重启间隔 5 S
-executionEnvironment.setRestartStrategy(RestartStrategies.fixedDelayRestart(2, Time.seconds(5)));
-// 每10ms进行一次 Checkpoint
-executionEnvironment.enableCheckpointing(10);
-</code></pre>
-<p>完整代码地址： <a href="https://github.com/ArchieYao/flink-learning/tree/main/hello-world">https://github.com/ArchieYao/flink-learning/tree/main/hello-world</a></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="c1">// 重启尝试次数 2，每次重启间隔 5 S</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">executionEnvironment</span><span class="p">.</span><span class="na">setRestartStrategy</span><span class="p">(</span><span class="n">RestartStrategies</span><span class="p">.</span><span class="na">fixedDelayRestart</span><span class="p">(</span><span class="n">2</span><span class="p">,</span><span class="w"> </span><span class="n">Time</span><span class="p">.</span><span class="na">seconds</span><span class="p">(</span><span class="n">5</span><span class="p">)));</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c1">// 每10ms进行一次 Checkpoint</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">executionEnvironment</span><span class="p">.</span><span class="na">enableCheckpointing</span><span class="p">(</span><span class="n">10</span><span class="p">);</span><span class="w">
+</span></span></span></code></pre></div><p>完整代码地址： <a href="https://github.com/ArchieYao/flink-learning/tree/main/hello-world">https://github.com/ArchieYao/flink-learning/tree/main/hello-world</a></p>
 <hr>
 <p>参考：</p>
 <p><a href="https://nightlies.apache.org/flink/flink-docs-release-1.16/zh/docs/ops/state/checkpointing_under_backpressure/">https://nightlies.apache.org/flink/flink-docs-release-1.16/zh/docs/ops/state/checkpointing_under_backpressure/</a></p>

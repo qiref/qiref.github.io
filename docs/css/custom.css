@@ -1,7 +1,14 @@
-/* 仿照 utteranc.es (GitHub Primer) 代码块与行内代码样式 */
-pre {
-  background-color: #f6f8fa !important;
-  border: 0 !important;
+/* ========== Hugo Chroma: Atom One Light 代码高亮方案 ========== */
+.highlight {
+  margin-top: 0;
+  margin-bottom: 16px;
+}
+
+pre,
+.highlight pre.chroma {
+  background-color: #fafafa !important;
+  color: #383a42 !important;
+  border: 1px solid #eaecef !important;
   border-radius: 6px !important;
   font-family: var(--font-mono) !important;
   font-size: 88% !important;
@@ -10,10 +17,18 @@ pre {
   padding: 16px !important;
   margin-top: 0;
   margin-bottom: 16px;
+  tab-size: 4;
+  outline: none;
 }
 
-.hljs, pre code.hljs, pre code {
+.highlight pre.chroma {
+  margin-bottom: 0;
+}
+
+pre code,
+.chroma code {
   background: transparent !important;
+  color: inherit !important;
   border: 0 !important;
   font-family: var(--font-mono) !important;
   font-size: 100% !important;
@@ -24,11 +39,196 @@ pre {
   word-break: normal;
 }
 
+/* 关键字 (func, return, if, type, struct, package, import...) -> One Light 紫 (#a626a4) */
+.chroma .k,
+.chroma .kd,
+.chroma .kn,
+.chroma .kp,
+.chroma .kr,
+.chroma .ow {
+  color: #a626a4;
+  font-weight: normal;
+}
+
+/* 函数名、方法调用、标签 -> One Light 蓝 (#4078f2) */
+.chroma .nf,
+.chroma .fm,
+.chroma .nl {
+  color: #4078f2;
+  font-weight: normal;
+}
+
+/* 运算符、内置函数 (make, len, append)、正则、符号 -> One Light 青蓝 (#0184bc) */
+.chroma .o,
+.chroma .nb,
+.chroma .sr,
+.chroma .ss {
+  color: #0184bc;
+  font-weight: normal;
+}
+
+/* 类型 (string, int)、类名、结构体、注解/装饰器、命名空间 -> One Light 暖金 (#c18401) */
+.chroma .kt,
+.chroma .nc,
+.chroma .nd,
+.chroma .ne,
+.chroma .nn {
+  color: #c18401;
+  font-weight: normal;
+}
+
+/* 数字、布尔值、常量、属性名 -> One Light 琥珀橙 (#986801) */
+.chroma .kc,
+.chroma .no,
+.chroma .na,
+.chroma .m,
+.chroma .mb,
+.chroma .mf,
+.chroma .mh,
+.chroma .mi,
+.chroma .il,
+.chroma .mo {
+  color: #986801;
+  font-weight: normal;
+}
+
+/* HTML/XML/YAML 标签、特殊变量 (this/self)、成员属性 -> One Light 珊瑚红 (#e45649) */
+.chroma .nt,
+.chroma .bp,
+.chroma .nv,
+.chroma .vc,
+.chroma .vg,
+.chroma .vi,
+.chroma .vm,
+.chroma .py {
+  color: #e45649;
+}
+
+/* 字符串字面量 -> One Light 森林绿 (#50a14f) */
+.chroma .s,
+.chroma .sa,
+.chroma .sb,
+.chroma .sc,
+.chroma .dl,
+.chroma .sd,
+.chroma .s2,
+.chroma .se,
+.chroma .sh,
+.chroma .si,
+.chroma .sx,
+.chroma .s1 {
+  color: #50a14f;
+}
+
+/* 括号 ()[]{} 与标点符号 .,;: -> 清冷中灰 (#696c77)，弱化视觉噪点 */
+.chroma .p {
+  color: #696c77;
+}
+
+/* 普通标识符与变量 */
+.chroma .n,
+.chroma .nx {
+  color: #383a42;
+}
+
+/* 注释 -> One Light 浅灰斜体 (#a0a1a7) */
+.chroma .c,
+.chroma .ch,
+.chroma .cm,
+.chroma .c1,
+.chroma .cs,
+.chroma .cp,
+.chroma .cpf {
+  color: #a0a1a7;
+  font-style: italic;
+}
+
+/* Diff 与通用格式 */
+.chroma .gd {
+  color: #e45649;
+  background-color: #ffebe9;
+}
+
+.chroma .gi {
+  color: #50a14f;
+  background-color: #dafbe1;
+}
+
+.chroma .ge {
+  font-style: italic;
+}
+
+.chroma .gs {
+  font-weight: 600;
+}
+
+.chroma .gh,
+.chroma .gu {
+  color: #4078f2;
+  font-weight: 600;
+}
+
+.chroma .go {
+  color: #696c77;
+}
+
+.chroma .gp {
+  color: #a0a1a7;
+  user-select: none;
+}
+
+.chroma .err {
+  color: #e45649;
+}
+
+/* Chroma 行高亮与行号表格兼容（防止被正文 table 边框样式污染） */
+.chroma .hl {
+  display: block;
+  width: 100%;
+  background-color: rgba(64, 120, 242, 0.08);
+}
+
+.chroma .lnlinks {
+  outline: none;
+  text-decoration: none;
+  color: inherit;
+}
+
+.chroma .lntable {
+  display: table;
+  width: auto;
+  border-spacing: 0;
+  border-collapse: collapse;
+  padding: 0;
+  margin: 0;
+  border: 0 !important;
+}
+
+.chroma .lntable tr,
+.chroma .lntable td,
+.chroma .lntd {
+  vertical-align: top;
+  padding: 0 !important;
+  margin: 0;
+  border: 0 !important;
+  background: transparent !important;
+}
+
+.chroma .lnt,
+.chroma .ln {
+  white-space: pre;
+  -webkit-user-select: none;
+  user-select: none;
+  margin-right: 0.6em;
+  padding: 0 0.4em 0 0;
+  color: #a0a1a7;
+}
+
 
 /* 代码块滚动条样式 - 隐藏滚动条但保留滚动功能 */
 pre,
 pre code,
-pre code.hljs {
+.chroma code {
   overflow-x: auto;
   scrollbar-width: none !important; /* Firefox */
   -ms-overflow-style: none !important; /* IE/Edge */
@@ -36,7 +236,7 @@ pre code.hljs {
 
 pre::-webkit-scrollbar,
 pre code::-webkit-scrollbar,
-pre code.hljs::-webkit-scrollbar {
+.chroma code::-webkit-scrollbar {
   display: none !important; /* Chrome/Safari */
   width: 0 !important;
   height: 0 !important;

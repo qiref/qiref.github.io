@@ -8,17 +8,6 @@
     <link rel="stylesheet" href="/css/fonts.css" />
     
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-PGMJFXZJRT"></script>
-
-<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/scala.min.js"></script>
-
-<script>
-hljs.configure({languages: []});
-hljs.highlightAll();
-</script>
-
-<link href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/github.min.css"  rel="stylesheet">
-
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
@@ -140,35 +129,33 @@ hljs.highlightAll();
 <hr>
 <h2 id="作业提交入口">作业提交入口</h2>
 <p><strong>起点文件：</strong> <code>StreamExecutionEnvironment.java</code></p>
-<pre><code class="language-java">// FileSinkDemo.java 中的这行代码是整个 Client Layer 的入口
-env.execute(&quot;Local FileSystem Debug&quot;);
-
-// 学习路径：
-// 1. StreamExecutionEnvironment.execute()
-// 2. StreamExecutionEnvironment.executeAsync()
-// 3. StreamExecutionEnvironment.getStreamGraph()
-// 4. PipelineExecutor.execute()
-</code></pre>
-<p><strong>学习方式：</strong></p>
-<pre><code class="language-java">// 创建调试 Demo
-public class ClientLayerLearningDemo {
-    public static void main(String[] args) throws Exception {
-        Configuration conf = new Configuration();
-        StreamExecutionEnvironment env = 
-            StreamExecutionEnvironment.createLocalEnvironmentWithWebUI(conf);
-        
-        env.setParallelism(2);
-        
-        // 简单的作业
-        DataStream&lt;String&gt; source = env.fromElements(&quot;a&quot;, &quot;b&quot;, &quot;c&quot;);
-        source.map(x -&gt; x.toUpperCase()).print();
-        
-        // 在这里打断点，开始追踪 Client Layer 的执行流程
-        env.execute(&quot;Client Layer Learning&quot;);
-    }
-}
-</code></pre>
-<p><strong>重点方法：</strong></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="c1">// FileSinkDemo.java 中的这行代码是整个 Client Layer 的入口</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">env</span><span class="p">.</span><span class="na">execute</span><span class="p">(</span><span class="s">&#34;Local FileSystem Debug&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c1">// 学习路径：</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c1">// 1. StreamExecutionEnvironment.execute()</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c1">// 2. StreamExecutionEnvironment.executeAsync()</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c1">// 3. StreamExecutionEnvironment.getStreamGraph()</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c1">// 4. PipelineExecutor.execute()</span><span class="w">
+</span></span></span></code></pre></div><p><strong>学习方式：</strong></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="c1">// 创建调试 Demo</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">ClientLayerLearningDemo</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="n">String</span><span class="o">[]</span><span class="w"> </span><span class="n">args</span><span class="p">)</span><span class="w"> </span><span class="kd">throws</span><span class="w"> </span><span class="n">Exception</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">Configuration</span><span class="w"> </span><span class="n">conf</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Configuration</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">StreamExecutionEnvironment</span><span class="w"> </span><span class="n">env</span><span class="w"> </span><span class="o">=</span><span class="w"> 
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">StreamExecutionEnvironment</span><span class="p">.</span><span class="na">createLocalEnvironmentWithWebUI</span><span class="p">(</span><span class="n">conf</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">env</span><span class="p">.</span><span class="na">setParallelism</span><span class="p">(</span><span class="n">2</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// 简单的作业</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">DataStream</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span><span class="w"> </span><span class="n">source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">env</span><span class="p">.</span><span class="na">fromElements</span><span class="p">(</span><span class="s">&#34;a&#34;</span><span class="p">,</span><span class="w"> </span><span class="s">&#34;b&#34;</span><span class="p">,</span><span class="w"> </span><span class="s">&#34;c&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">source</span><span class="p">.</span><span class="na">map</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">x</span><span class="p">.</span><span class="na">toUpperCase</span><span class="p">()).</span><span class="na">print</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// 在这里打断点，开始追踪 Client Layer 的执行流程</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">env</span><span class="p">.</span><span class="na">execute</span><span class="p">(</span><span class="s">&#34;Client Layer Learning&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p><strong>重点方法：</strong></p>
 <ol>
 <li><code>StreamExecutionEnvironment.execute()</code></li>
 <li><code>StreamExecutionEnvironment.executeAsync(StreamGraph)</code></li>
@@ -189,85 +176,83 @@ public class ClientLayerLearningDemo {
 <li>理解如何从 Transformation 生成 StreamGraph</li>
 </ul>
 <p><strong>学习示例：</strong></p>
-<pre><code class="language-java">public class StreamGraphLearningDemo {
-    public static void main(String[] args) {
-        StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
-
-        // 每个算子都会生成一个 Transformation
-        DataStream&lt;String&gt; source = env.fromData(&quot;a&quot;, &quot;b&quot;, &quot;c&quot;);
-        DataStream&lt;String&gt; mapped = source.map(String::toUpperCase);
-        DataStream&lt;String&gt; filtered = mapped.filter(x -&gt; !x.equals(&quot;B&quot;));
-        filtered.print();
-
-        // 查看 Transformation 列表
-        List&lt;Transformation&lt;?&gt;&gt; transformations = env.getTransformations();
-        System.out.println(&quot;Transformations count: &quot; + transformations.size());
-        for (Transformation&lt;?&gt; t : transformations) {
-            System.out.println(&quot;  - &quot; + &quot; [&quot; + t + &quot;]&quot;);
-        }
-
-        // 获取 StreamGraph（不清空 transformations）
-        StreamGraph streamGraph = env.getStreamGraph(false);
-
-        // 打印 StreamGraph 信息
-        System.out.println(&quot;streamGraph Job Name: &quot; + streamGraph.getJobName());
-        System.out.println(&quot;StreamNodes: &quot; + streamGraph.getStreamNodes());
-
-        System.out.println(&quot;StreamEdges: &quot;);
-        streamGraph
-                .getStreamNodes()
-                .forEach(
-                        node -&gt; {
-                            System.out.println(
-                                    &quot; - node: &quot;
-                                            + node.getOperatorName()
-                                            + &quot; StreamEdge: &quot;
-                                            + streamGraph.getStreamEdges(node.getId()));
-                        });
-    }
-}
-
-
-
-Transformations count: 3
-  -  [OneInputTransformation{id=2, name='Map', outputType=String, 
-      parallelism=12}]
-  -  [OneInputTransformation{id=3, name='Filter', outputType=String, 
-      parallelism=12}]
-  -  [LegacySinkTransformation{id=4, name='Print to Std. Out', 
-      outputType=String, parallelism=12}]
-
-streamGraph Job Name: Flink Streaming Job
-StreamNodes: [Source: Collection Source-1, Map-2, Filter-3, 
-             Sink: Print to Std. Out-4]
-
-StreamEdges: 
- - node: Source: Collection Source StreamEdge: [(Source: Collection Source-1 -&gt; Map-2, 
-   typeNumber=0, outputPartitioner=REBALANCE, exchangeMode=UNDEFINED, 
-   bufferTimeout=100, outputTag=null, uniqueId=0)]
- - node: Map StreamEdge: [(Map-2 -&gt; Filter-3, typeNumber=0, outputPartitioner=FORWARD, 
-   exchangeMode=UNDEFINED, bufferTimeout=100, outputTag=null, uniqueId=0)]
- - node: Filter StreamEdge: [(Filter-3 -&gt; Sink: Print to Std. Out-4, typeNumber=0, 
-   outputPartitioner=FORWARD, exchangeMode=UNDEFINED, bufferTimeout=100, 
-   outputTag=null, uniqueId=0)]
- - node: Sink: Print to Std. Out StreamEdge: []
-</code></pre>
-<p><strong>关键类和方法：</strong></p>
-<pre><code class="language-java">// 1. Transformation 体系（逻辑算子）
-org.apache.flink.api.dag.Transformation
-  ├── SourceTransformation          // Source 算子
-  ├── OneInputTransformation        // map, filter 等单输入算子
-  ├── TwoInputTransformation        // join, coGroup 等双输入算子
-  ├── SinkTransformation            // Sink 算子
-  └── PartitionTransformation       // shuffle, rebalance 等
-
-// 2. StreamGraph 生成
-StreamGraphGenerator.generate()
-  └── StreamGraphGenerator.transformations()
-      └── StreamGraphGenerator.transform(Transformation)
-          └── 根据不同的 Transformation 类型生成 StreamNode 和 StreamEdge
-</code></pre>
-<p><strong>重点方法：</strong></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">StreamGraphLearningDemo</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="n">String</span><span class="o">[]</span><span class="w"> </span><span class="n">args</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">StreamExecutionEnvironment</span><span class="w"> </span><span class="n">env</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">StreamExecutionEnvironment</span><span class="p">.</span><span class="na">getExecutionEnvironment</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// 每个算子都会生成一个 Transformation</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">DataStream</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span><span class="w"> </span><span class="n">source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">env</span><span class="p">.</span><span class="na">fromData</span><span class="p">(</span><span class="s">&#34;a&#34;</span><span class="p">,</span><span class="w"> </span><span class="s">&#34;b&#34;</span><span class="p">,</span><span class="w"> </span><span class="s">&#34;c&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">DataStream</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span><span class="w"> </span><span class="n">mapped</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">source</span><span class="p">.</span><span class="na">map</span><span class="p">(</span><span class="n">String</span><span class="p">::</span><span class="n">toUpperCase</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">DataStream</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span><span class="w"> </span><span class="n">filtered</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mapped</span><span class="p">.</span><span class="na">filter</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="o">!</span><span class="n">x</span><span class="p">.</span><span class="na">equals</span><span class="p">(</span><span class="s">&#34;B&#34;</span><span class="p">));</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">filtered</span><span class="p">.</span><span class="na">print</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// 查看 Transformation 列表</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">List</span><span class="o">&lt;</span><span class="n">Transformation</span><span class="o">&lt;?&gt;&gt;</span><span class="w"> </span><span class="n">transformations</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">env</span><span class="p">.</span><span class="na">getTransformations</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="s">&#34;Transformations count: &#34;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">transformations</span><span class="p">.</span><span class="na">size</span><span class="p">());</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">Transformation</span><span class="o">&lt;?&gt;</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">transformations</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="s">&#34;  - &#34;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&#34; [&#34;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&#34;]&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// 获取 StreamGraph（不清空 transformations）</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">StreamGraph</span><span class="w"> </span><span class="n">streamGraph</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">env</span><span class="p">.</span><span class="na">getStreamGraph</span><span class="p">(</span><span class="kc">false</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// 打印 StreamGraph 信息</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="s">&#34;streamGraph Job Name: &#34;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">streamGraph</span><span class="p">.</span><span class="na">getJobName</span><span class="p">());</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="s">&#34;StreamNodes: &#34;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">streamGraph</span><span class="p">.</span><span class="na">getStreamNodes</span><span class="p">());</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="s">&#34;StreamEdges: &#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">streamGraph</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="p">.</span><span class="na">getStreamNodes</span><span class="p">()</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="p">.</span><span class="na">forEach</span><span class="p">(</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                        </span><span class="n">node</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                            </span><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                                    </span><span class="s">&#34; - node: &#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                                            </span><span class="o">+</span><span class="w"> </span><span class="n">node</span><span class="p">.</span><span class="na">getOperatorName</span><span class="p">()</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                                            </span><span class="o">+</span><span class="w"> </span><span class="s">&#34; StreamEdge: &#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                                            </span><span class="o">+</span><span class="w"> </span><span class="n">streamGraph</span><span class="p">.</span><span class="na">getStreamEdges</span><span class="p">(</span><span class="n">node</span><span class="p">.</span><span class="na">getId</span><span class="p">()));</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                        </span><span class="p">});</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">Transformations</span><span class="w"> </span><span class="n">count</span><span class="p">:</span><span class="w"> </span><span class="n">3</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="o">-</span><span class="w">  </span><span class="o">[</span><span class="n">OneInputTransformation</span><span class="p">{</span><span class="n">id</span><span class="o">=</span><span class="n">2</span><span class="p">,</span><span class="w"> </span><span class="n">name</span><span class="o">=</span><span class="err">&#39;</span><span class="n">Map</span><span class="err">&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">outputType</span><span class="o">=</span><span class="n">String</span><span class="p">,</span><span class="w"> 
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="n">parallelism</span><span class="o">=</span><span class="n">12</span><span class="p">}</span><span class="o">]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="o">-</span><span class="w">  </span><span class="o">[</span><span class="n">OneInputTransformation</span><span class="p">{</span><span class="n">id</span><span class="o">=</span><span class="n">3</span><span class="p">,</span><span class="w"> </span><span class="n">name</span><span class="o">=</span><span class="err">&#39;</span><span class="n">Filter</span><span class="err">&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">outputType</span><span class="o">=</span><span class="n">String</span><span class="p">,</span><span class="w"> 
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="n">parallelism</span><span class="o">=</span><span class="n">12</span><span class="p">}</span><span class="o">]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="o">-</span><span class="w">  </span><span class="o">[</span><span class="n">LegacySinkTransformation</span><span class="p">{</span><span class="n">id</span><span class="o">=</span><span class="n">4</span><span class="p">,</span><span class="w"> </span><span class="n">name</span><span class="o">=</span><span class="err">&#39;</span><span class="n">Print</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">Std</span><span class="p">.</span><span class="w"> </span><span class="n">Out</span><span class="err">&#39;</span><span class="p">,</span><span class="w"> 
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="n">outputType</span><span class="o">=</span><span class="n">String</span><span class="p">,</span><span class="w"> </span><span class="n">parallelism</span><span class="o">=</span><span class="n">12</span><span class="p">}</span><span class="o">]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">streamGraph</span><span class="w"> </span><span class="n">Job</span><span class="w"> </span><span class="n">Name</span><span class="p">:</span><span class="w"> </span><span class="n">Flink</span><span class="w"> </span><span class="n">Streaming</span><span class="w"> </span><span class="n">Job</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nl">StreamNodes</span><span class="p">:</span><span class="w"> </span><span class="o">[</span><span class="n">Source</span><span class="p">:</span><span class="w"> </span><span class="n">Collection</span><span class="w"> </span><span class="n">Source</span><span class="o">-</span><span class="n">1</span><span class="p">,</span><span class="w"> </span><span class="n">Map</span><span class="o">-</span><span class="n">2</span><span class="p">,</span><span class="w"> </span><span class="n">Filter</span><span class="o">-</span><span class="n">3</span><span class="p">,</span><span class="w"> 
+</span></span></span><span class="line"><span class="cl"><span class="w">             </span><span class="n">Sink</span><span class="p">:</span><span class="w"> </span><span class="n">Print</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">Std</span><span class="p">.</span><span class="w"> </span><span class="n">Out</span><span class="o">-</span><span class="n">4</span><span class="o">]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nl">StreamEdges</span><span class="p">:</span><span class="w"> 
+</span></span></span><span class="line"><span class="cl"><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">node</span><span class="p">:</span><span class="w"> </span><span class="n">Source</span><span class="p">:</span><span class="w"> </span><span class="n">Collection</span><span class="w"> </span><span class="n">Source</span><span class="w"> </span><span class="n">StreamEdge</span><span class="p">:</span><span class="w"> </span><span class="o">[</span><span class="p">(</span><span class="n">Source</span><span class="p">:</span><span class="w"> </span><span class="n">Collection</span><span class="w"> </span><span class="n">Source</span><span class="o">-</span><span class="n">1</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">Map</span><span class="o">-</span><span class="n">2</span><span class="p">,</span><span class="w"> 
+</span></span></span><span class="line"><span class="cl"><span class="w">   </span><span class="n">typeNumber</span><span class="o">=</span><span class="n">0</span><span class="p">,</span><span class="w"> </span><span class="n">outputPartitioner</span><span class="o">=</span><span class="n">REBALANCE</span><span class="p">,</span><span class="w"> </span><span class="n">exchangeMode</span><span class="o">=</span><span class="n">UNDEFINED</span><span class="p">,</span><span class="w"> 
+</span></span></span><span class="line"><span class="cl"><span class="w">   </span><span class="n">bufferTimeout</span><span class="o">=</span><span class="n">100</span><span class="p">,</span><span class="w"> </span><span class="n">outputTag</span><span class="o">=</span><span class="kc">null</span><span class="p">,</span><span class="w"> </span><span class="n">uniqueId</span><span class="o">=</span><span class="n">0</span><span class="p">)</span><span class="o">]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">node</span><span class="p">:</span><span class="w"> </span><span class="n">Map</span><span class="w"> </span><span class="n">StreamEdge</span><span class="p">:</span><span class="w"> </span><span class="o">[</span><span class="p">(</span><span class="n">Map</span><span class="o">-</span><span class="n">2</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">Filter</span><span class="o">-</span><span class="n">3</span><span class="p">,</span><span class="w"> </span><span class="n">typeNumber</span><span class="o">=</span><span class="n">0</span><span class="p">,</span><span class="w"> </span><span class="n">outputPartitioner</span><span class="o">=</span><span class="n">FORWARD</span><span class="p">,</span><span class="w"> 
+</span></span></span><span class="line"><span class="cl"><span class="w">   </span><span class="n">exchangeMode</span><span class="o">=</span><span class="n">UNDEFINED</span><span class="p">,</span><span class="w"> </span><span class="n">bufferTimeout</span><span class="o">=</span><span class="n">100</span><span class="p">,</span><span class="w"> </span><span class="n">outputTag</span><span class="o">=</span><span class="kc">null</span><span class="p">,</span><span class="w"> </span><span class="n">uniqueId</span><span class="o">=</span><span class="n">0</span><span class="p">)</span><span class="o">]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">node</span><span class="p">:</span><span class="w"> </span><span class="n">Filter</span><span class="w"> </span><span class="n">StreamEdge</span><span class="p">:</span><span class="w"> </span><span class="o">[</span><span class="p">(</span><span class="n">Filter</span><span class="o">-</span><span class="n">3</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">Sink</span><span class="p">:</span><span class="w"> </span><span class="n">Print</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">Std</span><span class="p">.</span><span class="w"> </span><span class="n">Out</span><span class="o">-</span><span class="n">4</span><span class="p">,</span><span class="w"> </span><span class="n">typeNumber</span><span class="o">=</span><span class="n">0</span><span class="p">,</span><span class="w"> 
+</span></span></span><span class="line"><span class="cl"><span class="w">   </span><span class="n">outputPartitioner</span><span class="o">=</span><span class="n">FORWARD</span><span class="p">,</span><span class="w"> </span><span class="n">exchangeMode</span><span class="o">=</span><span class="n">UNDEFINED</span><span class="p">,</span><span class="w"> </span><span class="n">bufferTimeout</span><span class="o">=</span><span class="n">100</span><span class="p">,</span><span class="w"> 
+</span></span></span><span class="line"><span class="cl"><span class="w">   </span><span class="n">outputTag</span><span class="o">=</span><span class="kc">null</span><span class="p">,</span><span class="w"> </span><span class="n">uniqueId</span><span class="o">=</span><span class="n">0</span><span class="p">)</span><span class="o">]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">node</span><span class="p">:</span><span class="w"> </span><span class="n">Sink</span><span class="p">:</span><span class="w"> </span><span class="n">Print</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">Std</span><span class="p">.</span><span class="w"> </span><span class="n">Out</span><span class="w"> </span><span class="n">StreamEdge</span><span class="p">:</span><span class="w"> </span><span class="o">[]</span><span class="w">
+</span></span></span></code></pre></div><p><strong>关键类和方法：</strong></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="c1">// 1. Transformation 体系（逻辑算子）</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">org</span><span class="p">.</span><span class="na">apache</span><span class="p">.</span><span class="na">flink</span><span class="p">.</span><span class="na">api</span><span class="p">.</span><span class="na">dag</span><span class="p">.</span><span class="na">Transformation</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="err">├──</span><span class="w"> </span><span class="n">SourceTransformation</span><span class="w">          </span><span class="c1">// Source 算子</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="err">├──</span><span class="w"> </span><span class="n">OneInputTransformation</span><span class="w">        </span><span class="c1">// map, filter 等单输入算子</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="err">├──</span><span class="w"> </span><span class="n">TwoInputTransformation</span><span class="w">        </span><span class="c1">// join, coGroup 等双输入算子</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="err">├──</span><span class="w"> </span><span class="n">SinkTransformation</span><span class="w">            </span><span class="c1">// Sink 算子</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="err">└──</span><span class="w"> </span><span class="n">PartitionTransformation</span><span class="w">       </span><span class="c1">// shuffle, rebalance 等</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c1">// 2. StreamGraph 生成</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">StreamGraphGenerator</span><span class="p">.</span><span class="na">generate</span><span class="p">()</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="err">└──</span><span class="w"> </span><span class="n">StreamGraphGenerator</span><span class="p">.</span><span class="na">transformations</span><span class="p">()</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="err">└──</span><span class="w"> </span><span class="n">StreamGraphGenerator</span><span class="p">.</span><span class="na">transform</span><span class="p">(</span><span class="n">Transformation</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="err">└──</span><span class="w"> </span><span class="n">根据不同的</span><span class="w"> </span><span class="n">Transformation</span><span class="w"> </span><span class="n">类型生成</span><span class="w"> </span><span class="n">StreamNode</span><span class="w"> </span><span class="n">和</span><span class="w"> </span><span class="n">StreamEdge</span><span class="w">
+</span></span></span></code></pre></div><p><strong>重点方法：</strong></p>
 <ul>
 <li><code>StreamGraphGenerator.generate()</code> — 生成 StreamGraph 入口</li>
 <li><code>StreamGraphGenerator.transform()</code> — 转换每个 Transformation</li>
@@ -325,7 +310,7 @@ StreamGraphGenerator.generate()
 它在 JobManager 端生成，将 JobVertex 按并行度展开为多个 ExecutionVertex。</p>
 </blockquote>
 <p><strong>转换的核心目的是性能优化</strong>，主要体现在 <strong>Operator Chain（算子链）</strong> 机制上：</p>
-<pre><code>转换前（StreamGraph）：
+<pre tabindex="0"><code>转换前（StreamGraph）：
 Source → Map → Filter → KeyBy → Reduce → Sink
   ↓       ↓      ↓        ↓        ↓       ↓
  6个独立的 StreamNode
@@ -336,8 +321,7 @@ Source → Map → Filter → KeyBy → Reduce → Sink
    1个 JobVertex（Chain）   1个 JobVertex（Chain）
    
 注：KeyBy 会导致 shuffle，断开 Chain
-</code></pre>
-<p><strong>Operator Chain 的好处：</strong></p>
+</code></pre><p><strong>Operator Chain 的好处：</strong></p>
 <ol>
 <li><strong>减少线程切换</strong>：Chain 内的算子在同一个线程中执行</li>
 <li><strong>减少序列化开销</strong>：Chain 内数据以对象形式传递，无需序列化</li>
@@ -356,135 +340,132 @@ Source → Map → Filter → KeyBy → Reduce → Sink
 <li><strong>JobGraph 关注执行</strong>：包含所有优化，是真正提交给集群的执行计划</li>
 </ul>
 <p><strong>学习示例：</strong></p>
-<pre><code class="language-java">public class JobGraphLearningDemo {
-    public static void main(String[] args) throws Exception {
-        StreamExecutionEnvironment env =
-                StreamExecutionEnvironment.getExecutionEnvironment();
-
-        env.setParallelism(2);
-
-        // 构建一个可以观察 Operator Chain 的作业
-        DataStream&lt;String&gt; source = env.fromData(&quot;a&quot;, &quot;b&quot;, &quot;c&quot;);
-
-        // 这些算子会被 Chain 在一起（如果没有 shuffle）
-        DataStream&lt;String&gt; result = source
-                .map(String::toUpperCase)      // 会被 Chain
-                .filter(x -&gt; !x.equals(&quot;B&quot;))    // 会被 Chain
-                .keyBy(x -&gt; x)                  // 这里会断开 Chain（有 shuffle）
-                .map(x -&gt; x + &quot;!&quot;);                       // 会被 Chain
-
-        result.print();
-        // 获取 StreamGraph
-        StreamGraph streamGraph = env.getStreamGraph();
-        System.out.println(&quot;StreamNodes count: &quot; + streamGraph.getStreamNodes().size());
-
-        // 打印 StreamGraph 信息
-        System.out.println(&quot;StreamNodes: &quot; + streamGraph.getStreamNodes());
-
-        System.out.println(&quot;StreamEdges: &quot;);
-        streamGraph
-                .getStreamNodes()
-                .forEach(
-                        node -&gt; {
-                            System.out.println(
-                                    &quot; - node: &quot;
-                                            + node.getOperatorName()
-                                            + &quot; StreamEdge: &quot;
-                                            + streamGraph.getStreamEdges(node.getId()));
-                        });
-
-        // 转换为 JobGraph
-        JobGraph jobGraph = StreamingJobGraphGenerator.createJobGraph(streamGraph);
-
-        // 打印 JobGraph 信息
-        System.out.println(&quot;\nJobGraph Info:&quot;);
-        System.out.println(&quot;Job ID: &quot; + jobGraph.getJobID());
-        System.out.println(&quot;Job Name: &quot; + jobGraph.getName());
-        System.out.println(&quot;JobVertices count: &quot; + jobGraph.getNumberOfVertices());
-
-        // 查看每个 JobVertex（被 Chain 后的算子）
-        for (JobVertex vertex : jobGraph.getVertices()) {
-            System.out.println(&quot;\nJobVertex: &quot; + vertex.getName());
-            System.out.println(&quot;  ID: &quot; + vertex.getID());
-            System.out.println(&quot;  Parallelism: &quot; + vertex.getParallelism());
-            System.out.println(&quot;  Operator IDs: &quot; + vertex.getOperatorIDs());
-            System.out.println(&quot;  Inputs: &quot; + vertex.getInputs().size());
-        }
-    }
-}
-
-StreamNodes count: 5
-StreamNodes: [Source: Collection Source-1, Map-2, Filter-3, Map-5, Sink: Print to Std. Out-6]
-StreamEdges: 
- - node: Source: Collection Source StreamEdge: [(Source: Collection Source-1 -&gt; Map-2, 
-   typeNumber=0, outputPartitioner=REBALANCE, exchangeMode=UNDEFINED, 
-   bufferTimeout=100, outputTag=null, uniqueId=0)]
- - node: Map StreamEdge: [(Map-2 -&gt; Filter-3, typeNumber=0, outputPartitioner=FORWARD, 
-   exchangeMode=UNDEFINED, bufferTimeout=100, outputTag=null, uniqueId=0)]
- - node: Filter StreamEdge: [(Filter-3 -&gt; Map-5, typeNumber=0, outputPartitioner=HASH, 
-   exchangeMode=UNDEFINED, bufferTimeout=100, outputTag=null, uniqueId=0)]
- - node: Map StreamEdge: [(Map-5 -&gt; Sink: Print to Std. Out-6, typeNumber=0, 
-   outputPartitioner=FORWARD, exchangeMode=UNDEFINED, bufferTimeout=100, 
-   outputTag=null, uniqueId=0)]
- - node: Sink: Print to Std. Out StreamEdge: []
-
-JobGraph Info:
-Job ID: 1ad251732c79901f3f421c5d66b325e9
-Job Name: Flink Streaming Job
-JobVertices count: 3
-
-JobVertex: Map -&gt; Sink: Print to Std. Out
-  ID: b5c8d46f3e7b141acf271f12622e752b
-  Parallelism: 2
-  Operator IDs: [org.apache.flink.runtime.OperatorIDPair@2c35e847, 
-                 org.apache.flink.runtime.OperatorIDPair@7bd4937b]
-  Inputs: 1
-
-JobVertex: Map -&gt; Filter
-  ID: 20ba6b65f97481d5570070de90e4e791
-  Parallelism: 2
-  Operator IDs: [org.apache.flink.runtime.OperatorIDPair@21e360a, 
-                 org.apache.flink.runtime.OperatorIDPair@5ba3f27a]
-  Inputs: 1
-
-JobVertex: Source: Collection Source
-  ID: bc764cd8ddf7a0cff126f51c16239658
-  Parallelism: 1
-  Operator IDs: [org.apache.flink.runtime.OperatorIDPair@58d75e99]
-  Inputs: 0
-</code></pre>
-<p>从结果上来看，在构建 DataStream node 时，一共有6个节点，从结果来看，node 只有5个，为什么 <code>keyBy</code> 算子&quot;消失&quot;了？</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">JobGraphLearningDemo</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="n">String</span><span class="o">[]</span><span class="w"> </span><span class="n">args</span><span class="p">)</span><span class="w"> </span><span class="kd">throws</span><span class="w"> </span><span class="n">Exception</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">StreamExecutionEnvironment</span><span class="w"> </span><span class="n">env</span><span class="w"> </span><span class="o">=</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="n">StreamExecutionEnvironment</span><span class="p">.</span><span class="na">getExecutionEnvironment</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">env</span><span class="p">.</span><span class="na">setParallelism</span><span class="p">(</span><span class="n">2</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// 构建一个可以观察 Operator Chain 的作业</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">DataStream</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span><span class="w"> </span><span class="n">source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">env</span><span class="p">.</span><span class="na">fromData</span><span class="p">(</span><span class="s">&#34;a&#34;</span><span class="p">,</span><span class="w"> </span><span class="s">&#34;b&#34;</span><span class="p">,</span><span class="w"> </span><span class="s">&#34;c&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// 这些算子会被 Chain 在一起（如果没有 shuffle）</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">DataStream</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">source</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="p">.</span><span class="na">map</span><span class="p">(</span><span class="n">String</span><span class="p">::</span><span class="n">toUpperCase</span><span class="p">)</span><span class="w">      </span><span class="c1">// 会被 Chain</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="p">.</span><span class="na">filter</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="o">!</span><span class="n">x</span><span class="p">.</span><span class="na">equals</span><span class="p">(</span><span class="s">&#34;B&#34;</span><span class="p">))</span><span class="w">    </span><span class="c1">// 会被 Chain</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="p">.</span><span class="na">keyBy</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">x</span><span class="p">)</span><span class="w">                  </span><span class="c1">// 这里会断开 Chain（有 shuffle）</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="p">.</span><span class="na">map</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&#34;!&#34;</span><span class="p">);</span><span class="w">                       </span><span class="c1">// 会被 Chain</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">result</span><span class="p">.</span><span class="na">print</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// 获取 StreamGraph</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">StreamGraph</span><span class="w"> </span><span class="n">streamGraph</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">env</span><span class="p">.</span><span class="na">getStreamGraph</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="s">&#34;StreamNodes count: &#34;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">streamGraph</span><span class="p">.</span><span class="na">getStreamNodes</span><span class="p">().</span><span class="na">size</span><span class="p">());</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// 打印 StreamGraph 信息</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="s">&#34;StreamNodes: &#34;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">streamGraph</span><span class="p">.</span><span class="na">getStreamNodes</span><span class="p">());</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="s">&#34;StreamEdges: &#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">streamGraph</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="p">.</span><span class="na">getStreamNodes</span><span class="p">()</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="p">.</span><span class="na">forEach</span><span class="p">(</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                        </span><span class="n">node</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                            </span><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                                    </span><span class="s">&#34; - node: &#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                                            </span><span class="o">+</span><span class="w"> </span><span class="n">node</span><span class="p">.</span><span class="na">getOperatorName</span><span class="p">()</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                                            </span><span class="o">+</span><span class="w"> </span><span class="s">&#34; StreamEdge: &#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                                            </span><span class="o">+</span><span class="w"> </span><span class="n">streamGraph</span><span class="p">.</span><span class="na">getStreamEdges</span><span class="p">(</span><span class="n">node</span><span class="p">.</span><span class="na">getId</span><span class="p">()));</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                        </span><span class="p">});</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// 转换为 JobGraph</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">JobGraph</span><span class="w"> </span><span class="n">jobGraph</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">StreamingJobGraphGenerator</span><span class="p">.</span><span class="na">createJobGraph</span><span class="p">(</span><span class="n">streamGraph</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// 打印 JobGraph 信息</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="s">&#34;\nJobGraph Info:&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="s">&#34;Job ID: &#34;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">jobGraph</span><span class="p">.</span><span class="na">getJobID</span><span class="p">());</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="s">&#34;Job Name: &#34;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">jobGraph</span><span class="p">.</span><span class="na">getName</span><span class="p">());</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="s">&#34;JobVertices count: &#34;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">jobGraph</span><span class="p">.</span><span class="na">getNumberOfVertices</span><span class="p">());</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// 查看每个 JobVertex（被 Chain 后的算子）</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">JobVertex</span><span class="w"> </span><span class="n">vertex</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">jobGraph</span><span class="p">.</span><span class="na">getVertices</span><span class="p">())</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="s">&#34;\nJobVertex: &#34;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">vertex</span><span class="p">.</span><span class="na">getName</span><span class="p">());</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="s">&#34;  ID: &#34;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">vertex</span><span class="p">.</span><span class="na">getID</span><span class="p">());</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="s">&#34;  Parallelism: &#34;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">vertex</span><span class="p">.</span><span class="na">getParallelism</span><span class="p">());</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="s">&#34;  Operator IDs: &#34;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">vertex</span><span class="p">.</span><span class="na">getOperatorIDs</span><span class="p">());</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="s">&#34;  Inputs: &#34;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">vertex</span><span class="p">.</span><span class="na">getInputs</span><span class="p">().</span><span class="na">size</span><span class="p">());</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">StreamNodes</span><span class="w"> </span><span class="n">count</span><span class="p">:</span><span class="w"> </span><span class="n">5</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nl">StreamNodes</span><span class="p">:</span><span class="w"> </span><span class="o">[</span><span class="n">Source</span><span class="p">:</span><span class="w"> </span><span class="n">Collection</span><span class="w"> </span><span class="n">Source</span><span class="o">-</span><span class="n">1</span><span class="p">,</span><span class="w"> </span><span class="n">Map</span><span class="o">-</span><span class="n">2</span><span class="p">,</span><span class="w"> </span><span class="n">Filter</span><span class="o">-</span><span class="n">3</span><span class="p">,</span><span class="w"> </span><span class="n">Map</span><span class="o">-</span><span class="n">5</span><span class="p">,</span><span class="w"> </span><span class="n">Sink</span><span class="p">:</span><span class="w"> </span><span class="n">Print</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">Std</span><span class="p">.</span><span class="w"> </span><span class="n">Out</span><span class="o">-</span><span class="n">6</span><span class="o">]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nl">StreamEdges</span><span class="p">:</span><span class="w"> 
+</span></span></span><span class="line"><span class="cl"><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">node</span><span class="p">:</span><span class="w"> </span><span class="n">Source</span><span class="p">:</span><span class="w"> </span><span class="n">Collection</span><span class="w"> </span><span class="n">Source</span><span class="w"> </span><span class="n">StreamEdge</span><span class="p">:</span><span class="w"> </span><span class="o">[</span><span class="p">(</span><span class="n">Source</span><span class="p">:</span><span class="w"> </span><span class="n">Collection</span><span class="w"> </span><span class="n">Source</span><span class="o">-</span><span class="n">1</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">Map</span><span class="o">-</span><span class="n">2</span><span class="p">,</span><span class="w"> 
+</span></span></span><span class="line"><span class="cl"><span class="w">   </span><span class="n">typeNumber</span><span class="o">=</span><span class="n">0</span><span class="p">,</span><span class="w"> </span><span class="n">outputPartitioner</span><span class="o">=</span><span class="n">REBALANCE</span><span class="p">,</span><span class="w"> </span><span class="n">exchangeMode</span><span class="o">=</span><span class="n">UNDEFINED</span><span class="p">,</span><span class="w"> 
+</span></span></span><span class="line"><span class="cl"><span class="w">   </span><span class="n">bufferTimeout</span><span class="o">=</span><span class="n">100</span><span class="p">,</span><span class="w"> </span><span class="n">outputTag</span><span class="o">=</span><span class="kc">null</span><span class="p">,</span><span class="w"> </span><span class="n">uniqueId</span><span class="o">=</span><span class="n">0</span><span class="p">)</span><span class="o">]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">node</span><span class="p">:</span><span class="w"> </span><span class="n">Map</span><span class="w"> </span><span class="n">StreamEdge</span><span class="p">:</span><span class="w"> </span><span class="o">[</span><span class="p">(</span><span class="n">Map</span><span class="o">-</span><span class="n">2</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">Filter</span><span class="o">-</span><span class="n">3</span><span class="p">,</span><span class="w"> </span><span class="n">typeNumber</span><span class="o">=</span><span class="n">0</span><span class="p">,</span><span class="w"> </span><span class="n">outputPartitioner</span><span class="o">=</span><span class="n">FORWARD</span><span class="p">,</span><span class="w"> 
+</span></span></span><span class="line"><span class="cl"><span class="w">   </span><span class="n">exchangeMode</span><span class="o">=</span><span class="n">UNDEFINED</span><span class="p">,</span><span class="w"> </span><span class="n">bufferTimeout</span><span class="o">=</span><span class="n">100</span><span class="p">,</span><span class="w"> </span><span class="n">outputTag</span><span class="o">=</span><span class="kc">null</span><span class="p">,</span><span class="w"> </span><span class="n">uniqueId</span><span class="o">=</span><span class="n">0</span><span class="p">)</span><span class="o">]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">node</span><span class="p">:</span><span class="w"> </span><span class="n">Filter</span><span class="w"> </span><span class="n">StreamEdge</span><span class="p">:</span><span class="w"> </span><span class="o">[</span><span class="p">(</span><span class="n">Filter</span><span class="o">-</span><span class="n">3</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">Map</span><span class="o">-</span><span class="n">5</span><span class="p">,</span><span class="w"> </span><span class="n">typeNumber</span><span class="o">=</span><span class="n">0</span><span class="p">,</span><span class="w"> </span><span class="n">outputPartitioner</span><span class="o">=</span><span class="n">HASH</span><span class="p">,</span><span class="w"> 
+</span></span></span><span class="line"><span class="cl"><span class="w">   </span><span class="n">exchangeMode</span><span class="o">=</span><span class="n">UNDEFINED</span><span class="p">,</span><span class="w"> </span><span class="n">bufferTimeout</span><span class="o">=</span><span class="n">100</span><span class="p">,</span><span class="w"> </span><span class="n">outputTag</span><span class="o">=</span><span class="kc">null</span><span class="p">,</span><span class="w"> </span><span class="n">uniqueId</span><span class="o">=</span><span class="n">0</span><span class="p">)</span><span class="o">]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">node</span><span class="p">:</span><span class="w"> </span><span class="n">Map</span><span class="w"> </span><span class="n">StreamEdge</span><span class="p">:</span><span class="w"> </span><span class="o">[</span><span class="p">(</span><span class="n">Map</span><span class="o">-</span><span class="n">5</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">Sink</span><span class="p">:</span><span class="w"> </span><span class="n">Print</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">Std</span><span class="p">.</span><span class="w"> </span><span class="n">Out</span><span class="o">-</span><span class="n">6</span><span class="p">,</span><span class="w"> </span><span class="n">typeNumber</span><span class="o">=</span><span class="n">0</span><span class="p">,</span><span class="w"> 
+</span></span></span><span class="line"><span class="cl"><span class="w">   </span><span class="n">outputPartitioner</span><span class="o">=</span><span class="n">FORWARD</span><span class="p">,</span><span class="w"> </span><span class="n">exchangeMode</span><span class="o">=</span><span class="n">UNDEFINED</span><span class="p">,</span><span class="w"> </span><span class="n">bufferTimeout</span><span class="o">=</span><span class="n">100</span><span class="p">,</span><span class="w"> 
+</span></span></span><span class="line"><span class="cl"><span class="w">   </span><span class="n">outputTag</span><span class="o">=</span><span class="kc">null</span><span class="p">,</span><span class="w"> </span><span class="n">uniqueId</span><span class="o">=</span><span class="n">0</span><span class="p">)</span><span class="o">]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">node</span><span class="p">:</span><span class="w"> </span><span class="n">Sink</span><span class="p">:</span><span class="w"> </span><span class="n">Print</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">Std</span><span class="p">.</span><span class="w"> </span><span class="n">Out</span><span class="w"> </span><span class="n">StreamEdge</span><span class="p">:</span><span class="w"> </span><span class="o">[]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">JobGraph</span><span class="w"> </span><span class="n">Info</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">Job</span><span class="w"> </span><span class="n">ID</span><span class="p">:</span><span class="w"> </span><span class="n">1ad251732c79901f3f421c5d66b325e9</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">Job</span><span class="w"> </span><span class="n">Name</span><span class="p">:</span><span class="w"> </span><span class="n">Flink</span><span class="w"> </span><span class="n">Streaming</span><span class="w"> </span><span class="n">Job</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">JobVertices</span><span class="w"> </span><span class="n">count</span><span class="p">:</span><span class="w"> </span><span class="n">3</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nl">JobVertex</span><span class="p">:</span><span class="w"> </span><span class="n">Map</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">Sink</span><span class="p">:</span><span class="w"> </span><span class="n">Print</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">Std</span><span class="p">.</span><span class="w"> </span><span class="n">Out</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">ID</span><span class="p">:</span><span class="w"> </span><span class="n">b5c8d46f3e7b141acf271f12622e752b</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">Parallelism</span><span class="p">:</span><span class="w"> </span><span class="n">2</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">Operator</span><span class="w"> </span><span class="n">IDs</span><span class="p">:</span><span class="w"> </span><span class="o">[</span><span class="n">org</span><span class="p">.</span><span class="na">apache</span><span class="p">.</span><span class="na">flink</span><span class="p">.</span><span class="na">runtime</span><span class="p">.</span><span class="na">OperatorIDPair</span><span class="nd">@2c35e847</span><span class="p">,</span><span class="w"> 
+</span></span></span><span class="line"><span class="cl"><span class="w">                 </span><span class="n">org</span><span class="p">.</span><span class="na">apache</span><span class="p">.</span><span class="na">flink</span><span class="p">.</span><span class="na">runtime</span><span class="p">.</span><span class="na">OperatorIDPair</span><span class="nd">@7bd4937b</span><span class="o">]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">Inputs</span><span class="p">:</span><span class="w"> </span><span class="n">1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nl">JobVertex</span><span class="p">:</span><span class="w"> </span><span class="n">Map</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">Filter</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">ID</span><span class="p">:</span><span class="w"> </span><span class="n">20ba6b65f97481d5570070de90e4e791</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">Parallelism</span><span class="p">:</span><span class="w"> </span><span class="n">2</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">Operator</span><span class="w"> </span><span class="n">IDs</span><span class="p">:</span><span class="w"> </span><span class="o">[</span><span class="n">org</span><span class="p">.</span><span class="na">apache</span><span class="p">.</span><span class="na">flink</span><span class="p">.</span><span class="na">runtime</span><span class="p">.</span><span class="na">OperatorIDPair</span><span class="nd">@21e360a</span><span class="p">,</span><span class="w"> 
+</span></span></span><span class="line"><span class="cl"><span class="w">                 </span><span class="n">org</span><span class="p">.</span><span class="na">apache</span><span class="p">.</span><span class="na">flink</span><span class="p">.</span><span class="na">runtime</span><span class="p">.</span><span class="na">OperatorIDPair</span><span class="nd">@5ba3f27a</span><span class="o">]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">Inputs</span><span class="p">:</span><span class="w"> </span><span class="n">1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nl">JobVertex</span><span class="p">:</span><span class="w"> </span><span class="n">Source</span><span class="p">:</span><span class="w"> </span><span class="n">Collection</span><span class="w"> </span><span class="n">Source</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">ID</span><span class="p">:</span><span class="w"> </span><span class="n">bc764cd8ddf7a0cff126f51c16239658</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">Parallelism</span><span class="p">:</span><span class="w"> </span><span class="n">1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">Operator</span><span class="w"> </span><span class="n">IDs</span><span class="p">:</span><span class="w"> </span><span class="o">[</span><span class="n">org</span><span class="p">.</span><span class="na">apache</span><span class="p">.</span><span class="na">flink</span><span class="p">.</span><span class="na">runtime</span><span class="p">.</span><span class="na">OperatorIDPair</span><span class="nd">@58d75e99</span><span class="o">]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">Inputs</span><span class="p">:</span><span class="w"> </span><span class="n">0</span><span class="w">
+</span></span></span></code></pre></div><p>从结果上来看，在构建 DataStream node 时，一共有6个节点，从结果来看，node 只有5个，为什么 <code>keyBy</code> 算子&quot;消失&quot;了？</p>
 <p>核心原因： <code>keyBy</code> 不是一个真正的算子（Operator），它只是一个逻辑分区操作，因此不会生成独立的 StreamNode。</p>
 <p>从源码可以看到，<code>keyBy</code> 方法只是：</p>
-<pre><code class="language-java">public &lt;K&gt; KeyedStream&lt;T, K&gt; keyBy(KeySelector&lt;T, K&gt; key) {
-    Preconditions.checkNotNull(key);
-    return new KeyedStream&lt;&gt;(this, clean(key));  // 只是创建了一个 KeyedStream
-}
-</code></pre>
-<p>而 <code>KeyedStream</code> 的构造函数做的事情是：</p>
-<pre><code class="language-java">public KeyedStream(
-        DataStream&lt;T&gt; dataStream,
-        KeySelector&lt;T, KEY&gt; keySelector,
-        TypeInformation&lt;KEY&gt; keyType) {
-    this(
-        dataStream,
-        new PartitionTransformation&lt;&gt;(  // 创建一个分区转换
-            dataStream.getTransformation(),
-            new KeyGroupStreamPartitioner&lt;&gt;(  // 使用 Hash 分区器
-                keySelector,
-                StreamGraphGenerator.DEFAULT_LOWER_BOUND_MAX_PARALLELISM)),
-        keySelector,
-        keyType);
-}
-</code></pre>
-<p>关键点：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="o">&lt;</span><span class="n">K</span><span class="o">&gt;</span><span class="w"> </span><span class="n">KeyedStream</span><span class="o">&lt;</span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">K</span><span class="o">&gt;</span><span class="w"> </span><span class="nf">keyBy</span><span class="p">(</span><span class="n">KeySelector</span><span class="o">&lt;</span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">K</span><span class="o">&gt;</span><span class="w"> </span><span class="n">key</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">Preconditions</span><span class="p">.</span><span class="na">checkNotNull</span><span class="p">(</span><span class="n">key</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">KeyedStream</span><span class="o">&lt;&gt;</span><span class="p">(</span><span class="k">this</span><span class="p">,</span><span class="w"> </span><span class="n">clean</span><span class="p">(</span><span class="n">key</span><span class="p">));</span><span class="w">  </span><span class="c1">// 只是创建了一个 KeyedStream</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>而 <code>KeyedStream</code> 的构造函数做的事情是：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="nf">KeyedStream</span><span class="p">(</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">DataStream</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="n">dataStream</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">KeySelector</span><span class="o">&lt;</span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">KEY</span><span class="o">&gt;</span><span class="w"> </span><span class="n">keySelector</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">TypeInformation</span><span class="o">&lt;</span><span class="n">KEY</span><span class="o">&gt;</span><span class="w"> </span><span class="n">keyType</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">this</span><span class="p">(</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">dataStream</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">new</span><span class="w"> </span><span class="n">PartitionTransformation</span><span class="o">&lt;&gt;</span><span class="p">(</span><span class="w">  </span><span class="c1">// 创建一个分区转换</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">dataStream</span><span class="p">.</span><span class="na">getTransformation</span><span class="p">(),</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="k">new</span><span class="w"> </span><span class="n">KeyGroupStreamPartitioner</span><span class="o">&lt;&gt;</span><span class="p">(</span><span class="w">  </span><span class="c1">// 使用 Hash 分区器</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="n">keySelector</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="n">StreamGraphGenerator</span><span class="p">.</span><span class="na">DEFAULT_LOWER_BOUND_MAX_PARALLELISM</span><span class="p">)),</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">keySelector</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">keyType</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>关键点：</p>
 <ul>
 <li><code>keyBy</code> <strong>不创建新的算子（Operator）</strong></li>
 <li><code>keyBy</code> 只创建一个 <strong><code>PartitionTransformation</code></strong>（分区转换）</li>
 <li><code>keyBy</code> 设置了 <strong><code>KeyGroupStreamPartitioner</code></strong>（Hash 分区器）</li>
 </ul>
 <p><code>keyBy</code> 的作用体现在 <strong>StreamEdge 的 outputPartitioner</strong> 上！</p>
-<pre><code>StreamEdges: 
+<pre tabindex="0"><code>StreamEdges: 
  - node: Filter StreamEdge: [(Filter-3 -&gt; Map-5, 
      typeNumber=0, 
      outputPartitioner=HASH,  ⬅️ 这就是 keyBy 的作用！
@@ -492,38 +473,34 @@ JobVertex: Source: Collection Source
      bufferTimeout=100, 
      outputTag=null, 
      uniqueId=0)]
-</code></pre>
-<p>对比其他边：</p>
-<pre><code>Source -&gt; Map:    outputPartitioner=REBALANCE  (默认分区)
+</code></pre><p>对比其他边：</p>
+<pre tabindex="0"><code>Source -&gt; Map:    outputPartitioner=REBALANCE  (默认分区)
 Map -&gt; Filter:    outputPartitioner=FORWARD    (可以 Chain)
 Filter -&gt; Map:    outputPartitioner=HASH       ⬅️ keyBy 设置的！
 Map -&gt; Sink:      outputPartitioner=FORWARD    (可以 Chain)
-</code></pre>
-<p>为什么这样设计？</p>
+</code></pre><p>为什么这样设计？</p>
 <p>keyBy 不处理数据</p>
-<pre><code class="language-java">// keyBy 不是一个数据转换操作
-DataStream&lt;String&gt; stream = ...;
-
-// map 会转换数据：String -&gt; String
-stream.map(String::toUpperCase)  // 有实际的计算逻辑
-
-// filter 会过滤数据：保留或丢弃
-stream.filter(x -&gt; !x.equals(&quot;B&quot;))  // 有实际的计算逻辑
-
-// keyBy 不转换数据，只是改变数据的分发方式
-stream.keyBy(x -&gt; x)  // 没有计算逻辑，只是设置分区策略
-</code></pre>
-<p>keyBy 是逻辑操作</p>
-<pre><code class="language-java">// keyBy 只是告诉 Flink：
-// &quot;接下来的算子需要按照 key 分组处理数据&quot;
-
-stream
-    .keyBy(x -&gt; x)           // 设置分区策略
-    .map(x -&gt; x + &quot;!&quot;)       // 这个 map 才是真正的算子
-    .sum(1)                  // 这个 sum 才是真正的算子
-</code></pre>
-<p>避免不必要的网络传输；如果 <code>keyBy</code> 生成一个独立的算子，会导致：</p>
-<pre><code>❌ 不好的设计（如果 keyBy 是算子）：
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="c1">// keyBy 不是一个数据转换操作</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">DataStream</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span><span class="w"> </span><span class="n">stream</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">...;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c1">// map 会转换数据：String -&gt; String</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">stream</span><span class="p">.</span><span class="na">map</span><span class="p">(</span><span class="n">String</span><span class="p">::</span><span class="n">toUpperCase</span><span class="p">)</span><span class="w">  </span><span class="c1">// 有实际的计算逻辑</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c1">// filter 会过滤数据：保留或丢弃</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">stream</span><span class="p">.</span><span class="na">filter</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="o">!</span><span class="n">x</span><span class="p">.</span><span class="na">equals</span><span class="p">(</span><span class="s">&#34;B&#34;</span><span class="p">))</span><span class="w">  </span><span class="c1">// 有实际的计算逻辑</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c1">// keyBy 不转换数据，只是改变数据的分发方式</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">stream</span><span class="p">.</span><span class="na">keyBy</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">x</span><span class="p">)</span><span class="w">  </span><span class="c1">// 没有计算逻辑，只是设置分区策略</span><span class="w">
+</span></span></span></code></pre></div><p>keyBy 是逻辑操作</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="c1">// keyBy 只是告诉 Flink：</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c1">// &#34;接下来的算子需要按照 key 分组处理数据&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">stream</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">.</span><span class="na">keyBy</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">x</span><span class="p">)</span><span class="w">           </span><span class="c1">// 设置分区策略</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">.</span><span class="na">map</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&#34;!&#34;</span><span class="p">)</span><span class="w">       </span><span class="c1">// 这个 map 才是真正的算子</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">.</span><span class="na">sum</span><span class="p">(</span><span class="n">1</span><span class="p">)</span><span class="w">                  </span><span class="c1">// 这个 sum 才是真正的算子</span><span class="w">
+</span></span></span></code></pre></div><p>避免不必要的网络传输；如果 <code>keyBy</code> 生成一个独立的算子，会导致：</p>
+<pre tabindex="0"><code>❌ 不好的设计（如果 keyBy 是算子）：
 Source -&gt; Map -&gt; Filter -&gt; KeyBy算子 -&gt; Map -&gt; Sink
                               ↑
                          不必要的算子
@@ -532,8 +509,7 @@ Source -&gt; Map -&gt; Filter -&gt; KeyBy算子 -&gt; Map -&gt; Sink
 Source -&gt; Map -&gt; Filter --[HASH分区]--&gt; Map -&gt; Sink
                               ↑
                          只是改变数据分发方式
-</code></pre>
-<p>keyBy 在不同阶段的体现</p>
+</code></pre><p>keyBy 在不同阶段的体现</p>
 <table>
 <thead>
 <tr>
@@ -571,27 +547,25 @@ Source -&gt; Map -&gt; Filter --[HASH分区]--&gt; Map -&gt; Sink
 </tbody>
 </table>
 <p>类比理解</p>
-<pre><code>keyBy 就像是道路上的&quot;分流指示牌&quot;：
+<pre tabindex="0"><code>keyBy 就像是道路上的&#34;分流指示牌&#34;：
 - 它不是一个收费站（算子）
 - 它只是告诉车辆（数据）应该走哪条路（分区）
 - 车辆本身没有变化，只是行驶路线变了
-</code></pre>
-<p><strong>StreamGraph → JobGraph 关键概念：</strong></p>
-<pre><code class="language-java">// Operator Chain 的条件（满足以下所有条件才能 Chain）：
-1. 下游算子只有一个输入
-2. 上游算子只有一个输出
-3. 两个算子的并行度相同
-4. 没有 shuffle（即 ForwardPartitioner）
-5. 两个算子在同一个 SlotSharingGroup
-6. Chain 策略允许（ChainingStrategy）
-
-// StreamingJobGraphGenerator 的核心方法：
-createJobGraph(StreamGraph)
-  └── createJobVertex()              // 创建 JobVertex
-      └── createChain()              // 构建 Operator Chain
-          └── isChainable()          // 判断是否可以 Chain
-</code></pre>
-<p><strong>重点方法：</strong></p>
+</code></pre><p><strong>StreamGraph → JobGraph 关键概念：</strong></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="c1">// Operator Chain 的条件（满足以下所有条件才能 Chain）：</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">1</span><span class="p">.</span><span class="w"> </span><span class="n">下游算子只有一个输入</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">2</span><span class="p">.</span><span class="w"> </span><span class="n">上游算子只有一个输出</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">3</span><span class="p">.</span><span class="w"> </span><span class="n">两个算子的并行度相同</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">4</span><span class="p">.</span><span class="w"> </span><span class="n">没有</span><span class="w"> </span><span class="n">shuffle</span><span class="err">（</span><span class="n">即</span><span class="w"> </span><span class="n">ForwardPartitioner</span><span class="err">）</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">5</span><span class="p">.</span><span class="w"> </span><span class="n">两个算子在同一个</span><span class="w"> </span><span class="n">SlotSharingGroup</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">6</span><span class="p">.</span><span class="w"> </span><span class="n">Chain</span><span class="w"> </span><span class="n">策略允许</span><span class="err">（</span><span class="n">ChainingStrategy</span><span class="err">）</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c1">// StreamingJobGraphGenerator 的核心方法：</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">createJobGraph</span><span class="p">(</span><span class="n">StreamGraph</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="err">└──</span><span class="w"> </span><span class="n">createJobVertex</span><span class="p">()</span><span class="w">              </span><span class="c1">// 创建 JobVertex</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="err">└──</span><span class="w"> </span><span class="n">createChain</span><span class="p">()</span><span class="w">              </span><span class="c1">// 构建 Operator Chain</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="err">└──</span><span class="w"> </span><span class="n">isChainable</span><span class="p">()</span><span class="w">          </span><span class="c1">// 判断是否可以 Chain</span><span class="w">
+</span></span></span></code></pre></div><p><strong>重点方法：</strong></p>
 <ul>
 <li><code>StreamingJobGraphGenerator.createJobGraph()</code> — 转换入口</li>
 <li><code>StreamingJobGraphGenerator.createChain()</code> — 构建 Operator Chain</li>
@@ -612,7 +586,7 @@ createJobGraph(StreamGraph)
 <li>理解 SPI 机制加载执行器</li>
 </ul>
 <p><strong>PipelineExecutor 体系：</strong></p>
-<pre><code>PipelineExecutor
+<pre tabindex="0"><code>PipelineExecutor
   ├── LocalExecutor
   ├── RemoteExecutor
   ├── AbstractJobClusterExecutor
@@ -621,58 +595,55 @@ createJobGraph(StreamGraph)
   └── AbstractSessionClusterExecutor
         ├── YarnSessionClusterExecutor
         └── KubernetesSessionClusterExecutor
-</code></pre>
-<p><strong>学习示例：</strong></p>
-<pre><code class="language-java">public class PipelineExecutorLearningDemo {
-    public static void main(String[] args) throws Exception {
-        // 1. 本地执行器
-        Configuration localConf = new Configuration();
-        localConf.setString(DeploymentOptions.TARGET, &quot;local&quot;);
-        
-        StreamExecutionEnvironment localEnv = 
-            StreamExecutionEnvironment.createLocalEnvironmentWithWebUI(localConf);
-        
-        // 查看使用的执行器
-        PipelineExecutor localExecutor = localEnv.getPipelineExecutor();
-        System.out.println(&quot;Local Executor: &quot; + localExecutor.getClass().getName());
-        
-        // 2. 远程执行器（连接到已有集群）
-        Configuration remoteConf = new Configuration();
-        remoteConf.setString(DeploymentOptions.TARGET, &quot;remote&quot;);
-        remoteConf.setString(JobManagerOptions.ADDRESS, &quot;localhost&quot;);
-        remoteConf.setInteger(JobManagerOptions.PORT, 8081);
-        
-        StreamExecutionEnvironment remoteEnv = 
-            StreamExecutionEnvironment.getExecutionEnvironment(remoteConf);
-        
-        PipelineExecutor remoteExecutor = remoteEnv.getPipelineExecutor();
-        System.out.println(&quot;Remote Executor: &quot; + remoteExecutor.getClass().getName());
-        
-        // 3. 查看所有可用的执行器工厂
-        PipelineExecutorServiceLoader serviceLoader = 
-            new DefaultExecutorServiceLoader();
-        
-        System.out.println(&quot;\nAvailable Executor Factories:&quot;);
-        // 注意：这需要访问内部 API，仅用于学习
-    }
-}
-</code></pre>
-<p><strong>关键类：</strong></p>
-<pre><code class="language-java">// 1. 执行器接口
-PipelineExecutor.execute(Pipeline, Configuration, ClassLoader)
-  └── 返回 CompletableFuture&lt;JobClient&gt;
-
-// 2. LocalExecutor（本地执行）
-LocalExecutor.execute()
-  └── PerJobMiniClusterFactory.submitJob()
-      └── MiniCluster.submitJob()
-
-// 3. RemoteExecutor（远程执行）
-RemoteExecutor.execute()
-  └── RestClusterClient.submitJob()
-      └── 通过 REST API 提交到远程集群
-</code></pre>
-<hr>
+</code></pre><p><strong>学习示例：</strong></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">PipelineExecutorLearningDemo</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="n">String</span><span class="o">[]</span><span class="w"> </span><span class="n">args</span><span class="p">)</span><span class="w"> </span><span class="kd">throws</span><span class="w"> </span><span class="n">Exception</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// 1. 本地执行器</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">Configuration</span><span class="w"> </span><span class="n">localConf</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Configuration</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">localConf</span><span class="p">.</span><span class="na">setString</span><span class="p">(</span><span class="n">DeploymentOptions</span><span class="p">.</span><span class="na">TARGET</span><span class="p">,</span><span class="w"> </span><span class="s">&#34;local&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">StreamExecutionEnvironment</span><span class="w"> </span><span class="n">localEnv</span><span class="w"> </span><span class="o">=</span><span class="w"> 
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">StreamExecutionEnvironment</span><span class="p">.</span><span class="na">createLocalEnvironmentWithWebUI</span><span class="p">(</span><span class="n">localConf</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// 查看使用的执行器</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">PipelineExecutor</span><span class="w"> </span><span class="n">localExecutor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">localEnv</span><span class="p">.</span><span class="na">getPipelineExecutor</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="s">&#34;Local Executor: &#34;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">localExecutor</span><span class="p">.</span><span class="na">getClass</span><span class="p">().</span><span class="na">getName</span><span class="p">());</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// 2. 远程执行器（连接到已有集群）</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">Configuration</span><span class="w"> </span><span class="n">remoteConf</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Configuration</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">remoteConf</span><span class="p">.</span><span class="na">setString</span><span class="p">(</span><span class="n">DeploymentOptions</span><span class="p">.</span><span class="na">TARGET</span><span class="p">,</span><span class="w"> </span><span class="s">&#34;remote&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">remoteConf</span><span class="p">.</span><span class="na">setString</span><span class="p">(</span><span class="n">JobManagerOptions</span><span class="p">.</span><span class="na">ADDRESS</span><span class="p">,</span><span class="w"> </span><span class="s">&#34;localhost&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">remoteConf</span><span class="p">.</span><span class="na">setInteger</span><span class="p">(</span><span class="n">JobManagerOptions</span><span class="p">.</span><span class="na">PORT</span><span class="p">,</span><span class="w"> </span><span class="n">8081</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">StreamExecutionEnvironment</span><span class="w"> </span><span class="n">remoteEnv</span><span class="w"> </span><span class="o">=</span><span class="w"> 
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">StreamExecutionEnvironment</span><span class="p">.</span><span class="na">getExecutionEnvironment</span><span class="p">(</span><span class="n">remoteConf</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">PipelineExecutor</span><span class="w"> </span><span class="n">remoteExecutor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">remoteEnv</span><span class="p">.</span><span class="na">getPipelineExecutor</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="s">&#34;Remote Executor: &#34;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">remoteExecutor</span><span class="p">.</span><span class="na">getClass</span><span class="p">().</span><span class="na">getName</span><span class="p">());</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// 3. 查看所有可用的执行器工厂</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">PipelineExecutorServiceLoader</span><span class="w"> </span><span class="n">serviceLoader</span><span class="w"> </span><span class="o">=</span><span class="w"> 
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="k">new</span><span class="w"> </span><span class="n">DefaultExecutorServiceLoader</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="s">&#34;\nAvailable Executor Factories:&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// 注意：这需要访问内部 API，仅用于学习</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p><strong>关键类：</strong></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="c1">// 1. 执行器接口</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">PipelineExecutor</span><span class="p">.</span><span class="na">execute</span><span class="p">(</span><span class="n">Pipeline</span><span class="p">,</span><span class="w"> </span><span class="n">Configuration</span><span class="p">,</span><span class="w"> </span><span class="n">ClassLoader</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="err">└──</span><span class="w"> </span><span class="n">返回</span><span class="w"> </span><span class="n">CompletableFuture</span><span class="o">&lt;</span><span class="n">JobClient</span><span class="o">&gt;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c1">// 2. LocalExecutor（本地执行）</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">LocalExecutor</span><span class="p">.</span><span class="na">execute</span><span class="p">()</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="err">└──</span><span class="w"> </span><span class="n">PerJobMiniClusterFactory</span><span class="p">.</span><span class="na">submitJob</span><span class="p">()</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="err">└──</span><span class="w"> </span><span class="n">MiniCluster</span><span class="p">.</span><span class="na">submitJob</span><span class="p">()</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c1">// 3. RemoteExecutor（远程执行）</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">RemoteExecutor</span><span class="p">.</span><span class="na">execute</span><span class="p">()</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="err">└──</span><span class="w"> </span><span class="n">RestClusterClient</span><span class="p">.</span><span class="na">submitJob</span><span class="p">()</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="err">└──</span><span class="w"> </span><span class="n">通过</span><span class="w"> </span><span class="n">REST</span><span class="w"> </span><span class="n">API</span><span class="w"> </span><span class="n">提交到远程集群</span><span class="w">
+</span></span></span></code></pre></div><hr>
 <h2 id="clusterclient-体系">ClusterClient 体系</h2>
 <p><strong>核心文件：</strong></p>
 <ul>
@@ -687,41 +658,40 @@ RemoteExecutor.execute()
 <li>理解 REST API 的使用</li>
 </ul>
 <p><strong>学习示例：</strong></p>
-<pre><code class="language-java">public class ClusterClientLearningDemo {
-    public static void main(String[] args) throws Exception {
-        // 1. 创建 RestClusterClient（连接到运行中的集群）
-        Configuration conf = new Configuration();
-        conf.setString(RestOptions.ADDRESS, &quot;localhost&quot;);
-        conf.setInteger(RestOptions.PORT, 8081);
-        
-        try (RestClusterClient&lt;StandaloneClusterId&gt; client = 
-                new RestClusterClient&lt;&gt;(conf, StandaloneClusterId.getInstance())) {
-            
-            // 2. 获取集群信息
-            System.out.println(&quot;Cluster ID: &quot; + client.getClusterId());
-            
-            // 3. 列出正在运行的作业
-            Collection&lt;JobStatusMessage&gt; jobs = client.listJobs().get();
-            System.out.println(&quot;\nRunning Jobs:&quot;);
-            for (JobStatusMessage job : jobs) {
-                System.out.println(&quot;  - &quot; + job.getJobName() + 
-                                 &quot; [&quot; + job.getJobState() + &quot;]&quot;);
-            }
-            
-            // 4. 提交作业（需要 JobGraph）
-            // JobGraph jobGraph = ...;
-            // JobID jobId = client.submitJob(jobGraph).get();
-            
-            // 5. 取消作业
-            // client.cancel(jobId).get();
-            
-            // 6. 触发 Savepoint
-            // String savepointPath = client.triggerSavepoint(jobId, null).get();
-        }
-    }
-}
-</code></pre>
-<hr>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">ClusterClientLearningDemo</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="n">String</span><span class="o">[]</span><span class="w"> </span><span class="n">args</span><span class="p">)</span><span class="w"> </span><span class="kd">throws</span><span class="w"> </span><span class="n">Exception</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// 1. 创建 RestClusterClient（连接到运行中的集群）</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">Configuration</span><span class="w"> </span><span class="n">conf</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Configuration</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">conf</span><span class="p">.</span><span class="na">setString</span><span class="p">(</span><span class="n">RestOptions</span><span class="p">.</span><span class="na">ADDRESS</span><span class="p">,</span><span class="w"> </span><span class="s">&#34;localhost&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">conf</span><span class="p">.</span><span class="na">setInteger</span><span class="p">(</span><span class="n">RestOptions</span><span class="p">.</span><span class="na">PORT</span><span class="p">,</span><span class="w"> </span><span class="n">8081</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">try</span><span class="w"> </span><span class="p">(</span><span class="n">RestClusterClient</span><span class="o">&lt;</span><span class="n">StandaloneClusterId</span><span class="o">&gt;</span><span class="w"> </span><span class="n">client</span><span class="w"> </span><span class="o">=</span><span class="w"> 
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="k">new</span><span class="w"> </span><span class="n">RestClusterClient</span><span class="o">&lt;&gt;</span><span class="p">(</span><span class="n">conf</span><span class="p">,</span><span class="w"> </span><span class="n">StandaloneClusterId</span><span class="p">.</span><span class="na">getInstance</span><span class="p">()))</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="c1">// 2. 获取集群信息</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="s">&#34;Cluster ID: &#34;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">client</span><span class="p">.</span><span class="na">getClusterId</span><span class="p">());</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="c1">// 3. 列出正在运行的作业</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">Collection</span><span class="o">&lt;</span><span class="n">JobStatusMessage</span><span class="o">&gt;</span><span class="w"> </span><span class="n">jobs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">client</span><span class="p">.</span><span class="na">listJobs</span><span class="p">().</span><span class="na">get</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="s">&#34;\nRunning Jobs:&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">JobStatusMessage</span><span class="w"> </span><span class="n">job</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">jobs</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="s">&#34;  - &#34;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">job</span><span class="p">.</span><span class="na">getJobName</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w"> 
+</span></span></span><span class="line"><span class="cl"><span class="w">                                 </span><span class="s">&#34; [&#34;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">job</span><span class="p">.</span><span class="na">getJobState</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&#34;]&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="c1">// 4. 提交作业（需要 JobGraph）</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="c1">// JobGraph jobGraph = ...;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="c1">// JobID jobId = client.submitJob(jobGraph).get();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="c1">// 5. 取消作业</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="c1">// client.cancel(jobId).get();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="c1">// 6. 触发 Savepoint</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="c1">// String savepointPath = client.triggerSavepoint(jobId, null).get();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><hr>
 <h2 id="cli-命令行工具">CLI 命令行工具</h2>
 <p><strong>核心文件：</strong></p>
 <ul>
@@ -735,16 +705,15 @@ RemoteExecutor.execute()
 <li>理解 PackagedProgram 的加载</li>
 </ul>
 <p><strong>学习方式：</strong></p>
-<pre><code class="language-bash"># 1. 查看 flink run 命令的实现
-# CliFrontend.run() 方法
-
-# 2. 理解参数解析
-# CliFrontendParser.parse()
-
-# 3. 理解 JAR 包加载
-# PackagedProgram.newBuilder().build()
-</code></pre>
-<hr>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># 1. 查看 flink run 命令的实现</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># CliFrontend.run() 方法</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 2. 理解参数解析</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># CliFrontendParser.parse()</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 3. 理解 JAR 包加载</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># PackagedProgram.newBuilder().build()</span>
+</span></span></code></pre></div><hr>
 <h2 id="packagedprogramjar-包加载">PackagedProgram（JAR 包加载）</h2>
 <p><strong>核心文件：</strong></p>
 <ul>
@@ -773,7 +742,7 @@ RemoteExecutor.execute()
 </ul>
 <hr>
 <h2 id="学习路线总结">学习路线总结</h2>
-<pre><code>FileSinkDemo.java（起点）
+<pre tabindex="0"><code>FileSinkDemo.java（起点）
     ↓
 StreamExecutionEnvironment.execute()
     ↓
@@ -786,62 +755,60 @@ StreamingJobGraphGenerator ────────&gt; (StreamGraph → JobGrap
 PipelineExecutor.execute()
     ├── LocalExecutor  ────────────&gt; MiniCluster.submitJob()
     └── RemoteExecutor ────────────&gt; RestClusterClient.submitJob()
-</code></pre>
-<hr>
+</code></pre><hr>
 <h2 id="调试实践步骤">调试实践步骤</h2>
 <h3 id="修改-filesinkdemo-添加调试代码">修改 FileSinkDemo 添加调试代码</h3>
-<pre><code class="language-java">public class FileSinkDemo {
-    public static void main(String[] args) throws Exception {
-        Configuration conf = new Configuration();
-        StreamExecutionEnvironment env = 
-            StreamExecutionEnvironment.createLocalEnvironmentWithWebUI(conf);
-        
-        env.setParallelism(1);
-        env.enableCheckpointing(5000);
-        
-        DataStream&lt;String&gt; source = env.fromData(&quot;hello&quot;, &quot;world&quot;, &quot;flink&quot;);
-        
-        FileSink&lt;String&gt; sink = FileSink
-            .forRowFormat(new Path(&quot;file:///tmp/flink-debug-output&quot;), 
-                         new SimpleStringEncoder&lt;String&gt;(&quot;UTF-8&quot;))
-            .build();
-        
-        source.sinkTo(sink);
-        
-        // 1. 查看 Transformations
-        System.out.println(&quot;\n=== Transformations ===&quot;);
-        List&lt;Transformation&lt;?&gt;&gt; transformations = env.getTransformations();
-        for (Transformation&lt;?&gt; t : transformations) {
-            System.out.println(&quot;  - &quot; + t.getName() + 
-                             &quot; [&quot; + t.getClass().getSimpleName() + &quot;]&quot;);
-        }
-        
-        // 2. 查看 StreamGraph
-        System.out.println(&quot;\n=== StreamGraph ===&quot;);
-        StreamGraph streamGraph = env.getStreamGraph(false);
-        System.out.println(&quot;Job Name: &quot; + streamGraph.getJobName());
-        System.out.println(&quot;StreamNodes: &quot; + streamGraph.getStreamNodes().size());
-        
-        // 3. 查看 JobGraph
-        System.out.println(&quot;\n=== JobGraph ===&quot;);
-        JobGraph jobGraph = StreamingJobGraphGenerator.createJobGraph(streamGraph);
-        System.out.println(&quot;JobVertices: &quot; + jobGraph.getNumberOfVertices());
-        for (JobVertex vertex : jobGraph.getVertices()) {
-            System.out.println(&quot;  - &quot; + vertex.getName() + 
-                             &quot; (parallelism=&quot; + vertex.getParallelism() + &quot;)&quot;);
-        }
-        
-        // 4. 查看 PipelineExecutor
-        System.out.println(&quot;\n=== PipelineExecutor ===&quot;);
-        PipelineExecutor executor = env.getPipelineExecutor();
-        System.out.println(&quot;Executor: &quot; + executor.getClass().getName());
-        
-        // ===== 执行作业 =====
-        env.execute(&quot;Local FileSystem Debug&quot;);
-    }
-}
-</code></pre>
-<h3 id="设置断点开始调试">设置断点开始调试</h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">FileSinkDemo</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="n">String</span><span class="o">[]</span><span class="w"> </span><span class="n">args</span><span class="p">)</span><span class="w"> </span><span class="kd">throws</span><span class="w"> </span><span class="n">Exception</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">Configuration</span><span class="w"> </span><span class="n">conf</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Configuration</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">StreamExecutionEnvironment</span><span class="w"> </span><span class="n">env</span><span class="w"> </span><span class="o">=</span><span class="w"> 
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">StreamExecutionEnvironment</span><span class="p">.</span><span class="na">createLocalEnvironmentWithWebUI</span><span class="p">(</span><span class="n">conf</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">env</span><span class="p">.</span><span class="na">setParallelism</span><span class="p">(</span><span class="n">1</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">env</span><span class="p">.</span><span class="na">enableCheckpointing</span><span class="p">(</span><span class="n">5000</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">DataStream</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span><span class="w"> </span><span class="n">source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">env</span><span class="p">.</span><span class="na">fromData</span><span class="p">(</span><span class="s">&#34;hello&#34;</span><span class="p">,</span><span class="w"> </span><span class="s">&#34;world&#34;</span><span class="p">,</span><span class="w"> </span><span class="s">&#34;flink&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">FileSink</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span><span class="w"> </span><span class="n">sink</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">FileSink</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="p">.</span><span class="na">forRowFormat</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">Path</span><span class="p">(</span><span class="s">&#34;file:///tmp/flink-debug-output&#34;</span><span class="p">),</span><span class="w"> 
+</span></span></span><span class="line"><span class="cl"><span class="w">                         </span><span class="k">new</span><span class="w"> </span><span class="n">SimpleStringEncoder</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&#34;UTF-8&#34;</span><span class="p">))</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="p">.</span><span class="na">build</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">source</span><span class="p">.</span><span class="na">sinkTo</span><span class="p">(</span><span class="n">sink</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// 1. 查看 Transformations</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="s">&#34;\n=== Transformations ===&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">List</span><span class="o">&lt;</span><span class="n">Transformation</span><span class="o">&lt;?&gt;&gt;</span><span class="w"> </span><span class="n">transformations</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">env</span><span class="p">.</span><span class="na">getTransformations</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">Transformation</span><span class="o">&lt;?&gt;</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">transformations</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="s">&#34;  - &#34;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">t</span><span class="p">.</span><span class="na">getName</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w"> 
+</span></span></span><span class="line"><span class="cl"><span class="w">                             </span><span class="s">&#34; [&#34;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">t</span><span class="p">.</span><span class="na">getClass</span><span class="p">().</span><span class="na">getSimpleName</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&#34;]&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// 2. 查看 StreamGraph</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="s">&#34;\n=== StreamGraph ===&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">StreamGraph</span><span class="w"> </span><span class="n">streamGraph</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">env</span><span class="p">.</span><span class="na">getStreamGraph</span><span class="p">(</span><span class="kc">false</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="s">&#34;Job Name: &#34;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">streamGraph</span><span class="p">.</span><span class="na">getJobName</span><span class="p">());</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="s">&#34;StreamNodes: &#34;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">streamGraph</span><span class="p">.</span><span class="na">getStreamNodes</span><span class="p">().</span><span class="na">size</span><span class="p">());</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// 3. 查看 JobGraph</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="s">&#34;\n=== JobGraph ===&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">JobGraph</span><span class="w"> </span><span class="n">jobGraph</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">StreamingJobGraphGenerator</span><span class="p">.</span><span class="na">createJobGraph</span><span class="p">(</span><span class="n">streamGraph</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="s">&#34;JobVertices: &#34;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">jobGraph</span><span class="p">.</span><span class="na">getNumberOfVertices</span><span class="p">());</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">JobVertex</span><span class="w"> </span><span class="n">vertex</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">jobGraph</span><span class="p">.</span><span class="na">getVertices</span><span class="p">())</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="s">&#34;  - &#34;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">vertex</span><span class="p">.</span><span class="na">getName</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w"> 
+</span></span></span><span class="line"><span class="cl"><span class="w">                             </span><span class="s">&#34; (parallelism=&#34;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">vertex</span><span class="p">.</span><span class="na">getParallelism</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&#34;)&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// 4. 查看 PipelineExecutor</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="s">&#34;\n=== PipelineExecutor ===&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">PipelineExecutor</span><span class="w"> </span><span class="n">executor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">env</span><span class="p">.</span><span class="na">getPipelineExecutor</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="s">&#34;Executor: &#34;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">executor</span><span class="p">.</span><span class="na">getClass</span><span class="p">().</span><span class="na">getName</span><span class="p">());</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// ===== 执行作业 =====</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">env</span><span class="p">.</span><span class="na">execute</span><span class="p">(</span><span class="s">&#34;Local FileSystem Debug&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><h3 id="设置断点开始调试">设置断点开始调试</h3>
 <p><strong>重点方法：</strong></p>
 <ol>
 <li><code>StreamExecutionEnvironment.execute()</code></li>
@@ -864,102 +831,100 @@ PipelineExecutor.execute()
 <p>在理解了 Client Layer 的核心流程后，我们可以通过手动启动集群的方式，深入理解 ClusterClient 与集群的交互过程。</p>
 <h3 id="启动本地-standalone-集群">启动本地 Standalone 集群</h3>
 <p>通过编程方式启动 JobManager 和 TaskManager，完整体验集群启动流程：</p>
-<pre><code class="language-java">public class StartClusterDemo {
-    public static void main(String[] args) throws Exception {
-        Configuration config = createConfiguration();
-        
-        // 启动 JobManager
-        StandaloneSessionClusterEntrypoint jobManager = startJobManager(config);
-        Thread.sleep(3000);
-        
-        // 启动 TaskManager
-        TaskManagerRunner taskManager = startTaskManager(config);
-        Thread.sleep(3000);
-        
-        System.out.println(&quot;Access WebUI at: http://localhost:8081&quot;);
-        Thread.currentThread().join();
-    }
-    
-    private static Configuration createConfiguration() {
-        Configuration config = new Configuration();
-        config.set(JobManagerOptions.ADDRESS, &quot;localhost&quot;);
-        config.set(JobManagerOptions.PORT, 6123);
-        config.set(RestOptions.PORT, 8081);
-        config.set(TaskManagerOptions.NUM_TASK_SLOTS, 4);
-        
-        // 自动调整本地执行配置
-        TaskExecutorResourceUtils.adjustForLocalExecution(config);
-        return config;
-    }
-    
-    private static StandaloneSessionClusterEntrypoint startJobManager(Configuration config) 
-            throws Exception {
-        StandaloneSessionClusterEntrypoint entrypoint = 
-            new StandaloneSessionClusterEntrypoint(config);
-        
-        Thread jmThread = new Thread(() -&gt; {
-            try {
-                ClusterEntrypoint.runClusterEntrypoint(entrypoint);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }, &quot;JobManager-Thread&quot;);
-        jmThread.setDaemon(true);
-        jmThread.start();
-        
-        return entrypoint;
-    }
-    
-    private static TaskManagerRunner startTaskManager(Configuration config) throws Exception {
-        TaskManagerRunner taskManagerRunner = new TaskManagerRunner(
-            config,
-            PluginUtils.createPluginManagerFromRootFolder(config),
-            TaskManagerRunner::createTaskExecutorService);
-        taskManagerRunner.start();
-        return taskManagerRunner;
-    }
-}
-</code></pre>
-<h3 id="通过-restclusterclient-提交作业">通过 RestClusterClient 提交作业</h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">StartClusterDemo</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="n">String</span><span class="o">[]</span><span class="w"> </span><span class="n">args</span><span class="p">)</span><span class="w"> </span><span class="kd">throws</span><span class="w"> </span><span class="n">Exception</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">Configuration</span><span class="w"> </span><span class="n">config</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">createConfiguration</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// 启动 JobManager</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">StandaloneSessionClusterEntrypoint</span><span class="w"> </span><span class="n">jobManager</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">startJobManager</span><span class="p">(</span><span class="n">config</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">Thread</span><span class="p">.</span><span class="na">sleep</span><span class="p">(</span><span class="n">3000</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// 启动 TaskManager</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">TaskManagerRunner</span><span class="w"> </span><span class="n">taskManager</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">startTaskManager</span><span class="p">(</span><span class="n">config</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">Thread</span><span class="p">.</span><span class="na">sleep</span><span class="p">(</span><span class="n">3000</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="s">&#34;Access WebUI at: http://localhost:8081&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">Thread</span><span class="p">.</span><span class="na">currentThread</span><span class="p">().</span><span class="na">join</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="n">Configuration</span><span class="w"> </span><span class="nf">createConfiguration</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">Configuration</span><span class="w"> </span><span class="n">config</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Configuration</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">config</span><span class="p">.</span><span class="na">set</span><span class="p">(</span><span class="n">JobManagerOptions</span><span class="p">.</span><span class="na">ADDRESS</span><span class="p">,</span><span class="w"> </span><span class="s">&#34;localhost&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">config</span><span class="p">.</span><span class="na">set</span><span class="p">(</span><span class="n">JobManagerOptions</span><span class="p">.</span><span class="na">PORT</span><span class="p">,</span><span class="w"> </span><span class="n">6123</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">config</span><span class="p">.</span><span class="na">set</span><span class="p">(</span><span class="n">RestOptions</span><span class="p">.</span><span class="na">PORT</span><span class="p">,</span><span class="w"> </span><span class="n">8081</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">config</span><span class="p">.</span><span class="na">set</span><span class="p">(</span><span class="n">TaskManagerOptions</span><span class="p">.</span><span class="na">NUM_TASK_SLOTS</span><span class="p">,</span><span class="w"> </span><span class="n">4</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// 自动调整本地执行配置</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">TaskExecutorResourceUtils</span><span class="p">.</span><span class="na">adjustForLocalExecution</span><span class="p">(</span><span class="n">config</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">config</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="n">StandaloneSessionClusterEntrypoint</span><span class="w"> </span><span class="nf">startJobManager</span><span class="p">(</span><span class="n">Configuration</span><span class="w"> </span><span class="n">config</span><span class="p">)</span><span class="w"> 
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="kd">throws</span><span class="w"> </span><span class="n">Exception</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">StandaloneSessionClusterEntrypoint</span><span class="w"> </span><span class="n">entrypoint</span><span class="w"> </span><span class="o">=</span><span class="w"> 
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="k">new</span><span class="w"> </span><span class="n">StandaloneSessionClusterEntrypoint</span><span class="p">(</span><span class="n">config</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">Thread</span><span class="w"> </span><span class="n">jmThread</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Thread</span><span class="p">(()</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="k">try</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="n">ClusterEntrypoint</span><span class="p">.</span><span class="na">runClusterEntrypoint</span><span class="p">(</span><span class="n">entrypoint</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="n">Exception</span><span class="w"> </span><span class="n">e</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="n">e</span><span class="p">.</span><span class="na">printStackTrace</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">},</span><span class="w"> </span><span class="s">&#34;JobManager-Thread&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">jmThread</span><span class="p">.</span><span class="na">setDaemon</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">jmThread</span><span class="p">.</span><span class="na">start</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">entrypoint</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="n">TaskManagerRunner</span><span class="w"> </span><span class="nf">startTaskManager</span><span class="p">(</span><span class="n">Configuration</span><span class="w"> </span><span class="n">config</span><span class="p">)</span><span class="w"> </span><span class="kd">throws</span><span class="w"> </span><span class="n">Exception</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">TaskManagerRunner</span><span class="w"> </span><span class="n">taskManagerRunner</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">TaskManagerRunner</span><span class="p">(</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">config</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">PluginUtils</span><span class="p">.</span><span class="na">createPluginManagerFromRootFolder</span><span class="p">(</span><span class="n">config</span><span class="p">),</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">TaskManagerRunner</span><span class="p">::</span><span class="n">createTaskExecutorService</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">taskManagerRunner</span><span class="p">.</span><span class="na">start</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">taskManagerRunner</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><h3 id="通过-restclusterclient-提交作业">通过 RestClusterClient 提交作业</h3>
 <p>使用 <code>RestClusterClient</code> 连接到集群并提交作业，这是理解 Client 与 JobManager 交互的关键：</p>
-<pre><code class="language-java">public class SubmitJobToClusterDemo {
-    public static void main(String[] args) throws Exception {
-        Configuration config = new Configuration();
-        config.set(RestOptions.PORT, 8081);
-        config.set(RestOptions.ADDRESS, &quot;localhost&quot;);
-        
-        try (ClusterClient&lt;String&gt; clusterClient = 
-                new RestClusterClient&lt;&gt;(config, &quot;standalone-cluster&quot;)) {
-            
-            System.out.println(&quot;Connected: &quot; + clusterClient.getWebInterfaceURL());
-            
-            // 构建 JobGraph
-            JobGraph jobGraph = createJobGraph(config);
-            
-            // 提交作业
-            JobID jobId = clusterClient.submitJob(jobGraph).get();
-            System.out.println(&quot;Submitted job: &quot; + jobId);
-            
-            // 等待作业完成
-            clusterClient.requestJobResult(jobId).get();
-        }
-    }
-    
-    private static JobGraph createJobGraph(Configuration config) {
-        StreamExecutionEnvironment env = 
-            StreamExecutionEnvironment.getExecutionEnvironment(config);
-        env.setParallelism(2);
-        
-        DataStream&lt;String&gt; source = env.fromData(&quot;a&quot;, &quot;b&quot;, &quot;c&quot;, &quot;d&quot;, &quot;e&quot;);
-        source.map(String::toUpperCase).print();
-        
-        StreamGraph streamGraph = env.getStreamGraph();
-        streamGraph.setJobName(&quot;Standalone Cluster Demo&quot;);
-        return streamGraph.getJobGraph();
-    }
-}
-</code></pre>
-<p>通过这个实战，可以清晰地观察到：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">SubmitJobToClusterDemo</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="n">String</span><span class="o">[]</span><span class="w"> </span><span class="n">args</span><span class="p">)</span><span class="w"> </span><span class="kd">throws</span><span class="w"> </span><span class="n">Exception</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">Configuration</span><span class="w"> </span><span class="n">config</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Configuration</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">config</span><span class="p">.</span><span class="na">set</span><span class="p">(</span><span class="n">RestOptions</span><span class="p">.</span><span class="na">PORT</span><span class="p">,</span><span class="w"> </span><span class="n">8081</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">config</span><span class="p">.</span><span class="na">set</span><span class="p">(</span><span class="n">RestOptions</span><span class="p">.</span><span class="na">ADDRESS</span><span class="p">,</span><span class="w"> </span><span class="s">&#34;localhost&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">try</span><span class="w"> </span><span class="p">(</span><span class="n">ClusterClient</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span><span class="w"> </span><span class="n">clusterClient</span><span class="w"> </span><span class="o">=</span><span class="w"> 
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="k">new</span><span class="w"> </span><span class="n">RestClusterClient</span><span class="o">&lt;&gt;</span><span class="p">(</span><span class="n">config</span><span class="p">,</span><span class="w"> </span><span class="s">&#34;standalone-cluster&#34;</span><span class="p">))</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="s">&#34;Connected: &#34;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">clusterClient</span><span class="p">.</span><span class="na">getWebInterfaceURL</span><span class="p">());</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="c1">// 构建 JobGraph</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">JobGraph</span><span class="w"> </span><span class="n">jobGraph</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">createJobGraph</span><span class="p">(</span><span class="n">config</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="c1">// 提交作业</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">JobID</span><span class="w"> </span><span class="n">jobId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">clusterClient</span><span class="p">.</span><span class="na">submitJob</span><span class="p">(</span><span class="n">jobGraph</span><span class="p">).</span><span class="na">get</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="s">&#34;Submitted job: &#34;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">jobId</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="c1">// 等待作业完成</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">clusterClient</span><span class="p">.</span><span class="na">requestJobResult</span><span class="p">(</span><span class="n">jobId</span><span class="p">).</span><span class="na">get</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="n">JobGraph</span><span class="w"> </span><span class="nf">createJobGraph</span><span class="p">(</span><span class="n">Configuration</span><span class="w"> </span><span class="n">config</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">StreamExecutionEnvironment</span><span class="w"> </span><span class="n">env</span><span class="w"> </span><span class="o">=</span><span class="w"> 
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">StreamExecutionEnvironment</span><span class="p">.</span><span class="na">getExecutionEnvironment</span><span class="p">(</span><span class="n">config</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">env</span><span class="p">.</span><span class="na">setParallelism</span><span class="p">(</span><span class="n">2</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">DataStream</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span><span class="w"> </span><span class="n">source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">env</span><span class="p">.</span><span class="na">fromData</span><span class="p">(</span><span class="s">&#34;a&#34;</span><span class="p">,</span><span class="w"> </span><span class="s">&#34;b&#34;</span><span class="p">,</span><span class="w"> </span><span class="s">&#34;c&#34;</span><span class="p">,</span><span class="w"> </span><span class="s">&#34;d&#34;</span><span class="p">,</span><span class="w"> </span><span class="s">&#34;e&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">source</span><span class="p">.</span><span class="na">map</span><span class="p">(</span><span class="n">String</span><span class="p">::</span><span class="n">toUpperCase</span><span class="p">).</span><span class="na">print</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">StreamGraph</span><span class="w"> </span><span class="n">streamGraph</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">env</span><span class="p">.</span><span class="na">getStreamGraph</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">streamGraph</span><span class="p">.</span><span class="na">setJobName</span><span class="p">(</span><span class="s">&#34;Standalone Cluster Demo&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">streamGraph</span><span class="p">.</span><span class="na">getJobGraph</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>通过这个实战，可以清晰地观察到：</p>
 <ol>
 <li><strong>集群启动过程</strong>：JobManager 和 TaskManager 的启动顺序和依赖关系</li>
 <li><strong>REST API 交互</strong>：ClusterClient 如何通过 REST API 与 JobManager 通信</li>

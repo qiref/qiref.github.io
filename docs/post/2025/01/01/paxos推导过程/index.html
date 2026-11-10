@@ -8,17 +8,6 @@
     <link rel="stylesheet" href="/css/fonts.css" />
     
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-PGMJFXZJRT"></script>
-
-<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/scala.min.js"></script>
-
-<script>
-hljs.configure({languages: []});
-hljs.highlightAll();
-</script>
-
-<link href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/github.min.css"  rel="stylesheet">
-
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
@@ -138,36 +127,33 @@ hljs.highlightAll();
 <li>半同步复制</li>
 </ul>
 <h3 id="同步复制">同步复制</h3>
-<pre><code># node1, node2, node3 
+<pre tabindex="0"><code># node1, node2, node3 
 
 a=x --&gt; node1 --&gt; node2
               ------&gt; node3
                            --&gt; done
-</code></pre>
-<p>数据在一次写入时, 需要同时写入 node1, node2, node3 三个节点, 写入完成才算是一次写入成功;</p>
+</code></pre><p>数据在一次写入时, 需要同时写入 node1, node2, node3 三个节点, 写入完成才算是一次写入成功;</p>
 <p>同步复制有什么问题:</p>
 <ol>
 <li>性能低下; 写入性能会受制于节点数量;</li>
 <li>没有容错, 任何一个节点写入失败, 则系统不可用;</li>
 </ol>
 <h3 id="异步复制">异步复制</h3>
-<pre><code>a=x --&gt; node1 
+<pre tabindex="0"><code>a=x --&gt; node1 
              --&gt; done
              async( node1  --&gt; node2 ; node1  --&gt; node3 ) 
-</code></pre>
-<p>数据在一次写入时, 只要写入一个节点, 则认定写入成功, node1 写入 node2; node1 写入 node3 是异步复制, 不影响整体写入结果;</p>
+</code></pre><p>数据在一次写入时, 只要写入一个节点, 则认定写入成功, node1 写入 node2; node1 写入 node3 是异步复制, 不影响整体写入结果;</p>
 <p>异步复制有什么问题:</p>
 <ol>
 <li>数据可能存在不一致, 当 async( node1  &ndash;&gt; node2) 写入失败时, node2 和 node1 上的数据就不一致;</li>
 </ol>
 <h3 id="半同步复制">半同步复制</h3>
 <p>数据在一次写入时, 数据必须写入一定量的副本(不是全部), 这样多副本则提供了较高的可靠性;</p>
-<pre><code>a=x --&gt; node1 
+<pre tabindex="0"><code>a=x --&gt; node1 
               --&gt; node2
                        --&gt; done
                        async( node1  --&gt; node3 )            
-</code></pre>
-<p>半同步复制存在什么问题:</p>
+</code></pre><p>半同步复制存在什么问题:</p>
 <ol>
 <li>数据可能不一致, 但比纯异步复制要好, 保证尽可能多的节点能达到一致;</li>
 </ol>
@@ -176,31 +162,28 @@ a=x --&gt; node1 --&gt; node2
 <p>在半同步复制中, 虽然最终所有节点也可能出现不一致, 但是可以保证大多数的节点达到数据一致, 如果在读取数据时, 也能保证从大多数节点中读, 那基于写入的“大多数一致性” , 数据在读取时, 也能做到读的 “大多数一致性” .</p>
 <h3 id="quorum">quorum</h3>
 <p>对于大多数节点的定义: 超过整个集合半数以上的节点, 可以被称为一个 多数派 Quorum , Quorumsize=(N/2)+1; （下文统称为 Quorum），例如，一个三个节点的系统，可能的 Quorum 有如下情况：</p>
-<pre><code>node1, node2, node3
+<pre tabindex="0"><code>node1, node2, node3
 
 1. node1, node2
 2. node2, node3
 3. node1, node3
-</code></pre>
-<p>在 Quorum 读取时, 可能出现以下情况:</p>
-<pre><code>       t1     t2
+</code></pre><p>在 Quorum 读取时, 可能出现以下情况:</p>
+<pre tabindex="0"><code>       t1     t2
 node1  a=x    a=y
 node2  a=x    a=y
 node3  a=x    a=x
-</code></pre>
-<ul>
+</code></pre><ul>
 <li>t1 时刻, node1, node2, node3 数据一致, 此时读取Quorum: a=x</li>
 <li>t2 时刻, node3 数据有落后, 此时读取Quorum时, 仅 (node1, node2) 这个子集能读取到一致的结果!</li>
 </ul>
 <h3 id="增加版本">增加版本</h3>
 <p>针对上述这种情况, 考虑 t1 时刻, t2 时刻 node 中的数据存在变化, 其实数据就自然而然带上了版本的概念, <em>在读取时, 需选取最高版本的数据;</em></p>
 <p>再来看一下 Quorum 的写入，假设有以下场景:</p>
-<pre><code class="language-plaintext">       t1      t2      t3
-node1  a=x1    a=x2    a=x3
-node2  a=x1    a=x2    a=x3
-node3  a=x1    a=x1    [a=x3, a=x2]
-</code></pre>
-<ul>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-plaintext" data-lang="plaintext"><span class="line"><span class="cl">       t1      t2      t3
+</span></span><span class="line"><span class="cl">node1  a=x1    a=x2    a=x3
+</span></span><span class="line"><span class="cl">node2  a=x1    a=x2    a=x3
+</span></span><span class="line"><span class="cl">node3  a=x1    a=x1    [a=x3, a=x2]
+</span></span></code></pre></div><ul>
 <li>x1 表示第一个版本的x; x2 表示第二个版本的x, 以此类推&hellip;</li>
 <li>数据加入版本之后, 在 t3 时刻, node3 接收到 a=x3, a=x2 两个请求:</li>
 <li>当写入请求 a=x2 后到, 此时写入会导致 a=x3 被覆盖;</li>
@@ -211,37 +194,32 @@ node3  a=x1    a=x1    [a=x3, a=x2]
 <h3 id="并发写入问题">并发写入问题</h3>
 <p>假定此时有两个client p1, p2 并发向 node 写入:</p>
 <p>t1 时刻, p1, p2 读取最新的版本, v=2</p>
-<pre><code>p1 -----------&gt;    node1,  node2,  node3     &lt;-----------p2   # t1 时刻
+<pre tabindex="0"><code>p1 -----------&gt;    node1,  node2,  node3     &lt;-----------p2   # t1 时刻
                    a=x1,   a=x2,   a=x2
-</code></pre>
-<p>t2 时刻, p1,p2 同时写入, 此时 p1 p2 的版本相同：v=3</p>
-<pre><code>p1 -----------&gt;    node1,  node2,  node3     &lt;-----------p2   # t2 时刻
+</code></pre><p>t2 时刻, p1,p2 同时写入, 此时 p1 p2 的版本相同：v=3</p>
+<pre tabindex="0"><code>p1 -----------&gt;    node1,  node2,  node3     &lt;-----------p2   # t2 时刻
    (v++;a=x3)      a=x1,   a=x2,   a=x2       (v++;a=y3)
-</code></pre>
-<p>t3 时刻, 如果此时 node1 接收了p1, node2 接收了p2, 此时节点的数据完全不一致!</p>
-<pre><code>p1 -----------&gt;    node1,  node2,  node3     &lt;-----------p2   # t3 时刻
+</code></pre><p>t3 时刻, 如果此时 node1 接收了p1, node2 接收了p2, 此时节点的数据完全不一致!</p>
+<pre tabindex="0"><code>p1 -----------&gt;    node1,  node2,  node3     &lt;-----------p2   # t3 时刻
      (v++;a=x3)    a=x3,   a=y3,   a=x2       (v++;a=y3)
-</code></pre>
-<p>如何解决并发写入的问题?</p>
+</code></pre><p>如何解决并发写入的问题?</p>
 <p>解决这个问题, node 需要拒绝掉同一个version下的其他 client 的写入, 也就是说 node 需要记录下来最新的verion中, 上一次它同意写入的 client,  node 要记住的前提是client 需要提前告知node, 其实就是client 在 t2 时刻之前, 还需要进行一次 Quorum 读, 告诉node,  I‘ll write !</p>
 <p>另外, 同一个 version 下, node 记录多个 client 的写前读时, 只能记录最后一次的写前读的 client ;</p>
 <p>改进后的流程如下:</p>
 <p>t1 时刻, p1, p2 读取最新的版本, v=2</p>
-<pre><code>p1 -----------&gt;    node1,  node2,  node3      &lt;-----------p2  # t1 时刻
+<pre tabindex="0"><code>p1 -----------&gt;    node1,  node2,  node3      &lt;-----------p2  # t1 时刻
                    a=x1,   a=x2,   a=x2
-</code></pre>
-<p>t2 时刻, node 会记录下最后一次的写前读取的 client p2;</p>
-<pre><code>p1 -----------&gt;    node1,  node2,  node3      &lt;-----------p2  # t2 时刻, 写前读取
-   (I'll write)    a=x1,   a=x2,   a=x2        (I'll write)
+</code></pre><p>t2 时刻, node 会记录下最后一次的写前读取的 client p2;</p>
+<pre tabindex="0"><code>p1 -----------&gt;    node1,  node2,  node3      &lt;-----------p2  # t2 时刻, 写前读取
+   (I&#39;ll write)    a=x1,   a=x2,   a=x2        (I&#39;ll write)
      
 p1 &lt;-----------    node1,  node2,  node3                      # t2.1 时刻, node record p1
    (ok)            a=x1,   a=x2,   a=x2
                                      
                    node1,  node2,  node3      -----------&gt;p2  # t2.2 时刻, node record p2
                    a=x1,   a=x2,   a=x2           (ok)
-</code></pre>
-<p>t3 时刻, node 接受了 p2 的写请求, 对于 p1 的写入请求会拒绝, 最终一个 quorum 完成写入;</p>
-<pre><code>p1 -----------&gt;    node1,  node2,  node3                      # t3 时刻, p1 写入
+</code></pre><p>t3 时刻, node 接受了 p2 的写请求, 对于 p1 的写入请求会拒绝, 最终一个 quorum 完成写入;</p>
+<pre tabindex="0"><code>p1 -----------&gt;    node1,  node2,  node3                      # t3 时刻, p1 写入
    (write,a=x3)    a=x1,   a=x2,   a=x2           
  
 p1 &lt;-----------    node1,  node2,  node3                      # t3.1 时刻, reject p1
@@ -249,8 +227,7 @@ p1 &lt;-----------    node1,  node2,  node3                      # t3.1 时刻, 
 
                    node1,  node2,  node3      &lt;-----------p2  # t3.2 时刻, p2 写入
                    a=y3,   a=y3,   a=x2        (write,a=y3)
-</code></pre>
-<h2 id="推导总结">推导总结</h2>
+</code></pre><h2 id="推导总结">推导总结</h2>
 <p>基于上述推导, 如何保证副本同步的强一致性?</p>
 <ul>
 <li>
@@ -271,7 +248,7 @@ p1 &lt;-----------    node1,  node2,  node3                      # t3.1 时刻, 
 <li><em>Learner</em>：学习最终被接受的提案（通常是被动接收结果的节点，不参与投票）。</li>
 </ul>
 <p>注意这里的三个角色里没有客户端的角色，三种角色都是服务端，算法的流程也是侧重于服务端多个node如何交互；</p>
-<pre><code>Client       Proposer          Acceptor          Learner
+<pre tabindex="0"><code>Client       Proposer          Acceptor          Learner
   |----写请求---&gt;|                  |                |
   |             |---Prepare(n)----&gt;|                |
   |             |&lt;--Promise(n)-----|                |
@@ -279,8 +256,7 @@ p1 &lt;-----------    node1,  node2,  node3                      # t3.1 时刻, 
   |             |&lt;--Accepted(n)----|                |
   |             |                  |----Learn(v)---&gt;|
   |&lt;----OK------|                  |                |
-</code></pre>
-<h3 id="算法流程">算法流程</h3>
+</code></pre><h3 id="算法流程">算法流程</h3>
 <ul>
 <li>
 <p><strong>Prepare 阶段</strong></p>

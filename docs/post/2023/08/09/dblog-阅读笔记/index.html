@@ -8,17 +8,6 @@
     <link rel="stylesheet" href="/css/fonts.css" />
     
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-PGMJFXZJRT"></script>
-
-<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/scala.min.js"></script>
-
-<script>
-hljs.configure({languages: []});
-hljs.highlightAll();
-</script>
-
-<link href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/github.min.css"  rel="stylesheet">
-
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
@@ -151,44 +140,42 @@ hljs.highlightAll();
 <p><code>watermark</code> 是通过源数据库中的一个表实现的, 表存储在专用的命名空间中，因此不会与应用程序表发生冲突。改表只包含一行,存储 <code>UUID</code> 字段; 通过将这一行更新为特定的 <code>UUID</code> 来生成<code>watermark</code>, 行更新生成一个更改事件。</p>
 <h4 id="算法伪码">算法伪码</h4>
 <p>算法伪代码如下:</p>
-<pre><code class="language-go">// step1 暂停处理 changelog
-pause log event processing 
-lw := uuid() 
-hw := uuid()
-// step2 通过更新watermark表生成 low watermark
-update watermark table set value = lw
-// step3 为下一个块运行 SELECT 语句，并将结果集存储在内存中，按主键索引
-chunk := select next chunk from table
-// step4 通过更新watermark表生成 high watermark
-update watermark table set value = hw
-// step5 恢复处理 changelog, 监听 high watermark 
-resume log event processing
-inwindow := false
-// other steps of event prosessing loop
-while true do 
-    e := next event from changelog
-  if not inwindow then{
-     if e is not watermark then
-        append e to outputbuffer
-     else if e is watermark with value lw then
-       inwindow := true
-  }else{
-     if e is not watermark then{
-      // step 6 接收到lw事件后，开始从结果集中删除所有在lw之后接收到的changelog主键的条目
-       if chunk contains e.key then{
-        remove e.key from chunk
-       }
-       append e to outputbuffer
-     }else if e is watermark with value hw then {
-      // step7 接收到hw事件后，将所有剩余的结果集条目发送到输出
-      for each row in chunk do{
-        append row to outputbuffer
-      }
-    }
-  }
-
-</code></pre>
-<h4 id="算法步骤分析">算法步骤分析</h4>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// step1 暂停处理 changelog
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nx">pause</span> <span class="nx">log</span> <span class="nx">event</span> <span class="nx">processing</span> 
+</span></span><span class="line"><span class="cl"><span class="nx">lw</span> <span class="o">:=</span> <span class="nf">uuid</span><span class="p">()</span> 
+</span></span><span class="line"><span class="cl"><span class="nx">hw</span> <span class="o">:=</span> <span class="nf">uuid</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// step2 通过更新watermark表生成 low watermark
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nx">update</span> <span class="nx">watermark</span> <span class="nx">table</span> <span class="nx">set</span> <span class="nx">value</span> <span class="p">=</span> <span class="nx">lw</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// step3 为下一个块运行 SELECT 语句，并将结果集存储在内存中，按主键索引
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nx">chunk</span> <span class="o">:=</span> <span class="k">select</span> <span class="nx">next</span> <span class="nx">chunk</span> <span class="nx">from</span> <span class="nx">table</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// step4 通过更新watermark表生成 high watermark
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nx">update</span> <span class="nx">watermark</span> <span class="nx">table</span> <span class="nx">set</span> <span class="nx">value</span> <span class="p">=</span> <span class="nx">hw</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// step5 恢复处理 changelog, 监听 high watermark 
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nx">resume</span> <span class="nx">log</span> <span class="nx">event</span> <span class="nx">processing</span>
+</span></span><span class="line"><span class="cl"><span class="nx">inwindow</span> <span class="o">:=</span> <span class="kc">false</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// other steps of event prosessing loop
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nx">while</span> <span class="kc">true</span> <span class="nx">do</span> 
+</span></span><span class="line"><span class="cl">    <span class="nx">e</span> <span class="o">:=</span> <span class="nx">next</span> <span class="nx">event</span> <span class="nx">from</span> <span class="nx">changelog</span>
+</span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="nx">not</span> <span class="nx">inwindow</span> <span class="nx">then</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">     <span class="k">if</span> <span class="nx">e</span> <span class="nx">is</span> <span class="nx">not</span> <span class="nx">watermark</span> <span class="nx">then</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">append</span> <span class="nx">e</span> <span class="nx">to</span> <span class="nx">outputbuffer</span>
+</span></span><span class="line"><span class="cl">     <span class="k">else</span> <span class="k">if</span> <span class="nx">e</span> <span class="nx">is</span> <span class="nx">watermark</span> <span class="nx">with</span> <span class="nx">value</span> <span class="nx">lw</span> <span class="nx">then</span>
+</span></span><span class="line"><span class="cl">       <span class="nx">inwindow</span> <span class="o">:=</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span><span class="k">else</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">     <span class="k">if</span> <span class="nx">e</span> <span class="nx">is</span> <span class="nx">not</span> <span class="nx">watermark</span> <span class="nx">then</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="c1">// step 6 接收到lw事件后，开始从结果集中删除所有在lw之后接收到的changelog主键的条目
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>       <span class="k">if</span> <span class="nx">chunk</span> <span class="nx">contains</span> <span class="nx">e</span><span class="p">.</span><span class="nx">key</span> <span class="nx">then</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">remove</span> <span class="nx">e</span><span class="p">.</span><span class="nx">key</span> <span class="nx">from</span> <span class="nx">chunk</span>
+</span></span><span class="line"><span class="cl">       <span class="p">}</span>
+</span></span><span class="line"><span class="cl">       <span class="nx">append</span> <span class="nx">e</span> <span class="nx">to</span> <span class="nx">outputbuffer</span>
+</span></span><span class="line"><span class="cl">     <span class="p">}</span><span class="k">else</span> <span class="k">if</span> <span class="nx">e</span> <span class="nx">is</span> <span class="nx">watermark</span> <span class="nx">with</span> <span class="nx">value</span> <span class="nx">hw</span> <span class="nx">then</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="c1">// step7 接收到hw事件后，将所有剩余的结果集条目发送到输出
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>      <span class="k">for</span> <span class="nx">each</span> <span class="nx">row</span> <span class="nx">in</span> <span class="nx">chunk</span> <span class="nx">do</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">append</span> <span class="nx">row</span> <span class="nx">to</span> <span class="nx">outputbuffer</span>
+</span></span><span class="line"><span class="cl">      <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span></code></pre></div><h4 id="算法步骤分析">算法步骤分析</h4>
 <p>示例表，k1 到 k6 为主键。每个更改日志条目表示主键的创建、更新或删除事件。在下图展示了<code>watermark</code>的生成和chunk的选择（step 1 到 step 4）。重点看从位于<code>watermark</code>之间的主键结果: 删除选定chunk的行（step 5 到 step 7）。</p>
 <p><img src="/assets/img/DBLog-3.svg" alt="DBLog-3"></p>
 <p><img src="/assets/img/DBLog-4.svg" alt="DBLog-4"></p>

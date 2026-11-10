@@ -8,17 +8,6 @@
     <link rel="stylesheet" href="/css/fonts.css" />
     
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-PGMJFXZJRT"></script>
-
-<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/scala.min.js"></script>
-
-<script>
-hljs.configure({languages: []});
-hljs.highlightAll();
-</script>
-
-<link href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/github.min.css"  rel="stylesheet">
-
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
@@ -110,47 +99,44 @@ hljs.highlightAll();
 
 <main>
 <h2 id="错误示例">错误示例</h2>
-<pre><code class="language-go">type singleton struct {}
-
-var instance *singleton
-
-func GetInstance() *singleton {
-    if instance == nil {
-        instance = &amp;singleton{}   // 不是并发安全的
-    }
-    return instance
-}
-</code></pre>
-<h2 id="不优雅示例">不优雅示例</h2>
-<pre><code class="language-go">func GetInstance() *singleton {
-    mu.Lock()                    // 如果实例存在没有必要加锁
-    defer mu.Unlock()
-
-    if instance == nil {
-        instance = &amp;singleton{}
-    }
-    return instance
-}
-</code></pre>
-<p>加锁可以保证每次拿到相同实例，但是如果已经实例化，再调用函数，依然有锁存在，浪费性能，不够优雅；</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">singleton</span> <span class="kd">struct</span> <span class="p">{}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">var</span> <span class="nx">instance</span> <span class="o">*</span><span class="nx">singleton</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">GetInstance</span><span class="p">()</span> <span class="o">*</span><span class="nx">singleton</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="nx">instance</span> <span class="o">==</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">instance</span> <span class="p">=</span> <span class="o">&amp;</span><span class="nx">singleton</span><span class="p">{}</span>   <span class="c1">// 不是并发安全的
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="nx">instance</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><h2 id="不优雅示例">不优雅示例</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">GetInstance</span><span class="p">()</span> <span class="o">*</span><span class="nx">singleton</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">mu</span><span class="p">.</span><span class="nf">Lock</span><span class="p">()</span>                    <span class="c1">// 如果实例存在没有必要加锁
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">defer</span> <span class="nx">mu</span><span class="p">.</span><span class="nf">Unlock</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="nx">instance</span> <span class="o">==</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">instance</span> <span class="p">=</span> <span class="o">&amp;</span><span class="nx">singleton</span><span class="p">{}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="nx">instance</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>加锁可以保证每次拿到相同实例，但是如果已经实例化，再调用函数，依然有锁存在，浪费性能，不够优雅；</p>
 <h2 id="优雅示例">优雅示例</h2>
-<pre><code class="language-go">import (
-    &quot;sync&quot;
-)
-
-type singleton struct {}
-
-var instance *singleton
-var once sync.Once
-
-func GetInstance() *singleton {
-    once.Do(func() {
-        instance = &amp;singleton{}
-    })
-    return instance
-}
-</code></pre>
-<p>该实现利用<code>sync.Once</code>类型去同步对<code>GetInstance()</code>的访问，并确保我们的类型仅被初始化一次。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kn">import</span> <span class="p">(</span>
+</span></span><span class="line"><span class="cl">    <span class="s">&#34;sync&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">singleton</span> <span class="kd">struct</span> <span class="p">{}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">var</span> <span class="nx">instance</span> <span class="o">*</span><span class="nx">singleton</span>
+</span></span><span class="line"><span class="cl"><span class="kd">var</span> <span class="nx">once</span> <span class="nx">sync</span><span class="p">.</span><span class="nx">Once</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">GetInstance</span><span class="p">()</span> <span class="o">*</span><span class="nx">singleton</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">once</span><span class="p">.</span><span class="nf">Do</span><span class="p">(</span><span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">instance</span> <span class="p">=</span> <span class="o">&amp;</span><span class="nx">singleton</span><span class="p">{}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">})</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="nx">instance</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>该实现利用<code>sync.Once</code>类型去同步对<code>GetInstance()</code>的访问，并确保我们的类型仅被初始化一次。</p>
 
 </main>
 

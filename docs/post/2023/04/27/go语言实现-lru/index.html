@@ -8,17 +8,6 @@
     <link rel="stylesheet" href="/css/fonts.css" />
     
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-PGMJFXZJRT"></script>
-
-<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/scala.min.js"></script>
-
-<script>
-hljs.configure({languages: []});
-hljs.highlightAll();
-</script>
-
-<link href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/github.min.css"  rel="stylesheet">
-
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
@@ -102,101 +91,99 @@ hljs.highlightAll();
 <p>当需要访问一个数据时，LRU算法首先在哈希表中查找该数据，如果存在，则将对应的节点移动到链表头部；如果不存在，则将该数据添加到链表头部，并在哈希表中创建对应的节点。</p>
 <p>当需要淘汰数据时，LRU算法选择链表尾部的节点进行淘汰，并在哈希表中删除对应的节点。</p>
 <p>golang 实现 LRU 算法：</p>
-<pre><code class="language-go">package lru
-
-import (
-    &quot;container/list&quot;
-    &quot;errors&quot;
-    &quot;sync&quot;
-)
-
-// LRU implements a non-thread safe fixed size LRU cache
-type LRU struct {
-    size      int
-    evictList *list.List
-    items     map[interface{}]*list.Element
-}
-
-// entry is used to hold a value in the evictList
-type entry struct {
-    key   interface{}
-    value interface{}
-}
-
-// NewLRU constructs an LRU of the given size
-func NewLRU(size int) (*LRU, error) {
-    if size &lt;= 0 {
-        return nil, errors.New(&quot;must provide a positive size&quot;)
-    }
-    c := &amp;LRU{
-        size:      size,
-        evictList: list.New(),
-        items:     make(map[interface{}]*list.Element),
-    }
-    return c, nil
-}
-
-// Add adds a value to the cache.  Returns true if an eviction occured.
-func (c *LRU) Add(key, value interface{}) bool {
-    // Check for existing item
-    if ent, ok := c.items[key]; ok {
-        c.evictList.MoveToFront(ent)
-        ent.Value.(*entry).value = value
-        return false
-    }
-
-    // Add new item
-    ent := &amp;entry{key, value}
-    entry := c.evictList.PushFront(ent)
-    c.items[key] = entry
-
-    evict := c.evictList.Len() &gt; c.size
-    // Verify size not exceeded
-    if evict {
-        c.removeOldest()
-    }
-    return evict
-}
-
-// Get looks up a key's value from the cache.
-func (c *LRU) Get(key interface{}) (value interface{}, ok bool) {
-    if ent, ok := c.items[key]; ok {
-        c.evictList.MoveToFront(ent)
-        return ent.Value.(*entry).value, true
-    }
-    return
-}
-
-// Remove removes the provided key from the cache, returning if the
-// key was contained.
-func (c *LRU) Remove(key interface{}) bool {
-    if ent, ok := c.items[key]; ok {
-        c.removeElement(ent)
-        return true
-    }
-    return false
-}
-
-// removeOldest removes the oldest item from the cache.
-func (c *LRU) removeOldest() {
-    ent := c.evictList.Back()
-    if ent != nil {
-        c.removeElement(ent)
-    }
-}
-
-// removeElement is used to remove a given list element from the cache
-func (c *LRU) removeElement(e *list.Element) {
-    c.evictList.Remove(e)
-    kv := e.Value.(*entry)
-    delete(c.items, kv.key)
-    if c.onEvict != nil {
-        c.onEvict(kv.key, kv.value)
-    }
-}
-
-</code></pre>
-<p>需要注意的是这个 LRU 实现并不是线程安全的，如果需要线程安全，需要在外层方法加锁，同时，由于 golang 的 lock 并不是可重入的，需要注意避免死锁问题。 以下实现中基于 LRU 做了一次封装，实现了线程安全的内存级 LRU-Cache：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kn">package</span> <span class="nx">lru</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="p">(</span>
+</span></span><span class="line"><span class="cl">    <span class="s">&#34;container/list&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="s">&#34;errors&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="s">&#34;sync&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// LRU implements a non-thread safe fixed size LRU cache
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">type</span> <span class="nx">LRU</span> <span class="kd">struct</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">size</span>      <span class="kt">int</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">evictList</span> <span class="o">*</span><span class="nx">list</span><span class="p">.</span><span class="nx">List</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">items</span>     <span class="kd">map</span><span class="p">[</span><span class="kd">interface</span><span class="p">{}]</span><span class="o">*</span><span class="nx">list</span><span class="p">.</span><span class="nx">Element</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// entry is used to hold a value in the evictList
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">type</span> <span class="nx">entry</span> <span class="kd">struct</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">key</span>   <span class="kd">interface</span><span class="p">{}</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">value</span> <span class="kd">interface</span><span class="p">{}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// NewLRU constructs an LRU of the given size
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">func</span> <span class="nf">NewLRU</span><span class="p">(</span><span class="nx">size</span> <span class="kt">int</span><span class="p">)</span> <span class="p">(</span><span class="o">*</span><span class="nx">LRU</span><span class="p">,</span> <span class="kt">error</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="nx">size</span> <span class="o">&lt;=</span> <span class="mi">0</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="kc">nil</span><span class="p">,</span> <span class="nx">errors</span><span class="p">.</span><span class="nf">New</span><span class="p">(</span><span class="s">&#34;must provide a positive size&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">c</span> <span class="o">:=</span> <span class="o">&amp;</span><span class="nx">LRU</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">size</span><span class="p">:</span>      <span class="nx">size</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">evictList</span><span class="p">:</span> <span class="nx">list</span><span class="p">.</span><span class="nf">New</span><span class="p">(),</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">items</span><span class="p">:</span>     <span class="nb">make</span><span class="p">(</span><span class="kd">map</span><span class="p">[</span><span class="kd">interface</span><span class="p">{}]</span><span class="o">*</span><span class="nx">list</span><span class="p">.</span><span class="nx">Element</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="nx">c</span><span class="p">,</span> <span class="kc">nil</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// Add adds a value to the cache.  Returns true if an eviction occured.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">func</span> <span class="p">(</span><span class="nx">c</span> <span class="o">*</span><span class="nx">LRU</span><span class="p">)</span> <span class="nf">Add</span><span class="p">(</span><span class="nx">key</span><span class="p">,</span> <span class="nx">value</span> <span class="kd">interface</span><span class="p">{})</span> <span class="kt">bool</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// Check for existing item
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">if</span> <span class="nx">ent</span><span class="p">,</span> <span class="nx">ok</span> <span class="o">:=</span> <span class="nx">c</span><span class="p">.</span><span class="nx">items</span><span class="p">[</span><span class="nx">key</span><span class="p">];</span> <span class="nx">ok</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">c</span><span class="p">.</span><span class="nx">evictList</span><span class="p">.</span><span class="nf">MoveToFront</span><span class="p">(</span><span class="nx">ent</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">ent</span><span class="p">.</span><span class="nx">Value</span><span class="p">.(</span><span class="o">*</span><span class="nx">entry</span><span class="p">).</span><span class="nx">value</span> <span class="p">=</span> <span class="nx">value</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="kc">false</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1">// Add new item
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="nx">ent</span> <span class="o">:=</span> <span class="o">&amp;</span><span class="nx">entry</span><span class="p">{</span><span class="nx">key</span><span class="p">,</span> <span class="nx">value</span><span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">entry</span> <span class="o">:=</span> <span class="nx">c</span><span class="p">.</span><span class="nx">evictList</span><span class="p">.</span><span class="nf">PushFront</span><span class="p">(</span><span class="nx">ent</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">c</span><span class="p">.</span><span class="nx">items</span><span class="p">[</span><span class="nx">key</span><span class="p">]</span> <span class="p">=</span> <span class="nx">entry</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="nx">evict</span> <span class="o">:=</span> <span class="nx">c</span><span class="p">.</span><span class="nx">evictList</span><span class="p">.</span><span class="nf">Len</span><span class="p">()</span> <span class="p">&gt;</span> <span class="nx">c</span><span class="p">.</span><span class="nx">size</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// Verify size not exceeded
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">if</span> <span class="nx">evict</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">c</span><span class="p">.</span><span class="nf">removeOldest</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="nx">evict</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// Get looks up a key&#39;s value from the cache.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">func</span> <span class="p">(</span><span class="nx">c</span> <span class="o">*</span><span class="nx">LRU</span><span class="p">)</span> <span class="nf">Get</span><span class="p">(</span><span class="nx">key</span> <span class="kd">interface</span><span class="p">{})</span> <span class="p">(</span><span class="nx">value</span> <span class="kd">interface</span><span class="p">{},</span> <span class="nx">ok</span> <span class="kt">bool</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="nx">ent</span><span class="p">,</span> <span class="nx">ok</span> <span class="o">:=</span> <span class="nx">c</span><span class="p">.</span><span class="nx">items</span><span class="p">[</span><span class="nx">key</span><span class="p">];</span> <span class="nx">ok</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">c</span><span class="p">.</span><span class="nx">evictList</span><span class="p">.</span><span class="nf">MoveToFront</span><span class="p">(</span><span class="nx">ent</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="nx">ent</span><span class="p">.</span><span class="nx">Value</span><span class="p">.(</span><span class="o">*</span><span class="nx">entry</span><span class="p">).</span><span class="nx">value</span><span class="p">,</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// Remove removes the provided key from the cache, returning if the
+</span></span></span><span class="line"><span class="cl"><span class="c1">// key was contained.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">func</span> <span class="p">(</span><span class="nx">c</span> <span class="o">*</span><span class="nx">LRU</span><span class="p">)</span> <span class="nf">Remove</span><span class="p">(</span><span class="nx">key</span> <span class="kd">interface</span><span class="p">{})</span> <span class="kt">bool</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="nx">ent</span><span class="p">,</span> <span class="nx">ok</span> <span class="o">:=</span> <span class="nx">c</span><span class="p">.</span><span class="nx">items</span><span class="p">[</span><span class="nx">key</span><span class="p">];</span> <span class="nx">ok</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">c</span><span class="p">.</span><span class="nf">removeElement</span><span class="p">(</span><span class="nx">ent</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="kc">false</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// removeOldest removes the oldest item from the cache.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">func</span> <span class="p">(</span><span class="nx">c</span> <span class="o">*</span><span class="nx">LRU</span><span class="p">)</span> <span class="nf">removeOldest</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">ent</span> <span class="o">:=</span> <span class="nx">c</span><span class="p">.</span><span class="nx">evictList</span><span class="p">.</span><span class="nf">Back</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="nx">ent</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">c</span><span class="p">.</span><span class="nf">removeElement</span><span class="p">(</span><span class="nx">ent</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// removeElement is used to remove a given list element from the cache
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">func</span> <span class="p">(</span><span class="nx">c</span> <span class="o">*</span><span class="nx">LRU</span><span class="p">)</span> <span class="nf">removeElement</span><span class="p">(</span><span class="nx">e</span> <span class="o">*</span><span class="nx">list</span><span class="p">.</span><span class="nx">Element</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">c</span><span class="p">.</span><span class="nx">evictList</span><span class="p">.</span><span class="nf">Remove</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">kv</span> <span class="o">:=</span> <span class="nx">e</span><span class="p">.</span><span class="nx">Value</span><span class="p">.(</span><span class="o">*</span><span class="nx">entry</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="nb">delete</span><span class="p">(</span><span class="nx">c</span><span class="p">.</span><span class="nx">items</span><span class="p">,</span> <span class="nx">kv</span><span class="p">.</span><span class="nx">key</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="nx">c</span><span class="p">.</span><span class="nx">onEvict</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">c</span><span class="p">.</span><span class="nf">onEvict</span><span class="p">(</span><span class="nx">kv</span><span class="p">.</span><span class="nx">key</span><span class="p">,</span> <span class="nx">kv</span><span class="p">.</span><span class="nx">value</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>需要注意的是这个 LRU 实现并不是线程安全的，如果需要线程安全，需要在外层方法加锁，同时，由于 golang 的 lock 并不是可重入的，需要注意避免死锁问题。 以下实现中基于 LRU 做了一次封装，实现了线程安全的内存级 LRU-Cache：</p>
 <p>完整代码： <a href="https://github.com/ArchieYao/leet-code-training/blob/main/src/lru/lru.go">https://github.com/ArchieYao/leet-code-training/blob/main/src/lru/lru.go</a></p>
 
 </main>

@@ -8,17 +8,6 @@
     <link rel="stylesheet" href="/css/fonts.css" />
     
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-PGMJFXZJRT"></script>
-
-<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/scala.min.js"></script>
-
-<script>
-hljs.configure({languages: []});
-hljs.highlightAll();
-</script>
-
-<link href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/github.min.css"  rel="stylesheet">
-
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
@@ -157,25 +146,20 @@ hljs.highlightAll();
 <p>只有 <strong>派息</strong> 和 <strong>注销型回购</strong> 才是分给普通投资者的到手收益</p>
 <h3 id="股息穿透回报率计算股价">股息穿透回报率计算股价</h3>
 <p>穿透回报率</p>
-<pre><code>净利润*股息支付率 = 股息支付率 * 保守估计净利润
+<pre tabindex="0"><code>净利润*股息支付率 = 股息支付率 * 保守估计净利润
 
 穿透回报率=(股息支付率 * 保守估计净利润 + 注销回购)/总市值
 
 股价=年度净利润 * 0.8（假设下年利润下滑20%） * 股息支付率 / 股息 / 总股本
-
-</code></pre>
-<p>通过穿透回报率计算股价，当真实股价低于计算的股价时，才可以投资这个公司</p>
+</code></pre><p>通过穿透回报率计算股价，当真实股价低于计算的股价时，才可以投资这个公司</p>
 <h3 id="现金流">现金流</h3>
 <p>当股价在合适的价位时，另一个维度考虑企业的现金流，近3年净现金流是否充足（企业财务是否健康，分红的可持续）</p>
-<pre><code>真实可支配的现金流 + 现金贮备 
+<pre tabindex="0"><code>真实可支配的现金流 + 现金贮备 
 
 真实可支配的现金流 = 经营性现金流净流入 - 资本开支 - 财务费用
-
-</code></pre>
-<p>如果有一堆预收账款票据是没用的，可能会资金断裂</p>
-<pre><code>现金储备 = 现金 - 有息负债
-</code></pre>
-<p>如果现金流不够分红金额，那就是在贷款分红或融资分红，不可持续</p>
+</code></pre><p>如果有一堆预收账款票据是没用的，可能会资金断裂</p>
+<pre tabindex="0"><code>现金储备 = 现金 - 有息负债
+</code></pre><p>如果现金流不够分红金额，那就是在贷款分红或融资分红，不可持续</p>
 
 </main>
 

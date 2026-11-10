@@ -8,17 +8,6 @@
     <link rel="stylesheet" href="/css/fonts.css" />
     
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-PGMJFXZJRT"></script>
-
-<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/scala.min.js"></script>
-
-<script>
-hljs.configure({languages: []});
-hljs.highlightAll();
-</script>
-
-<link href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/github.min.css"  rel="stylesheet">
-
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
@@ -120,52 +109,49 @@ hljs.highlightAll();
 
 <main>
 <h2 id="java-堆外内存">Java 堆外内存</h2>
-<pre><code class="language-java">import sun.nio.ch.DirectBuffer;
-import java.nio.ByteBuffer;
-import java.util.concurrent.TimeUnit;
-
-public class OutHeapMem {
-    public static void main(String[] args) throws Exception {
-        // 分配 1G 直接内存
-        ByteBuffer byteBuffer = ByteBuffer.allocateDirect(1024 * 1024 * 1024);
-        TimeUnit.SECONDS.sleep(30);
-
-        System.out.println(&quot;clean start&quot;);
-        // 清除直接内存
-        ((DirectBuffer) byteBuffer).cleaner().clean();
-        System.out.println(&quot;clean finished&quot;);
-
-        TimeUnit.SECONDS.sleep(30);
-    }
-}
-</code></pre>
-<pre><code class="language-diff"># 分配内存
-Memory                                  used         total        max           usage
-heap                                    21M          165M         3641M         0.59%
-ps_eden_space                           3M           64M          1344M         0.29%
-ps_survivor_space                       0K           10752K       10752K        0.00%
-ps_old_gen                              17M          91M          2731M         0.64%
-nonheap                                 28M          28M          -1            96.89%
-code_cache                              5M           5M           240M          2.11%
-metaspace                               20M          21M          -1            97.00%
-compressed_class_space                  2M           2M           1024M         0.25%
-+direct                                 1024M        1024M        -             100.00%
-mapped                                  0K           0K           -             0.00% 
-</code></pre>
-<pre><code class="language-diff"># 释放内存
-Memory                                  used         total        max           usage
-heap                                    21M          165M         3641M         0.60%
-ps_eden_space                           4M           64M          1344M         0.32%
-ps_survivor_space                       0K           10752K       10752K        0.00%
-ps_old_gen                              17M          91M          2731M         0.64%
-nonheap                                 27M          28M          -1            96.79%
-code_cache                              5M           5M           240M          2.09%
-metaspace                               20M          21M          -1            97.03%
-compressed_class_space                  2M           2M           1024M         0.25%
--direct                                 0K           0K           -             0.00%
-mapped                                  0K           0K           -             0.00%
-</code></pre>
-<p>通过 arthas 分析，分配直接内存会在 direct 开辟内存空间，表明是在堆外分配的内存空间；虽然 byteBuffer 指向了 direct memory，但是这个对象引用还在 heap 中，当 byteBuffer 对象引用 被 GC 算法回收掉之后，byteBuffer 指向的内存空间也会被释放；</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kn">import</span><span class="w"> </span><span class="nn">sun.nio.ch.DirectBuffer</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">java.nio.ByteBuffer</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">java.util.concurrent.TimeUnit</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">OutHeapMem</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="n">String</span><span class="o">[]</span><span class="w"> </span><span class="n">args</span><span class="p">)</span><span class="w"> </span><span class="kd">throws</span><span class="w"> </span><span class="n">Exception</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// 分配 1G 直接内存</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">ByteBuffer</span><span class="w"> </span><span class="n">byteBuffer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ByteBuffer</span><span class="p">.</span><span class="na">allocateDirect</span><span class="p">(</span><span class="n">1024</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">1024</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">1024</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">TimeUnit</span><span class="p">.</span><span class="na">SECONDS</span><span class="p">.</span><span class="na">sleep</span><span class="p">(</span><span class="n">30</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="s">&#34;clean start&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// 清除直接内存</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">((</span><span class="n">DirectBuffer</span><span class="p">)</span><span class="w"> </span><span class="n">byteBuffer</span><span class="p">).</span><span class="na">cleaner</span><span class="p">().</span><span class="na">clean</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="s">&#34;clean finished&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">TimeUnit</span><span class="p">.</span><span class="na">SECONDS</span><span class="p">.</span><span class="na">sleep</span><span class="p">(</span><span class="n">30</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-diff" data-lang="diff"><span class="line"><span class="cl"># 分配内存
+</span></span><span class="line"><span class="cl">Memory                                  used         total        max           usage
+</span></span><span class="line"><span class="cl">heap                                    21M          165M         3641M         0.59%
+</span></span><span class="line"><span class="cl">ps_eden_space                           3M           64M          1344M         0.29%
+</span></span><span class="line"><span class="cl">ps_survivor_space                       0K           10752K       10752K        0.00%
+</span></span><span class="line"><span class="cl">ps_old_gen                              17M          91M          2731M         0.64%
+</span></span><span class="line"><span class="cl">nonheap                                 28M          28M          -1            96.89%
+</span></span><span class="line"><span class="cl">code_cache                              5M           5M           240M          2.11%
+</span></span><span class="line"><span class="cl">metaspace                               20M          21M          -1            97.00%
+</span></span><span class="line"><span class="cl">compressed_class_space                  2M           2M           1024M         0.25%
+</span></span><span class="line"><span class="cl"><span class="gi">+direct                                 1024M        1024M        -             100.00%
+</span></span></span><span class="line"><span class="cl"><span class="gi"></span>mapped                                  0K           0K           -             0.00% 
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-diff" data-lang="diff"><span class="line"><span class="cl"># 释放内存
+</span></span><span class="line"><span class="cl">Memory                                  used         total        max           usage
+</span></span><span class="line"><span class="cl">heap                                    21M          165M         3641M         0.60%
+</span></span><span class="line"><span class="cl">ps_eden_space                           4M           64M          1344M         0.32%
+</span></span><span class="line"><span class="cl">ps_survivor_space                       0K           10752K       10752K        0.00%
+</span></span><span class="line"><span class="cl">ps_old_gen                              17M          91M          2731M         0.64%
+</span></span><span class="line"><span class="cl">nonheap                                 27M          28M          -1            96.79%
+</span></span><span class="line"><span class="cl">code_cache                              5M           5M           240M          2.09%
+</span></span><span class="line"><span class="cl">metaspace                               20M          21M          -1            97.03%
+</span></span><span class="line"><span class="cl">compressed_class_space                  2M           2M           1024M         0.25%
+</span></span><span class="line"><span class="cl"><span class="gd">-direct                                 0K           0K           -             0.00%
+</span></span></span><span class="line"><span class="cl"><span class="gd"></span>mapped                                  0K           0K           -             0.00%
+</span></span></code></pre></div><p>通过 arthas 分析，分配直接内存会在 direct 开辟内存空间，表明是在堆外分配的内存空间；虽然 byteBuffer 指向了 direct memory，但是这个对象引用还在 heap 中，当 byteBuffer 对象引用 被 GC 算法回收掉之后，byteBuffer 指向的内存空间也会被释放；</p>
 <h2 id="flink-内存模型">flink 内存模型</h2>
 <p><img src="/assets/img/taskmanager-memory-model.svg" alt="taskmanager内存模型"></p>
 <p>flink 内存模型大体上可以分为，Heap 内存 和 Off-Heap 内存；</p>

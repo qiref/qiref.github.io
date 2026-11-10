@@ -8,17 +8,6 @@
     <link rel="stylesheet" href="/css/fonts.css" />
     
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-PGMJFXZJRT"></script>
-
-<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/scala.min.js"></script>
-
-<script>
-hljs.configure({languages: []});
-hljs.highlightAll();
-</script>
-
-<link href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/github.min.css"  rel="stylesheet">
-
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
@@ -146,186 +135,181 @@ hljs.highlightAll();
 </ul>
 <h3 id="查询">查询</h3>
 <p><code>level</code> 表示跳表的层级, 而 <code>forward[i]</code> 是每一个层级的链表.</p>
-<pre><code class="language-go">Search(list, searchKey)
-    x := list→header
-    // 从跳表的顶层开始,遍历到第一层
-    for i := list→level downto 1 do
-        while x→forward[i]→key &lt; searchKey do
-            x := x→forward[i]
-    // x→key &lt; searchKey ≤ x→forward[1]→key
-    // 最终的结果从跳表最底层获取
-    x := x→forward[1]
-    if x→key = searchKey then 
-        return x→value
-    else 
-        return failure
-</code></pre>
-<h3 id="写入">写入</h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="nf">Search</span><span class="p">(</span><span class="nx">list</span><span class="p">,</span> <span class="nx">searchKey</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">x</span> <span class="o">:=</span> <span class="nx">list</span><span class="err">→</span><span class="nx">header</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 从跳表的顶层开始,遍历到第一层
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="nx">list</span><span class="err">→</span><span class="nx">level</span> <span class="nx">downto</span> <span class="mi">1</span> <span class="nx">do</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">while</span> <span class="nx">x</span><span class="err">→</span><span class="nx">forward</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span><span class="err">→</span><span class="nx">key</span> <span class="p">&lt;</span> <span class="nx">searchKey</span> <span class="nx">do</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">x</span> <span class="o">:=</span> <span class="nx">x</span><span class="err">→</span><span class="nx">forward</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// x→key &lt; searchKey ≤ x→forward[1]→key
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="c1">// 最终的结果从跳表最底层获取
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="nx">x</span> <span class="o">:=</span> <span class="nx">x</span><span class="err">→</span><span class="nx">forward</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="nx">x</span><span class="err">→</span><span class="nx">key</span> <span class="p">=</span> <span class="nx">searchKey</span> <span class="nx">then</span> 
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="nx">x</span><span class="err">→</span><span class="nx">value</span>
+</span></span><span class="line"><span class="cl">    <span class="k">else</span> 
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="nx">failure</span>
+</span></span></code></pre></div><h3 id="写入">写入</h3>
 <p>由跳表的定义得出, 跳表的上一层级相当于下一层级的索引, 如果需要构建多级的索引, 首先需要解决: <em>当前node是否应该索引到上一层级?</em></p>
 <p>基于链表的有序性,首先就能联想到每隔 2 个元素往上建立索引, 但是这样也会带来新的问题: 每次更新元素, 有可能会导致索引的全局更新, 效率反而降低了;</p>
 <p>论文这里采用了概率的做法, 只需要在宏观上, 上层的 node 是下层 node 数量的 1/2, 就可以认为上层的索引建立成功, 而不需要保证每隔 n 个 node 向上索引; 这样做有个很明显的优点, 插入 node 时, 不需要去重新更新每一个层级的索引, 效率大大提高; 当然索引的稀疏性得不到保证, 但是在大批量数据背景下, 误差可以忽略不计.</p>
 <h4 id="概率性">概率性</h4>
 <p>这里 <code>randomLevel()</code> 实现了 node 所在层级呈概率分布, 第二层概率: <code>1/2</code>; 第三层概率: <code>1/2 * 1/2 = 1/4</code>;</p>
-<pre><code class="language-go">randomLevel()
-    lvl := 1
-    // random() that returns a random value in [0...1)
-    // p 默认是0.5
-    while random() &lt; p and lvl &lt; MaxLevel do
-        lvl := lvl + 1
-    return lvl
-</code></pre>
-<p>写入的前半部分是在查找元素, 如果找到相同 key, 直接更新, 如果没找到, 则需要插入 node;</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="nf">randomLevel</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">lvl</span> <span class="o">:=</span> <span class="mi">1</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// random() that returns a random value in [0...1)
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="c1">// p 默认是0.5
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="nx">while</span> <span class="nf">random</span><span class="p">()</span> <span class="p">&lt;</span> <span class="nx">p</span> <span class="nx">and</span> <span class="nx">lvl</span> <span class="p">&lt;</span> <span class="nx">MaxLevel</span> <span class="nx">do</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">lvl</span> <span class="o">:=</span> <span class="nx">lvl</span> <span class="o">+</span> <span class="mi">1</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="nx">lvl</span>
+</span></span></code></pre></div><p>写入的前半部分是在查找元素, 如果找到相同 key, 直接更新, 如果没找到, 则需要插入 node;</p>
 <p>在插入 node 之前, 需要先明确一下跳表在实现上是个怎么样的结构, 从基础的单链表出发, 每一个 node 的有 <code>val</code> 和 <code>next</code>, <code>val</code> 是存储的具体的值 <code>next</code> 指向下一个 node; 从上图的跳表描述来看, 每一层都是一个单链表, 那怎么能直接从上一层快速跳转到下一层呢?</p>
 <p>可以把 <code>next</code> 定义成一个数组, 这样通过数组下标的变化, 就能实现链表从上一层级跳转到下一层级. 论文里的 <code>forward</code> 就是 <code>next</code> 的含义.</p>
-<pre><code class="language-go">Insert(list, searchKey, newValue)
-    local update[1..MaxLevel]
-    // 执行查找动作, 并且找到被更新节点的前一个节点 update[n]
-    x := list→header
-    for i := list→level downto 1 do
-        while x→forward[i]→key &lt; searchKey do
-            x := x→forward[i]
-        -- x→key &lt; searchKey ≤ x→forward[i]→key
-        update[i] := x
-    x := x→forward[1]
-    if x→key = searchKey then 
-        // 如果找到直接更新 value
-        x→value := newValue
-    else // 没找到的情况, 需要新增节点
-        lvl := randomLevel()
-        if lvl &gt; list→level then
-            // 如果新生成的层级比当前跳表层级还高的话, 需要更新跳表的层级 level, 并且新的层级update[i]需要指向header
-            for i := list→level + 1 to lvl do
-                update[i] := list→header
-            list→level := lvl
-        // 创建新节点
-        x := makeNode(lvl, searchKey, value)
-        for i := 1 to level do
-            // update[i] 指向的是新节点的前一个节点
-            x→forward[i] := update[i]→forward[i]
-            update[i]→forward[i] := x
-</code></pre>
-<h3 id="删除">删除</h3>
-<pre><code class="language-go">Delete(list, searchKey)
-    local update[1..MaxLevel]
-    // 执行查找动作, 并且找到被更新节点的前一个节点 update[n]
-    x := list→header
-    for i := list→level downto 1 do
-        while x→forward[i]→key &lt; searchKey do
-            x := x→forward[i]
-        update[i] := x
-    // 找到需要删除的目标节点的最下层级元素
-    x := x→forward[1]
-    if x→key = searchKey then
-        for i := 1 to list→level do
-            // 判断update[n]的下一个节点是不是 x ; 如果是x,则删除x
-            if update[i]→forward[i] ≠ x then 
-                break
-            update[i]→forward[i] := x→forward[i]
-        free(x)
-        // 判断最顶层是不是为空, 为空则跳表降级
-        while list→level &gt; 1 and list→header→forward[list→level] = NIL do
-            list→level := list→level – 1
-</code></pre>
-<h2 id="时间空间复杂度分析">时间空间复杂度分析</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="nf">Insert</span><span class="p">(</span><span class="nx">list</span><span class="p">,</span> <span class="nx">searchKey</span><span class="p">,</span> <span class="nx">newValue</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">local</span> <span class="nx">update</span><span class="p">[</span><span class="mf">1.</span><span class="p">.</span><span class="nx">MaxLevel</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 执行查找动作, 并且找到被更新节点的前一个节点 update[n]
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="nx">x</span> <span class="o">:=</span> <span class="nx">list</span><span class="err">→</span><span class="nx">header</span>
+</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="nx">list</span><span class="err">→</span><span class="nx">level</span> <span class="nx">downto</span> <span class="mi">1</span> <span class="nx">do</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">while</span> <span class="nx">x</span><span class="err">→</span><span class="nx">forward</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span><span class="err">→</span><span class="nx">key</span> <span class="p">&lt;</span> <span class="nx">searchKey</span> <span class="nx">do</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">x</span> <span class="o">:=</span> <span class="nx">x</span><span class="err">→</span><span class="nx">forward</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">        <span class="o">--</span> <span class="nx">x</span><span class="err">→</span><span class="nx">key</span> <span class="p">&lt;</span> <span class="nx">searchKey</span> <span class="err">≤</span> <span class="nx">x</span><span class="err">→</span><span class="nx">forward</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span><span class="err">→</span><span class="nx">key</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">update</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">:=</span> <span class="nx">x</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">x</span> <span class="o">:=</span> <span class="nx">x</span><span class="err">→</span><span class="nx">forward</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="nx">x</span><span class="err">→</span><span class="nx">key</span> <span class="p">=</span> <span class="nx">searchKey</span> <span class="nx">then</span> 
+</span></span><span class="line"><span class="cl">        <span class="c1">// 如果找到直接更新 value
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="nx">x</span><span class="err">→</span><span class="nx">value</span> <span class="o">:=</span> <span class="nx">newValue</span>
+</span></span><span class="line"><span class="cl">    <span class="k">else</span> <span class="c1">// 没找到的情况, 需要新增节点
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="nx">lvl</span> <span class="o">:=</span> <span class="nf">randomLevel</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="nx">lvl</span> <span class="p">&gt;</span> <span class="nx">list</span><span class="err">→</span><span class="nx">level</span> <span class="nx">then</span>
+</span></span><span class="line"><span class="cl">            <span class="c1">// 如果新生成的层级比当前跳表层级还高的话, 需要更新跳表的层级 level, 并且新的层级update[i]需要指向header
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="nx">list</span><span class="err">→</span><span class="nx">level</span> <span class="o">+</span> <span class="mi">1</span> <span class="nx">to</span> <span class="nx">lvl</span> <span class="nx">do</span>
+</span></span><span class="line"><span class="cl">                <span class="nx">update</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">:=</span> <span class="nx">list</span><span class="err">→</span><span class="nx">header</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">list</span><span class="err">→</span><span class="nx">level</span> <span class="o">:=</span> <span class="nx">lvl</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">// 创建新节点
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="nx">x</span> <span class="o">:=</span> <span class="nf">makeNode</span><span class="p">(</span><span class="nx">lvl</span><span class="p">,</span> <span class="nx">searchKey</span><span class="p">,</span> <span class="nx">value</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="mi">1</span> <span class="nx">to</span> <span class="nx">level</span> <span class="nx">do</span>
+</span></span><span class="line"><span class="cl">            <span class="c1">// update[i] 指向的是新节点的前一个节点
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="nx">x</span><span class="err">→</span><span class="nx">forward</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">:=</span> <span class="nx">update</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span><span class="err">→</span><span class="nx">forward</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">update</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span><span class="err">→</span><span class="nx">forward</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">:=</span> <span class="nx">x</span>
+</span></span></code></pre></div><h3 id="删除">删除</h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="nf">Delete</span><span class="p">(</span><span class="nx">list</span><span class="p">,</span> <span class="nx">searchKey</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">local</span> <span class="nx">update</span><span class="p">[</span><span class="mf">1.</span><span class="p">.</span><span class="nx">MaxLevel</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 执行查找动作, 并且找到被更新节点的前一个节点 update[n]
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="nx">x</span> <span class="o">:=</span> <span class="nx">list</span><span class="err">→</span><span class="nx">header</span>
+</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="nx">list</span><span class="err">→</span><span class="nx">level</span> <span class="nx">downto</span> <span class="mi">1</span> <span class="nx">do</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">while</span> <span class="nx">x</span><span class="err">→</span><span class="nx">forward</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span><span class="err">→</span><span class="nx">key</span> <span class="p">&lt;</span> <span class="nx">searchKey</span> <span class="nx">do</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">x</span> <span class="o">:=</span> <span class="nx">x</span><span class="err">→</span><span class="nx">forward</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">update</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">:=</span> <span class="nx">x</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 找到需要删除的目标节点的最下层级元素
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="nx">x</span> <span class="o">:=</span> <span class="nx">x</span><span class="err">→</span><span class="nx">forward</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="nx">x</span><span class="err">→</span><span class="nx">key</span> <span class="p">=</span> <span class="nx">searchKey</span> <span class="nx">then</span>
+</span></span><span class="line"><span class="cl">        <span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="mi">1</span> <span class="nx">to</span> <span class="nx">list</span><span class="err">→</span><span class="nx">level</span> <span class="nx">do</span>
+</span></span><span class="line"><span class="cl">            <span class="c1">// 判断update[n]的下一个节点是不是 x ; 如果是x,则删除x
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="k">if</span> <span class="nx">update</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span><span class="err">→</span><span class="nx">forward</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="err">≠</span> <span class="nx">x</span> <span class="nx">then</span> 
+</span></span><span class="line"><span class="cl">                <span class="k">break</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">update</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span><span class="err">→</span><span class="nx">forward</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">:=</span> <span class="nx">x</span><span class="err">→</span><span class="nx">forward</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">free</span><span class="p">(</span><span class="nx">x</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">// 判断最顶层是不是为空, 为空则跳表降级
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="nx">while</span> <span class="nx">list</span><span class="err">→</span><span class="nx">level</span> <span class="p">&gt;</span> <span class="mi">1</span> <span class="nx">and</span> <span class="nx">list</span><span class="err">→</span><span class="nx">header</span><span class="err">→</span><span class="nx">forward</span><span class="p">[</span><span class="nx">list</span><span class="err">→</span><span class="nx">level</span><span class="p">]</span> <span class="p">=</span> <span class="nx">NIL</span> <span class="nx">do</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">list</span><span class="err">→</span><span class="nx">level</span> <span class="o">:=</span> <span class="nx">list</span><span class="err">→</span><span class="nx">level</span> <span class="err">–</span> <span class="mi">1</span>
+</span></span></code></pre></div><h2 id="时间空间复杂度分析">时间空间复杂度分析</h2>
 <p>从论文的思想来看, 很明显, 跳表这种数据结构, 就是以空间换时间的思路解决大数据量查找的问题, 通过多层级索引, 加速查询;</p>
 <p>对于空间复杂度, 额外利用的空间就是所有上层的索引链表, 假设有 n 个元素, 元素索引到上层概率为 1/2; 额外的空间为: <code>n/2 + n/4 + n/8 +...</code>; 根据等比数列求和公式, 额外空间为: <code>n(1-1/2^k)</code> 其中k是项数, 也就是跳表层级; 因此空间复杂度为 <code>O(n)</code>.</p>
 <p>对于时间复杂度, 假设有 n 个元素, 元素索引到上层的概率为 1/2; 对于某个层级而言, 每级索引都是两个结点抽出一个结点作为上一级索引的结点时，所以每一层最多遍历3个结点, 所以最后需要查询的时间就取决于跳表的层级; <code>l=log n</code>, 所以查询时间复杂度为 <code>O(log n)</code>.</p>
 <h2 id="具体实现">具体实现</h2>
-<pre><code class="language-go">const maxLevel = 32
-const pFactor = 0.25
-
-type SkiplistNode struct {
-    val     int
-    forward []*SkiplistNode
-}
-
-type Skiplist struct {
-    head  *SkiplistNode
-    level int
-}
-
-func Constructor() Skiplist {
-    return Skiplist{&amp;SkiplistNode{-1, make([]*SkiplistNode, maxLevel)}, 0}
-}
-
-func (Skiplist) randomLevel() int {
-    lv := 1
-    for lv &lt; maxLevel &amp;&amp; rand.Float64() &lt; pFactor {
-        lv++
-    }
-    return lv
-}
-
-func (s *Skiplist) Search(target int) bool {
-    curr := s.head
-    for i := s.level - 1; i &gt;= 0; i-- {
-        // 找到第 i 层小于且最接近 target 的元素
-        for curr.forward[i] != nil &amp;&amp; curr.forward[i].val &lt; target {
-            curr = curr.forward[i]
-        }
-    }
-    curr = curr.forward[0]
-    // 检测当前元素的值是否等于 target
-    return curr != nil &amp;&amp; curr.val == target
-}
-
-func (s *Skiplist) Add(num int) {
-    update := make([]*SkiplistNode, maxLevel)
-    for i := range update {
-        update[i] = s.head
-    }
-    curr := s.head
-    for i := s.level - 1; i &gt;= 0; i-- {
-        // 找到第 i 层小于且最接近 num 的元素
-        for curr.forward[i] != nil &amp;&amp; curr.forward[i].val &lt; num {
-            curr = curr.forward[i]
-        }
-        update[i] = curr
-    }
-    lv := s.randomLevel()
-    s.level = max(s.level, lv)
-    newNode := &amp;SkiplistNode{num, make([]*SkiplistNode, lv)}
-    for i, node := range update[:lv] {
-        // 对第 i 层的状态进行更新，将当前元素的 forward 指向新的节点
-        newNode.forward[i] = node.forward[i]
-        node.forward[i] = newNode
-    }
-}
-
-func (s *Skiplist) Erase(num int) bool {
-    update := make([]*SkiplistNode, maxLevel)
-    curr := s.head
-    for i := s.level - 1; i &gt;= 0; i-- {
-        // 找到第 i 层小于且最接近 num 的元素
-        for curr.forward[i] != nil &amp;&amp; curr.forward[i].val &lt; num {
-            curr = curr.forward[i]
-        }
-        update[i] = curr
-    }
-    curr = curr.forward[0]
-    // 如果值不存在则返回 false
-    if curr == nil || curr.val != num {
-        return false
-    }
-    for i := 0; i &lt; s.level &amp;&amp; update[i].forward[i] == curr; i++ {
-        // 对第 i 层的状态进行更新，将 forward 指向被删除节点的下一跳
-        update[i].forward[i] = curr.forward[i]
-    }
-    // 更新当前的 level
-    for s.level &gt; 1 &amp;&amp; s.head.forward[s.level-1] == nil {
-        s.level--
-    }
-    return true
-}
-
-func max(a, b int) int {
-    if b &gt; a {
-        return b
-    }
-    return a
-}
-</code></pre>
-<h2 id="参考">参考</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">const</span> <span class="nx">maxLevel</span> <span class="p">=</span> <span class="mi">32</span>
+</span></span><span class="line"><span class="cl"><span class="kd">const</span> <span class="nx">pFactor</span> <span class="p">=</span> <span class="mf">0.25</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">SkiplistNode</span> <span class="kd">struct</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">val</span>     <span class="kt">int</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">forward</span> <span class="p">[]</span><span class="o">*</span><span class="nx">SkiplistNode</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">Skiplist</span> <span class="kd">struct</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">head</span>  <span class="o">*</span><span class="nx">SkiplistNode</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">level</span> <span class="kt">int</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">Constructor</span><span class="p">()</span> <span class="nx">Skiplist</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="nx">Skiplist</span><span class="p">{</span><span class="o">&amp;</span><span class="nx">SkiplistNode</span><span class="p">{</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="nb">make</span><span class="p">([]</span><span class="o">*</span><span class="nx">SkiplistNode</span><span class="p">,</span> <span class="nx">maxLevel</span><span class="p">)},</span> <span class="mi">0</span><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="p">(</span><span class="nx">Skiplist</span><span class="p">)</span> <span class="nf">randomLevel</span><span class="p">()</span> <span class="kt">int</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">lv</span> <span class="o">:=</span> <span class="mi">1</span>
+</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="nx">lv</span> <span class="p">&lt;</span> <span class="nx">maxLevel</span> <span class="o">&amp;&amp;</span> <span class="nx">rand</span><span class="p">.</span><span class="nf">Float64</span><span class="p">()</span> <span class="p">&lt;</span> <span class="nx">pFactor</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">lv</span><span class="o">++</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="nx">lv</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="p">(</span><span class="nx">s</span> <span class="o">*</span><span class="nx">Skiplist</span><span class="p">)</span> <span class="nf">Search</span><span class="p">(</span><span class="nx">target</span> <span class="kt">int</span><span class="p">)</span> <span class="kt">bool</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">curr</span> <span class="o">:=</span> <span class="nx">s</span><span class="p">.</span><span class="nx">head</span>
+</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="nx">s</span><span class="p">.</span><span class="nx">level</span> <span class="o">-</span> <span class="mi">1</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span><span class="o">--</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">// 找到第 i 层小于且最接近 target 的元素
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="k">for</span> <span class="nx">curr</span><span class="p">.</span><span class="nx">forward</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="o">&amp;&amp;</span> <span class="nx">curr</span><span class="p">.</span><span class="nx">forward</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">val</span> <span class="p">&lt;</span> <span class="nx">target</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">curr</span> <span class="p">=</span> <span class="nx">curr</span><span class="p">.</span><span class="nx">forward</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">curr</span> <span class="p">=</span> <span class="nx">curr</span><span class="p">.</span><span class="nx">forward</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 检测当前元素的值是否等于 target
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">return</span> <span class="nx">curr</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="o">&amp;&amp;</span> <span class="nx">curr</span><span class="p">.</span><span class="nx">val</span> <span class="o">==</span> <span class="nx">target</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="p">(</span><span class="nx">s</span> <span class="o">*</span><span class="nx">Skiplist</span><span class="p">)</span> <span class="nf">Add</span><span class="p">(</span><span class="nx">num</span> <span class="kt">int</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">update</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">([]</span><span class="o">*</span><span class="nx">SkiplistNode</span><span class="p">,</span> <span class="nx">maxLevel</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">update</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">update</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="p">=</span> <span class="nx">s</span><span class="p">.</span><span class="nx">head</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">curr</span> <span class="o">:=</span> <span class="nx">s</span><span class="p">.</span><span class="nx">head</span>
+</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="nx">s</span><span class="p">.</span><span class="nx">level</span> <span class="o">-</span> <span class="mi">1</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span><span class="o">--</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">// 找到第 i 层小于且最接近 num 的元素
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="k">for</span> <span class="nx">curr</span><span class="p">.</span><span class="nx">forward</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="o">&amp;&amp;</span> <span class="nx">curr</span><span class="p">.</span><span class="nx">forward</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">val</span> <span class="p">&lt;</span> <span class="nx">num</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">curr</span> <span class="p">=</span> <span class="nx">curr</span><span class="p">.</span><span class="nx">forward</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">update</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="p">=</span> <span class="nx">curr</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">lv</span> <span class="o">:=</span> <span class="nx">s</span><span class="p">.</span><span class="nf">randomLevel</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">s</span><span class="p">.</span><span class="nx">level</span> <span class="p">=</span> <span class="nb">max</span><span class="p">(</span><span class="nx">s</span><span class="p">.</span><span class="nx">level</span><span class="p">,</span> <span class="nx">lv</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">newNode</span> <span class="o">:=</span> <span class="o">&amp;</span><span class="nx">SkiplistNode</span><span class="p">{</span><span class="nx">num</span><span class="p">,</span> <span class="nb">make</span><span class="p">([]</span><span class="o">*</span><span class="nx">SkiplistNode</span><span class="p">,</span> <span class="nx">lv</span><span class="p">)}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="nx">i</span><span class="p">,</span> <span class="nx">node</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">update</span><span class="p">[:</span><span class="nx">lv</span><span class="p">]</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">// 对第 i 层的状态进行更新，将当前元素的 forward 指向新的节点
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="nx">newNode</span><span class="p">.</span><span class="nx">forward</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="p">=</span> <span class="nx">node</span><span class="p">.</span><span class="nx">forward</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">node</span><span class="p">.</span><span class="nx">forward</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="p">=</span> <span class="nx">newNode</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="p">(</span><span class="nx">s</span> <span class="o">*</span><span class="nx">Skiplist</span><span class="p">)</span> <span class="nf">Erase</span><span class="p">(</span><span class="nx">num</span> <span class="kt">int</span><span class="p">)</span> <span class="kt">bool</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">update</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">([]</span><span class="o">*</span><span class="nx">SkiplistNode</span><span class="p">,</span> <span class="nx">maxLevel</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">curr</span> <span class="o">:=</span> <span class="nx">s</span><span class="p">.</span><span class="nx">head</span>
+</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="nx">s</span><span class="p">.</span><span class="nx">level</span> <span class="o">-</span> <span class="mi">1</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span><span class="o">--</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">// 找到第 i 层小于且最接近 num 的元素
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="k">for</span> <span class="nx">curr</span><span class="p">.</span><span class="nx">forward</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="o">&amp;&amp;</span> <span class="nx">curr</span><span class="p">.</span><span class="nx">forward</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">val</span> <span class="p">&lt;</span> <span class="nx">num</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">curr</span> <span class="p">=</span> <span class="nx">curr</span><span class="p">.</span><span class="nx">forward</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">update</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="p">=</span> <span class="nx">curr</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">curr</span> <span class="p">=</span> <span class="nx">curr</span><span class="p">.</span><span class="nx">forward</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 如果值不存在则返回 false
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">if</span> <span class="nx">curr</span> <span class="o">==</span> <span class="kc">nil</span> <span class="o">||</span> <span class="nx">curr</span><span class="p">.</span><span class="nx">val</span> <span class="o">!=</span> <span class="nx">num</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="kc">false</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="p">&lt;</span> <span class="nx">s</span><span class="p">.</span><span class="nx">level</span> <span class="o">&amp;&amp;</span> <span class="nx">update</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">forward</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">==</span> <span class="nx">curr</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">// 对第 i 层的状态进行更新，将 forward 指向被删除节点的下一跳
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="nx">update</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">forward</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="p">=</span> <span class="nx">curr</span><span class="p">.</span><span class="nx">forward</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 更新当前的 level
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">for</span> <span class="nx">s</span><span class="p">.</span><span class="nx">level</span> <span class="p">&gt;</span> <span class="mi">1</span> <span class="o">&amp;&amp;</span> <span class="nx">s</span><span class="p">.</span><span class="nx">head</span><span class="p">.</span><span class="nx">forward</span><span class="p">[</span><span class="nx">s</span><span class="p">.</span><span class="nx">level</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">s</span><span class="p">.</span><span class="nx">level</span><span class="o">--</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nb">max</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span> <span class="nx">b</span> <span class="kt">int</span><span class="p">)</span> <span class="kt">int</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="nx">b</span> <span class="p">&gt;</span> <span class="nx">a</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="nx">b</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="nx">a</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><h2 id="参考">参考</h2>
 <p><a href="https://15721.courses.cs.cmu.edu/spring2018/papers/08-oltpindexes1/pugh-skiplists-cacm1990.pdf">https://15721.courses.cs.cmu.edu/spring2018/papers/08-oltpindexes1/pugh-skiplists-cacm1990.pdf</a></p>
 <p><a href="https://leetcode.cn/problems/design-skiplist/solutions/1696545/she-ji-tiao-biao-by-leetcode-solution-e8yh/">https://leetcode.cn/problems/design-skiplist/solutions/1696545/she-ji-tiao-biao-by-leetcode-solution-e8yh/</a></p>
 

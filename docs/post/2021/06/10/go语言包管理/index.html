@@ -8,17 +8,6 @@
     <link rel="stylesheet" href="/css/fonts.css" />
     
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-PGMJFXZJRT"></script>
-
-<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/scala.min.js"></script>
-
-<script>
-hljs.configure({languages: []});
-hljs.highlightAll();
-</script>
-
-<link href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/github.min.css"  rel="stylesheet">
-
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
@@ -147,48 +136,45 @@ C.init→B.init→A.init→main</li>
 </ol>
 <h2 id="封装引用实例">封装引用实例</h2>
 <p>建立如下工程结构，在main包中需要访问model包中的内容。</p>
-<pre><code>project
+<pre tabindex="0"><code>project
 |---src
     |---main
         -main.go
     |---model
         -student.go
-</code></pre>
-<p>student.go</p>
-<pre><code class="language-go">type student struct {
-    Name      string
-    idCardNum string // 私有，外部包不可访问
-    Age       int8
-}
-
-func NewStudent(stuName string, age int8) *student {
-    return &amp;student{
-        Name: stuName,
-        Age:  age,
-    }
-}
-
-// 定义结构体方法
-func (stu *student) SetIdCardNum(idCN string) {
-    stu.idCardNum = idCN
-}
-
-// 定义结构体方法
-func (stu *student) GetIdCardNum() string {
-    return stu.idCardNum
-}
-</code></pre>
-<p>main.go</p>
-<pre><code class="language-go">// 引入model包
-import &quot;../model&quot;
-
-func main() {
-    stu := model.NewStudent(&quot;张三&quot;,34)
-    stu.SetIdCardNum(&quot;42093222324234&quot;)
-    fmt.Println(*stu)
-}
-</code></pre>
-<p>运行程序可能会遇到以下错误：</p>
+</code></pre><p>student.go</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">student</span> <span class="kd">struct</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">Name</span>      <span class="kt">string</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">idCardNum</span> <span class="kt">string</span> <span class="c1">// 私有，外部包不可访问
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="nx">Age</span>       <span class="kt">int8</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">NewStudent</span><span class="p">(</span><span class="nx">stuName</span> <span class="kt">string</span><span class="p">,</span> <span class="nx">age</span> <span class="kt">int8</span><span class="p">)</span> <span class="o">*</span><span class="nx">student</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="o">&amp;</span><span class="nx">student</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">Name</span><span class="p">:</span> <span class="nx">stuName</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">Age</span><span class="p">:</span>  <span class="nx">age</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// 定义结构体方法
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">func</span> <span class="p">(</span><span class="nx">stu</span> <span class="o">*</span><span class="nx">student</span><span class="p">)</span> <span class="nf">SetIdCardNum</span><span class="p">(</span><span class="nx">idCN</span> <span class="kt">string</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">stu</span><span class="p">.</span><span class="nx">idCardNum</span> <span class="p">=</span> <span class="nx">idCN</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// 定义结构体方法
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">func</span> <span class="p">(</span><span class="nx">stu</span> <span class="o">*</span><span class="nx">student</span><span class="p">)</span> <span class="nf">GetIdCardNum</span><span class="p">()</span> <span class="kt">string</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="nx">stu</span><span class="p">.</span><span class="nx">idCardNum</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>main.go</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// 引入model包
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kn">import</span> <span class="s">&#34;../model&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">stu</span> <span class="o">:=</span> <span class="nx">model</span><span class="p">.</span><span class="nf">NewStudent</span><span class="p">(</span><span class="s">&#34;张三&#34;</span><span class="p">,</span><span class="mi">34</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">stu</span><span class="p">.</span><span class="nf">SetIdCardNum</span><span class="p">(</span><span class="s">&#34;42093222324234&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="o">*</span><span class="nx">stu</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>运行程序可能会遇到以下错误：</p>
 <p>build command-line-arguments: cannot find module for xxxx</p>
 <p>该错误与go环境变量GO111MODULE相关：</p>
 <ul>
@@ -198,61 +184,54 @@ func main() {
 <li>在使用模块的时候，GOPATH 是无意义的,不过它还是会把下载的依赖储存在 $GOPATH/src/mod 中,也会把 go install 的结果放在 $GOPATH/bin 中</li>
 </ul>
 <p>设置方式：</p>
-<pre><code>go env -w GO111MODULE=auto
+<pre tabindex="0"><code>go env -w GO111MODULE=auto
 go env
-</code></pre>
-<p>在main中调用发现只能访问student结构体的Name和Age字段，idCardNum需要通过get方法获取，这样就达到包的权限控制效果。</p>
+</code></pre><p>在main中调用发现只能访问student结构体的Name和Age字段，idCardNum需要通过get方法获取，这样就达到包的权限控制效果。</p>
 <h2 id="包引用">包引用</h2>
 <p>包引用可使用相对路径和绝对路径；引用时也可以对包设置alias；还可以匿名引用。</p>
 <ul>
 <li>包省略前缀</li>
 </ul>
-<pre><code class="language-go">import (
-    . &quot;fmt&quot;
-)
-</code></pre>
-<p>这个点的含义就是这个包导入之后在你调用这个包的函数时，你可以省略前缀的包名，也就是前面你调用的 fmt.Println (&ldquo;hello world&rdquo;) 可以省略的写成 Println (&ldquo;hello world&rdquo;)</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kn">import</span> <span class="p">(</span>
+</span></span><span class="line"><span class="cl">    <span class="p">.</span> <span class="s">&#34;fmt&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span>
+</span></span></code></pre></div><p>这个点的含义就是这个包导入之后在你调用这个包的函数时，你可以省略前缀的包名，也就是前面你调用的 fmt.Println (&ldquo;hello world&rdquo;) 可以省略的写成 Println (&ldquo;hello world&rdquo;)</p>
 <ul>
 <li>包设置alias</li>
 </ul>
-<pre><code class="language-go">import model1 &quot;../model&quot;
-func main() {
-    stu := model1.NewStudent(&quot;张三&quot;, 34)
-    stu.SetIdCardNum(&quot;42093222324234&quot;)
-}
-</code></pre>
-<ul>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kn">import</span> <span class="nx">model1</span> <span class="s">&#34;../model&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">stu</span> <span class="o">:=</span> <span class="nx">model1</span><span class="p">.</span><span class="nf">NewStudent</span><span class="p">(</span><span class="s">&#34;张三&#34;</span><span class="p">,</span> <span class="mi">34</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">stu</span><span class="p">.</span><span class="nf">SetIdCardNum</span><span class="p">(</span><span class="s">&#34;42093222324234&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><ul>
 <li>包匿名引用</li>
 </ul>
-<pre><code class="language-go">import _ &quot;../model&quot;
-</code></pre>
-<p>注意匿名引用的包并不能直接使用其中的变量和方法，不使用匿名引入的情况下，如果引入了一个未使用的包会导致编译错误，但使用匿名引入包不会导致编译错误。</p>
-<pre><code class="language-go">import (
-    &quot;database/sql&quot;
-    _ &quot;github.com/lib/pq&quot;              // enable support for Postgres
-    _ &quot;github.com/go-sql-driver/mysql&quot; // enable support for MySQL
-)
-
-db, err = sql.Open(&quot;postgres&quot;, dbname) // OK
-db, err = sql.Open(&quot;mysql&quot;, dbname)    // OK
-db, err = sql.Open(&quot;sqlite3&quot;, dbname)  // returns error: unknown driver &quot;sqlite3&quot;
-</code></pre>
-<p>导入一个包，只想执行包里的 init 函数，来运行一些初始化任务，此时也可以使用匿名导入。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kn">import</span> <span class="nx">_</span> <span class="s">&#34;../model&#34;</span>
+</span></span></code></pre></div><p>注意匿名引用的包并不能直接使用其中的变量和方法，不使用匿名引入的情况下，如果引入了一个未使用的包会导致编译错误，但使用匿名引入包不会导致编译错误。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kn">import</span> <span class="p">(</span>
+</span></span><span class="line"><span class="cl">    <span class="s">&#34;database/sql&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">_</span> <span class="s">&#34;github.com/lib/pq&#34;</span>              <span class="c1">// enable support for Postgres
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="nx">_</span> <span class="s">&#34;github.com/go-sql-driver/mysql&#34;</span> <span class="c1">// enable support for MySQL
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nx">db</span><span class="p">,</span> <span class="nx">err</span> <span class="p">=</span> <span class="nx">sql</span><span class="p">.</span><span class="nf">Open</span><span class="p">(</span><span class="s">&#34;postgres&#34;</span><span class="p">,</span> <span class="nx">dbname</span><span class="p">)</span> <span class="c1">// OK
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nx">db</span><span class="p">,</span> <span class="nx">err</span> <span class="p">=</span> <span class="nx">sql</span><span class="p">.</span><span class="nf">Open</span><span class="p">(</span><span class="s">&#34;mysql&#34;</span><span class="p">,</span> <span class="nx">dbname</span><span class="p">)</span>    <span class="c1">// OK
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nx">db</span><span class="p">,</span> <span class="nx">err</span> <span class="p">=</span> <span class="nx">sql</span><span class="p">.</span><span class="nf">Open</span><span class="p">(</span><span class="s">&#34;sqlite3&#34;</span><span class="p">,</span> <span class="nx">dbname</span><span class="p">)</span>  <span class="c1">// returns error: unknown driver &#34;sqlite3&#34;
+</span></span></span></code></pre></div><p>导入一个包，只想执行包里的 init 函数，来运行一些初始化任务，此时也可以使用匿名导入。</p>
 <ul>
 <li>绝对路径引入</li>
 </ul>
 <p>基于以上工程目录结构，也可以使用绝对路径引入，绝对路径是从 $GOPATH/src 或 $GOROOT 或者 $GOPATH/pkg/mod 目录下搜索包并导入。</p>
-<pre><code class="language-go">import &quot;model&quot;
-</code></pre>
-<p>注意绝对路径引入需要保证GOPATH在当前目录下，使用goland也可以设置当前工程的GOPATH。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kn">import</span> <span class="s">&#34;model&#34;</span>
+</span></span></code></pre></div><p>注意绝对路径引入需要保证GOPATH在当前目录下，使用goland也可以设置当前工程的GOPATH。</p>
 <ul>
 <li>相对路径引入</li>
 </ul>
 <p>相对路径是从当前目录开始。</p>
 <p>main包中引用如下：</p>
-<pre><code class="language-go">import &quot;../model&quot;
-</code></pre>
-<p>参考：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kn">import</span> <span class="s">&#34;../model&#34;</span>
+</span></span></code></pre></div><p>参考：</p>
 <p><a href="https://juejin.cn/post/6844904167073382408">https://juejin.cn/post/6844904167073382408</a>
 <a href="http://c.biancheng.net/view/91.html">http://c.biancheng.net/view/91.html</a></p>
 

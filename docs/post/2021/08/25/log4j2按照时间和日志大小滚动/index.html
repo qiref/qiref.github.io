@@ -8,17 +8,6 @@
     <link rel="stylesheet" href="/css/fonts.css" />
     
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-PGMJFXZJRT"></script>
-
-<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/scala.min.js"></script>
-
-<script>
-hljs.configure({languages: []});
-hljs.highlightAll();
-</script>
-
-<link href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/github.min.css"  rel="stylesheet">
-
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
@@ -111,45 +100,43 @@ hljs.highlightAll();
 <p>摘要：Log4j2 按照时间和日志大小滚动。</p>
 <hr>
 <h2 id="log4j2按照时间和日志大小滚">Log4j2按照时间和日志大小滚</h2>
-<pre><code class="language-properties">status = error
-name = PropertiesConfig
-
-#Make sure to change log file path as per your need
-property.filename = C:\\logs\\debug.log
-
-filters = threshold
-filter.threshold.type = ThresholdFilter
-filter.threshold.level = debug
-
-appenders = rolling
-appender.rolling.type = RollingFile
-appender.rolling.name = RollingFile
-appender.rolling.fileName = ${filename}
-appender.rolling.filePattern = debug-backup-%d{MM-dd-yy-HH-mm-ss}-%i.log.gz
-appender.rolling.layout.type = PatternLayout
-appender.rolling.layout.pattern = %d{yyyy-MM-dd HH:mm:ss} %-5p %c{1}:%L - %m%n
-appender.rolling.policies.type = Policies
-appender.rolling.policies.time.type = TimeBasedTriggeringPolicy
-appender.rolling.policies.time.interval = 1
-appender.rolling.policies.time.modulate = true
-appender.rolling.policies.size.type = SizeBasedTriggeringPolicy
-appender.rolling.policies.size.size=10MB
-appender.rolling.strategy.type = DefaultRolloverStrategy
-appender.rolling.strategy.max = 20
-
-loggers = rolling
-#Make sure to change the package structure as per your application
-logger.rolling.name = com.howtodoinjava
-logger.rolling.level = debug
-logger.rolling.additivity = false
-logger.rolling.appenderRef.rolling.ref = RollingFile
-</code></pre>
-<hr>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-properties" data-lang="properties"><span class="line"><span class="cl"><span class="na">status</span> <span class="o">=</span> <span class="s">error</span>
+</span></span><span class="line"><span class="cl"><span class="na">name</span> <span class="o">=</span> <span class="s">PropertiesConfig</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">#Make sure to change log file path as per your need</span>
+</span></span><span class="line"><span class="cl"><span class="na">property.filename</span> <span class="o">=</span> <span class="s">C:\\logs\\debug.log</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="na">filters</span> <span class="o">=</span> <span class="s">threshold</span>
+</span></span><span class="line"><span class="cl"><span class="na">filter.threshold.type</span> <span class="o">=</span> <span class="s">ThresholdFilter</span>
+</span></span><span class="line"><span class="cl"><span class="na">filter.threshold.level</span> <span class="o">=</span> <span class="s">debug</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="na">appenders</span> <span class="o">=</span> <span class="s">rolling</span>
+</span></span><span class="line"><span class="cl"><span class="na">appender.rolling.type</span> <span class="o">=</span> <span class="s">RollingFile</span>
+</span></span><span class="line"><span class="cl"><span class="na">appender.rolling.name</span> <span class="o">=</span> <span class="s">RollingFile</span>
+</span></span><span class="line"><span class="cl"><span class="na">appender.rolling.fileName</span> <span class="o">=</span> <span class="s">${filename}</span>
+</span></span><span class="line"><span class="cl"><span class="na">appender.rolling.filePattern</span> <span class="o">=</span> <span class="s">debug-backup-%d{MM-dd-yy-HH-mm-ss}-%i.log.gz</span>
+</span></span><span class="line"><span class="cl"><span class="na">appender.rolling.layout.type</span> <span class="o">=</span> <span class="s">PatternLayout</span>
+</span></span><span class="line"><span class="cl"><span class="na">appender.rolling.layout.pattern</span> <span class="o">=</span> <span class="s">%d{yyyy-MM-dd HH:mm:ss} %-5p %c{1}:%L - %m%n</span>
+</span></span><span class="line"><span class="cl"><span class="na">appender.rolling.policies.type</span> <span class="o">=</span> <span class="s">Policies</span>
+</span></span><span class="line"><span class="cl"><span class="na">appender.rolling.policies.time.type</span> <span class="o">=</span> <span class="s">TimeBasedTriggeringPolicy</span>
+</span></span><span class="line"><span class="cl"><span class="na">appender.rolling.policies.time.interval</span> <span class="o">=</span> <span class="s">1</span>
+</span></span><span class="line"><span class="cl"><span class="na">appender.rolling.policies.time.modulate</span> <span class="o">=</span> <span class="s">true</span>
+</span></span><span class="line"><span class="cl"><span class="na">appender.rolling.policies.size.type</span> <span class="o">=</span> <span class="s">SizeBasedTriggeringPolicy</span>
+</span></span><span class="line"><span class="cl"><span class="na">appender.rolling.policies.size.size</span><span class="o">=</span><span class="s">10MB</span>
+</span></span><span class="line"><span class="cl"><span class="na">appender.rolling.strategy.type</span> <span class="o">=</span> <span class="s">DefaultRolloverStrategy</span>
+</span></span><span class="line"><span class="cl"><span class="na">appender.rolling.strategy.max</span> <span class="o">=</span> <span class="s">20</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="na">loggers</span> <span class="o">=</span> <span class="s">rolling</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#Make sure to change the package structure as per your application</span>
+</span></span><span class="line"><span class="cl"><span class="na">logger.rolling.name</span> <span class="o">=</span> <span class="s">com.howtodoinjava</span>
+</span></span><span class="line"><span class="cl"><span class="na">logger.rolling.level</span> <span class="o">=</span> <span class="s">debug</span>
+</span></span><span class="line"><span class="cl"><span class="na">logger.rolling.additivity</span> <span class="o">=</span> <span class="s">false</span>
+</span></span><span class="line"><span class="cl"><span class="na">logger.rolling.appenderRef.rolling.ref</span> <span class="o">=</span> <span class="s">RollingFile</span>
+</span></span></code></pre></div><hr>
 <h2 id="日志配置动态更新">日志配置动态更新</h2>
 <p><code>monitorInterval</code> 是用来设置配置文件的动态加载时间的，单位是秒。</p>
-<pre><code class="language-properties">monitorInterval = 10
-</code></pre>
-
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-properties" data-lang="properties"><span class="line"><span class="cl"><span class="na">monitorInterval</span> <span class="o">=</span> <span class="s">10</span>
+</span></span></code></pre></div>
 </main>
 
   <footer>

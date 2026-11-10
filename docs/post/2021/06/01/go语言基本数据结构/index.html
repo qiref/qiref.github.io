@@ -8,17 +8,6 @@
     <link rel="stylesheet" href="/css/fonts.css" />
     
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-PGMJFXZJRT"></script>
-
-<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/scala.min.js"></script>
-
-<script>
-hljs.configure({languages: []});
-hljs.highlightAll();
-</script>
-
-<link href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/github.min.css"  rel="stylesheet">
-
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
@@ -120,156 +109,143 @@ hljs.highlightAll();
 <p>摘要：Go语言基本数据结构</p>
 <hr>
 <h2 id="数组">数组</h2>
-<pre><code class="language-go">strings := [3]string{&quot;1&quot;, &quot;2&quot;, &quot;2&quot;}
-intArray := [8]int{1, 2, 3, 4, 5, 5, 5, 55}
-</code></pre>
-<p>定义两个数组,<code>fmt.Println(len(strings))</code> 可以使用<code>len()</code>函数得到数组的长度，<code>strings[1]</code>可以获取指定数组下标的元素。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="nx">strings</span> <span class="o">:=</span> <span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="kt">string</span><span class="p">{</span><span class="s">&#34;1&#34;</span><span class="p">,</span> <span class="s">&#34;2&#34;</span><span class="p">,</span> <span class="s">&#34;2&#34;</span><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="nx">intArray</span> <span class="o">:=</span> <span class="p">[</span><span class="mi">8</span><span class="p">]</span><span class="kt">int</span><span class="p">{</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">55</span><span class="p">}</span>
+</span></span></code></pre></div><p>定义两个数组,<code>fmt.Println(len(strings))</code> 可以使用<code>len()</code>函数得到数组的长度，<code>strings[1]</code>可以获取指定数组下标的元素。</p>
 <p>所以通过以下方式可以遍历数组：</p>
-<pre><code class="language-go">for i := 0; i &lt; len(strings); i++ {
-    fmt.Println(strings[i])
-}
-</code></pre>
-<p>下文提供了更加优雅的方式。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="p">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="nx">strings</span><span class="p">);</span> <span class="nx">i</span><span class="o">++</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">strings</span><span class="p">[</span><span class="nx">i</span><span class="p">])</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>下文提供了更加优雅的方式。</p>
 <h2 id="slice">slice</h2>
 <p>Go数组的长度不可变，Go提供了一种内置类型切片:slice，与数组相比，切片的长度不是固定的，可以动态扩容、添加元素。</p>
-<pre><code class="language-go">slice1 := make([]string, 2)
-fmt.Println(slice1)
-
-slice1[0] = &quot;22&quot;
-slice1[1] = &quot;222&quot;
-fmt.Println(slice1)
-
-slice1 = append(slice1, &quot;33&quot;, &quot;44&quot;, &quot;55&quot;)
-fmt.Println(slice1)
-fmt.Println(len(slice1))
-
-// 裁剪，从index 2 到index 4
-sliceSub := slice1[2:4]
-fmt.Println(sliceSub)
-
-// 裁剪，从index 2 到最后
-sliceSub2 := slice1[2:]
-fmt.Println(sliceSub2)
-</code></pre>
-<ul>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="nx">slice1</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">([]</span><span class="kt">string</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">slice1</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nx">slice1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="p">=</span> <span class="s">&#34;22&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nx">slice1</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="p">=</span> <span class="s">&#34;222&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">slice1</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nx">slice1</span> <span class="p">=</span> <span class="nb">append</span><span class="p">(</span><span class="nx">slice1</span><span class="p">,</span> <span class="s">&#34;33&#34;</span><span class="p">,</span> <span class="s">&#34;44&#34;</span><span class="p">,</span> <span class="s">&#34;55&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">slice1</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="nx">slice1</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// 裁剪，从index 2 到index 4
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nx">sliceSub</span> <span class="o">:=</span> <span class="nx">slice1</span><span class="p">[</span><span class="mi">2</span><span class="p">:</span><span class="mi">4</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">sliceSub</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// 裁剪，从index 2 到最后
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nx">sliceSub2</span> <span class="o">:=</span> <span class="nx">slice1</span><span class="p">[</span><span class="mi">2</span><span class="p">:]</span>
+</span></span><span class="line"><span class="cl"><span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">sliceSub2</span><span class="p">)</span>
+</span></span></code></pre></div><ul>
 <li><code>make()</code> 方法可以构建一个slice，并可以指定初始化大小和容量；</li>
 <li><code>len()</code> 可以获取slice的大小；</li>
 <li><code>append()</code> 可以想slice中添加元素；</li>
 <li>可以通过裁剪，下标移动等方式删除slice。</li>
 </ul>
 <h3 id="slice从头部删除">slice从头部删除</h3>
-<pre><code class="language-go">a = []int{1, 2, 3}
-a = a[1:] // 删除开头1个元素
-a = a[N:] // 删除开头N个元素
-
-a = append(a[:0], a[1:]...) // 删除开头1个元素
-a = append(a[:0], a[N:]...) // 删除开头N个元素
-
-a = a[:copy(a, a[1:])] // 删除开头1个元素
-a = a[:copy(a, a[N:])] // 删除开头N个元素
-</code></pre>
-<h3 id="slice从中间删除">slice从中间删除</h3>
-<pre><code class="language-go">a = append(a[:i], a[i+1:]...) // 删除中间1个元素
-a = append(a[:i], a[i+N:]...) // 删除中间N个元素
-a = a[:i+copy(a[i:], a[i+1:])] // 删除中间1个元素
-a = a[:i+copy(a[i:], a[i+N:])] // 删除中间N个元素
-</code></pre>
-<h3 id="slice从尾部删除">slice从尾部删除</h3>
-<pre><code class="language-go">a = a[:len(a)-1] // 删除尾部1个元素
-a = a[:len(a)-N] // 删除尾部N个元素
-</code></pre>
-<h3 id="slice-扩容">slice 扩容</h3>
-<pre><code class="language-go">slice2 := make([]string, 1, 1)
-// cap()函数, 计算slice长度可以达到多少
-fmt.Println(&quot;cap(slice1) is :&quot;, cap(slice1))
-
-slice2[0] = &quot;0&quot;
-
-slice2 = append(slice2, &quot;3&quot;)
-fmt.Println(&quot;cap(slice2) is :&quot;, cap(slice2))
-
-numbers := []int{0, 1, 2, 3, 4, 5}
-
-numbers = append(numbers, 6)
-
-fmt.Println(numbers)
-fmt.Println(cap(numbers))
-</code></pre>
-<p>通过<code>cap()</code>函数可以获取slice的容量，容量是<code>make()</code>函数的第三个参数，超过设置的容量再往slice中添加元素就会使slice扩容。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="nx">a</span> <span class="p">=</span> <span class="p">[]</span><span class="kt">int</span><span class="p">{</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="nx">a</span> <span class="p">=</span> <span class="nx">a</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="c1">// 删除开头1个元素
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nx">a</span> <span class="p">=</span> <span class="nx">a</span><span class="p">[</span><span class="nx">N</span><span class="p">:]</span> <span class="c1">// 删除开头N个元素
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nx">a</span> <span class="p">=</span> <span class="nb">append</span><span class="p">(</span><span class="nx">a</span><span class="p">[:</span><span class="mi">0</span><span class="p">],</span> <span class="nx">a</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span><span class="o">...</span><span class="p">)</span> <span class="c1">// 删除开头1个元素
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nx">a</span> <span class="p">=</span> <span class="nb">append</span><span class="p">(</span><span class="nx">a</span><span class="p">[:</span><span class="mi">0</span><span class="p">],</span> <span class="nx">a</span><span class="p">[</span><span class="nx">N</span><span class="p">:]</span><span class="o">...</span><span class="p">)</span> <span class="c1">// 删除开头N个元素
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nx">a</span> <span class="p">=</span> <span class="nx">a</span><span class="p">[:</span><span class="nb">copy</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span> <span class="nx">a</span><span class="p">[</span><span class="mi">1</span><span class="p">:])]</span> <span class="c1">// 删除开头1个元素
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nx">a</span> <span class="p">=</span> <span class="nx">a</span><span class="p">[:</span><span class="nb">copy</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span> <span class="nx">a</span><span class="p">[</span><span class="nx">N</span><span class="p">:])]</span> <span class="c1">// 删除开头N个元素
+</span></span></span></code></pre></div><h3 id="slice从中间删除">slice从中间删除</h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="nx">a</span> <span class="p">=</span> <span class="nb">append</span><span class="p">(</span><span class="nx">a</span><span class="p">[:</span><span class="nx">i</span><span class="p">],</span> <span class="nx">a</span><span class="p">[</span><span class="nx">i</span><span class="o">+</span><span class="mi">1</span><span class="p">:]</span><span class="o">...</span><span class="p">)</span> <span class="c1">// 删除中间1个元素
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nx">a</span> <span class="p">=</span> <span class="nb">append</span><span class="p">(</span><span class="nx">a</span><span class="p">[:</span><span class="nx">i</span><span class="p">],</span> <span class="nx">a</span><span class="p">[</span><span class="nx">i</span><span class="o">+</span><span class="nx">N</span><span class="p">:]</span><span class="o">...</span><span class="p">)</span> <span class="c1">// 删除中间N个元素
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nx">a</span> <span class="p">=</span> <span class="nx">a</span><span class="p">[:</span><span class="nx">i</span><span class="o">+</span><span class="nb">copy</span><span class="p">(</span><span class="nx">a</span><span class="p">[</span><span class="nx">i</span><span class="p">:],</span> <span class="nx">a</span><span class="p">[</span><span class="nx">i</span><span class="o">+</span><span class="mi">1</span><span class="p">:])]</span> <span class="c1">// 删除中间1个元素
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nx">a</span> <span class="p">=</span> <span class="nx">a</span><span class="p">[:</span><span class="nx">i</span><span class="o">+</span><span class="nb">copy</span><span class="p">(</span><span class="nx">a</span><span class="p">[</span><span class="nx">i</span><span class="p">:],</span> <span class="nx">a</span><span class="p">[</span><span class="nx">i</span><span class="o">+</span><span class="nx">N</span><span class="p">:])]</span> <span class="c1">// 删除中间N个元素
+</span></span></span></code></pre></div><h3 id="slice从尾部删除">slice从尾部删除</h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="nx">a</span> <span class="p">=</span> <span class="nx">a</span><span class="p">[:</span><span class="nb">len</span><span class="p">(</span><span class="nx">a</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="c1">// 删除尾部1个元素
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nx">a</span> <span class="p">=</span> <span class="nx">a</span><span class="p">[:</span><span class="nb">len</span><span class="p">(</span><span class="nx">a</span><span class="p">)</span><span class="o">-</span><span class="nx">N</span><span class="p">]</span> <span class="c1">// 删除尾部N个元素
+</span></span></span></code></pre></div><h3 id="slice-扩容">slice 扩容</h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="nx">slice2</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">([]</span><span class="kt">string</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// cap()函数, 计算slice长度可以达到多少
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;cap(slice1) is :&#34;</span><span class="p">,</span> <span class="nb">cap</span><span class="p">(</span><span class="nx">slice1</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nx">slice2</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="p">=</span> <span class="s">&#34;0&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nx">slice2</span> <span class="p">=</span> <span class="nb">append</span><span class="p">(</span><span class="nx">slice2</span><span class="p">,</span> <span class="s">&#34;3&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;cap(slice2) is :&#34;</span><span class="p">,</span> <span class="nb">cap</span><span class="p">(</span><span class="nx">slice2</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nx">numbers</span> <span class="o">:=</span> <span class="p">[]</span><span class="kt">int</span><span class="p">{</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nx">numbers</span> <span class="p">=</span> <span class="nb">append</span><span class="p">(</span><span class="nx">numbers</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">numbers</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nb">cap</span><span class="p">(</span><span class="nx">numbers</span><span class="p">))</span>
+</span></span></code></pre></div><p>通过<code>cap()</code>函数可以获取slice的容量，容量是<code>make()</code>函数的第三个参数，超过设置的容量再往slice中添加元素就会使slice扩容。</p>
 <p>手动实现扩容：</p>
-<pre><code class="language-go">// 实现切片扩容
-var capslice = make([]int, 10, 10)
-for i := range capslice {
-    capslice[i] = i
-}
-fmt.Println(capslice)
-// 创建新的切片，并且容量是之前切片的2倍
-var capslice1 = make([]int, len(capslice), cap(capslice)*2)
-copy(capslice1, capslice)
-fmt.Println(capslice1, &quot;caplice cap is :&quot;, cap(capslice1))
-
-</code></pre>
-<h2 id="map">map</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// 实现切片扩容
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">var</span> <span class="nx">capslice</span> <span class="p">=</span> <span class="nb">make</span><span class="p">([]</span><span class="kt">int</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">capslice</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">capslice</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="p">=</span> <span class="nx">i</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">capslice</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// 创建新的切片，并且容量是之前切片的2倍
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">var</span> <span class="nx">capslice1</span> <span class="p">=</span> <span class="nb">make</span><span class="p">([]</span><span class="kt">int</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="nx">capslice</span><span class="p">),</span> <span class="nb">cap</span><span class="p">(</span><span class="nx">capslice</span><span class="p">)</span><span class="o">*</span><span class="mi">2</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nb">copy</span><span class="p">(</span><span class="nx">capslice1</span><span class="p">,</span> <span class="nx">capslice</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">capslice1</span><span class="p">,</span> <span class="s">&#34;caplice cap is :&#34;</span><span class="p">,</span> <span class="nb">cap</span><span class="p">(</span><span class="nx">capslice1</span><span class="p">))</span>
+</span></span></code></pre></div><h2 id="map">map</h2>
 <p>map是go预制的一种字典数据结构。</p>
-<pre><code class="language-go">// map[key-type]val-type
-map1 := make(map[string]string)
-map1[&quot;1&quot;] = &quot;11&quot;
-
-map2 := make(map[string]int)
-
-map2[&quot;2&quot;] = 2
-map2[&quot;3&quot;] = 3
-
-fmt.Println(&quot;map1:&quot;, map1)
-fmt.Println(&quot;map2&quot;, map2)
-</code></pre>
-<p>map结构也可以嵌套：</p>
-<pre><code class="language-go">map3 := make(map[string]int)
-
-map3[&quot;a&quot;] = 1
-map3[&quot;b&quot;] = 33
-
-delete(map3, &quot;b&quot;)
-fmt.Println(map3)
-fmt.Println(len(map3))
-    
-m := map[string]map[string]int{}
-m[&quot;aa&quot;] = map3
-
-fmt.Println(m)
-</code></pre>
-<p>map中有个比较有意思的特性，获取某个元素是否在map中存在。</p>
-<pre><code class="language-go">// 有意思的特性，_, psr := 赋值结果为bool
-_, psr := map3[&quot;a&quot;]
-fmt.Println(psr)
-
-// 输出结果为： true
-</code></pre>
-<h2 id="使用range遍历">使用range遍历</h2>
-<pre><code class="language-go">nums := []int{1, 2, 3, 4, 5, 6}
-
-// 遍历slice
-for i := range nums {
-    fmt.Println(nums[i])
-}
-
-// 遍历map
-map1 := map[string]string{&quot;aa&quot;: &quot;11&quot;, &quot;bb&quot;: &quot;22&quot;}
-for s := range map1 {
-    fmt.Println(map1[s])
-}
-
-// 优雅地遍历map
-for k, v := range map1 {
-    fmt.Println(&quot;k : &quot;, k, &quot; v : &quot;, v)
-}
-
-// 遍历字符串，获取Unicode
-for i, c := range &quot;balabala&quot; {
-    fmt.Println(i, &quot; -&gt; &quot;, c)
-}
-</code></pre>
-
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// map[key-type]val-type
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nx">map1</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">(</span><span class="kd">map</span><span class="p">[</span><span class="kt">string</span><span class="p">]</span><span class="kt">string</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nx">map1</span><span class="p">[</span><span class="s">&#34;1&#34;</span><span class="p">]</span> <span class="p">=</span> <span class="s">&#34;11&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nx">map2</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">(</span><span class="kd">map</span><span class="p">[</span><span class="kt">string</span><span class="p">]</span><span class="kt">int</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nx">map2</span><span class="p">[</span><span class="s">&#34;2&#34;</span><span class="p">]</span> <span class="p">=</span> <span class="mi">2</span>
+</span></span><span class="line"><span class="cl"><span class="nx">map2</span><span class="p">[</span><span class="s">&#34;3&#34;</span><span class="p">]</span> <span class="p">=</span> <span class="mi">3</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;map1:&#34;</span><span class="p">,</span> <span class="nx">map1</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;map2&#34;</span><span class="p">,</span> <span class="nx">map2</span><span class="p">)</span>
+</span></span></code></pre></div><p>map结构也可以嵌套：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="nx">map3</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">(</span><span class="kd">map</span><span class="p">[</span><span class="kt">string</span><span class="p">]</span><span class="kt">int</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nx">map3</span><span class="p">[</span><span class="s">&#34;a&#34;</span><span class="p">]</span> <span class="p">=</span> <span class="mi">1</span>
+</span></span><span class="line"><span class="cl"><span class="nx">map3</span><span class="p">[</span><span class="s">&#34;b&#34;</span><span class="p">]</span> <span class="p">=</span> <span class="mi">33</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nb">delete</span><span class="p">(</span><span class="nx">map3</span><span class="p">,</span> <span class="s">&#34;b&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">map3</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="nx">map3</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl"><span class="nx">m</span> <span class="o">:=</span> <span class="kd">map</span><span class="p">[</span><span class="kt">string</span><span class="p">]</span><span class="kd">map</span><span class="p">[</span><span class="kt">string</span><span class="p">]</span><span class="kt">int</span><span class="p">{}</span>
+</span></span><span class="line"><span class="cl"><span class="nx">m</span><span class="p">[</span><span class="s">&#34;aa&#34;</span><span class="p">]</span> <span class="p">=</span> <span class="nx">map3</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">m</span><span class="p">)</span>
+</span></span></code></pre></div><p>map中有个比较有意思的特性，获取某个元素是否在map中存在。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// 有意思的特性，_, psr := 赋值结果为bool
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nx">_</span><span class="p">,</span> <span class="nx">psr</span> <span class="o">:=</span> <span class="nx">map3</span><span class="p">[</span><span class="s">&#34;a&#34;</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">psr</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// 输出结果为： true
+</span></span></span></code></pre></div><h2 id="使用range遍历">使用range遍历</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="nx">nums</span> <span class="o">:=</span> <span class="p">[]</span><span class="kt">int</span><span class="p">{</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// 遍历slice
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">nums</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">nums</span><span class="p">[</span><span class="nx">i</span><span class="p">])</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// 遍历map
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nx">map1</span> <span class="o">:=</span> <span class="kd">map</span><span class="p">[</span><span class="kt">string</span><span class="p">]</span><span class="kt">string</span><span class="p">{</span><span class="s">&#34;aa&#34;</span><span class="p">:</span> <span class="s">&#34;11&#34;</span><span class="p">,</span> <span class="s">&#34;bb&#34;</span><span class="p">:</span> <span class="s">&#34;22&#34;</span><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="k">for</span> <span class="nx">s</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">map1</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">map1</span><span class="p">[</span><span class="nx">s</span><span class="p">])</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// 优雅地遍历map
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">for</span> <span class="nx">k</span><span class="p">,</span> <span class="nx">v</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">map1</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;k : &#34;</span><span class="p">,</span> <span class="nx">k</span><span class="p">,</span> <span class="s">&#34; v : &#34;</span><span class="p">,</span> <span class="nx">v</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// 遍历字符串，获取Unicode
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">for</span> <span class="nx">i</span><span class="p">,</span> <span class="nx">c</span> <span class="o">:=</span> <span class="k">range</span> <span class="s">&#34;balabala&#34;</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">i</span><span class="p">,</span> <span class="s">&#34; -&gt; &#34;</span><span class="p">,</span> <span class="nx">c</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div>
 </main>
 
   <footer>

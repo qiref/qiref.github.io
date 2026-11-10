@@ -8,17 +8,6 @@
     <link rel="stylesheet" href="/css/fonts.css" />
     
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-PGMJFXZJRT"></script>
-
-<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/scala.min.js"></script>
-
-<script>
-hljs.configure({languages: []});
-hljs.highlightAll();
-</script>
-
-<link href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/github.min.css"  rel="stylesheet">
-
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
@@ -127,30 +116,26 @@ hljs.highlightAll();
 <p>所谓面向连接，无连接，实际上就是在报文在传输之前，通信的两端是否需要提前建立连接，UDP 无需提前建立连接，简单粗暴，直接从源端传输到目标端；</p>
 <h3 id="从一个报文开始">从一个报文开始</h3>
 <p>首先借助 docker 启动两个容器，netshoot 是一个自带很多网络工具的镜像，用于测试网络</p>
-<pre><code class="language-shell">docker pull nicolaka/netshoot
-
-# 172.17.0.3
-docker run -d --name netshoot_container1 nicolaka/netshoot sleep infinity
-# 172.17.0.4
-docker run -d --name netshoot_container2 nicolaka/netshoot sleep infinity
-
-docker ps
-</code></pre>
-<p>在 netshoot_container1 中使用 tcpdump 监听 12345 端口，并指定协议为 udp</p>
-<pre><code class="language-bash">tcpdump -i eth0 udp port 12345 -X -v
-tcpdump: listening on eth0, link-type EN10MB (Ethernet), snapshot length 262144 bytes
-</code></pre>
-<p>然后在 netshoot_container2 中，发送一个 udp 的请求到 netshoot_container1 中：</p>
-<pre><code class="language-bash">echo test-udp |nc -u 172.17.0.3 12345
-</code></pre>
-<p>在netshoot_container1 中得到如下结果：</p>
-<pre><code>13:38:59.946566 IP (tos 0x0, ttl 64, id 18849, offset 0, flags [DF], proto UDP (17), length 37)
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">docker pull nicolaka/netshoot
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 172.17.0.3</span>
+</span></span><span class="line"><span class="cl">docker run -d --name netshoot_container1 nicolaka/netshoot sleep infinity
+</span></span><span class="line"><span class="cl"><span class="c1"># 172.17.0.4</span>
+</span></span><span class="line"><span class="cl">docker run -d --name netshoot_container2 nicolaka/netshoot sleep infinity
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">docker ps
+</span></span></code></pre></div><p>在 netshoot_container1 中使用 tcpdump 监听 12345 端口，并指定协议为 udp</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">tcpdump -i eth0 udp port <span class="m">12345</span> -X -v
+</span></span><span class="line"><span class="cl">tcpdump: listening on eth0, link-type EN10MB <span class="o">(</span>Ethernet<span class="o">)</span>, snapshot length <span class="m">262144</span> bytes
+</span></span></code></pre></div><p>然后在 netshoot_container2 中，发送一个 udp 的请求到 netshoot_container1 中：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="nb">echo</span> test-udp <span class="p">|</span>nc -u 172.17.0.3 <span class="m">12345</span>
+</span></span></code></pre></div><p>在netshoot_container1 中得到如下结果：</p>
+<pre tabindex="0"><code>13:38:59.946566 IP (tos 0x0, ttl 64, id 18849, offset 0, flags [DF], proto UDP (17), length 37)
     172.17.0.4.35387 &gt; 941541e59a01.12345: UDP, length 9
 		0x0000:  4500 0025 49a1 4000 4011 98fd ac11 0004  E..%I.@.@.......
 		0x0010:  ac11 0003 8a3b 3039 0011 584c 7465 7374  .....;09..XLtest
 		0x0020:  2d75 6470 0a                             -udp.
-</code></pre>
-<p>在 tcpdump 的十六进制输出中，第一列（如 0x0000, 0x0010, 0x0020）表示的是数据包中的字节偏移量（byte offset），以十六进制表示。这是数据在数据包中的位置索引。
+</code></pre><p>在 tcpdump 的十六进制输出中，第一列（如 0x0000, 0x0010, 0x0020）表示的是数据包中的字节偏移量（byte offset），以十六进制表示。这是数据在数据包中的位置索引。
 具体解释：
 0x0000：数据包起始位置（第 0 字节）
 0x0010：第 16 字节（十六进制 10 = 十进制 16）
@@ -172,90 +157,81 @@ tcpdump: listening on eth0, link-type EN10MB (Ethernet), snapshot length 262144 
 <h3 id="mtu">MTU</h3>
 <p>在网络传输过程中，每次传输的报文都会有一个上限，这个上限就是 MTU；</p>
 <p>MTU（Maximum Transmission Unit，最大传输单元）是网络接口在一次传输中能够承载的最大数据包大小，不包括数据链路层的头部（如以太网帧头）</p>
-<pre><code class="language-bash">ip link show eth0
-759: eth0@if760: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; 
-	mtu 1500 qdisc noqueue state UP mode DEFAULT group default
-    link/ether 02:42:ac:11:00:04 brd ff:ff:ff:ff:ff:ff link-netnsid 0
-</code></pre>
-<p>当一次网络请求数据超过 MTU 会发生什么？</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">ip link show eth0
+</span></span><span class="line"><span class="cl">759: eth0@if760: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; 
+</span></span><span class="line"><span class="cl">	mtu <span class="m">1500</span> qdisc noqueue state UP mode DEFAULT group default
+</span></span><span class="line"><span class="cl">    link/ether 02:42:ac:11:00:04 brd ff:ff:ff:ff:ff:ff link-netnsid <span class="m">0</span>
+</span></span></code></pre></div><p>当一次网络请求数据超过 MTU 会发生什么？</p>
 <p>当一次网络请求的数据超过最大传输单元（MTU，Maximum Transmission Unit）时，数据会被分段并在网络上传输。</p>
 <p>例如，发送一个 200k 的UPD 请求，分别在请求端，服务端抓包：</p>
-<pre><code class="language-bash"># client
-tcpdump -i eth0 &quot;host 172.17.0.4 and ip proto 17&quot; -vvv
-cat test.log |nc -u 172.17.0.4 1234
-</code></pre>
-<pre><code class="language-bash"># server
-tcpdump -i eth0 &quot;host 172.17.0.3 and ip proto 17&quot; -vvv
-</code></pre>
-<p>可以看到数据被分成多个包发送：</p>
-<pre><code class="language-bash"># client
-03:52:06.252714 IP (tos 0x0, ttl 64, id 41053, offset 0, flags [+], proto UDP (17), length 1500)
-    941541e59a01.35352 &gt; 172.17.0.4.12345: UDP, length 16384
-03:52:06.252732 IP (tos 0x0, ttl 64, id 41053, offset 1480, flags [+], proto UDP (17), length 1500)
-    941541e59a01 &gt; 172.17.0.4: udp
-03:52:06.252736 IP (tos 0x0, ttl 64, id 41053, offset 2960, flags [+], proto UDP (17), length 1500)
-    941541e59a01 &gt; 172.17.0.4: udp
-03:52:06.252738 IP (tos 0x0, ttl 64, id 41053, offset 4440, flags [+], proto UDP (17), length 1500)
-    941541e59a01 &gt; 172.17.0.4: udp
-03:52:06.252739 IP (tos 0x0, ttl 64, id 41053, offset 5920, flags [+], proto UDP (17), length 1500)
-    941541e59a01 &gt; 172.17.0.4: udp
-03:52:06.252741 IP (tos 0x0, ttl 64, id 41053, offset 7400, flags [+], proto UDP (17), length 1500)
-    941541e59a01 &gt; 172.17.0.4: udp
-03:52:06.252742 IP (tos 0x0, ttl 64, id 41053, offset 8880, flags [+], proto UDP (17), length 1500)
-    941541e59a01 &gt; 172.17.0.4: udp
-03:52:06.252743 IP (tos 0x0, ttl 64, id 41053, offset 10360, flags [+], proto UDP (17), length 1500)
-    941541e59a01 &gt; 172.17.0.4: udp
-03:52:06.252745 IP (tos 0x0, ttl 64, id 41053, offset 11840, flags [+], proto UDP (17), length 1500)
-    941541e59a01 &gt; 172.17.0.4: udp
-03:52:06.252746 IP (tos 0x0, ttl 64, id 41053, offset 13320, flags [+], proto UDP (17), length 1500)
-    941541e59a01 &gt; 172.17.0.4: udp
-03:52:06.252748 IP (tos 0x0, ttl 64, id 41053, offset 14800, flags [+], proto UDP (17), length 1500)
-    941541e59a01 &gt; 172.17.0.4: udp
-03:52:06.252749 IP (tos 0x0, ttl 64, id 41053, offset 16280, flags [none], proto UDP (17), length 132)
-    941541e59a01 &gt; 172.17.0.4: udp
-</code></pre>
-<p>正常来说，UDP 分成多个包发送，当 UDP 服务端接收到多个报文且它们到达时间有差异时，处理方式完全取决于应用程序的实现。UDP 协议本身不提供任何排序或重传机制，因此服务端需要自行处理这些问题。 这也是为什么 UDP 不是可靠的传输协议。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># client</span>
+</span></span><span class="line"><span class="cl">tcpdump -i eth0 <span class="s2">&#34;host 172.17.0.4 and ip proto 17&#34;</span> -vvv
+</span></span><span class="line"><span class="cl">cat test.log <span class="p">|</span>nc -u 172.17.0.4 <span class="m">1234</span>
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># server</span>
+</span></span><span class="line"><span class="cl">tcpdump -i eth0 <span class="s2">&#34;host 172.17.0.3 and ip proto 17&#34;</span> -vvv
+</span></span></code></pre></div><p>可以看到数据被分成多个包发送：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># client</span>
+</span></span><span class="line"><span class="cl">03:52:06.252714 IP <span class="o">(</span>tos 0x0, ttl 64, id 41053, offset 0, flags <span class="o">[</span>+<span class="o">]</span>, proto UDP <span class="o">(</span>17<span class="o">)</span>, length 1500<span class="o">)</span>
+</span></span><span class="line"><span class="cl">    941541e59a01.35352 &gt; 172.17.0.4.12345: UDP, length <span class="m">16384</span>
+</span></span><span class="line"><span class="cl">03:52:06.252732 IP <span class="o">(</span>tos 0x0, ttl 64, id 41053, offset 1480, flags <span class="o">[</span>+<span class="o">]</span>, proto UDP <span class="o">(</span>17<span class="o">)</span>, length 1500<span class="o">)</span>
+</span></span><span class="line"><span class="cl">    941541e59a01 &gt; 172.17.0.4: udp
+</span></span><span class="line"><span class="cl">03:52:06.252736 IP <span class="o">(</span>tos 0x0, ttl 64, id 41053, offset 2960, flags <span class="o">[</span>+<span class="o">]</span>, proto UDP <span class="o">(</span>17<span class="o">)</span>, length 1500<span class="o">)</span>
+</span></span><span class="line"><span class="cl">    941541e59a01 &gt; 172.17.0.4: udp
+</span></span><span class="line"><span class="cl">03:52:06.252738 IP <span class="o">(</span>tos 0x0, ttl 64, id 41053, offset 4440, flags <span class="o">[</span>+<span class="o">]</span>, proto UDP <span class="o">(</span>17<span class="o">)</span>, length 1500<span class="o">)</span>
+</span></span><span class="line"><span class="cl">    941541e59a01 &gt; 172.17.0.4: udp
+</span></span><span class="line"><span class="cl">03:52:06.252739 IP <span class="o">(</span>tos 0x0, ttl 64, id 41053, offset 5920, flags <span class="o">[</span>+<span class="o">]</span>, proto UDP <span class="o">(</span>17<span class="o">)</span>, length 1500<span class="o">)</span>
+</span></span><span class="line"><span class="cl">    941541e59a01 &gt; 172.17.0.4: udp
+</span></span><span class="line"><span class="cl">03:52:06.252741 IP <span class="o">(</span>tos 0x0, ttl 64, id 41053, offset 7400, flags <span class="o">[</span>+<span class="o">]</span>, proto UDP <span class="o">(</span>17<span class="o">)</span>, length 1500<span class="o">)</span>
+</span></span><span class="line"><span class="cl">    941541e59a01 &gt; 172.17.0.4: udp
+</span></span><span class="line"><span class="cl">03:52:06.252742 IP <span class="o">(</span>tos 0x0, ttl 64, id 41053, offset 8880, flags <span class="o">[</span>+<span class="o">]</span>, proto UDP <span class="o">(</span>17<span class="o">)</span>, length 1500<span class="o">)</span>
+</span></span><span class="line"><span class="cl">    941541e59a01 &gt; 172.17.0.4: udp
+</span></span><span class="line"><span class="cl">03:52:06.252743 IP <span class="o">(</span>tos 0x0, ttl 64, id 41053, offset 10360, flags <span class="o">[</span>+<span class="o">]</span>, proto UDP <span class="o">(</span>17<span class="o">)</span>, length 1500<span class="o">)</span>
+</span></span><span class="line"><span class="cl">    941541e59a01 &gt; 172.17.0.4: udp
+</span></span><span class="line"><span class="cl">03:52:06.252745 IP <span class="o">(</span>tos 0x0, ttl 64, id 41053, offset 11840, flags <span class="o">[</span>+<span class="o">]</span>, proto UDP <span class="o">(</span>17<span class="o">)</span>, length 1500<span class="o">)</span>
+</span></span><span class="line"><span class="cl">    941541e59a01 &gt; 172.17.0.4: udp
+</span></span><span class="line"><span class="cl">03:52:06.252746 IP <span class="o">(</span>tos 0x0, ttl 64, id 41053, offset 13320, flags <span class="o">[</span>+<span class="o">]</span>, proto UDP <span class="o">(</span>17<span class="o">)</span>, length 1500<span class="o">)</span>
+</span></span><span class="line"><span class="cl">    941541e59a01 &gt; 172.17.0.4: udp
+</span></span><span class="line"><span class="cl">03:52:06.252748 IP <span class="o">(</span>tos 0x0, ttl 64, id 41053, offset 14800, flags <span class="o">[</span>+<span class="o">]</span>, proto UDP <span class="o">(</span>17<span class="o">)</span>, length 1500<span class="o">)</span>
+</span></span><span class="line"><span class="cl">    941541e59a01 &gt; 172.17.0.4: udp
+</span></span><span class="line"><span class="cl">03:52:06.252749 IP <span class="o">(</span>tos 0x0, ttl 64, id 41053, offset 16280, flags <span class="o">[</span>none<span class="o">]</span>, proto UDP <span class="o">(</span>17<span class="o">)</span>, length 132<span class="o">)</span>
+</span></span><span class="line"><span class="cl">    941541e59a01 &gt; 172.17.0.4: udp
+</span></span></code></pre></div><p>正常来说，UDP 分成多个包发送，当 UDP 服务端接收到多个报文且它们到达时间有差异时，处理方式完全取决于应用程序的实现。UDP 协议本身不提供任何排序或重传机制，因此服务端需要自行处理这些问题。 这也是为什么 UDP 不是可靠的传输协议。</p>
 <h2 id="tcp">TCP</h2>
 <p>同样地，从一次 tcp 请求报文开始。</p>
 <p>在 netshoot_container1 中，向 netshoot_container2 中发起一个 tcp 请求：</p>
-<pre><code class="language-bash"># netshoot_container2
-nc -l -p 12345
-</code></pre>
-<pre><code class="language-bash"># netshoot_container1
-echo 'test-tcp' |nc 172.17.0.4 12345
-</code></pre>
-<p>在netshoot_container1中，抓包：</p>
-<pre><code class="language-bash"># netshoot_container1
-tcpdump -i eth0 tcp port 12345 -v
-
-12:43:55.167496 IP (tos 0x0, ttl 64, id 16012, offset 0, flags [DF], proto TCP (6), length 60)
-    941541e59a01.36396 &gt; 172.17.0.4.12345: Flags [S], cksum 0x5858 (incorrect -&gt; 0x5209), seq 597377402, win 64240, options [mss 1460,sackOK,TS val 3065366699 ecr 0,nop,wscale 7], length 0
-12:43:55.167587 IP (tos 0x0, ttl 64, id 0, offset 0, flags [DF], proto TCP (6), length 60)
-    172.17.0.4.12345 &gt; 941541e59a01.36396: Flags [S.], cksum 0x5858 (incorrect -&gt; 0xd2f4), seq 1871059573, ack 597377403, win 65160, options [mss 1460,sackOK,TS val 569102212 ecr 3065366699,nop,wscale 7], length 0
-12:43:55.167597 IP (tos 0x0, ttl 64, id 16013, offset 0, flags [DF], proto TCP (6), length 52)
-    941541e59a01.36396 &gt; 172.17.0.4.12345: Flags [.], cksum 0x5850 (incorrect -&gt; 0xfe53), ack 1, win 502, options [nop,nop,TS val 3065366699 ecr 569102212], length 0
-12:43:55.167635 IP (tos 0x0, ttl 64, id 16014, offset 0, flags [DF], proto TCP (6), length 61)
-    941541e59a01.36396 &gt; 172.17.0.4.12345: Flags [P.], cksum 0x5859 (incorrect -&gt; 0x7b84), seq 1:10, ack 1, win 502, options [nop,nop,TS val 3065366699 ecr 569102212], length 9
-12:43:55.167644 IP (tos 0x0, ttl 64, id 50515, offset 0, flags [DF], proto TCP (6), length 52)
-    172.17.0.4.12345 &gt; 941541e59a01.36396: Flags [.], cksum 0x5850 (incorrect -&gt; 0xfe43), ack 10, win 509, options [nop,nop,TS val 569102212 ecr 3065366699], length 0
-
-</code></pre>
-<p>相较于udp简单的一次请求，tcp 的报文分为了多次；</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># netshoot_container2</span>
+</span></span><span class="line"><span class="cl">nc -l -p <span class="m">12345</span>
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># netshoot_container1</span>
+</span></span><span class="line"><span class="cl"><span class="nb">echo</span> <span class="s1">&#39;test-tcp&#39;</span> <span class="p">|</span>nc 172.17.0.4 <span class="m">12345</span>
+</span></span></code></pre></div><p>在netshoot_container1中，抓包：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># netshoot_container1</span>
+</span></span><span class="line"><span class="cl">tcpdump -i eth0 tcp port <span class="m">12345</span> -v
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">12:43:55.167496 IP <span class="o">(</span>tos 0x0, ttl 64, id 16012, offset 0, flags <span class="o">[</span>DF<span class="o">]</span>, proto TCP <span class="o">(</span>6<span class="o">)</span>, length 60<span class="o">)</span>
+</span></span><span class="line"><span class="cl">    941541e59a01.36396 &gt; 172.17.0.4.12345: Flags <span class="o">[</span>S<span class="o">]</span>, cksum 0x5858 <span class="o">(</span>incorrect -&gt; 0x5209<span class="o">)</span>, seq 597377402, win 64240, options <span class="o">[</span>mss 1460,sackOK,TS val <span class="m">3065366699</span> ecr 0,nop,wscale 7<span class="o">]</span>, length <span class="m">0</span>
+</span></span><span class="line"><span class="cl">12:43:55.167587 IP <span class="o">(</span>tos 0x0, ttl 64, id 0, offset 0, flags <span class="o">[</span>DF<span class="o">]</span>, proto TCP <span class="o">(</span>6<span class="o">)</span>, length 60<span class="o">)</span>
+</span></span><span class="line"><span class="cl">    172.17.0.4.12345 &gt; 941541e59a01.36396: Flags <span class="o">[</span>S.<span class="o">]</span>, cksum 0x5858 <span class="o">(</span>incorrect -&gt; 0xd2f4<span class="o">)</span>, seq 1871059573, ack 597377403, win 65160, options <span class="o">[</span>mss 1460,sackOK,TS val <span class="m">569102212</span> ecr 3065366699,nop,wscale 7<span class="o">]</span>, length <span class="m">0</span>
+</span></span><span class="line"><span class="cl">12:43:55.167597 IP <span class="o">(</span>tos 0x0, ttl 64, id 16013, offset 0, flags <span class="o">[</span>DF<span class="o">]</span>, proto TCP <span class="o">(</span>6<span class="o">)</span>, length 52<span class="o">)</span>
+</span></span><span class="line"><span class="cl">    941541e59a01.36396 &gt; 172.17.0.4.12345: Flags <span class="o">[</span>.<span class="o">]</span>, cksum 0x5850 <span class="o">(</span>incorrect -&gt; 0xfe53<span class="o">)</span>, ack 1, win 502, options <span class="o">[</span>nop,nop,TS val <span class="m">3065366699</span> ecr 569102212<span class="o">]</span>, length <span class="m">0</span>
+</span></span><span class="line"><span class="cl">12:43:55.167635 IP <span class="o">(</span>tos 0x0, ttl 64, id 16014, offset 0, flags <span class="o">[</span>DF<span class="o">]</span>, proto TCP <span class="o">(</span>6<span class="o">)</span>, length 61<span class="o">)</span>
+</span></span><span class="line"><span class="cl">    941541e59a01.36396 &gt; 172.17.0.4.12345: Flags <span class="o">[</span>P.<span class="o">]</span>, cksum 0x5859 <span class="o">(</span>incorrect -&gt; 0x7b84<span class="o">)</span>, seq 1:10, ack 1, win 502, options <span class="o">[</span>nop,nop,TS val <span class="m">3065366699</span> ecr 569102212<span class="o">]</span>, length <span class="m">9</span>
+</span></span><span class="line"><span class="cl">12:43:55.167644 IP <span class="o">(</span>tos 0x0, ttl 64, id 50515, offset 0, flags <span class="o">[</span>DF<span class="o">]</span>, proto TCP <span class="o">(</span>6<span class="o">)</span>, length 52<span class="o">)</span>
+</span></span><span class="line"><span class="cl">    172.17.0.4.12345 &gt; 941541e59a01.36396: Flags <span class="o">[</span>.<span class="o">]</span>, cksum 0x5850 <span class="o">(</span>incorrect -&gt; 0xfe43<span class="o">)</span>, ack 10, win 509, options <span class="o">[</span>nop,nop,TS val <span class="m">569102212</span> ecr 3065366699<span class="o">]</span>, length <span class="m">0</span>
+</span></span></code></pre></div><p>相较于udp简单的一次请求，tcp 的报文分为了多次；</p>
 <ol>
 <li>SYN 请求 (客户端 → 服务端)</li>
 </ol>
-<pre><code>12:43:55.167496 IP
+<pre tabindex="0"><code>12:43:55.167496 IP
 源: 941541e59a01.36396
 目标: 172.17.0.4.12345
 标志: [S] (SYN)
 序列号: 597377402
 窗口大小: 64240
 选项: mss 1460, sackOK, TS val 3065366699, wscale 7
-</code></pre>
-<ol start="2">
+</code></pre><ol start="2">
 <li>SYN-ACK 响应 (服务端 → 客户端)</li>
 </ol>
-<pre><code>12:43:55.167587 IP
+<pre tabindex="0"><code>12:43:55.167587 IP
 源: 172.17.0.4.12345
 目标: 941541e59a01.36396
 标志: [S.] (SYN-ACK)
@@ -263,25 +239,23 @@ tcpdump -i eth0 tcp port 12345 -v
 确认号: 597377403 (客户端 SYN 序列号+1)
 窗口大小: 65160
 选项: mss 1460, sackOK, TS val 569102212, ecr 3065366699, wscale 7
-</code></pre>
-<ol start="3">
+</code></pre><ol start="3">
 <li>ACK 确认 (客户端 → 服务端)</li>
 </ol>
-<pre><code>12:43:55.167597 IP
+<pre tabindex="0"><code>12:43:55.167597 IP
 源: 941541e59a01.36396
 目标: 172.17.0.4.12345
 标志: [.] (ACK)
 确认号: 1 (服务端 SYN 序列号+1 = 1871059573 + 1)
 窗口大小: 502
 选项: TS val 3065366699, ecr 569102212
-</code></pre>
-<p>客户端确认服务端的 SYN-ACK
+</code></pre><p>客户端确认服务端的 SYN-ACK
 完成 TCP 三次握手
 连接正式建立</p>
 <ol start="4">
 <li>PSH-ACK 数据传输 (客户端 → 服务端)</li>
 </ol>
-<pre><code>12:43:55.167635 IP
+<pre tabindex="0"><code>12:43:55.167635 IP
 源: 941541e59a01.36396
 目标: 172.17.0.4.12345
 标志: [P.] (PSH-ACK)
@@ -289,19 +263,17 @@ tcpdump -i eth0 tcp port 12345 -v
 确认号: 1
 长度: 9
 选项: TS val 3065366699, ecr 569102212
-</code></pre>
-<ol start="5">
+</code></pre><ol start="5">
 <li>ACK 确认 (服务端 → 客户端)</li>
 </ol>
-<pre><code>12:43:55.167644 IP
+<pre tabindex="0"><code>12:43:55.167644 IP
 源: 172.17.0.4.12345
 目标: 941541e59a01.36396
 标志: [.] (ACK)
 确认号: 10 (客户端数据结束序列号)
 窗口大小: 509
 选项: TS val 569102212, ecr 3065366699
-</code></pre>
-<p>一个完整的 TCP 报文格式如下：</p>
+</code></pre><p>一个完整的 TCP 报文格式如下：</p>
 <p><img src="/assets/img/tcp-udp-2.svg" alt="tcp"></p>
 <h3 id="tcp-建立连接过程">tcp 建立连接过程</h3>
 <p>首先服务端需要先开启端口监听请求，表示可以与客户端建立连接</p>
@@ -351,240 +323,232 @@ tcpdump -i eth0 tcp port 12345 -v
 <p>tcp 相对于 udp 来说，通信之前多了一步 <code>client_socket.connect((HOST, PORT))</code> connect ，这就是建立连接的过程，同时，对于 tcp 的服务端而言，由于连接是有状态的， 服务端可以维护客户端的多个连接。</p>
 <h3 id="udp-1">udp</h3>
 <p>服务端</p>
-<pre><code class="language-python">#!/usr/bin/env python3
-&quot;&quot;&quot;
-UDP Server - Receives messages from clients and sends responses
-&quot;&quot;&quot;
-import socket
-
-HOST = '127.0.0.1'  # Bind to localhost
-PORT = 5001         # Listen port
-
-
-def start_server():
-    &quot;&quot;&quot;Start UDP server&quot;&quot;&quot;
-    # Create UDP socket
-    server_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    
-    try:
-        server_socket.bind((HOST, PORT))
-        print(f&quot;[START] UDP server started, listening on {HOST}:{PORT}&quot;)
-        print(&quot;[INFO] Waiting for client messages...&quot;)
-        
-        while True:
-            # Receive data from client (blocking)
-            data, client_address = server_socket.recvfrom(1024)
-            
-            message = data.decode('utf-8')
-            print(f&quot;[RECEIVE] Message from {client_address}: {message}&quot;)
-            
-            # Send response back to client
-            response = f&quot;Server received: {message}&quot;
-            server_socket.sendto(response.encode('utf-8'), client_address)
-            print(f&quot;[SEND] Replied to {client_address}&quot;)
-            
-    except KeyboardInterrupt:
-        print(&quot;\n[STOP] Server is shutting down...&quot;)
-    except Exception as e:
-        print(f&quot;[ERROR] Server error: {e}&quot;)
-    finally:
-        server_socket.close()
-        print(&quot;[CLOSE] Server closed&quot;)
-
-
-if __name__ == '__main__':
-    start_server()
-
-</code></pre>
-<p>客户端</p>
-<pre><code class="language-python">#!/usr/bin/env python3
-&quot;&quot;&quot;
-UDP Client - Sends messages to server and receives responses
-&quot;&quot;&quot;
-import socket
-import time
-
-HOST = '127.0.0.1'  # Server address
-PORT = 5001         # Server port
-
-
-def connect_to_server():
-    &quot;&quot;&quot;Connect to UDP server and send messages&quot;&quot;&quot;
-    # Create UDP socket
-    client_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    
-    try:
-        # Send multiple messages
-        messages = [
-            &quot;Hello, this is the first message&quot;,
-            &quot;This is the second message&quot;,
-            &quot;UDP communication test completed&quot;
-        ]
-        
-        print(f&quot;[CONNECT] Sending to server {HOST}:{PORT}...&quot;)
-        
-        for msg in messages:
-            # Send message to server (no connection needed for UDP)
-            print(f&quot;\n[SEND] {msg}&quot;)
-            client_socket.sendto(msg.encode('utf-8'), (HOST, PORT))
-            
-            # Receive response from server with timeout
-            client_socket.settimeout(2)  # 2 second timeout
-            try:
-                response, server_address = client_socket.recvfrom(1024)
-                print(f&quot;[RECEIVE] {response.decode('utf-8')}&quot;)
-            except socket.timeout:
-                print(&quot;[WARNING] No response from server (timeout)&quot;)
-            
-            time.sleep(1)  # Delay 1 second
-        
-        print(&quot;\n[DONE] All messages sent&quot;)
-        
-    except Exception as e:
-        print(f&quot;[ERROR] Client exception: {e}&quot;)
-    finally:
-        client_socket.close()
-        print(&quot;[CLOSE] Client connection closed&quot;)
-
-
-if __name__ == '__main__':
-    connect_to_server()
-
-</code></pre>
-<h3 id="tcp-1">tcp</h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="ch">#!/usr/bin/env python3</span>
+</span></span><span class="line"><span class="cl"><span class="s2">&#34;&#34;&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s2">UDP Server - Receives messages from clients and sends responses
+</span></span></span><span class="line"><span class="cl"><span class="s2">&#34;&#34;&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">socket</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">HOST</span> <span class="o">=</span> <span class="s1">&#39;127.0.0.1&#39;</span>  <span class="c1"># Bind to localhost</span>
+</span></span><span class="line"><span class="cl"><span class="n">PORT</span> <span class="o">=</span> <span class="mi">5001</span>         <span class="c1"># Listen port</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">start_server</span><span class="p">():</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;&#34;&#34;Start UDP server&#34;&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="c1"># Create UDP socket</span>
+</span></span><span class="line"><span class="cl">    <span class="n">server_socket</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">AF_INET</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">SOCK_DGRAM</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="k">try</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="n">server_socket</span><span class="o">.</span><span class="n">bind</span><span class="p">((</span><span class="n">HOST</span><span class="p">,</span> <span class="n">PORT</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;[START] UDP server started, listening on </span><span class="si">{</span><span class="n">HOST</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">PORT</span><span class="si">}</span><span class="s2">&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="nb">print</span><span class="p">(</span><span class="s2">&#34;[INFO] Waiting for client messages...&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        
+</span></span><span class="line"><span class="cl">        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">            <span class="c1"># Receive data from client (blocking)</span>
+</span></span><span class="line"><span class="cl">            <span class="n">data</span><span class="p">,</span> <span class="n">client_address</span> <span class="o">=</span> <span class="n">server_socket</span><span class="o">.</span><span class="n">recvfrom</span><span class="p">(</span><span class="mi">1024</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            
+</span></span><span class="line"><span class="cl">            <span class="n">message</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;[RECEIVE] Message from </span><span class="si">{</span><span class="n">client_address</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">message</span><span class="si">}</span><span class="s2">&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            
+</span></span><span class="line"><span class="cl">            <span class="c1"># Send response back to client</span>
+</span></span><span class="line"><span class="cl">            <span class="n">response</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&#34;Server received: </span><span class="si">{</span><span class="n">message</span><span class="si">}</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl">            <span class="n">server_socket</span><span class="o">.</span><span class="n">sendto</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">),</span> <span class="n">client_address</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;[SEND] Replied to </span><span class="si">{</span><span class="n">client_address</span><span class="si">}</span><span class="s2">&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            
+</span></span><span class="line"><span class="cl">    <span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="nb">print</span><span class="p">(</span><span class="s2">&#34;</span><span class="se">\n</span><span class="s2">[STOP] Server is shutting down...&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;[ERROR] Server error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">finally</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="n">server_socket</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">        <span class="nb">print</span><span class="p">(</span><span class="s2">&#34;[CLOSE] Server closed&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">    <span class="n">start_server</span><span class="p">()</span>
+</span></span></code></pre></div><p>客户端</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="ch">#!/usr/bin/env python3</span>
+</span></span><span class="line"><span class="cl"><span class="s2">&#34;&#34;&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s2">UDP Client - Sends messages to server and receives responses
+</span></span></span><span class="line"><span class="cl"><span class="s2">&#34;&#34;&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">socket</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">time</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">HOST</span> <span class="o">=</span> <span class="s1">&#39;127.0.0.1&#39;</span>  <span class="c1"># Server address</span>
+</span></span><span class="line"><span class="cl"><span class="n">PORT</span> <span class="o">=</span> <span class="mi">5001</span>         <span class="c1"># Server port</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">connect_to_server</span><span class="p">():</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;&#34;&#34;Connect to UDP server and send messages&#34;&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="c1"># Create UDP socket</span>
+</span></span><span class="line"><span class="cl">    <span class="n">client_socket</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">AF_INET</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">SOCK_DGRAM</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="k">try</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="c1"># Send multiple messages</span>
+</span></span><span class="line"><span class="cl">        <span class="n">messages</span> <span class="o">=</span> <span class="p">[</span>
+</span></span><span class="line"><span class="cl">            <span class="s2">&#34;Hello, this is the first message&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="s2">&#34;This is the second message&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="s2">&#34;UDP communication test completed&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">]</span>
+</span></span><span class="line"><span class="cl">        
+</span></span><span class="line"><span class="cl">        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;[CONNECT] Sending to server </span><span class="si">{</span><span class="n">HOST</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">PORT</span><span class="si">}</span><span class="s2">...&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        
+</span></span><span class="line"><span class="cl">        <span class="k">for</span> <span class="n">msg</span> <span class="ow">in</span> <span class="n">messages</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">            <span class="c1"># Send message to server (no connection needed for UDP)</span>
+</span></span><span class="line"><span class="cl">            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;</span><span class="se">\n</span><span class="s2">[SEND] </span><span class="si">{</span><span class="n">msg</span><span class="si">}</span><span class="s2">&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="n">client_socket</span><span class="o">.</span><span class="n">sendto</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">),</span> <span class="p">(</span><span class="n">HOST</span><span class="p">,</span> <span class="n">PORT</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">            
+</span></span><span class="line"><span class="cl">            <span class="c1"># Receive response from server with timeout</span>
+</span></span><span class="line"><span class="cl">            <span class="n">client_socket</span><span class="o">.</span><span class="n">settimeout</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>  <span class="c1"># 2 second timeout</span>
+</span></span><span class="line"><span class="cl">            <span class="k">try</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">                <span class="n">response</span><span class="p">,</span> <span class="n">server_address</span> <span class="o">=</span> <span class="n">client_socket</span><span class="o">.</span><span class="n">recvfrom</span><span class="p">(</span><span class="mi">1024</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;[RECEIVE] </span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="k">except</span> <span class="n">socket</span><span class="o">.</span><span class="n">timeout</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">                <span class="nb">print</span><span class="p">(</span><span class="s2">&#34;[WARNING] No response from server (timeout)&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            
+</span></span><span class="line"><span class="cl">            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># Delay 1 second</span>
+</span></span><span class="line"><span class="cl">        
+</span></span><span class="line"><span class="cl">        <span class="nb">print</span><span class="p">(</span><span class="s2">&#34;</span><span class="se">\n</span><span class="s2">[DONE] All messages sent&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        
+</span></span><span class="line"><span class="cl">    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;[ERROR] Client exception: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">finally</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="n">client_socket</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">        <span class="nb">print</span><span class="p">(</span><span class="s2">&#34;[CLOSE] Client connection closed&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">    <span class="n">connect_to_server</span><span class="p">()</span>
+</span></span></code></pre></div><h3 id="tcp-1">tcp</h3>
 <p>服务端</p>
-<pre><code class="language-python">#!/usr/bin/env python3
-&quot;&quot;&quot;
-TCP Server - Receives client connections and handles messages
-&quot;&quot;&quot;
-import socket
-import threading
-import time
-
-HOST = '127.0.0.1'  # Bind to localhost
-PORT = 5000         # Listen port
-
-
-def handle_client(client_socket, client_address):
-    &quot;&quot;&quot;Handle a single client connection&quot;&quot;&quot;
-    print(f&quot;[CONNECT] Client connected: {client_address}&quot;)
-    
-    try:
-        while True:
-            # Receive data from client
-            data = client_socket.recv(1024)
-            
-            if not data:
-                print(f&quot;[DISCONNECT] Client disconnected: {client_address}&quot;)
-                break
-            
-            message = data.decode('utf-8')
-            print(f&quot;[RECEIVE] Message from {client_address}: {message}&quot;)
-            
-            # Send response to client
-            response = f&quot;Server received: {message}&quot;
-            client_socket.send(response.encode('utf-8'))
-            print(f&quot;[SEND] Replied to {client_address}&quot;)
-            
-    except Exception as e:
-        print(f&quot;[ERROR] Error handling client {client_address}: {e}&quot;)
-    finally:
-        client_socket.close()
-        print(f&quot;[CLOSE] Client connection closed: {client_address}&quot;)
-
-
-def start_server():
-    &quot;&quot;&quot;Start TCP server&quot;&quot;&quot;
-    server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-    
-    try:
-        server_socket.bind((HOST, PORT))
-        server_socket.listen(5)
-        print(f&quot;[START] TCP server started, listening on {HOST}:{PORT}&quot;)
-        print(&quot;[INFO] Waiting for client connections...&quot;)
-        
-        while True:
-            # Accept client connection
-            client_socket, client_address = server_socket.accept()
-            
-            # Create a separate thread to handle each client
-            client_thread = threading.Thread(
-                target=handle_client,
-                args=(client_socket, client_address)
-            )
-            client_thread.daemon = True
-            client_thread.start()
-            
-    except KeyboardInterrupt:
-        print(&quot;\n[STOP] Server is shutting down...&quot;)
-    except Exception as e:
-        print(f&quot;[ERROR] Server error: {e}&quot;)
-    finally:
-        server_socket.close()
-        print(&quot;[CLOSE] Server closed&quot;)
-
-
-if __name__ == '__main__':
-    start_server()
-
-</code></pre>
-<p>客户端</p>
-<pre><code class="language-python">#!/usr/bin/env python3
-&quot;&quot;&quot;
-TCP Client - Connects to server and sends messages
-&quot;&quot;&quot;
-import socket
-import time
-
-HOST = '127.0.0.1'  # Server address
-PORT = 5000         # Server port
-
-
-def connect_to_server():
-    &quot;&quot;&quot;Connect to TCP server&quot;&quot;&quot;
-    client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    
-    try:
-        # Connect to server
-        print(f&quot;[CONNECT] Connecting to server {HOST}:{PORT}...&quot;)
-        client_socket.connect((HOST, PORT))
-        print(&quot;[SUCCESS] Connected to server&quot;)
-        
-        # Send multiple messages
-        messages = [
-            &quot;Hello, this is the first message&quot;,
-            &quot;This is the second message&quot;,
-            &quot;TCP communication test completed&quot;
-        ]
-        
-        for msg in messages:
-            # Send message to server
-            print(f&quot;\n[SEND] {msg}&quot;)
-            client_socket.send(msg.encode('utf-8'))
-            
-            # Receive server response
-            response = client_socket.recv(1024)
-            print(f&quot;[RECEIVE] {response.decode('utf-8')}&quot;)
-            
-            time.sleep(1)  # Delay 1 second
-        
-        print(&quot;\n[DONE] All messages sent&quot;)
-        
-    except ConnectionRefusedError:
-        print(&quot;[ERROR] Cannot connect to server. Please ensure server is running.&quot;)
-    except Exception as e:
-        print(f&quot;[ERROR] Client exception: {e}&quot;)
-    finally:
-        client_socket.close()
-        print(&quot;[CLOSE] Client connection closed&quot;)
-
-
-if __name__ == '__main__':
-    connect_to_server()
-
-</code></pre>
-
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="ch">#!/usr/bin/env python3</span>
+</span></span><span class="line"><span class="cl"><span class="s2">&#34;&#34;&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s2">TCP Server - Receives client connections and handles messages
+</span></span></span><span class="line"><span class="cl"><span class="s2">&#34;&#34;&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">socket</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">threading</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">time</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">HOST</span> <span class="o">=</span> <span class="s1">&#39;127.0.0.1&#39;</span>  <span class="c1"># Bind to localhost</span>
+</span></span><span class="line"><span class="cl"><span class="n">PORT</span> <span class="o">=</span> <span class="mi">5000</span>         <span class="c1"># Listen port</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">handle_client</span><span class="p">(</span><span class="n">client_socket</span><span class="p">,</span> <span class="n">client_address</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;&#34;&#34;Handle a single client connection&#34;&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;[CONNECT] Client connected: </span><span class="si">{</span><span class="n">client_address</span><span class="si">}</span><span class="s2">&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="k">try</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">            <span class="c1"># Receive data from client</span>
+</span></span><span class="line"><span class="cl">            <span class="n">data</span> <span class="o">=</span> <span class="n">client_socket</span><span class="o">.</span><span class="n">recv</span><span class="p">(</span><span class="mi">1024</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            
+</span></span><span class="line"><span class="cl">            <span class="k">if</span> <span class="ow">not</span> <span class="n">data</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;[DISCONNECT] Client disconnected: </span><span class="si">{</span><span class="n">client_address</span><span class="si">}</span><span class="s2">&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">                <span class="k">break</span>
+</span></span><span class="line"><span class="cl">            
+</span></span><span class="line"><span class="cl">            <span class="n">message</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;[RECEIVE] Message from </span><span class="si">{</span><span class="n">client_address</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">message</span><span class="si">}</span><span class="s2">&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            
+</span></span><span class="line"><span class="cl">            <span class="c1"># Send response to client</span>
+</span></span><span class="line"><span class="cl">            <span class="n">response</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&#34;Server received: </span><span class="si">{</span><span class="n">message</span><span class="si">}</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl">            <span class="n">client_socket</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;[SEND] Replied to </span><span class="si">{</span><span class="n">client_address</span><span class="si">}</span><span class="s2">&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            
+</span></span><span class="line"><span class="cl">    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;[ERROR] Error handling client </span><span class="si">{</span><span class="n">client_address</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">finally</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="n">client_socket</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;[CLOSE] Client connection closed: </span><span class="si">{</span><span class="n">client_address</span><span class="si">}</span><span class="s2">&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">start_server</span><span class="p">():</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;&#34;&#34;Start TCP server&#34;&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">server_socket</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">AF_INET</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">SOCK_STREAM</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">server_socket</span><span class="o">.</span><span class="n">setsockopt</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">SOL_SOCKET</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">SO_REUSEADDR</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="k">try</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="n">server_socket</span><span class="o">.</span><span class="n">bind</span><span class="p">((</span><span class="n">HOST</span><span class="p">,</span> <span class="n">PORT</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">        <span class="n">server_socket</span><span class="o">.</span><span class="n">listen</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;[START] TCP server started, listening on </span><span class="si">{</span><span class="n">HOST</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">PORT</span><span class="si">}</span><span class="s2">&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="nb">print</span><span class="p">(</span><span class="s2">&#34;[INFO] Waiting for client connections...&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        
+</span></span><span class="line"><span class="cl">        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">            <span class="c1"># Accept client connection</span>
+</span></span><span class="line"><span class="cl">            <span class="n">client_socket</span><span class="p">,</span> <span class="n">client_address</span> <span class="o">=</span> <span class="n">server_socket</span><span class="o">.</span><span class="n">accept</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">            
+</span></span><span class="line"><span class="cl">            <span class="c1"># Create a separate thread to handle each client</span>
+</span></span><span class="line"><span class="cl">            <span class="n">client_thread</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">                <span class="n">target</span><span class="o">=</span><span class="n">handle_client</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">client_socket</span><span class="p">,</span> <span class="n">client_address</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="n">client_thread</span><span class="o">.</span><span class="n">daemon</span> <span class="o">=</span> <span class="kc">True</span>
+</span></span><span class="line"><span class="cl">            <span class="n">client_thread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">            
+</span></span><span class="line"><span class="cl">    <span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="nb">print</span><span class="p">(</span><span class="s2">&#34;</span><span class="se">\n</span><span class="s2">[STOP] Server is shutting down...&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;[ERROR] Server error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">finally</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="n">server_socket</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">        <span class="nb">print</span><span class="p">(</span><span class="s2">&#34;[CLOSE] Server closed&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">    <span class="n">start_server</span><span class="p">()</span>
+</span></span></code></pre></div><p>客户端</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="ch">#!/usr/bin/env python3</span>
+</span></span><span class="line"><span class="cl"><span class="s2">&#34;&#34;&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s2">TCP Client - Connects to server and sends messages
+</span></span></span><span class="line"><span class="cl"><span class="s2">&#34;&#34;&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">socket</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">time</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">HOST</span> <span class="o">=</span> <span class="s1">&#39;127.0.0.1&#39;</span>  <span class="c1"># Server address</span>
+</span></span><span class="line"><span class="cl"><span class="n">PORT</span> <span class="o">=</span> <span class="mi">5000</span>         <span class="c1"># Server port</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">connect_to_server</span><span class="p">():</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;&#34;&#34;Connect to TCP server&#34;&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">client_socket</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">AF_INET</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">SOCK_STREAM</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="k">try</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="c1"># Connect to server</span>
+</span></span><span class="line"><span class="cl">        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;[CONNECT] Connecting to server </span><span class="si">{</span><span class="n">HOST</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">PORT</span><span class="si">}</span><span class="s2">...&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="n">client_socket</span><span class="o">.</span><span class="n">connect</span><span class="p">((</span><span class="n">HOST</span><span class="p">,</span> <span class="n">PORT</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">        <span class="nb">print</span><span class="p">(</span><span class="s2">&#34;[SUCCESS] Connected to server&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        
+</span></span><span class="line"><span class="cl">        <span class="c1"># Send multiple messages</span>
+</span></span><span class="line"><span class="cl">        <span class="n">messages</span> <span class="o">=</span> <span class="p">[</span>
+</span></span><span class="line"><span class="cl">            <span class="s2">&#34;Hello, this is the first message&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="s2">&#34;This is the second message&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="s2">&#34;TCP communication test completed&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">]</span>
+</span></span><span class="line"><span class="cl">        
+</span></span><span class="line"><span class="cl">        <span class="k">for</span> <span class="n">msg</span> <span class="ow">in</span> <span class="n">messages</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">            <span class="c1"># Send message to server</span>
+</span></span><span class="line"><span class="cl">            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;</span><span class="se">\n</span><span class="s2">[SEND] </span><span class="si">{</span><span class="n">msg</span><span class="si">}</span><span class="s2">&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="n">client_socket</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">            
+</span></span><span class="line"><span class="cl">            <span class="c1"># Receive server response</span>
+</span></span><span class="line"><span class="cl">            <span class="n">response</span> <span class="o">=</span> <span class="n">client_socket</span><span class="o">.</span><span class="n">recv</span><span class="p">(</span><span class="mi">1024</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;[RECEIVE] </span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            
+</span></span><span class="line"><span class="cl">            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># Delay 1 second</span>
+</span></span><span class="line"><span class="cl">        
+</span></span><span class="line"><span class="cl">        <span class="nb">print</span><span class="p">(</span><span class="s2">&#34;</span><span class="se">\n</span><span class="s2">[DONE] All messages sent&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        
+</span></span><span class="line"><span class="cl">    <span class="k">except</span> <span class="ne">ConnectionRefusedError</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="nb">print</span><span class="p">(</span><span class="s2">&#34;[ERROR] Cannot connect to server. Please ensure server is running.&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;[ERROR] Client exception: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">finally</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="n">client_socket</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">        <span class="nb">print</span><span class="p">(</span><span class="s2">&#34;[CLOSE] Client connection closed&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">    <span class="n">connect_to_server</span><span class="p">()</span>
+</span></span></code></pre></div>
 </main>
 
   <footer>

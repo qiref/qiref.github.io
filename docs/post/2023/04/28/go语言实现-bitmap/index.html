@@ -8,17 +8,6 @@
     <link rel="stylesheet" href="/css/fonts.css" />
     
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-PGMJFXZJRT"></script>
-
-<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/scala.min.js"></script>
-
-<script>
-hljs.configure({languages: []});
-hljs.highlightAll();
-</script>
-
-<link href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/github.min.css"  rel="stylesheet">
-
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
@@ -137,97 +126,94 @@ hljs.highlightAll();
 <p>当 25 号元素加入时，此时 <code>n = 25 &gt;&gt; 3 </code> 结果为3，b[3]; <code>1 &lt;&lt; (25 % 8) = 2 </code> , 说明 25 号元素，在 b[3] 的第2位，此时如何赋值呢，b[3] 已经赋值为 1 了; 通过 <code>|</code> 运算就能合并结果：b[3] = 1|2 = 3, 此时就把 24，25 两个元素放到 b[3] 中了；</p>
 <hr>
 <h2 id="代码实现">代码实现</h2>
-<pre><code class="language-go">package bitmap
-
-import (
-    &quot;encoding/json&quot;
-    &quot;fmt&quot;
-    &quot;strconv&quot;
-)
-
-type BitMap struct {
-    data []int64
-}
-
-func NewBitMap(size int) *BitMap {
-    return &amp;BitMap{
-        data: make([]int64, size),
-    }
-}
-
-func ParseFromJsonStr(str string) *BitMap {
-    bitMap := NewBitMap(0)
-    err := json.Unmarshal([]byte(str), &amp;bitMap.data)
-    if err != nil {
-        _ = fmt.Errorf(&quot;parse from json str return error %+v&quot;, err)
-    }
-    return bitMap
-}
-
-func (b *BitMap) set(index uint) {
-    dataIdx := index &gt;&gt; 5 // index/32
-    if dataIdx &gt;= uint(len(b.data)) {
-        b.data = append(b.data, 1&lt;&lt;(index&amp;31)) // index&amp;31 = index%32
-    } else {
-        b.data[dataIdx] |= 1 &lt;&lt; (index &amp; 31)
-    }
-}
-
-func (b *BitMap) get(index uint) bool {
-    dataIdx := index &gt;&gt; 5
-    if len(b.data) &lt;= 0 || uint(len(b.data)) &lt; dataIdx {
-        return false
-    }
-    return b.data[dataIdx]&amp;(1&lt;&lt;(index&amp;31)) &gt; 0
-}
-
-func (b *BitMap) String() string {
-    result := &quot;&quot;
-    for _, v := range b.data {
-        result += strconv.FormatInt(v, 10) + &quot;(&quot; + DecToBin(v) + &quot;),&quot;
-    }
-    return result
-}
-
-func DecToBin(n int64) string {
-    result := &quot;&quot;
-    if n == 0 {
-        return &quot;0&quot;
-    }
-    for ; n &gt; 0; n /= 2 {
-        lsb := n % 2
-        result = strconv.FormatInt(lsb, 10) + result
-    }
-    return result
-}
-
-</code></pre>
-<h2 id="测试结果">测试结果</h2>
-<pre><code class="language-go">func TestNewBitmap(t *testing.T) {
-    bitMap := NewBitMap(1)
-    bitMap.set(1)
-    bitMap.set(2)
-    bitMap.set(3)
-    bitMap.set(4)
-    bitMap.set(0)
-    fmt.Println(bitMap.String())
-
-    bitMap.set(32)
-    bitMap.set(33)
-    fmt.Println(bitMap.String())
-
-    bitMap.set(89)
-    fmt.Println(bitMap.String())
-}
-
-=== RUN   TestNewBitmap
-31(11111),
-31(11111),3(11),
-31(11111),3(11),33554432(10000000000000000000000000),
---- PASS: TestNewBitmap (0.00s)
-PASS
-</code></pre>
-
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kn">package</span> <span class="nx">bitmap</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="p">(</span>
+</span></span><span class="line"><span class="cl">    <span class="s">&#34;encoding/json&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="s">&#34;fmt&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="s">&#34;strconv&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">BitMap</span> <span class="kd">struct</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">data</span> <span class="p">[]</span><span class="kt">int64</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">NewBitMap</span><span class="p">(</span><span class="nx">size</span> <span class="kt">int</span><span class="p">)</span> <span class="o">*</span><span class="nx">BitMap</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="o">&amp;</span><span class="nx">BitMap</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">data</span><span class="p">:</span> <span class="nb">make</span><span class="p">([]</span><span class="kt">int64</span><span class="p">,</span> <span class="nx">size</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">ParseFromJsonStr</span><span class="p">(</span><span class="nx">str</span> <span class="kt">string</span><span class="p">)</span> <span class="o">*</span><span class="nx">BitMap</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">bitMap</span> <span class="o">:=</span> <span class="nf">NewBitMap</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">err</span> <span class="o">:=</span> <span class="nx">json</span><span class="p">.</span><span class="nf">Unmarshal</span><span class="p">([]</span><span class="nb">byte</span><span class="p">(</span><span class="nx">str</span><span class="p">),</span> <span class="o">&amp;</span><span class="nx">bitMap</span><span class="p">.</span><span class="nx">data</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">_</span> <span class="p">=</span> <span class="nx">fmt</span><span class="p">.</span><span class="nf">Errorf</span><span class="p">(</span><span class="s">&#34;parse from json str return error %+v&#34;</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="nx">bitMap</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="p">(</span><span class="nx">b</span> <span class="o">*</span><span class="nx">BitMap</span><span class="p">)</span> <span class="nf">set</span><span class="p">(</span><span class="nx">index</span> <span class="kt">uint</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">dataIdx</span> <span class="o">:=</span> <span class="nx">index</span> <span class="o">&gt;&gt;</span> <span class="mi">5</span> <span class="c1">// index/32
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">if</span> <span class="nx">dataIdx</span> <span class="o">&gt;=</span> <span class="nb">uint</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="nx">b</span><span class="p">.</span><span class="nx">data</span><span class="p">))</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">b</span><span class="p">.</span><span class="nx">data</span> <span class="p">=</span> <span class="nb">append</span><span class="p">(</span><span class="nx">b</span><span class="p">.</span><span class="nx">data</span><span class="p">,</span> <span class="mi">1</span><span class="o">&lt;&lt;</span><span class="p">(</span><span class="nx">index</span><span class="o">&amp;</span><span class="mi">31</span><span class="p">))</span> <span class="c1">// index&amp;31 = index%32
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">b</span><span class="p">.</span><span class="nx">data</span><span class="p">[</span><span class="nx">dataIdx</span><span class="p">]</span> <span class="o">|=</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="p">(</span><span class="nx">index</span> <span class="o">&amp;</span> <span class="mi">31</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="p">(</span><span class="nx">b</span> <span class="o">*</span><span class="nx">BitMap</span><span class="p">)</span> <span class="nf">get</span><span class="p">(</span><span class="nx">index</span> <span class="kt">uint</span><span class="p">)</span> <span class="kt">bool</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">dataIdx</span> <span class="o">:=</span> <span class="nx">index</span> <span class="o">&gt;&gt;</span> <span class="mi">5</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nx">b</span><span class="p">.</span><span class="nx">data</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">0</span> <span class="o">||</span> <span class="nb">uint</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="nx">b</span><span class="p">.</span><span class="nx">data</span><span class="p">))</span> <span class="p">&lt;</span> <span class="nx">dataIdx</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="kc">false</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="nx">b</span><span class="p">.</span><span class="nx">data</span><span class="p">[</span><span class="nx">dataIdx</span><span class="p">]</span><span class="o">&amp;</span><span class="p">(</span><span class="mi">1</span><span class="o">&lt;&lt;</span><span class="p">(</span><span class="nx">index</span><span class="o">&amp;</span><span class="mi">31</span><span class="p">))</span> <span class="p">&gt;</span> <span class="mi">0</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="p">(</span><span class="nx">b</span> <span class="o">*</span><span class="nx">BitMap</span><span class="p">)</span> <span class="nf">String</span><span class="p">()</span> <span class="kt">string</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">result</span> <span class="o">:=</span> <span class="s">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">v</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">b</span><span class="p">.</span><span class="nx">data</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">result</span> <span class="o">+=</span> <span class="nx">strconv</span><span class="p">.</span><span class="nf">FormatInt</span><span class="p">(</span><span class="nx">v</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span> <span class="o">+</span> <span class="s">&#34;(&#34;</span> <span class="o">+</span> <span class="nf">DecToBin</span><span class="p">(</span><span class="nx">v</span><span class="p">)</span> <span class="o">+</span> <span class="s">&#34;),&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="nx">result</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">DecToBin</span><span class="p">(</span><span class="nx">n</span> <span class="kt">int64</span><span class="p">)</span> <span class="kt">string</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">result</span> <span class="o">:=</span> <span class="s">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="nx">n</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="s">&#34;0&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="p">;</span> <span class="nx">n</span> <span class="p">&gt;</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">n</span> <span class="o">/=</span> <span class="mi">2</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">lsb</span> <span class="o">:=</span> <span class="nx">n</span> <span class="o">%</span> <span class="mi">2</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">result</span> <span class="p">=</span> <span class="nx">strconv</span><span class="p">.</span><span class="nf">FormatInt</span><span class="p">(</span><span class="nx">lsb</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span> <span class="o">+</span> <span class="nx">result</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="nx">result</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><h2 id="测试结果">测试结果</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">TestNewBitmap</span><span class="p">(</span><span class="nx">t</span> <span class="o">*</span><span class="nx">testing</span><span class="p">.</span><span class="nx">T</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">bitMap</span> <span class="o">:=</span> <span class="nf">NewBitMap</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">bitMap</span><span class="p">.</span><span class="nf">set</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">bitMap</span><span class="p">.</span><span class="nf">set</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">bitMap</span><span class="p">.</span><span class="nf">set</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">bitMap</span><span class="p">.</span><span class="nf">set</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">bitMap</span><span class="p">.</span><span class="nf">set</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">bitMap</span><span class="p">.</span><span class="nf">String</span><span class="p">())</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="nx">bitMap</span><span class="p">.</span><span class="nf">set</span><span class="p">(</span><span class="mi">32</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">bitMap</span><span class="p">.</span><span class="nf">set</span><span class="p">(</span><span class="mi">33</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">bitMap</span><span class="p">.</span><span class="nf">String</span><span class="p">())</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="nx">bitMap</span><span class="p">.</span><span class="nf">set</span><span class="p">(</span><span class="mi">89</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">bitMap</span><span class="p">.</span><span class="nf">String</span><span class="p">())</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="o">==</span><span class="p">=</span> <span class="nx">RUN</span>   <span class="nx">TestNewBitmap</span>
+</span></span><span class="line"><span class="cl"><span class="mi">31</span><span class="p">(</span><span class="mi">11111</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl"><span class="mi">31</span><span class="p">(</span><span class="mi">11111</span><span class="p">),</span><span class="mi">3</span><span class="p">(</span><span class="mi">11</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl"><span class="mi">31</span><span class="p">(</span><span class="mi">11111</span><span class="p">),</span><span class="mi">3</span><span class="p">(</span><span class="mi">11</span><span class="p">),</span><span class="mi">33554432</span><span class="p">(</span><span class="mi">10000000000000000000000000</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl"><span class="o">---</span> <span class="nx">PASS</span><span class="p">:</span> <span class="nf">TestNewBitmap</span> <span class="p">(</span><span class="mf">0.00</span><span class="nx">s</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nx">PASS</span>
+</span></span></code></pre></div>
 </main>
 
   <footer>

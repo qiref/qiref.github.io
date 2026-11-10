@@ -8,17 +8,6 @@
     <link rel="stylesheet" href="/css/fonts.css" />
     
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-PGMJFXZJRT"></script>
-
-<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/scala.min.js"></script>
-
-<script>
-hljs.configure({languages: []});
-hljs.highlightAll();
-</script>
-
-<link href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/github.min.css"  rel="stylesheet">
-
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
@@ -121,24 +110,22 @@ hljs.highlightAll();
 <h2 id="arthas-火焰图相关命令">arthas 火焰图相关命令</h2>
 <p><code>arthas</code> 中 <code>profiler</code> 命令支持生成应用热点的火焰图。本质上是通过不断的采样，然后把收集到的采样结果生成火焰图。</p>
 <p>启动arthas：</p>
-<pre><code class="language-shell">java -jar arthas-boot.jar
-</code></pre>
-<p>开始收集火焰图：</p>
-<pre><code class="language-shell">[arthas@1]$ profiler start
-Profiling started
-[arthas@1]$ profiler status
-Profiling is running for 6 seconds
-[arthas@1]$ profiler status
-Profiling is running for 27 seconds
-[arthas@1]$ profiler getSamples 
-2
-[arthas@1]$ profiler getSamples 
-4
-[arthas@1]$ profiler stop --file /tmp/cpu-result-1.html
-OK
-profiler output file: /tmp/cpu-result-1.html
-</code></pre>
-<p>命令说明：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">java -jar arthas-boot.jar
+</span></span></code></pre></div><p>开始收集火焰图：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="o">[</span>arthas@1<span class="o">]</span>$ profiler start
+</span></span><span class="line"><span class="cl">Profiling started
+</span></span><span class="line"><span class="cl"><span class="o">[</span>arthas@1<span class="o">]</span>$ profiler status
+</span></span><span class="line"><span class="cl">Profiling is running <span class="k">for</span> <span class="m">6</span> seconds
+</span></span><span class="line"><span class="cl"><span class="o">[</span>arthas@1<span class="o">]</span>$ profiler status
+</span></span><span class="line"><span class="cl">Profiling is running <span class="k">for</span> <span class="m">27</span> seconds
+</span></span><span class="line"><span class="cl"><span class="o">[</span>arthas@1<span class="o">]</span>$ profiler getSamples 
+</span></span><span class="line"><span class="cl"><span class="m">2</span>
+</span></span><span class="line"><span class="cl"><span class="o">[</span>arthas@1<span class="o">]</span>$ profiler getSamples 
+</span></span><span class="line"><span class="cl"><span class="m">4</span>
+</span></span><span class="line"><span class="cl"><span class="o">[</span>arthas@1<span class="o">]</span>$ profiler stop --file /tmp/cpu-result-1.html
+</span></span><span class="line"><span class="cl">OK
+</span></span><span class="line"><span class="cl">profiler output file: /tmp/cpu-result-1.html
+</span></span></code></pre></div><p>命令说明：</p>
 <ul>
 <li><code>profiler start</code> 开启火焰图收集；</li>
 <li><code>profiler status</code> 查看火焰图收集的状态，会显示当前已经采集多长时间；</li>
@@ -149,18 +136,15 @@ profiler output file: /tmp/cpu-result-1.html
 <h4 id="event">event</h4>
 <p>-e, &ndash;event <value> 默认采集 CPU 信息，可设：cpu, alloc, lock, cache-misses etc</p>
 <p>如果想采集内存信息，可以用以下命令：</p>
-<pre><code>profiler start --event alloc
-</code></pre>
-<h4 id="file">file</h4>
+<pre tabindex="0"><code>profiler start --event alloc
+</code></pre><h4 id="file">file</h4>
 <p><code>-f, --file &lt;value&gt;</code> 输出的文件，主要支持 html, jfr 两种格式；</p>
-<pre><code>profiler stop  --file /tmp/cpu-result-1.html
-</code></pre>
-<h4 id="duration">duration</h4>
+<pre tabindex="0"><code>profiler stop  --file /tmp/cpu-result-1.html
+</code></pre><h4 id="duration">duration</h4>
 <p><code>-d, --duration &lt;value&gt; </code> 指定结束时间；</p>
 <p>profiler 执行 30 秒自动结束：</p>
-<pre><code>profiler start --duration 30
-</code></pre>
-<h2 id="火焰图分析方法">火焰图分析方法</h2>
+<pre tabindex="0"><code>profiler start --duration 30
+</code></pre><h2 id="火焰图分析方法">火焰图分析方法</h2>
 <p><img src="/assets/img/arthas-output.png" alt="arthas-output"></p>
 <p>arthas 火焰图颜色说明：</p>
 <ul>

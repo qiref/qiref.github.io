@@ -8,17 +8,6 @@
     <link rel="stylesheet" href="/css/fonts.css" />
     
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-PGMJFXZJRT"></script>
-
-<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/scala.min.js"></script>
-
-<script>
-hljs.configure({languages: []});
-hljs.highlightAll();
-</script>
-
-<link href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/github.min.css"  rel="stylesheet">
-
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
@@ -150,14 +139,13 @@ hljs.highlightAll();
 <li>当超过优雅退出的时间后，Pod中的所有进程都会被发送SIGKILL信号（kill -9）。</li>
 </ol>
 <h2 id="pod常用命令">pod常用命令</h2>
-<pre><code class="language-shell">kubectl describe po cluster-admin-0 -n default # 获取指定namespaces下的pod详情，可以看出container信息
-kubectl get pods --all-namespaces # 获取所有namespaces下的pod
-kubectl get pods -n default # -n 获取指定namaspaces下的pod
-kubectl get pod podname -nkube-system -oyaml # 获取pod的详情，-oyaml 以yaml格式输出，也可以 -ojson
-kubectl exec -it taskcenter-0 -c loglistener -noceanus /bin/bash # 进入某个pod下的cotainer
-kubectl logs tke-log-agent-2687c -c loglistener # 获取某个pod下cotainer的log，也可以加 -f 参数，类似于 tail -f
-</code></pre>
-<h2 id="创建pod的方式">创建pod的方式</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">kubectl describe po cluster-admin-0 -n default <span class="c1"># 获取指定namespaces下的pod详情，可以看出container信息</span>
+</span></span><span class="line"><span class="cl">kubectl get pods --all-namespaces <span class="c1"># 获取所有namespaces下的pod</span>
+</span></span><span class="line"><span class="cl">kubectl get pods -n default <span class="c1"># -n 获取指定namaspaces下的pod</span>
+</span></span><span class="line"><span class="cl">kubectl get pod podname -nkube-system -oyaml <span class="c1"># 获取pod的详情，-oyaml 以yaml格式输出，也可以 -ojson</span>
+</span></span><span class="line"><span class="cl">kubectl <span class="nb">exec</span> -it taskcenter-0 -c loglistener -noceanus /bin/bash <span class="c1"># 进入某个pod下的cotainer</span>
+</span></span><span class="line"><span class="cl">kubectl logs tke-log-agent-2687c -c loglistener <span class="c1"># 获取某个pod下cotainer的log，也可以加 -f 参数，类似于 tail -f</span>
+</span></span></code></pre></div><h2 id="创建pod的方式">创建pod的方式</h2>
 <p>pod本身不具备故障重启以及副本等功能，一般使用其他的资源创建pod。</p>
 <ul>
 <li>ReplicaSet 替代 ReplicationController，可以始终保持所需数量的pod副本正在运行，ReplicaSet具备更强的selector expression。</li>

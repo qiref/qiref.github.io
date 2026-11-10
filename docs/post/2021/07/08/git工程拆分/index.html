@@ -8,17 +8,6 @@
     <link rel="stylesheet" href="/css/fonts.css" />
     
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-PGMJFXZJRT"></script>
-
-<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/scala.min.js"></script>
-
-<script>
-hljs.configure({languages: []});
-hljs.highlightAll();
-</script>
-
-<link href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/github.min.css"  rel="stylesheet">
-
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
@@ -98,22 +87,21 @@ hljs.highlightAll();
 <main>
 <p>摘要：Git将工程按目录拆分。</p>
 <hr>
-<pre><code class="language-shell"># /project/
-# ----/test/
-# 将test目录抽成单独的工程
-cd /project/test
-
-# 拆分子目录
-$ git subtree split -P test -b test-new-br
-$ mkdir ../test-new-br
-$ cd ../test-new-br
-
-# 创建子工程
-$ git init
-$ git pull ../project test-new-br
-# git log 可以看到历史commit
-</code></pre>
-<p>&#x1f635;</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1"># /project/</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># ----/test/</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># 将test目录抽成单独的工程</span>
+</span></span><span class="line"><span class="cl"><span class="nb">cd</span> /project/test
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 拆分子目录</span>
+</span></span><span class="line"><span class="cl">$ git subtree split -P <span class="nb">test</span> -b test-new-br
+</span></span><span class="line"><span class="cl">$ mkdir ../test-new-br
+</span></span><span class="line"><span class="cl">$ <span class="nb">cd</span> ../test-new-br
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 创建子工程</span>
+</span></span><span class="line"><span class="cl">$ git init
+</span></span><span class="line"><span class="cl">$ git pull ../project test-new-br
+</span></span><span class="line"><span class="cl"><span class="c1"># git log 可以看到历史commit</span>
+</span></span></code></pre></div><p>&#x1f635;</p>
 
 </main>
 

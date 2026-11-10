@@ -8,17 +8,6 @@
     <link rel="stylesheet" href="/css/fonts.css" />
     
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-PGMJFXZJRT"></script>
-
-<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/scala.min.js"></script>
-
-<script>
-hljs.configure({languages: []});
-hljs.highlightAll();
-</script>
-
-<link href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/github.min.css"  rel="stylesheet">
-
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
@@ -226,314 +215,287 @@ hljs.highlightAll();
 <p>Staged-&gt;UnModified: 通过git commit 来完成</p>
 <h2 id="正常流程">正常流程</h2>
 <h3 id="git-clone-从远程拉一个工程下来">git clone 从远程拉一个工程下来</h3>
-<pre><code class="language-shell">$ git clone git@github.com:sotrip/gittest.git         
-Cloning into 'gittest'...
-warning: You appear to have cloned an empty repository.
-Checking connectivity... done. 
-</code></pre>
-<h3 id="增加一个文件">增加一个文件</h3>
-<pre><code class="language-shell">$ vi 1.txt  #里面内容如下:
-the first line 
-</code></pre>
-<h3 id="git-status-查看状态">git status 查看状态</h3>
-<pre><code class="language-shell">$ git status
-On branch master            #表示我们目前在master分支上
-Initial commit
-Untracked files:            #有哪些文件是Untracked状态，有1.txt
-(use &quot;git add ...&quot; to include in what will be committed)
-1.txt
-nothing added to commit but untracked files present (use &quot;git add&quot; to track)
-</code></pre>
-<h3 id="git-add-把文件从untracked--staged">git add 把文件从Untracked&ndash;&gt;Staged</h3>
-<pre><code class="language-shell">$ git add 1.txt  #成功后，没有输出
-$ git status     #再次查看
-On branch master
-Initial commit
-Changes to be committed:       #表示1.txt已经是staged了，可以被提交了
-(use &quot;git rm --cached ...&quot; to unstage)  #如果不想提交了，可以用git rm --cached 1.txt
-new file:   1.txt
-</code></pre>
-<h3 id="git-rm---cached">git rm &ndash;cached</h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">$ git clone git@github.com:sotrip/gittest.git         
+</span></span><span class="line"><span class="cl">Cloning into <span class="s1">&#39;gittest&#39;</span>...
+</span></span><span class="line"><span class="cl">warning: You appear to have cloned an empty repository.
+</span></span><span class="line"><span class="cl">Checking connectivity... <span class="k">done</span>. 
+</span></span></code></pre></div><h3 id="增加一个文件">增加一个文件</h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">$ vi 1.txt  <span class="c1">#里面内容如下:</span>
+</span></span><span class="line"><span class="cl">the first line 
+</span></span></code></pre></div><h3 id="git-status-查看状态">git status 查看状态</h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">$ git status
+</span></span><span class="line"><span class="cl">On branch master            <span class="c1">#表示我们目前在master分支上</span>
+</span></span><span class="line"><span class="cl">Initial commit
+</span></span><span class="line"><span class="cl">Untracked files:            <span class="c1">#有哪些文件是Untracked状态，有1.txt</span>
+</span></span><span class="line"><span class="cl"><span class="o">(</span>use <span class="s2">&#34;git add ...&#34;</span> to include in what will be committed<span class="o">)</span>
+</span></span><span class="line"><span class="cl">1.txt
+</span></span><span class="line"><span class="cl">nothing added to commit but untracked files present <span class="o">(</span>use <span class="s2">&#34;git add&#34;</span> to track<span class="o">)</span>
+</span></span></code></pre></div><h3 id="git-add-把文件从untracked--staged">git add 把文件从Untracked&ndash;&gt;Staged</h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">$ git add 1.txt  <span class="c1">#成功后，没有输出</span>
+</span></span><span class="line"><span class="cl">$ git status     <span class="c1">#再次查看</span>
+</span></span><span class="line"><span class="cl">On branch master
+</span></span><span class="line"><span class="cl">Initial commit
+</span></span><span class="line"><span class="cl">Changes to be committed:       <span class="c1">#表示1.txt已经是staged了，可以被提交了</span>
+</span></span><span class="line"><span class="cl"><span class="o">(</span>use <span class="s2">&#34;git rm --cached ...&#34;</span> to unstage<span class="o">)</span>  <span class="c1">#如果不想提交了，可以用git rm --cached 1.txt</span>
+</span></span><span class="line"><span class="cl">new file:   1.txt
+</span></span></code></pre></div><h3 id="git-rm---cached">git rm &ndash;cached</h3>
 <p>文件已经是staged了，但想要退回原来的状态</p>
-<pre><code class="language-shell">$ git rm --cached 1.txt
-rm '1.txt'
-
-$ git status       # 再来看又回来2.3这一步了
-On branch master
-Initial commit
-Untracked files:
-(use &quot;git add ...&quot; to include in what will be committed)
-1.txt
-
-$ git add 1.txt  # 我们还是再加上
-$ git status
-On branch master
-Initial commit
-Changes to be committed:     # 1.txt 又改为staged状态 准备提交
-(use &quot;git rm --cached ...&quot; to unstage)
-new file:   1.txt
-</code></pre>
-<h3 id="git-commit-提交">git commit 提交</h3>
-<pre><code class="language-shell">$ git commit -m &quot;first commit&quot;          #-m后面是我们这一次提交的注释
-[master (root-commit) e6b0e7d] first commit
-1 file changed, 1 insertion(+)
-create mode 100644 1.txt
-</code></pre>
-<h3 id="git-push-把master分支的内容提交到远端">git push 把master分支的内容提交到远端</h3>
-<pre><code class="language-shell">$ git push origin master
-Warning: Permanently added the RSA host key for IP address '*.*.*.*' to the list of known hosts.
-Counting objects: 3, done.
-Writing objects: 100% (3/3), 214 bytes | 0 bytes/s, done.
-Total 3 (delta 0), reused 0 (delta 0)
-To git@github.com:sotrip/gittest.git
-* [new branch]      master -&gt; master 
-</code></pre>
-<h2 id="git-diff-查看变化">git diff 查看变化</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">$ git rm --cached 1.txt
+</span></span><span class="line"><span class="cl">rm <span class="s1">&#39;1.txt&#39;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">$ git status       <span class="c1"># 再来看又回来2.3这一步了</span>
+</span></span><span class="line"><span class="cl">On branch master
+</span></span><span class="line"><span class="cl">Initial commit
+</span></span><span class="line"><span class="cl">Untracked files:
+</span></span><span class="line"><span class="cl"><span class="o">(</span>use <span class="s2">&#34;git add ...&#34;</span> to include in what will be committed<span class="o">)</span>
+</span></span><span class="line"><span class="cl">1.txt
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">$ git add 1.txt  <span class="c1"># 我们还是再加上</span>
+</span></span><span class="line"><span class="cl">$ git status
+</span></span><span class="line"><span class="cl">On branch master
+</span></span><span class="line"><span class="cl">Initial commit
+</span></span><span class="line"><span class="cl">Changes to be committed:     <span class="c1"># 1.txt 又改为staged状态 准备提交</span>
+</span></span><span class="line"><span class="cl"><span class="o">(</span>use <span class="s2">&#34;git rm --cached ...&#34;</span> to unstage<span class="o">)</span>
+</span></span><span class="line"><span class="cl">new file:   1.txt
+</span></span></code></pre></div><h3 id="git-commit-提交">git commit 提交</h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">$ git commit -m <span class="s2">&#34;first commit&#34;</span>          <span class="c1">#-m后面是我们这一次提交的注释</span>
+</span></span><span class="line"><span class="cl"><span class="o">[</span>master <span class="o">(</span>root-commit<span class="o">)</span> e6b0e7d<span class="o">]</span> first commit
+</span></span><span class="line"><span class="cl"><span class="m">1</span> file changed, <span class="m">1</span> insertion<span class="o">(</span>+<span class="o">)</span>
+</span></span><span class="line"><span class="cl">create mode <span class="m">100644</span> 1.txt
+</span></span></code></pre></div><h3 id="git-push-把master分支的内容提交到远端">git push 把master分支的内容提交到远端</h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">$ git push origin master
+</span></span><span class="line"><span class="cl">Warning: Permanently added the RSA host key <span class="k">for</span> IP address <span class="s1">&#39;*.*.*.*&#39;</span> to the list of known hosts.
+</span></span><span class="line"><span class="cl">Counting objects: 3, <span class="k">done</span>.
+</span></span><span class="line"><span class="cl">Writing objects: 100% <span class="o">(</span>3/3<span class="o">)</span>, <span class="m">214</span> bytes <span class="p">|</span> <span class="m">0</span> bytes/s, <span class="k">done</span>.
+</span></span><span class="line"><span class="cl">Total <span class="m">3</span> <span class="o">(</span>delta 0<span class="o">)</span>, reused <span class="m">0</span> <span class="o">(</span>delta 0<span class="o">)</span>
+</span></span><span class="line"><span class="cl">To git@github.com:sotrip/gittest.git
+</span></span><span class="line"><span class="cl">* <span class="o">[</span>new branch<span class="o">]</span>      master -&gt; master 
+</span></span></code></pre></div><h2 id="git-diff-查看变化">git diff 查看变化</h2>
 <p>命令概括</p>
-<pre><code class="language-shell">git diff           #查看 Modified的文件，做了哪些修改
-git diff --staged  # 查看 Staged的文件，做了哪些修改
-</code></pre>
-<h3 id="操作实例">操作实例</h3>
-<pre><code class="language-shell">$ vi 1.txt   #在后面增加一行,变成如下
-the first line
-the second line
-
-$ git status    
-On branch master
-Your branch is up-to-date with 'origin/master'.
-Changes not staged for commit:       #这个表示1.txt已经变为Modified了，not staged
-(use &quot;git add ...&quot; to update what will be committed)
-(use &quot;git checkout -- ...&quot; to discard changes in working directory)
-modified:   1.txt
-no changes added to commit (use &quot;git add&quot; and/or &quot;git commit -a&quot;)
-
-$ git diff      #查看Modified的文件，修改了哪些地方
-diff --git a/1.txt b/1.txt
-index 137b7fd..067030b 100644
---- a/1.txt
-+++ b/1.txt
-@@ -1 +1,2 @@
-the first line
-+the second line
-
-$ git add 1.txt       #把1.txt加入到staged中
-$ git status
-On branch master
-Your branch is up-to-date with 'origin/master'.
-Changes to be committed:
-(use &quot;git reset HEAD ...&quot; to unstage)
-modified:   1.txt
-
-$ git diff  #这个时候不会输出任何东西，因为没有Modified的文件了    
-$ git diff --staged    #查看staged的文件和上一次commit有哪些修改
-diff --git a/1.txt b/1.txt
-index 137b7fd..067030b 100644
---- a/1.txt
-+++ b/1.txt
-@@ -1 +1,2 @@
-the first line
-+the second line
-</code></pre>
-<h2 id="回滚还没有commit的文件">回滚还没有commit的文件</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">git diff           <span class="c1">#查看 Modified的文件，做了哪些修改</span>
+</span></span><span class="line"><span class="cl">git diff --staged  <span class="c1"># 查看 Staged的文件，做了哪些修改</span>
+</span></span></code></pre></div><h3 id="操作实例">操作实例</h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">$ vi 1.txt   <span class="c1">#在后面增加一行,变成如下</span>
+</span></span><span class="line"><span class="cl">the first line
+</span></span><span class="line"><span class="cl">the second line
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">$ git status    
+</span></span><span class="line"><span class="cl">On branch master
+</span></span><span class="line"><span class="cl">Your branch is up-to-date with <span class="s1">&#39;origin/master&#39;</span>.
+</span></span><span class="line"><span class="cl">Changes not staged <span class="k">for</span> commit:       <span class="c1">#这个表示1.txt已经变为Modified了，not staged</span>
+</span></span><span class="line"><span class="cl"><span class="o">(</span>use <span class="s2">&#34;git add ...&#34;</span> to update what will be committed<span class="o">)</span>
+</span></span><span class="line"><span class="cl"><span class="o">(</span>use <span class="s2">&#34;git checkout -- ...&#34;</span> to discard changes in working directory<span class="o">)</span>
+</span></span><span class="line"><span class="cl">modified:   1.txt
+</span></span><span class="line"><span class="cl">no changes added to commit <span class="o">(</span>use <span class="s2">&#34;git add&#34;</span> and/or <span class="s2">&#34;git commit -a&#34;</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">$ git diff      <span class="c1">#查看Modified的文件，修改了哪些地方</span>
+</span></span><span class="line"><span class="cl">diff --git a/1.txt b/1.txt
+</span></span><span class="line"><span class="cl">index 137b7fd..067030b <span class="m">100644</span>
+</span></span><span class="line"><span class="cl">--- a/1.txt
+</span></span><span class="line"><span class="cl">+++ b/1.txt
+</span></span><span class="line"><span class="cl">@@ -1 +1,2 @@
+</span></span><span class="line"><span class="cl">the first line
+</span></span><span class="line"><span class="cl">+the second line
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">$ git add 1.txt       <span class="c1">#把1.txt加入到staged中</span>
+</span></span><span class="line"><span class="cl">$ git status
+</span></span><span class="line"><span class="cl">On branch master
+</span></span><span class="line"><span class="cl">Your branch is up-to-date with <span class="s1">&#39;origin/master&#39;</span>.
+</span></span><span class="line"><span class="cl">Changes to be committed:
+</span></span><span class="line"><span class="cl"><span class="o">(</span>use <span class="s2">&#34;git reset HEAD ...&#34;</span> to unstage<span class="o">)</span>
+</span></span><span class="line"><span class="cl">modified:   1.txt
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">$ git diff  <span class="c1">#这个时候不会输出任何东西，因为没有Modified的文件了    </span>
+</span></span><span class="line"><span class="cl">$ git diff --staged    <span class="c1">#查看staged的文件和上一次commit有哪些修改</span>
+</span></span><span class="line"><span class="cl">diff --git a/1.txt b/1.txt
+</span></span><span class="line"><span class="cl">index 137b7fd..067030b <span class="m">100644</span>
+</span></span><span class="line"><span class="cl">--- a/1.txt
+</span></span><span class="line"><span class="cl">+++ b/1.txt
+</span></span><span class="line"><span class="cl">@@ -1 +1,2 @@
+</span></span><span class="line"><span class="cl">the first line
+</span></span><span class="line"><span class="cl">+the second line
+</span></span></code></pre></div><h2 id="回滚还没有commit的文件">回滚还没有commit的文件</h2>
 <p>命令概括</p>
-<pre><code class="language-shell">$ git reset HEAD 1.txt    #文件已经Staged的了，用这个来回滚到Modified状态，但是内容不会回滚
-$ git checkout 1.txt      #如果文件是Modified，不想做修改了，恢复原样，使用这个
-</code></pre>
-<h3 id="操作实例-1">操作实例</h3>
-<pre><code class="language-shell">$ git status
-On branch master
-Your branch is up-to-date with 'origin/master'.
-Changes to be committed:
-(use &quot;git reset HEAD ...&quot; to unstage)
-modified:   1.txt
-
-$ git diff --staged
-diff --git a/1.txt b/1.txt
-index 137b7fd..067030b 100644
---- a/1.txt
-+++ b/1.txt
-@@ -1 +1,2 @@
-the first line
-+the second line    
-
-$ git reset HEAD 1.txt        #把1.txt 的状态由Staged变为Staged， 但是1.txt的内容不会变
-Unstaged changes after reset:
-M1.txt
-
-$ git status
-On branch master
-Your branch is up-to-date with 'origin/master'.
-Changes not staged for commit:            #可以看出1.txt 由Staged变为Modified
-(use &quot;git add ...&quot; to update what will be committed)
-(use &quot;git checkout -- ...&quot; to discard changes in working directory)
-modified:   1.txt
-no changes added to commit (use &quot;git add&quot; and/or &quot;git commit -a&quot;)
-
-$ cat 1.txt            #查看内容，发现 1.txt的内容并没有回滚
-the first line
-the second line
-
-$ git checkout 1.txt   #回滚
-$ git status
-On branch master
-Your branch is up-to-date with 'origin/master'.
-nothing to commit, working directory clean
-
-$ cat 1.txt           #内容已经回滚
-the first line
-</code></pre>
-<h2 id="回滚某个提交">回滚某个提交</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">$ git reset HEAD 1.txt    <span class="c1">#文件已经Staged的了，用这个来回滚到Modified状态，但是内容不会回滚</span>
+</span></span><span class="line"><span class="cl">$ git checkout 1.txt      <span class="c1">#如果文件是Modified，不想做修改了，恢复原样，使用这个</span>
+</span></span></code></pre></div><h3 id="操作实例-1">操作实例</h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">$ git status
+</span></span><span class="line"><span class="cl">On branch master
+</span></span><span class="line"><span class="cl">Your branch is up-to-date with <span class="s1">&#39;origin/master&#39;</span>.
+</span></span><span class="line"><span class="cl">Changes to be committed:
+</span></span><span class="line"><span class="cl"><span class="o">(</span>use <span class="s2">&#34;git reset HEAD ...&#34;</span> to unstage<span class="o">)</span>
+</span></span><span class="line"><span class="cl">modified:   1.txt
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">$ git diff --staged
+</span></span><span class="line"><span class="cl">diff --git a/1.txt b/1.txt
+</span></span><span class="line"><span class="cl">index 137b7fd..067030b <span class="m">100644</span>
+</span></span><span class="line"><span class="cl">--- a/1.txt
+</span></span><span class="line"><span class="cl">+++ b/1.txt
+</span></span><span class="line"><span class="cl">@@ -1 +1,2 @@
+</span></span><span class="line"><span class="cl">the first line
+</span></span><span class="line"><span class="cl">+the second line    
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">$ git reset HEAD 1.txt        <span class="c1">#把1.txt 的状态由Staged变为Staged， 但是1.txt的内容不会变</span>
+</span></span><span class="line"><span class="cl">Unstaged changes after reset:
+</span></span><span class="line"><span class="cl">M1.txt
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">$ git status
+</span></span><span class="line"><span class="cl">On branch master
+</span></span><span class="line"><span class="cl">Your branch is up-to-date with <span class="s1">&#39;origin/master&#39;</span>.
+</span></span><span class="line"><span class="cl">Changes not staged <span class="k">for</span> commit:            <span class="c1">#可以看出1.txt 由Staged变为Modified</span>
+</span></span><span class="line"><span class="cl"><span class="o">(</span>use <span class="s2">&#34;git add ...&#34;</span> to update what will be committed<span class="o">)</span>
+</span></span><span class="line"><span class="cl"><span class="o">(</span>use <span class="s2">&#34;git checkout -- ...&#34;</span> to discard changes in working directory<span class="o">)</span>
+</span></span><span class="line"><span class="cl">modified:   1.txt
+</span></span><span class="line"><span class="cl">no changes added to commit <span class="o">(</span>use <span class="s2">&#34;git add&#34;</span> and/or <span class="s2">&#34;git commit -a&#34;</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">$ cat 1.txt            <span class="c1">#查看内容，发现 1.txt的内容并没有回滚</span>
+</span></span><span class="line"><span class="cl">the first line
+</span></span><span class="line"><span class="cl">the second line
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">$ git checkout 1.txt   <span class="c1">#回滚</span>
+</span></span><span class="line"><span class="cl">$ git status
+</span></span><span class="line"><span class="cl">On branch master
+</span></span><span class="line"><span class="cl">Your branch is up-to-date with <span class="s1">&#39;origin/master&#39;</span>.
+</span></span><span class="line"><span class="cl">nothing to commit, working directory clean
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">$ cat 1.txt           <span class="c1">#内容已经回滚</span>
+</span></span><span class="line"><span class="cl">the first line
+</span></span></code></pre></div><h2 id="回滚某个提交">回滚某个提交</h2>
 <p>命令概括</p>
-<pre><code class="language-shell">$ git revert HEAD         #回滚上一次提交
-$ git revert HEAD^        #回滚上上次提交
-$ git revert #commit no#  #回滚某一次提交
-$ git revert -m 1 #commit no#  #回滚某一次merge提交
-</code></pre>
-<h3 id="操作实例-2">操作实例</h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">$ git revert HEAD         <span class="c1">#回滚上一次提交</span>
+</span></span><span class="line"><span class="cl">$ git revert HEAD^        <span class="c1">#回滚上上次提交</span>
+</span></span><span class="line"><span class="cl">$ git revert <span class="c1">#commit no#  #回滚某一次提交</span>
+</span></span><span class="line"><span class="cl">$ git revert -m <span class="m">1</span> <span class="c1">#commit no#  #回滚某一次merge提交</span>
+</span></span></code></pre></div><h3 id="操作实例-2">操作实例</h3>
 <p>增加了2.txt 并提交了，现在想回滚</p>
-<pre><code class="language-shell">$ vi 2.txt  #在里面增加内容
-$ git add 2.txt    #把文件由Untracked 变为 Staged
-$ git commit -m &quot;2.txt commit&quot;  #提交
-$ git log   查看提交日志
-commit 710c5e84bd02e5d041b537b8732b9e80fee257a1    #这个是我们2.txt的提交
-Author: xxx 
-Date:   Thu Apr 7 22:10:00 2016 +0800
-2.txt commit
-commit e6b0e7d844154d5473a37baed2ef56807dca16b3
-Author: xxx 
-Date:   Wed Apr 6 22:42:44 2016 +0800
-first commit
-
-$ git show   710c5e84bd02e5d041b537b8732b9e80fee257a1  #可以查看这次修改的内容     
-$ git revert 710c5e84bd02e5d041b537b8732b9e80fee257a1  #回滚提交
-[master d3ab103] Revert &quot;2.txt commit&quot;
-1 file changed, 1 deletion(-)
-delete mode 100644 2.txt    
-$ git revert -m 1 9d55502f0e05bef943d6b4e7cf57aafe08e42d63  #保留master,去除别的分支提交过来的
-</code></pre>
-<h2 id="分支操作">分支操作</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">$ vi 2.txt  <span class="c1">#在里面增加内容</span>
+</span></span><span class="line"><span class="cl">$ git add 2.txt    <span class="c1">#把文件由Untracked 变为 Staged</span>
+</span></span><span class="line"><span class="cl">$ git commit -m <span class="s2">&#34;2.txt commit&#34;</span>  <span class="c1">#提交</span>
+</span></span><span class="line"><span class="cl">$ git log   查看提交日志
+</span></span><span class="line"><span class="cl">commit 710c5e84bd02e5d041b537b8732b9e80fee257a1    <span class="c1">#这个是我们2.txt的提交</span>
+</span></span><span class="line"><span class="cl">Author: xxx 
+</span></span><span class="line"><span class="cl">Date:   Thu Apr <span class="m">7</span> 22:10:00 <span class="m">2016</span> +0800
+</span></span><span class="line"><span class="cl">2.txt commit
+</span></span><span class="line"><span class="cl">commit e6b0e7d844154d5473a37baed2ef56807dca16b3
+</span></span><span class="line"><span class="cl">Author: xxx 
+</span></span><span class="line"><span class="cl">Date:   Wed Apr <span class="m">6</span> 22:42:44 <span class="m">2016</span> +0800
+</span></span><span class="line"><span class="cl">first commit
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">$ git show   710c5e84bd02e5d041b537b8732b9e80fee257a1  <span class="c1">#可以查看这次修改的内容     </span>
+</span></span><span class="line"><span class="cl">$ git revert 710c5e84bd02e5d041b537b8732b9e80fee257a1  <span class="c1">#回滚提交</span>
+</span></span><span class="line"><span class="cl"><span class="o">[</span>master d3ab103<span class="o">]</span> Revert <span class="s2">&#34;2.txt commit&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="m">1</span> file changed, <span class="m">1</span> deletion<span class="o">(</span>-<span class="o">)</span>
+</span></span><span class="line"><span class="cl">delete mode <span class="m">100644</span> 2.txt    
+</span></span><span class="line"><span class="cl">$ git revert -m <span class="m">1</span> 9d55502f0e05bef943d6b4e7cf57aafe08e42d63  <span class="c1">#保留master,去除别的分支提交过来的</span>
+</span></span></code></pre></div><h2 id="分支操作">分支操作</h2>
 <h3 id="查看分支">查看分支</h3>
-<pre><code class="language-shell">$ git branch    #查看目前有哪些分支
-* master       #只有一个分支,&quot;*&quot;表示当前是在master分支上
-</code></pre>
-<h3 id="创建分支">创建分支</h3>
-<pre><code class="language-shell">$ git branch first-branch  #打出第一个分支，名字是first-branch
-$ git branch
-first-branch   # 分支已经有了
-* master         #&quot;*&quot;表示当前是在master分支上
-
-$ git checkout first-branch
-Switched to branch 'first-branch'
-
-$ git branch
-* first-branch    #已经成功切换到自己打的分支上了
-master
-</code></pre>
-<h3 id="分支上增加内容">分支上增加内容</h3>
-<pre><code class="language-shell">$ vi 2.txt
-$ cat 2.txt         #增加的内容如下
-edit in first-branch
-
-$ git add 2.txt
-$ git commit -m &quot;2.txt commit in first-branch&quot;      #在分支上提交
-[first-branch 9abd8f2] 2.txt commit in first-branch
-1 file changed, 2 insertions(+)
-create mode 100644 2.txt
-</code></pre>
-<h3 id="推送分支到远程">推送分支到远程</h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">$ git branch    <span class="c1">#查看目前有哪些分支</span>
+</span></span><span class="line"><span class="cl">* master       <span class="c1">#只有一个分支,&#34;*&#34;表示当前是在master分支上</span>
+</span></span></code></pre></div><h3 id="创建分支">创建分支</h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">$ git branch first-branch  <span class="c1">#打出第一个分支，名字是first-branch</span>
+</span></span><span class="line"><span class="cl">$ git branch
+</span></span><span class="line"><span class="cl">first-branch   <span class="c1"># 分支已经有了</span>
+</span></span><span class="line"><span class="cl">* master         <span class="c1">#&#34;*&#34;表示当前是在master分支上</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">$ git checkout first-branch
+</span></span><span class="line"><span class="cl">Switched to branch <span class="s1">&#39;first-branch&#39;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">$ git branch
+</span></span><span class="line"><span class="cl">* first-branch    <span class="c1">#已经成功切换到自己打的分支上了</span>
+</span></span><span class="line"><span class="cl">master
+</span></span></code></pre></div><h3 id="分支上增加内容">分支上增加内容</h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">$ vi 2.txt
+</span></span><span class="line"><span class="cl">$ cat 2.txt         <span class="c1">#增加的内容如下</span>
+</span></span><span class="line"><span class="cl">edit in first-branch
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">$ git add 2.txt
+</span></span><span class="line"><span class="cl">$ git commit -m <span class="s2">&#34;2.txt commit in first-branch&#34;</span>      <span class="c1">#在分支上提交</span>
+</span></span><span class="line"><span class="cl"><span class="o">[</span>first-branch 9abd8f2<span class="o">]</span> 2.txt commit in first-branch
+</span></span><span class="line"><span class="cl"><span class="m">1</span> file changed, <span class="m">2</span> insertions<span class="o">(</span>+<span class="o">)</span>
+</span></span><span class="line"><span class="cl">create mode <span class="m">100644</span> 2.txt
+</span></span></code></pre></div><h3 id="推送分支到远程">推送分支到远程</h3>
 <p>推送到远程分支需要添加一个远程地址, 同时设置用户和邮箱</p>
-<pre><code class="language-shell">git remote add origin xxx.git
-
-# 设置用户
-git config user.name &quot;foo&quot; 
-# 设置邮箱
-git config user.email &quot;bar@mail.com&quot;
-
-# 如果加上 --global 参数, 则是全局配置, 否则是设置当前project的的配置
-git config --global
-</code></pre>
-<pre><code class="language-shell">$ git push origin first-branch
-Counting objects: 7, done.
-Delta compression using up to 4 threads.
-Compressing objects: 100% (5/5), done.
-Writing objects: 100% (7/7), 692 bytes | 0 bytes/s, done.
-Total 7 (delta 0), reused 0 (delta 0)
-To git@github.com:sotrip/gittest.git
-* [new branch]      first-branch -&gt; first-branch
-</code></pre>
-<h3 id="两个分支进行比较">两个分支进行比较</h3>
-<pre><code class="language-shell">$ git diff master first-branch    # 比较master与first-branch
-diff --git a/2.txt b/2.txt
-new file mode 100644
-index 0000000..b09edf1
---- /dev/null
-+++ b/2.txt              # 表示first-branch上多了一个2.txt
-@@ -0,0 +1,2 @@
-+edit in first-branch+
-</code></pre>
-<h3 id="分支合并到master上">分支合并到master上</h3>
-<pre><code class="language-shell">$ git checkout master
-$ git merge first-branch    #把first-branch的内容合并到master上
-Updating d3ab103..9abd8f2
-Fast-forward
-2.txt | 2 ++
-1 file changed, 2 insertions(+)
-create mode 100644 2.txt    
-
-$ ls
-1.txt    2.txt 
-$ cat 2.txt
-edit in first-branch 
-$ git log
-commit 9abd8f2d8fe7c08ca246464552dae25397694582
-Author: xxx 
-Date:   Thu Apr 7 22:26:26 2016 +0800
-2.txt commit in first-branch         #在first-branch上提交的内容也显示在日志中
-</code></pre>
-<h3 id="从远程拉一个分支">从远程拉一个分支</h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">git remote add origin xxx.git
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 设置用户</span>
+</span></span><span class="line"><span class="cl">git config user.name <span class="s2">&#34;foo&#34;</span> 
+</span></span><span class="line"><span class="cl"><span class="c1"># 设置邮箱</span>
+</span></span><span class="line"><span class="cl">git config user.email <span class="s2">&#34;bar@mail.com&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 如果加上 --global 参数, 则是全局配置, 否则是设置当前project的的配置</span>
+</span></span><span class="line"><span class="cl">git config --global
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">$ git push origin first-branch
+</span></span><span class="line"><span class="cl">Counting objects: 7, <span class="k">done</span>.
+</span></span><span class="line"><span class="cl">Delta compression using up to <span class="m">4</span> threads.
+</span></span><span class="line"><span class="cl">Compressing objects: 100% <span class="o">(</span>5/5<span class="o">)</span>, <span class="k">done</span>.
+</span></span><span class="line"><span class="cl">Writing objects: 100% <span class="o">(</span>7/7<span class="o">)</span>, <span class="m">692</span> bytes <span class="p">|</span> <span class="m">0</span> bytes/s, <span class="k">done</span>.
+</span></span><span class="line"><span class="cl">Total <span class="m">7</span> <span class="o">(</span>delta 0<span class="o">)</span>, reused <span class="m">0</span> <span class="o">(</span>delta 0<span class="o">)</span>
+</span></span><span class="line"><span class="cl">To git@github.com:sotrip/gittest.git
+</span></span><span class="line"><span class="cl">* <span class="o">[</span>new branch<span class="o">]</span>      first-branch -&gt; first-branch
+</span></span></code></pre></div><h3 id="两个分支进行比较">两个分支进行比较</h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">$ git diff master first-branch    <span class="c1"># 比较master与first-branch</span>
+</span></span><span class="line"><span class="cl">diff --git a/2.txt b/2.txt
+</span></span><span class="line"><span class="cl">new file mode <span class="m">100644</span>
+</span></span><span class="line"><span class="cl">index 0000000..b09edf1
+</span></span><span class="line"><span class="cl">--- /dev/null
+</span></span><span class="line"><span class="cl">+++ b/2.txt              <span class="c1"># 表示first-branch上多了一个2.txt</span>
+</span></span><span class="line"><span class="cl">@@ -0,0 +1,2 @@
+</span></span><span class="line"><span class="cl">+edit in first-branch+
+</span></span></code></pre></div><h3 id="分支合并到master上">分支合并到master上</h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">$ git checkout master
+</span></span><span class="line"><span class="cl">$ git merge first-branch    <span class="c1">#把first-branch的内容合并到master上</span>
+</span></span><span class="line"><span class="cl">Updating d3ab103..9abd8f2
+</span></span><span class="line"><span class="cl">Fast-forward
+</span></span><span class="line"><span class="cl">2.txt <span class="p">|</span> <span class="m">2</span> ++
+</span></span><span class="line"><span class="cl"><span class="m">1</span> file changed, <span class="m">2</span> insertions<span class="o">(</span>+<span class="o">)</span>
+</span></span><span class="line"><span class="cl">create mode <span class="m">100644</span> 2.txt    
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">$ ls
+</span></span><span class="line"><span class="cl">1.txt    2.txt 
+</span></span><span class="line"><span class="cl">$ cat 2.txt
+</span></span><span class="line"><span class="cl">edit in first-branch 
+</span></span><span class="line"><span class="cl">$ git log
+</span></span><span class="line"><span class="cl">commit 9abd8f2d8fe7c08ca246464552dae25397694582
+</span></span><span class="line"><span class="cl">Author: xxx 
+</span></span><span class="line"><span class="cl">Date:   Thu Apr <span class="m">7</span> 22:26:26 <span class="m">2016</span> +0800
+</span></span><span class="line"><span class="cl">2.txt commit in first-branch         <span class="c1">#在first-branch上提交的内容也显示在日志中</span>
+</span></span></code></pre></div><h3 id="从远程拉一个分支">从远程拉一个分支</h3>
 <p>有两个办法，第一种是:</p>
-<pre><code class="language-shell">$ git fecth origin 
-$ git checkout first-branch
-Branch first-branch set up to track remote branch first-branch from origin.
-Switched to a new branch 'first-branch'
-</code></pre>
-<p>第二个办法:</p>
-<pre><code class="language-shell">$ git checkout -t origin/first-branch
-Branch first-branch set up to track remote branch first-branch from origin.
-Switched to a new branch 'first-branch'
-</code></pre>
-<h2 id="tag操作">tag操作</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">$ git fecth origin 
+</span></span><span class="line"><span class="cl">$ git checkout first-branch
+</span></span><span class="line"><span class="cl">Branch first-branch <span class="nb">set</span> up to track remote branch first-branch from origin.
+</span></span><span class="line"><span class="cl">Switched to a new branch <span class="s1">&#39;first-branch&#39;</span>
+</span></span></code></pre></div><p>第二个办法:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">$ git checkout -t origin/first-branch
+</span></span><span class="line"><span class="cl">Branch first-branch <span class="nb">set</span> up to track remote branch first-branch from origin.
+</span></span><span class="line"><span class="cl">Switched to a new branch <span class="s1">&#39;first-branch&#39;</span>
+</span></span></code></pre></div><h2 id="tag操作">tag操作</h2>
 <p>tag一般维护一个只读的版本，不再进行修改</p>
-<pre><code class="language-shell">$ git tag -a v1.0 -m &quot;v1.0 ready for  publish&quot;    #创建一个tag ,名字是&quot;v1.0&quot;
-$ git tag   #查看tag 
-v1.0  
-
-$ git push origin v1.0            #推送tag 到github上
-Counting objects: 1, done.
-Writing objects: 100% (1/1), 162 bytes | 0 bytes/s, done.
-Total 1 (delta 0), reused 0 (delta 0)
-To git@github.com:sotrip/gittest.git
-* [new tag]         v1.0 -&gt; v1.0    
-$ git checkout v1.0   #切换到这个tag 上
-</code></pre>
-<p>注意 最好不要在tag进行修改东西，就把tag维护成一个只读的版本</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">$ git tag -a v1.0 -m <span class="s2">&#34;v1.0 ready for  publish&#34;</span>    <span class="c1">#创建一个tag ,名字是&#34;v1.0&#34;</span>
+</span></span><span class="line"><span class="cl">$ git tag   <span class="c1">#查看tag </span>
+</span></span><span class="line"><span class="cl">v1.0  
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">$ git push origin v1.0            <span class="c1">#推送tag 到github上</span>
+</span></span><span class="line"><span class="cl">Counting objects: 1, <span class="k">done</span>.
+</span></span><span class="line"><span class="cl">Writing objects: 100% <span class="o">(</span>1/1<span class="o">)</span>, <span class="m">162</span> bytes <span class="p">|</span> <span class="m">0</span> bytes/s, <span class="k">done</span>.
+</span></span><span class="line"><span class="cl">Total <span class="m">1</span> <span class="o">(</span>delta 0<span class="o">)</span>, reused <span class="m">0</span> <span class="o">(</span>delta 0<span class="o">)</span>
+</span></span><span class="line"><span class="cl">To git@github.com:sotrip/gittest.git
+</span></span><span class="line"><span class="cl">* <span class="o">[</span>new tag<span class="o">]</span>         v1.0 -&gt; v1.0    
+</span></span><span class="line"><span class="cl">$ git checkout v1.0   <span class="c1">#切换到这个tag 上</span>
+</span></span></code></pre></div><p>注意 最好不要在tag进行修改东西，就把tag维护成一个只读的版本</p>
 <h2 id="其他">其他</h2>
-<pre><code class="language-shell">$ git rm 2.txt  #删除2.txt 这个文件
-$ git remote -v   #可以查看远程的git的地址
-</code></pre>
-<h3 id="git覆盖本地修改pull-远程">git覆盖本地修改，pull 远程</h3>
-<pre><code class="language-bash">$ git fetch --all
-$ git reset --hard origin/master 
-$ git pull
-</code></pre>
-<h3 id="git修改上一次commit-message">git修改上一次commit message</h3>
-<pre><code class="language-bash">$ git commit --amend
-</code></pre>
-<h3 id="git重命名分支">git重命名分支</h3>
-<pre><code>$ git branch -m oldname newname
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">$ git rm 2.txt  <span class="c1">#删除2.txt 这个文件</span>
+</span></span><span class="line"><span class="cl">$ git remote -v   <span class="c1">#可以查看远程的git的地址</span>
+</span></span></code></pre></div><h3 id="git覆盖本地修改pull-远程">git覆盖本地修改，pull 远程</h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">$ git fetch --all
+</span></span><span class="line"><span class="cl">$ git reset --hard origin/master 
+</span></span><span class="line"><span class="cl">$ git pull
+</span></span></code></pre></div><h3 id="git修改上一次commit-message">git修改上一次commit message</h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">$ git commit --amend
+</span></span></code></pre></div><h3 id="git重命名分支">git重命名分支</h3>
+<pre tabindex="0"><code>$ git branch -m oldname newname
 $ git push origin :oldbranch # 此命令会在origin仓库中匹配oldbranch分支，然后删除它。
-</code></pre>
-<hr>
+</code></pre><hr>
 
 </main>
 

@@ -8,17 +8,6 @@
     <link rel="stylesheet" href="/css/fonts.css" />
     
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-PGMJFXZJRT"></script>
-
-<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/scala.min.js"></script>
-
-<script>
-hljs.configure({languages: []});
-hljs.highlightAll();
-</script>
-
-<link href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/github.min.css"  rel="stylesheet">
-
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
@@ -110,18 +99,17 @@ hljs.highlightAll();
 定时任务所在的程序是多实例的，希望能通过横向扩展，加速定时任务处理的吞吐量；</p>
 <p><img src="/assets/img/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BB%BB%E5%8A%A1%E8%B0%83%E5%BA%A6-1.svg" alt="原始问题"></p>
 <p>当 scheduler task 横向扩容，出现多个实例时，多个定时任务同时执行，为了保证同一时间只有一个实例执行定时任务，多个定时任务之间需要加锁，并发量不大的情况下，可以用数据库实现一个简单的分布式锁；</p>
-<pre><code class="language-sql">CREATE TABLE `locker` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT COMMENT 'ID',
-  `bizType` varchar(100) NOT NULL,
-  `bizId` varchar(100) NOT NULL,
-  `createTime` datetime DEFAULT CURRENT_TIMESTAMP,
-  `updateTime` datetime DEFAULT CURRENT_TIMESTAMP,
-  `unlockTime` datetime DEFAULT '0000-00-00 00:00:00',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `bizType` (`bizType`,`bizId`)
-) ENGINE=InnoDB AUTO_INCREMENT=2593578 DEFAULT CHARSET=utf8mb3 COMMENT='locker';
-</code></pre>
-<ol>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="o">`</span><span class="n">locker</span><span class="o">`</span><span class="w"> </span><span class="p">(</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="o">`</span><span class="n">id</span><span class="o">`</span><span class="w"> </span><span class="nb">bigint</span><span class="w"> </span><span class="n">unsigned</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="w"> </span><span class="n">AUTO_INCREMENT</span><span class="w"> </span><span class="k">COMMENT</span><span class="w"> </span><span class="s1">&#39;ID&#39;</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="o">`</span><span class="n">bizType</span><span class="o">`</span><span class="w"> </span><span class="nb">varchar</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="o">`</span><span class="n">bizId</span><span class="o">`</span><span class="w"> </span><span class="nb">varchar</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="o">`</span><span class="n">createTime</span><span class="o">`</span><span class="w"> </span><span class="n">datetime</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="k">CURRENT_TIMESTAMP</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="o">`</span><span class="n">updateTime</span><span class="o">`</span><span class="w"> </span><span class="n">datetime</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="k">CURRENT_TIMESTAMP</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="o">`</span><span class="n">unlockTime</span><span class="o">`</span><span class="w"> </span><span class="n">datetime</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="s1">&#39;0000-00-00 00:00:00&#39;</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">PRIMARY</span><span class="w"> </span><span class="k">KEY</span><span class="w"> </span><span class="p">(</span><span class="o">`</span><span class="n">id</span><span class="o">`</span><span class="p">),</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">UNIQUE</span><span class="w"> </span><span class="k">KEY</span><span class="w"> </span><span class="o">`</span><span class="n">bizType</span><span class="o">`</span><span class="w"> </span><span class="p">(</span><span class="o">`</span><span class="n">bizType</span><span class="o">`</span><span class="p">,</span><span class="o">`</span><span class="n">bizId</span><span class="o">`</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">)</span><span class="w"> </span><span class="n">ENGINE</span><span class="o">=</span><span class="n">InnoDB</span><span class="w"> </span><span class="n">AUTO_INCREMENT</span><span class="o">=</span><span class="mi">2593578</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="n">CHARSET</span><span class="o">=</span><span class="n">utf8mb3</span><span class="w"> </span><span class="k">COMMENT</span><span class="o">=</span><span class="s1">&#39;locker&#39;</span><span class="p">;</span><span class="w">
+</span></span></span></code></pre></div><ol>
 <li>相同定时任务使用相同的 bizType+bizId；通过UNIQUE KEY 约束，同时只能有一个实例写入数据；写入成功则获取到锁；</li>
 <li>获取到锁时，写入一个过期时间，任务执行过程中，不断对锁进行续期；</li>
 <li>另起定时任务，扫描过期的锁进行清除；</li>
@@ -134,32 +122,29 @@ hljs.highlightAll();
 <ol>
 <li>先对 event 表数据作拆分，按照特定的 chuck size，拆分为不同 chuck，写入到 chuck 表：</li>
 </ol>
-<pre><code class="language-sql">CREATE TABLE `chuck` (
-`id` bigint(11) unsigned NOT NULL AUTO_INCREMENT,
-`event_start_pos` bigint(20) DEFAULT NULL,
-`event_end_pos` bigint(20) DEFAULT NULL,
-`status` int(11) DEFAULT NULL COMMENT '0:待执行；1：执行中；2：已完成',
-`version` int(11) DEFAULT NULL,
-`create_time` timestamp NULL DEFAULT NULL,
-`update_time` timestamp NULL DEFAULT NULL,
-`expired_time` timestamp NULL DEFAULT NULL,
-PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-</code></pre>
-<ol start="2">
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="o">`</span><span class="n">chuck</span><span class="o">`</span><span class="w"> </span><span class="p">(</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="o">`</span><span class="n">id</span><span class="o">`</span><span class="w"> </span><span class="nb">bigint</span><span class="p">(</span><span class="mi">11</span><span class="p">)</span><span class="w"> </span><span class="n">unsigned</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="w"> </span><span class="n">AUTO_INCREMENT</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="o">`</span><span class="n">event_start_pos</span><span class="o">`</span><span class="w"> </span><span class="nb">bigint</span><span class="p">(</span><span class="mi">20</span><span class="p">)</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="o">`</span><span class="n">event_end_pos</span><span class="o">`</span><span class="w"> </span><span class="nb">bigint</span><span class="p">(</span><span class="mi">20</span><span class="p">)</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="o">`</span><span class="n">status</span><span class="o">`</span><span class="w"> </span><span class="nb">int</span><span class="p">(</span><span class="mi">11</span><span class="p">)</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="k">NULL</span><span class="w"> </span><span class="k">COMMENT</span><span class="w"> </span><span class="s1">&#39;0:待执行；1：执行中；2：已完成&#39;</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="o">`</span><span class="k">version</span><span class="o">`</span><span class="w"> </span><span class="nb">int</span><span class="p">(</span><span class="mi">11</span><span class="p">)</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="o">`</span><span class="n">create_time</span><span class="o">`</span><span class="w"> </span><span class="k">timestamp</span><span class="w"> </span><span class="k">NULL</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="o">`</span><span class="n">update_time</span><span class="o">`</span><span class="w"> </span><span class="k">timestamp</span><span class="w"> </span><span class="k">NULL</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="o">`</span><span class="n">expired_time</span><span class="o">`</span><span class="w"> </span><span class="k">timestamp</span><span class="w"> </span><span class="k">NULL</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">PRIMARY</span><span class="w"> </span><span class="k">KEY</span><span class="w"> </span><span class="p">(</span><span class="o">`</span><span class="n">id</span><span class="o">`</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">)</span><span class="w"> </span><span class="n">ENGINE</span><span class="o">=</span><span class="n">InnoDB</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="n">CHARSET</span><span class="o">=</span><span class="n">utf8mb4</span><span class="w"> </span><span class="k">COLLATE</span><span class="o">=</span><span class="n">utf8mb4_unicode_ci</span><span class="p">;</span><span class="w">
+</span></span></span></code></pre></div><ol start="2">
 <li>多个 scheduler task 使用乐观锁竞争，从 chuck 表中读取一个分片，进行处理；处理完成后，修改分片状态，同时修改 event 表记录的状态；</li>
 </ol>
-<pre><code class="language-sql">select * FROM `chuck` where status=0
-update chuck set status=1,version=$version+1 where id = ? and version=?
-update chuck set status=2 where id = ?
-</code></pre>
-<ol start="3">
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="o">`</span><span class="n">chuck</span><span class="o">`</span><span class="w"> </span><span class="k">where</span><span class="w"> </span><span class="n">status</span><span class="o">=</span><span class="mi">0</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">update</span><span class="w"> </span><span class="n">chuck</span><span class="w"> </span><span class="k">set</span><span class="w"> </span><span class="n">status</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="k">version</span><span class="o">=</span><span class="err">$</span><span class="k">version</span><span class="o">+</span><span class="mi">1</span><span class="w"> </span><span class="k">where</span><span class="w"> </span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="k">and</span><span class="w"> </span><span class="k">version</span><span class="o">=?</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">update</span><span class="w"> </span><span class="n">chuck</span><span class="w"> </span><span class="k">set</span><span class="w"> </span><span class="n">status</span><span class="o">=</span><span class="mi">2</span><span class="w"> </span><span class="k">where</span><span class="w"> </span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">?</span><span class="w">
+</span></span></span></code></pre></div><ol start="3">
 <li>容错处理，需要有单独的定时任务处理过期的 chuck ，执行一个分片的 scheduler task 有可能挂掉，需要有个过期时间，超过一定时间，需要重新把过期的分片状态重新改为待执行；</li>
 </ol>
-<pre><code class="language-sql">select * FROM `chuck` where status=1 and  now()&gt;expired_time
-update chuck set status=1 where id = ?
-</code></pre>
-
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="o">`</span><span class="n">chuck</span><span class="o">`</span><span class="w"> </span><span class="k">where</span><span class="w"> </span><span class="n">status</span><span class="o">=</span><span class="mi">1</span><span class="w"> </span><span class="k">and</span><span class="w">  </span><span class="n">now</span><span class="p">()</span><span class="o">&gt;</span><span class="n">expired_time</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">update</span><span class="w"> </span><span class="n">chuck</span><span class="w"> </span><span class="k">set</span><span class="w"> </span><span class="n">status</span><span class="o">=</span><span class="mi">1</span><span class="w"> </span><span class="k">where</span><span class="w"> </span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">?</span><span class="w">
+</span></span></span></code></pre></div>
 </main>
 
   <footer>

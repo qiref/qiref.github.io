@@ -8,17 +8,6 @@
     <link rel="stylesheet" href="/css/fonts.css" />
     
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-PGMJFXZJRT"></script>
-
-<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/scala.min.js"></script>
-
-<script>
-hljs.configure({languages: []});
-hljs.highlightAll();
-</script>
-
-<link href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/github.min.css"  rel="stylesheet">
-
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
@@ -117,72 +106,68 @@ hljs.highlightAll();
 <hr>
 <h2 id="启动一个http-server">启动一个Http Server</h2>
 <p>使用Go语言原生的net/http库可以很简单实现一个http server。</p>
-<pre><code class="language-go">log.Println(&quot;start server&quot;)
-if err := http.ListenAndServe(&quot;:8080&quot;, nil); err != nil {
-    log.Println(&quot;start server on 8080&quot;)
-}
-log.Fatal(&quot;start server failed.&quot;)
-</code></pre>
-<p>没错，只要这么几行代码，就开启了一个http server，监听8080端口。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="nx">log</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;start server&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">http</span><span class="p">.</span><span class="nf">ListenAndServe</span><span class="p">(</span><span class="s">&#34;:8080&#34;</span><span class="p">,</span> <span class="kc">nil</span><span class="p">);</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">log</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;start server on 8080&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="nx">log</span><span class="p">.</span><span class="nf">Fatal</span><span class="p">(</span><span class="s">&#34;start server failed.&#34;</span><span class="p">)</span>
+</span></span></code></pre></div><p>没错，只要这么几行代码，就开启了一个http server，监听8080端口。</p>
 <h2 id="接收http请求">接收Http请求</h2>
 <h3 id="httphandlefunc">http.HandleFunc</h3>
 <p>开启了Http server后，无法处理Http请求这个就是个空的Server，下面给它加上处理Http Request的能力。</p>
-<pre><code class="language-go">func init() {
-    log.Println(&quot;start server&quot;)
-    http.HandleFunc(&quot;/hello_world&quot;, HelloWorld)
-    if err := http.ListenAndServe(&quot;:8080&quot;, nil); err != nil {
-        log.Println(&quot;start server on 8080&quot;)
-    }
-    log.Fatal(&quot;start server failed.&quot;)
-}
-
-func HelloWorld(w http.ResponseWriter, r *http.Request) {
-    _, err := w.Write([]byte(&quot;hello world&quot;))
-    if err != nil {
-        log.Println(err)
-    }
-}
-</code></pre>
-<p><code>http.HandleFunc(&quot;/hello_world&quot;, HelloWorld)</code> 这行代码指定了一个路由对应的方法，然后访问<a href="http://127.0.0.1:8080/hello_world">http://127.0.0.1:8080/hello_world</a> 可以得到hello world的字符串，这段字符串也是<code>HelloWorld(w http.ResponseWriter, r *http.Request)</code> 函数的输出。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">init</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">log</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;start server&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">http</span><span class="p">.</span><span class="nf">HandleFunc</span><span class="p">(</span><span class="s">&#34;/hello_world&#34;</span><span class="p">,</span> <span class="nx">HelloWorld</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">http</span><span class="p">.</span><span class="nf">ListenAndServe</span><span class="p">(</span><span class="s">&#34;:8080&#34;</span><span class="p">,</span> <span class="kc">nil</span><span class="p">);</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">log</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;start server on 8080&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">log</span><span class="p">.</span><span class="nf">Fatal</span><span class="p">(</span><span class="s">&#34;start server failed.&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">HelloWorld</span><span class="p">(</span><span class="nx">w</span> <span class="nx">http</span><span class="p">.</span><span class="nx">ResponseWriter</span><span class="p">,</span> <span class="nx">r</span> <span class="o">*</span><span class="nx">http</span><span class="p">.</span><span class="nx">Request</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">_</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">w</span><span class="p">.</span><span class="nf">Write</span><span class="p">([]</span><span class="nb">byte</span><span class="p">(</span><span class="s">&#34;hello world&#34;</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">log</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p><code>http.HandleFunc(&quot;/hello_world&quot;, HelloWorld)</code> 这行代码指定了一个路由对应的方法，然后访问<a href="http://127.0.0.1:8080/hello_world">http://127.0.0.1:8080/hello_world</a> 可以得到hello world的字符串，这段字符串也是<code>HelloWorld(w http.ResponseWriter, r *http.Request)</code> 函数的输出。</p>
 <h3 id="httphandle">http.Handle</h3>
-<pre><code class="language-go">func init() {
-    log.Println(&quot;start server&quot;)
-    http.HandleFunc(&quot;/hello_world&quot;, HelloWorld)
-    http.Handle(&quot;/test_handle&quot;, &amp;TestHandleStruct{content: &quot;test handle&quot;})
-    if err := http.ListenAndServe(&quot;:8080&quot;, nil); err != nil {
-        log.Println(&quot;start server on 8080&quot;)
-    }
-    log.Fatal(&quot;start server failed.&quot;)
-}
-
-type TestHandleStruct struct {
-    content string
-}
-
-// 实现 Handler interface
-func (handle *TestHandleStruct) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-    _, err := fmt.Fprintf(w, handle.content)
-    if err != nil {
-        log.Fatal(&quot;response failed&quot;)
-    }
-}
-</code></pre>
-<p>还有一种方式可以实现处理http request，就是实现Handle接口，实现接口需要借助TestHandleStruct结构体去实现，定义结构体的方法实现接口方法<code>ServeHTTP(w http.ResponseWriter, r *http.Request)</code></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">init</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">log</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;start server&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">http</span><span class="p">.</span><span class="nf">HandleFunc</span><span class="p">(</span><span class="s">&#34;/hello_world&#34;</span><span class="p">,</span> <span class="nx">HelloWorld</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">http</span><span class="p">.</span><span class="nf">Handle</span><span class="p">(</span><span class="s">&#34;/test_handle&#34;</span><span class="p">,</span> <span class="o">&amp;</span><span class="nx">TestHandleStruct</span><span class="p">{</span><span class="nx">content</span><span class="p">:</span> <span class="s">&#34;test handle&#34;</span><span class="p">})</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">http</span><span class="p">.</span><span class="nf">ListenAndServe</span><span class="p">(</span><span class="s">&#34;:8080&#34;</span><span class="p">,</span> <span class="kc">nil</span><span class="p">);</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">log</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;start server on 8080&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">log</span><span class="p">.</span><span class="nf">Fatal</span><span class="p">(</span><span class="s">&#34;start server failed.&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">TestHandleStruct</span> <span class="kd">struct</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">content</span> <span class="kt">string</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// 实现 Handler interface
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">func</span> <span class="p">(</span><span class="nx">handle</span> <span class="o">*</span><span class="nx">TestHandleStruct</span><span class="p">)</span> <span class="nf">ServeHTTP</span><span class="p">(</span><span class="nx">w</span> <span class="nx">http</span><span class="p">.</span><span class="nx">ResponseWriter</span><span class="p">,</span> <span class="nx">r</span> <span class="o">*</span><span class="nx">http</span><span class="p">.</span><span class="nx">Request</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">_</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">fmt</span><span class="p">.</span><span class="nf">Fprintf</span><span class="p">(</span><span class="nx">w</span><span class="p">,</span> <span class="nx">handle</span><span class="p">.</span><span class="nx">content</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">log</span><span class="p">.</span><span class="nf">Fatal</span><span class="p">(</span><span class="s">&#34;response failed&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>还有一种方式可以实现处理http request，就是实现Handle接口，实现接口需要借助TestHandleStruct结构体去实现，定义结构体的方法实现接口方法<code>ServeHTTP(w http.ResponseWriter, r *http.Request)</code></p>
 <p>然后访问<a href="http://127.0.0.1:8080/test_handle">http://127.0.0.1:8080/test_handle</a> 就可以得到test handle字符串。</p>
 <p>其实这两种实现方式底层都是一样的：</p>
-<pre><code class="language-go">// Handle registers the handler for the given pattern
-// in the DefaultServeMux.
-// The documentation for ServeMux explains how patterns are matched.
-func Handle(pattern string, handler Handler) { DefaultServeMux.Handle(pattern, handler) }
-
-// HandleFunc registers the handler function for the given pattern
-// in the DefaultServeMux.
-// The documentation for ServeMux explains how patterns are matched.
-func HandleFunc(pattern string, handler func(ResponseWriter, *Request)) {
-    DefaultServeMux.HandleFunc(pattern, handler)
-}
-</code></pre>
-
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// Handle registers the handler for the given pattern
+</span></span></span><span class="line"><span class="cl"><span class="c1">// in the DefaultServeMux.
+</span></span></span><span class="line"><span class="cl"><span class="c1">// The documentation for ServeMux explains how patterns are matched.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">func</span> <span class="nf">Handle</span><span class="p">(</span><span class="nx">pattern</span> <span class="kt">string</span><span class="p">,</span> <span class="nx">handler</span> <span class="nx">Handler</span><span class="p">)</span> <span class="p">{</span> <span class="nx">DefaultServeMux</span><span class="p">.</span><span class="nf">Handle</span><span class="p">(</span><span class="nx">pattern</span><span class="p">,</span> <span class="nx">handler</span><span class="p">)</span> <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// HandleFunc registers the handler function for the given pattern
+</span></span></span><span class="line"><span class="cl"><span class="c1">// in the DefaultServeMux.
+</span></span></span><span class="line"><span class="cl"><span class="c1">// The documentation for ServeMux explains how patterns are matched.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">func</span> <span class="nf">HandleFunc</span><span class="p">(</span><span class="nx">pattern</span> <span class="kt">string</span><span class="p">,</span> <span class="nx">handler</span> <span class="kd">func</span><span class="p">(</span><span class="nx">ResponseWriter</span><span class="p">,</span> <span class="o">*</span><span class="nx">Request</span><span class="p">))</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">DefaultServeMux</span><span class="p">.</span><span class="nf">HandleFunc</span><span class="p">(</span><span class="nx">pattern</span><span class="p">,</span> <span class="nx">handler</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div>
 </main>
 
   <footer>

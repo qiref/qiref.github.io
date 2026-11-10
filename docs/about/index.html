@@ -8,17 +8,6 @@
     <link rel="stylesheet" href="/css/fonts.css" />
     
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-PGMJFXZJRT"></script>
-
-<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/scala.min.js"></script>
-
-<script>
-hljs.configure({languages: []});
-hljs.highlightAll();
-</script>
-
-<link href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/github.min.css"  rel="stylesheet">
-
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
@@ -110,42 +99,38 @@ hljs.highlightAll();
 <p>The theme name &ldquo;XMin&rdquo; can be interpreted as &ldquo;<strong>X</strong>ie&rsquo;s <strong>Min</strong>imal theme&rdquo; (Xie is my last name) or &ldquo;e<strong>X</strong>tremely <strong>Min</strong>imal theme&rdquo;.</p>
 <h2 id="hugoyaml-the-config-file"><code>hugo.yaml</code> (the config file)</h2>
 <p>For this example site, I defined permalinks for two sections, <code>post</code> and <code>note</code>, so that the links to pages under these directories will contain the date info, e.g., <code>https://xmin.yihui.org/post/2016/02/14/a-plain-markdown-post/</code>. This is optional, and it is up to your personal taste of URLs.</p>
-<pre><code class="language-yaml">permalinks:
-  note: &quot;/note/:year/:month/:day/:slug/&quot;
-  post: &quot;/post/:year/:month/:day/:slug/&quot;
-</code></pre>
-<p>You can define the menu through <code>menu.main</code>, e.g.,</p>
-<pre><code class="language-yaml">menu:
-  main:
-    - name: Home
-      url: &quot;&quot;
-      weight: 1
-    - name: About
-      url: &quot;about/&quot;
-      weight: 2
-    - name: Categories
-      url: &quot;categories/&quot;
-      weight: 3
-    - name: Tags
-      url: &quot;tags/&quot;
-      weight: 4
-    - name: Subscribe
-      url: &quot;index.xml&quot;
-</code></pre>
-<p>Alternatively, you can add <code>menu: main</code> to the YAML metadata of any of your pages, so that these pages will appear in the menu.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nt">permalinks</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">note</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;/note/:year/:month/:day/:slug/&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">post</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;/post/:year/:month/:day/:slug/&#34;</span><span class="w">
+</span></span></span></code></pre></div><p>You can define the menu through <code>menu.main</code>, e.g.,</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nt">menu</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">main</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">Home</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">url</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">weight</span><span class="p">:</span><span class="w"> </span><span class="m">1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">About</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">url</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;about/&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">weight</span><span class="p">:</span><span class="w"> </span><span class="m">2</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">Categories</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">url</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;categories/&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">weight</span><span class="p">:</span><span class="w"> </span><span class="m">3</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">Tags</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">url</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;tags/&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">weight</span><span class="p">:</span><span class="w"> </span><span class="m">4</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">Subscribe</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">url</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;index.xml&#34;</span><span class="w">
+</span></span></span></code></pre></div><p>Alternatively, you can add <code>menu: main</code> to the YAML metadata of any of your pages, so that these pages will appear in the menu.</p>
 <p>The page footer can be defined in <code>.Params.footer</code>, and the text is treated as Markdown, e.g.,</p>
-<pre><code>params:
-  footer: &quot;&amp;copy; [Yihui Xie](https://yihui.org) 2017 -- {Year}&quot;
-</code></pre>
-<p>Here <code>{Year}</code> means the year in which the site is built (usually the current year).</p>
+<pre tabindex="0"><code>params:
+  footer: &#34;&amp;copy; [Yihui Xie](https://yihui.org) 2017 -- {Year}&#34;
+</code></pre><p>Here <code>{Year}</code> means the year in which the site is built (usually the current year).</p>
 <h2 id="custom-layouts">Custom layouts</h2>
 <p>There are two layout files under <code>layouts/partials/</code> that you may want to override: <code>head_custom.html</code> and <code>foot_custom.html</code>. This is how you inject arbitrary HTML code to the head and foot areas. For example, this site has a file <code>layouts/partials/foot_custom.html</code> to support LaTeX math via KaTeX and center images automatically:</p>
-<pre><code class="language-html">&lt;link rel=&quot;stylesheet&quot; href=&quot;//cdn.jsdelivr.net/npm/katex/dist/katex.min.css&quot;&gt;
-&lt;script src=&quot;//cdn.jsdelivr.net/combine/npm/katex/dist/katex.min.js,npm/katex/dist/contrib/auto-render.min.js,npm/@xiee/utils/js/render-katex.js&quot; defer&gt;&lt;/script&gt;
-
-&lt;script src=&quot;//cdn.jsdelivr.net/npm/@xiee/utils/js/center-img.min.js&quot; defer&gt;&lt;/script&gt;
-</code></pre>
-<p>You can certainly enable highlight.js for syntax highlighting by yourself through <code>head_custom.html</code> and <code>foot_custom.html</code> if you want.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">link</span> <span class="na">rel</span><span class="o">=</span><span class="s">&#34;stylesheet&#34;</span> <span class="na">href</span><span class="o">=</span><span class="s">&#34;//cdn.jsdelivr.net/npm/katex/dist/katex.min.css&#34;</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">script</span> <span class="na">src</span><span class="o">=</span><span class="s">&#34;//cdn.jsdelivr.net/combine/npm/katex/dist/katex.min.js,npm/katex/dist/contrib/auto-render.min.js,npm/@xiee/utils/js/render-katex.js&#34;</span> <span class="na">defer</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">script</span> <span class="na">src</span><span class="o">=</span><span class="s">&#34;//cdn.jsdelivr.net/npm/@xiee/utils/js/center-img.min.js&#34;</span> <span class="na">defer</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+</span></span></code></pre></div><p>You can certainly enable highlight.js for syntax highlighting by yourself through <code>head_custom.html</code> and <code>foot_custom.html</code> if you want.</p>
 <p>If you do not like the default fonts (e.g., <code>Palatino</code>), you may provide your own <code>static/css/fonts.css</code> under the root directory of your website to override the <code>fonts.css</code> in the theme.</p>
 <h2 id="other-features">Other features</h2>
 <p>I could have added more features to this theme, but I decided not to, since I have no intention to make this theme feature-rich. However, I will teach you how. I have prepared several examples via pull requests at <a href="https://github.com/yihui/hugo-xmin/pulls">https://github.com/yihui/hugo-xmin/pulls</a>, so that you can see the implementations of these features when you check out the diffs in the pull requests. For example, you can:</p>
