@@ -2,19 +2,27 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>https://qiref.github.io/tags/journal/</loc>
-    <lastmod>2026-10-21T20:36:49+08:00</lastmod>
+    <loc>https://qiref.github.io/tags/note/</loc>
+    <lastmod>2026-11-11T16:28:22+08:00</lastmod>
     <changefreq>daily</changefreq>
   </url><url>
     <loc>https://qiref.github.io/note/</loc>
-    <lastmod>2026-10-21T20:36:49+08:00</lastmod>
+    <lastmod>2026-11-11T16:28:22+08:00</lastmod>
     <changefreq>daily</changefreq>
   </url><url>
     <loc>https://qiref.github.io/tags/</loc>
-    <lastmod>2026-10-21T20:36:49+08:00</lastmod>
+    <lastmod>2026-11-11T16:28:22+08:00</lastmod>
     <changefreq>daily</changefreq>
   </url><url>
     <loc>https://qiref.github.io/</loc>
+    <lastmod>2026-11-11T16:28:22+08:00</lastmod>
+    <changefreq>daily</changefreq>
+  </url><url>
+    <loc>https://qiref.github.io/note/2026/11/11/%E5%85%B3%E4%BA%8E%E5%86%99%E4%BD%9C/</loc>
+    <lastmod>2026-11-11T16:28:22+08:00</lastmod>
+    <changefreq>daily</changefreq>
+  </url><url>
+    <loc>https://qiref.github.io/tags/journal/</loc>
     <lastmod>2026-10-21T20:36:49+08:00</lastmod>
     <changefreq>daily</changefreq>
   </url><url>
@@ -44,10 +52,6 @@
   </url><url>
     <loc>https://qiref.github.io/post/2025/12/25/flink%E6%BA%90%E7%A0%81-completablefuture%E5%BC%82%E6%AD%A5%E7%BC%96%E7%A8%8B/</loc>
     <lastmod>2025-12-25T12:05:41+08:00</lastmod>
-    <changefreq>daily</changefreq>
-  </url><url>
-    <loc>https://qiref.github.io/tags/note/</loc>
-    <lastmod>2025-12-24T21:29:30+08:00</lastmod>
     <changefreq>daily</changefreq>
   </url><url>
     <loc>https://qiref.github.io/note/2025/12/24/%E9%BE%9F%E9%BE%9F%E6%8A%95%E8%B5%84%E7%AD%96%E7%95%A5/</loc>
