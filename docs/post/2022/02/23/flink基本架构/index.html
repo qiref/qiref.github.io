@@ -111,19 +111,6 @@
 <main>
 <p>摘要： 鸟瞰 Flink 架构，分析 Flink 内部组件工作机制。</p>
 <hr>
-<ul>
-<li><a href="#flink-%E6%9E%B6%E6%9E%84%E5%9B%BE">Flink 架构图</a></li>
-<li><a href="#%E6%8F%90%E4%BA%A4%E4%BD%9C%E4%B8%9A%E6%B5%81%E7%A8%8B">提交作业流程</a></li>
-<li><a href="#flink-%E9%9B%86%E7%BE%A4%E6%A8%A1%E5%BC%8F">Flink 集群模式</a></li>
-<li><a href="#jobmanager">JobManager</a></li>
-<li><a href="#taskmanager">Taskmanager</a>
-<ul>
-<li><a href="#%E7%AE%97%E5%AD%90%E9%93%BE">算子链</a></li>
-<li><a href="#slot">Slot</a></li>
-<li><a href="#task-%E6%95%B0%E6%8D%AE%E4%BA%A4%E6%8D%A2%E7%AD%96%E7%95%A5">task 数据交换策略</a></li>
-</ul>
-</li>
-</ul>
 <h2 id="flink-架构图">Flink 架构图</h2>
 <p><img src="/assets/img/flink-struct.svg" alt="Flink架构图"></p>
 <p>一个完整的 Flink 集群由一个 Jobmanager 和若干个 Taskmanager 组成，Jobmanager 主要负责调度 task 以及 协调 Checkpoint。Taskmanager 则负责具体的 task 执行，以及数据流的交换。</p>

@@ -10,16 +10,6 @@ title: Flink Checkpoint机制
 
 ------
 
-- [理论基础](#理论基础)
-  - [asynchronous barrier snapshotting](#asynchronous-barrier-snapshotting)
-  - [算法步骤](#算法步骤)
-- [算法在 Flink 中的实现](#算法在-flink-中的实现)
-  - [Flink Checkpoint 整体流程](#flink-checkpoint-整体流程)
-  - [Flink Checkpoint Barrier Alignment](#flink-checkpoint-barrier-alignment)
-- [Flink Checkpoint 使用](#flink-checkpoint-使用)
-  - [Flink Job 重启策略](#flink-job-重启策略)
-  - [Flink Job 开启 Checkpoint](#flink-job-开启-checkpoint)
-
 ## 理论基础
 
 ### asynchronous barrier snapshotting

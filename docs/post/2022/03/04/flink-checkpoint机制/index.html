@@ -118,26 +118,6 @@
 <main>
 <p>摘要： 如果把运行中的 Flink 程序比做一条河流，Checkpoint 就是一个相机，定期地对河流进行拍照，记录河水的状态。本文以自顶向下的视角，从理论到实现，分析 Flink 中的 Checkpoint 机制；</p>
 <hr>
-<ul>
-<li><a href="#%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80">理论基础</a>
-<ul>
-<li><a href="#asynchronous-barrier-snapshotting">asynchronous barrier snapshotting</a></li>
-<li><a href="#%E7%AE%97%E6%B3%95%E6%AD%A5%E9%AA%A4">算法步骤</a></li>
-</ul>
-</li>
-<li><a href="#%E7%AE%97%E6%B3%95%E5%9C%A8-flink-%E4%B8%AD%E7%9A%84%E5%AE%9E%E7%8E%B0">算法在 Flink 中的实现</a>
-<ul>
-<li><a href="#flink-checkpoint-%E6%95%B4%E4%BD%93%E6%B5%81%E7%A8%8B">Flink Checkpoint 整体流程</a></li>
-<li><a href="#flink-checkpoint-barrier-alignment">Flink Checkpoint Barrier Alignment</a></li>
-</ul>
-</li>
-<li><a href="#flink-checkpoint-%E4%BD%BF%E7%94%A8">Flink Checkpoint 使用</a>
-<ul>
-<li><a href="#flink-job-%E9%87%8D%E5%90%AF%E7%AD%96%E7%95%A5">Flink Job 重启策略</a></li>
-<li><a href="#flink-job-%E5%BC%80%E5%90%AF-checkpoint">Flink Job 开启 Checkpoint</a></li>
-</ul>
-</li>
-</ul>
 <h2 id="理论基础">理论基础</h2>
 <h3 id="asynchronous-barrier-snapshotting">asynchronous barrier snapshotting</h3>
 <p>Flink Checkpoint 机制是异步屏障快照（asynchronous barrier snapshotting, ABS）算法的一种实现，而 ABS 算法基于 <a href="/post/2023/05/08/chandy-lamport-%E7%AE%97%E6%B3%95%E7%AC%94%E8%AE%B0/">Chandy-Lamport</a> 的变种，但数据模型是还是基于  Chandy-Lamport；</p>

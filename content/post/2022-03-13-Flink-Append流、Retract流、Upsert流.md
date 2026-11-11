@@ -10,10 +10,6 @@ title: Flink Append流、Retract流、Upsert流
 
 ------
 
-- [Append流](#append流)
-- [Retract流](#retract流)
-- [Upsert流](#upsert流)
-
 ## Append流
 
 在 Append 流中，仅通过 `INSERT` 操作修改的动态表，可以通过输出插入的行转换为流。
